@@ -7,3 +7,4 @@ Use React components to build rich User Interfaces, and leverage Next.js for adv
 - **Built-in file-based routing & flexible layouts** — simplifies navigation, nested layouts, and page structure.  
 - **Integrated middleware support** — ideal for authentication guards, access control, and edge functions.  
 - **Vibrant ecosystem & large community** — extensive documentation, plugins, examples, and third-party integrations.
+
