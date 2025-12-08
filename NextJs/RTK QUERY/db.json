@@ -1,0 +1,24 @@
+{
+  "tasks": [
+    {
+      "id": 1,
+      "value": "Buy groceries",
+      "completed": false
+    },
+    {
+      "id": 2,
+      "value": "Walk the dog",
+      "completed": true
+    },
+    {
+      "id": 3,
+      "value": "Finish work project",
+      "completed": true
+    },
+    {
+      "value": "new",
+      "completed": false,
+      "id": 4
+    }
+  ]
+}
