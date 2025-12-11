@@ -1,63 +1,100 @@
-# Personal Account
+# Personal Account SSH Setup Guide (Improved & Clear)
 
-## Step 1
-open **Git Bash**
-```git
+This guide helps you create and configure SSH keys for GitHub (Personal
+account). Steps are structured for maximum clarity.
+
+------------------------------------------------------------------------
+
+## ✅ Step 1: Generate SSH Key (Personal)
+
+Open **Git Bash** and run:
+
+``` bash
 ssh-keygen -t ed25519 -C "rnishant.personal@gmail.com"
 ```
 
-When prompted for file path,save as:
+When asked for file location, save it as:
 
-`/c/Users/YourUserName/.ssh/id_ed25519_personal`
+    /c/Users/YourUserName/.ssh/id_ed25519_personal
 
-***If added phrase then remember it**
+If you set a *passphrase*, remember it --- you'll need it later.
 
-## Step 2 : Add SSH keys to SSH Agent
-Start the SSH agent and add keys
-```git
-eval "$(ssh-agent -s)"
+------------------------------------------------------------------------
 
-/*when started, you see --> Agent pid .... */
-ssh-add ~/.ssh/id_ed25519
+## ✅ Step 2: Add SSH Key to SSH Agent
 
-/* If see something like id_ed25519_personal/id_ed25519_work, then add for both append _personal & _work in above command */
+Start the SSH agent and add your key:
 
-/* enter phrase */
-/* If you see "Identity Added", good to go */
+``` bash
+eval "$(ssh-agent -s)"     # Starts the agent
+ssh-add ~/.ssh/id_ed25519_personal
 ```
 
-## Step 3 : Add SSH Public keys to Github
-Get public key content
-```git
-cat ~/.ssh/id_ed25519.pub
-```
-Then: 
+If you have multiple keys (personal/work), add both.
 
-1. Go to Github --> Settings --> SSH and GPG keys
-2. Click new SSH key.
-3. Name them correctly like Personal/Work
-4. Paste SSH key.
+You should see:
 
-## Step 4 : Create SSH config file with Access
-Create/edit
+    Identity added: id_ed25519_personal
+
+------------------------------------------------------------------------
+
+## ✅ Step 3: Add Your Public Key to GitHub
+
+Display your public key:
+
+``` bash
+cat ~/.ssh/id_ed25519_personal.pub
 ```
+
+Then: 1. Go to **GitHub → Settings → SSH and GPG Keys** 2. Click **New
+SSH Key** 3. Give it a meaningful name (e.g., *Personal Laptop*) 4.
+Paste the key and save
+
+------------------------------------------------------------------------
+
+## ✅ Step 4: Configure SSH for Multiple GitHub Accounts (Optional)
+
+Create/edit the SSH config file:
+
+``` bash
 nano ~/.ssh/config
 ```
-Paste below with 2 spaces indentation
-```
-Host github-personal
-  HostName github.com
-  User git
-  IdentityFile ~/.ssh/id_ed25519
-  IdentitiesOnly yes
-```
 
-Now, SSH will use the correct key based on alias `github-personal` or `github-work`
+Add this block (make sure indentation is correct):
 
-## Step 5 : Test
-```
+    Host github-personal
+      HostName github.com
+      User git
+      IdentityFile ~/.ssh/id_ed25519_personal
+      IdentitiesOnly yes
+
+Now Git uses your personal SSH key automatically when you use
+`github-personal` alias.
+
+------------------------------------------------------------------------
+
+## ✅ Step 5: Test Your SSH Connection
+
+Run:
+
+``` bash
 ssh -T git@github-personal
 ```
-If you see --> "You've successfully authenticated, but GitHub does not provide shell access."
 
-## Step 6 : Experiment 
+You should see:
+
+    You've successfully authenticated, but GitHub does not provide shell access.
+
+Success! 🎉
+
+------------------------------------------------------------------------
+
+## ✅ Step 6: Set Remote Origin (Personal Repo)
+
+For your personal GitHub repository:
+
+``` bash
+git remote set-url origin git@github.com:Nishant8826/theory-leaning.git
+```
+
+Your repository is now correctly configured to push over SSH.
