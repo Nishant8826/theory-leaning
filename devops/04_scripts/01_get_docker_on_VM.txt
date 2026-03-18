@@ -1,0 +1,5 @@
+curl -fsSL https://get.docker.com -o install-docker.sh
+sudo sh install-docker.sh
+
+
+docker run -d --restart unless-stopped --name win11react -p 3000:3000 blueedge/win11react:latest
