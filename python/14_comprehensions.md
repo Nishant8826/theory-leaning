@@ -75,3 +75,7 @@ The general pattern is:
 - When you need to perform side effects (like printing) — `for` loop is better.
 
 > **Rule of thumb:** If the comprehension doesn't fit on one comfortable line, use a loop.
+
+---
+
+> 📁 **Next:** [[*args and **kwargs]→](./15_args_and_kwargs.md)

@@ -69,3 +69,7 @@ pairs.sort(key=lambda item: item[1])
 print(pairs)
 # [(3, 'apple'), (1, 'banana'), (2, 'cherry')]
 ```
+
+---
+
+> 📁 **Next:** [[Decorators]→](./13_decorators.md)

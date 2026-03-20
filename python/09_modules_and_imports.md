@@ -85,3 +85,7 @@ import requests
 response = requests.get("https://api.github.com")
 print(response.status_code)   # 200
 ```
+
+---
+
+> 📁 **Next:** [[File Handling (Read and Write)]→](./10_file_handling.md)

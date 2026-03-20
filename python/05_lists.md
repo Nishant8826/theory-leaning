@@ -75,3 +75,7 @@ A short way to create lists:
 squares = [x ** 2 for x in range(1, 6)]
 print(squares)   # [1, 4, 9, 16, 25]
 ```
+
+---
+
+> 📁 **Next:** [[Tuples, Sets, and Dictionaries]→](./06_tuples_sets_and_dictionaries.md)

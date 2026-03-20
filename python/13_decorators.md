@@ -79,3 +79,7 @@ print(slow_add(3, 5))
 - `*args, **kwargs` in `wrapper` make the decorator work with any number of arguments.
 - Always return `result` from `wrapper` so the original return value isn't lost.
 - You can stack multiple decorators on one function (they apply bottom-up).
+
+---
+
+> 📁 **Next:** [[List, Dict, and Set Comprehensions]→](./14_comprehensions.md)

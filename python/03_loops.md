@@ -80,3 +80,7 @@ fruits = ["apple", "banana", "cherry"]
 for fruit in fruits:
     print(f"I like {fruit}")
 ```
+
+---
+
+> 📁 **Next:** [[Functions]→](./04_functions.md)

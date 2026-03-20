@@ -93,4 +93,7 @@ for key, value in student.items():
 | `values()`      | Returns all values                        |
 | `items()`       | Returns key-value pairs                   |
 | `get(key, def)` | Returns value or default if key missing   |
-| `pop(key)`      | Removes and returns value for key         |
+
+---
+
+> 📁 **Next:** [[String Handling]→](./07_string_handling.md)

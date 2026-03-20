@@ -79,3 +79,7 @@ def min_max(numbers):
 lo, hi = min_max([3, 1, 7, 2])
 print(lo, hi)   # 1 7
 ```
+
+---
+
+> 📁 **Next:** [[Lists]→](./05_lists.md)

@@ -84,3 +84,7 @@ print(len(word))    # 6
 
 - Strings are **immutable** — you can't change them in place. Methods like `.upper()` return a *new* string.
 - Use `\n` for a new line inside a string and `\t` for a tab.
+
+---
+
+> 📁 **Next:** [[Error Handling]→](./08_error_handling.md)

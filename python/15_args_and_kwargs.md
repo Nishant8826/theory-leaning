@@ -70,3 +70,7 @@ print(total(*numbers))   # same as total(1, 2, 3) → 6
 info = {"name": "Bob", "age": 30}
 introduce(**info)         # same as introduce(name="Bob", age=30)
 ```
+
+---
+
+> 📁 **Next:** [[Virtual Environments and pip]→](./16_virtual_environments_and_pip.md)

@@ -63,3 +63,7 @@ print(type(age))        # <class 'int'>
 x = 10        # int
 x = "hello"   # now it's a str – Python is fine with this
 ```
+
+---
+
+> 📁 **Next:** [[Input and Output]→](./01_input_and_output.md)

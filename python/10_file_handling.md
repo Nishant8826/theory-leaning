@@ -69,3 +69,7 @@ with open("notes.txt", "a") as f:
 - **Always use `with open(...)`** — it handles closing for you.
 - If the file might not exist, wrap the read in a `try/except FileNotFoundError`.
 - For CSV files, check out the `csv` module; for JSON, use `json`.
+
+---
+
+> 📁 **Next:** [[Basic OOP (Classes and Objects)]→](./11_basic_oop.md)

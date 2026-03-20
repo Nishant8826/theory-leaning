@@ -92,3 +92,7 @@ for animal in animals:
 | **Constructor** | `__init__` — sets up new objects             |
 | **Inheritance** | A class can get features from a parent class |
 | **self**        | Refers to the current instance               |
+
+---
+
+> 📁 **Next:** [[Lambda, Map, and Filter]→](./12_lambda_map_filter.md)

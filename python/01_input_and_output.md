@@ -58,3 +58,7 @@ To use it as a number, convert it:
 age = input("Enter your age: ")   # "25" ← this is a string
 age = int(age)                     # 25  ← now it's an integer
 ```
+
+---
+
+> 📁 **Next:** [[Conditionals (if / elif / else)]→](./02_conditionals.md)

@@ -69,3 +69,7 @@ has_id = True
 if age >= 18 and has_id:
     print("You may enter.")
 ```
+
+---
+
+> 📁 **Next:** [[Loops]→](./03_loops.md)
