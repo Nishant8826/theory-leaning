@@ -83,3 +83,7 @@ print(slow_add(3, 5))
 ---
 
 > 📁 **Next:** [[List, Dict, and Set Comprehensions]→](./14_comprehensions.md)
+
+---
+Previous: [12_lambda_map_filter.md](12_lambda_map_filter.md) Next: [14_comprehensions.md](14_comprehensions.md)
+---

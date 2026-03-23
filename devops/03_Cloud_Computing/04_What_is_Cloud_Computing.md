@@ -189,3 +189,7 @@ You probably use cloud computing every day without knowing it:
 ---
 
 > 📁 **Next:** [Benefits of Cloud Computing →](./05_Benefits_of_Cloud_Computing.md)
+
+---
+Previous: [03_Problems_with_Data_Centers.md](03_Problems_with_Data_Centers.md) Next: [05_Benefits_of_Cloud_Computing.md](05_Benefits_of_Cloud_Computing.md)
+---

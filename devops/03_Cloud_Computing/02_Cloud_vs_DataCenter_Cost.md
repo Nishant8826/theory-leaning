@@ -119,3 +119,7 @@ If Riya's store gets popular during Diwali sale, she **scales up for a few days*
 ---
 
 > 📁 **Next:** [Problems with Data Centers →](./03_Problems_with_Data_Centers.md)
+
+---
+Previous: [01_Data_Center.md](01_Data_Center.md) Next: [03_Problems_with_Data_Centers.md](03_Problems_with_Data_Centers.md)
+---

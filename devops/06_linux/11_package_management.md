@@ -28,6 +28,5 @@ This installs everything you need in seconds without a single click!
 3. If it installs, type `sl` and watch what happens! (It's a fun prank command).
 
 ---
-Previous: [10_service_management.md](10_service_management.md)  
-Next: [12_networking.md](12_networking.md)
+Previous: [10_service_management.md](10_service_management.md) Next: [12_networking.md](12_networking.md)
 ---

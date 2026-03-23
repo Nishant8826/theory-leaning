@@ -73,3 +73,7 @@ print(pairs)
 ---
 
 > 📁 **Next:** [[Decorators]→](./13_decorators.md)
+
+---
+Previous: [11_basic_oop.md](11_basic_oop.md) Next: [13_decorators.md](13_decorators.md)
+---

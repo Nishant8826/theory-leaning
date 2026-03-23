@@ -96,3 +96,7 @@ for animal in animals:
 ---
 
 > 📁 **Next:** [[Lambda, Map, and Filter]→](./12_lambda_map_filter.md)
+
+---
+Previous: [10_file_handling.md](10_file_handling.md) Next: [12_lambda_map_filter.md](12_lambda_map_filter.md)
+---

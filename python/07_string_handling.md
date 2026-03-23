@@ -88,3 +88,7 @@ print(len(word))    # 6
 ---
 
 > 📁 **Next:** [[Error Handling]→](./08_error_handling.md)
+
+---
+Previous: [06_tuples_sets_and_dictionaries.md](06_tuples_sets_and_dictionaries.md) Next: [08_error_handling.md](08_error_handling.md)
+---

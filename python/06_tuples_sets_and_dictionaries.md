@@ -97,3 +97,7 @@ for key, value in student.items():
 ---
 
 > 📁 **Next:** [[String Handling]→](./07_string_handling.md)
+
+---
+Previous: [05_lists.md](05_lists.md) Next: [07_string_handling.md](07_string_handling.md)
+---

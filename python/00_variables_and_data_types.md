@@ -67,3 +67,7 @@ x = "hello"   # now it's a str – Python is fine with this
 ---
 
 > 📁 **Next:** [[Input and Output]→](./01_input_and_output.md)
+
+---
+Next: [01_input_and_output.md](01_input_and_output.md)
+---

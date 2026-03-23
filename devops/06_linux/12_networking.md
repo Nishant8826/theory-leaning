@@ -26,6 +26,5 @@ Linux is the fuel for the "Networked Universe." Understanding how computers talk
 3. Check your IP address by typing `ip addr` or `ifconfig`. Look for the "inet" number.
 
 ---
-Previous: [11_package_management.md](11_package_management.md)  
-Next: [13_ssh_key_management.md](13_ssh_key_management.md)
+Previous: [11_package_management.md](11_package_management.md) Next: [13_ssh_key_management.md](13_ssh_key_management.md)
 ---

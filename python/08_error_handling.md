@@ -77,3 +77,7 @@ except ValueError as e:
 ---
 
 > 📁 **Next:** [[Modules and Imports]→](./09_modules_and_imports.md)
+
+---
+Previous: [07_string_handling.md](07_string_handling.md) Next: [09_modules_and_imports.md](09_modules_and_imports.md)
+---

@@ -22,6 +22,5 @@ Why should you care? If a server doesn't "come back to life" after a reboot, you
 2. See what is listed under the "COMMAND" column. It should either be `/sbin/init` or `systemd`. This is the "Grandfather" of every other process on your computer!
 
 ---
-Previous: [15_shell_scripting_basics.md](15_shell_scripting_basics.md)  
-Next: [17_logs_debugging.md](17_logs_debugging.md)
+Previous: [15_shell_scripting_basics.md](15_shell_scripting_basics.md) Next: [17_logs_debugging.md](17_logs_debugging.md)
 ---

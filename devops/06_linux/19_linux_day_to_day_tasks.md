@@ -29,6 +29,5 @@ Most senior DevOps engineers don't do these things manually. They write "Cron Jo
 2. Type `history` to see a list of every command you typed today. It's like a time machine for your work!
 
 ---
-Previous: [18_http_status_codes.md](18_http_status_codes.md)  
-Next: [20_linux_cheatsheet.md](20_linux_cheatsheet.md)
+Previous: [18_http_status_codes.md](18_http_status_codes.md) Next: [20_linux_cheatsheet.md](20_linux_cheatsheet.md)
 ---

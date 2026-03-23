@@ -82,4 +82,3 @@ Example:
 - Response sent back  
 
 Webhooks = **automatic, real-time messages sent from one app to another when something happens**.
-

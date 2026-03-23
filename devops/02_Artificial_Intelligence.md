@@ -198,3 +198,7 @@ How do you actually use this every day?
 
 ---
 *Created with ❤️ for beginners. Welcome to the future!*
+
+---
+Previous: [01_cloud_platforms.md](01_cloud_platforms.md) Next: [05_DevOps_Basics_Tools_and_Roles.md](05_DevOps_Basics_Tools_and_Roles.md)
+---

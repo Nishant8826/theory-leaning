@@ -73,3 +73,7 @@ if age >= 18 and has_id:
 ---
 
 > 📁 **Next:** [[Loops]→](./03_loops.md)
+
+---
+Previous: [01_input_and_output.md](01_input_and_output.md) Next: [03_loops.md](03_loops.md)
+---

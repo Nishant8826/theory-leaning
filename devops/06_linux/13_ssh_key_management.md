@@ -28,6 +28,5 @@ When you upload your code to GitHub, you use SSH. This way, GitHub knows it's *y
 3. If not, try creating one using `ssh-keygen`.
 
 ---
-Previous: [12_networking.md](12_networking.md)  
-Next: [14_vi_editor.md](14_vi_editor.md)
+Previous: [12_networking.md](12_networking.md) Next: [14_vi_editor.md](14_vi_editor.md)
 ---

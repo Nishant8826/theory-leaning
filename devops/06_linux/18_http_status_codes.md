@@ -29,6 +29,5 @@ When monitoring a massive system (like Netflix or Uber), DevOps engineers look a
 3. Look for the line that says `HTTP/2 200`.
 
 ---
-Previous: [17_logs_debugging.md](17_logs_debugging.md)  
-Next: [19_linux_day_to_day_tasks.md](19_linux_day_to_day_tasks.md)
+Previous: [17_logs_debugging.md](17_logs_debugging.md) Next: [19_linux_day_to_day_tasks.md](19_linux_day_to_day_tasks.md)
 ---

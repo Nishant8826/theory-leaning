@@ -47,6 +47,5 @@ You have a "database config" file containing a password. Only the "app" should r
 4. Try to list it again. It now says `r--------`.
 
 ---
-Previous: [06_user_management.md](06_user_management.md)  
-Next: [08_process_management.md](08_process_management.md)
+Previous: [06_user_management.md](06_user_management.md) Next: [08_process_management.md](08_process_management.md)
 ---

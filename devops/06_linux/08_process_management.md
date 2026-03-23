@@ -31,6 +31,5 @@ Your website is suddenly slow. You log into the server, run `top`, and see that 
 4. Try typing `ps ux` to see only your own running processes.
 
 ---
-Previous: [07_file_permissions.md](07_file_permissions.md)  
-Next: [09_system_monitoring.md](09_system_monitoring.md)
+Previous: [07_file_permissions.md](07_file_permissions.md) Next: [09_system_monitoring.md](09_system_monitoring.md)
 ---

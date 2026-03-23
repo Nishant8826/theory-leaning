@@ -153,3 +153,7 @@ Data centers served us well for decades, but they come with **serious challenges
 ---
 
 > 📁 **Next:** [What is Cloud Computing? →](./04_What_is_Cloud_Computing.md)
+
+---
+Previous: [02_Cloud_vs_DataCenter_Cost.md](02_Cloud_vs_DataCenter_Cost.md) Next: [04_What_is_Cloud_Computing.md](04_What_is_Cloud_Computing.md)
+---

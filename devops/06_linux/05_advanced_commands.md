@@ -37,6 +37,5 @@ Your server is running slow because a log file is too big. You use `grep` to fin
 3. Try to use `find . -name "*.txt"` to see all text files in your current folder.
 
 ---
-Previous: [04_basic_commands.md](04_basic_commands.md)  
-Next: [06_user_management.md](06_user_management.md)
+Previous: [04_basic_commands.md](04_basic_commands.md) Next: [06_user_management.md](06_user_management.md)
 ---

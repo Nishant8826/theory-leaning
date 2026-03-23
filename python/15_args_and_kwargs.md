@@ -74,3 +74,7 @@ introduce(**info)         # same as introduce(name="Bob", age=30)
 ---
 
 > 📁 **Next:** [[Virtual Environments and pip]→](./16_virtual_environments_and_pip.md)
+
+---
+Previous: [14_comprehensions.md](14_comprehensions.md) Next: [16_virtual_environments_and_pip.md](16_virtual_environments_and_pip.md)
+---

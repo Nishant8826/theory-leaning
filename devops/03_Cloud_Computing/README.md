@@ -31,3 +31,7 @@
 ---
 
 > 💡 **Tip:** Understanding cloud computing is essential for any DevOps role. These notes cover everything a beginner needs to know!
+
+---
+Previous: [10_AWS_vs_GCP_vs_Azure.md](10_AWS_vs_GCP_vs_Azure.md)
+---

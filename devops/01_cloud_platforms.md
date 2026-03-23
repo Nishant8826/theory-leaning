@@ -964,3 +964,7 @@ YouTube is the world's largest video platform — and it runs entirely on GCP:
 | **GCP** | Your focus is on data analytics, machine learning, or Kubernetes — or you want Google-grade networking. |
 
 > **Pro Tip:** Many large companies use **multi-cloud** strategies — running some workloads on AWS, some on Azure, and some on GCP — to avoid vendor lock-in and leverage each provider's strengths.
+
+---
+Previous: [00_Basics.md](00_Basics.md) Next: [02_Artificial_Intelligence.md](02_Artificial_Intelligence.md)
+---

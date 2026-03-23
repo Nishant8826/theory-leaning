@@ -83,3 +83,7 @@ print(lo, hi)   # 1 7
 ---
 
 > 📁 **Next:** [[Lists]→](./05_lists.md)
+
+---
+Previous: [03_loops.md](03_loops.md) Next: [05_lists.md](05_lists.md)
+---

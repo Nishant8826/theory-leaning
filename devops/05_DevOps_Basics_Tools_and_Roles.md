@@ -126,3 +126,7 @@ Here are the most common tools grouped by what they do:
 DevOps isn't just about learning fancy tools; it's about a **mindset** of working together and automating the boring stuff. 
 
 Don't worry if it sounds like a lot right now! Start by learning **Git** and **GitHub**, and build your knowledge one tool at a time. Happy coding!
+
+---
+Previous: [02_Artificial_Intelligence.md](02_Artificial_Intelligence.md)
+---

@@ -76,3 +76,7 @@ pip install -r requirements.txt
 - **Always use a venv** for real projects — never install packages globally.
 - Add `venv/` (or your venv folder name) to `.gitignore` so it doesn't get committed.
 - `requirements.txt` is the standard way to document your project's dependencies.
+
+---
+Previous: [15_args_and_kwargs.md](15_args_and_kwargs.md)
+---

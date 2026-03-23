@@ -62,3 +62,7 @@ age = int(age)                     # 25  ← now it's an integer
 ---
 
 > 📁 **Next:** [[Conditionals (if / elif / else)]→](./02_conditionals.md)
+
+---
+Previous: [00_variables_and_data_types.md](00_variables_and_data_types.md) Next: [02_conditionals.md](02_conditionals.md)
+---

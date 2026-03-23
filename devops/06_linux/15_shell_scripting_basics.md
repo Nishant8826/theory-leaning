@@ -48,6 +48,5 @@ DevOps is all about "Automation." Instead of manually creating a database every 
 3. Run `chmod +x backup.sh` and then `./backup.sh`.
 
 ---
-Previous: [14_vi_editor.md](14_vi_editor.md)  
-Next: [16_linux_boot_process.md](16_linux_boot_process.md)
+Previous: [14_vi_editor.md](14_vi_editor.md) Next: [16_linux_boot_process.md](16_linux_boot_process.md)
 ---

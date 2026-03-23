@@ -199,3 +199,7 @@ External User  → NO ACCESS to cloud console
 ---
 
 > 📁 **Next:** [AWS vs GCP vs Azure Comparison →](./10_AWS_vs_GCP_vs_Azure.md)
+
+---
+Previous: [08_How_Cloud_Works.md](08_How_Cloud_Works.md) Next: [10_AWS_vs_GCP_vs_Azure.md](10_AWS_vs_GCP_vs_Azure.md)
+---

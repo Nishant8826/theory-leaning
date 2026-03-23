@@ -84,3 +84,7 @@ for fruit in fruits:
 ---
 
 > 📁 **Next:** [[Functions]→](./04_functions.md)
+
+---
+Previous: [02_conditionals.md](02_conditionals.md) Next: [04_functions.md](04_functions.md)
+---

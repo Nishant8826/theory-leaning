@@ -174,3 +174,7 @@ Networking      [  YOU  ]   [CLOUD]   [CLOUD]   [CLOUD]
 ---
 
 > 📁 **Next:** [How Cloud Computing Works →](./08_How_Cloud_Works.md)
+
+---
+Previous: [06_Cloud_Architecture.md](06_Cloud_Architecture.md) Next: [08_How_Cloud_Works.md](08_How_Cloud_Works.md)
+---

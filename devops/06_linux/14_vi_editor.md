@@ -34,6 +34,5 @@ Imagine you're fixing a server at 3 AM. You only have a terminal. You use `vi` t
 6. Verify your work with `cat test.txt`.
 
 ---
-Previous: [13_ssh_key_management.md](13_ssh_key_management.md)  
-Next: [15_shell_scripting_basics.md](15_shell_scripting_basics.md)
+Previous: [13_ssh_key_management.md](13_ssh_key_management.md) Next: [15_shell_scripting_basics.md](15_shell_scripting_basics.md)
 ---

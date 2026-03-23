@@ -196,3 +196,7 @@ Let's trace a **real example** — you want to host a website on AWS:
 ---
 
 > 📁 **Next:** [Cloud Services Explained →](./09_Cloud_Services.md)
+
+---
+Previous: [07_Deployment_and_Service_Models.md](07_Deployment_and_Service_Models.md) Next: [09_Cloud_Services.md](09_Cloud_Services.md)
+---

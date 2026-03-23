@@ -73,3 +73,7 @@ with open("notes.txt", "a") as f:
 ---
 
 > 📁 **Next:** [[Basic OOP (Classes and Objects)]→](./11_basic_oop.md)
+
+---
+Previous: [09_modules_and_imports.md](09_modules_and_imports.md) Next: [11_basic_oop.md](11_basic_oop.md)
+---

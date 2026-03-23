@@ -43,6 +43,5 @@ If you need to find a log file that contains the word "Error," how do you do it?
 `grep "Error" /var/log/syslog`
 
 ---
-Previous: [19_linux_day_to_day_tasks.md](19_linux_day_to_day_tasks.md)  
-Next: [21_linux_tips_2026.md](21_linux_tips_2026.md)
+Previous: [19_linux_day_to_day_tasks.md](19_linux_day_to_day_tasks.md) Next: [21_linux_tips_2026.md](21_linux_tips_2026.md)
 ---

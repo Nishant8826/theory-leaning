@@ -25,6 +25,5 @@ As a DevOps engineer, you are the doctor for your servers. You need tools to che
 3. Type `uptime` to see if your computer has been awake for a long time!
 
 ---
-Previous: [08_process_management.md](08_process_management.md)  
-Next: [10_service_management.md](10_service_management.md)
+Previous: [08_process_management.md](08_process_management.md) Next: [10_service_management.md](10_service_management.md)
 ---

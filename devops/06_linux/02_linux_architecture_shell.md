@@ -35,6 +35,5 @@ In DevOps, we rarely use a mouse. We use the **Terminal** to talk to the **Shell
 3. This will tell you which "Waiter" (Shell) is currently serving you!
 
 ---
-Previous: [01_linux_overview.md](01_linux_overview.md)  
-Next: [03_filesystem_hierarchy.md](03_filesystem_hierarchy.md)
+Previous: [01_linux_overview.md](01_linux_overview.md) Next: [03_filesystem_hierarchy.md](03_filesystem_hierarchy.md)
 ---

@@ -79,3 +79,7 @@ The general pattern is:
 ---
 
 > 📁 **Next:** [[*args and **kwargs]→](./15_args_and_kwargs.md)
+
+---
+Previous: [13_decorators.md](13_decorators.md) Next: [15_args_and_kwargs.md](15_args_and_kwargs.md)
+---

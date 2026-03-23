@@ -8,3 +8,6 @@ Use React components to build rich User Interfaces, and leverage Next.js for adv
 - **Integrated middleware support** — ideal for authentication guards, access control, and edge functions.  
 - **Vibrant ecosystem & large community** — extensive documentation, plugins, examples, and third-party integrations.
 
+---
+Next: [02._Memo,useRef.md](02._Memo,useRef.md)
+---

@@ -47,6 +47,5 @@ Imagine you need to deploy a website. You would:
 6. Delete the original `hello.txt`.
 
 ---
-Previous: [03_filesystem_hierarchy.md](03_filesystem_hierarchy.md)  
-Next: [05_advanced_commands.md](05_advanced_commands.md)
+Previous: [03_filesystem_hierarchy.md](03_filesystem_hierarchy.md) Next: [05_advanced_commands.md](05_advanced_commands.md)
 ---

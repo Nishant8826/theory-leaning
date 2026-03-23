@@ -36,6 +36,5 @@ A website is showing "Internal Server Error."
 3. Try giving a wrong command and seeing if it gets recorded anywhere!
 
 ---
-Previous: [16_linux_boot_process.md](16_linux_boot_process.md)  
-Next: [18_http_status_codes.md](18_http_status_codes.md)
+Previous: [16_linux_boot_process.md](16_linux_boot_process.md) Next: [18_http_status_codes.md](18_http_status_codes.md)
 ---

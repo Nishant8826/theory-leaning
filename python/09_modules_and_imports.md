@@ -89,3 +89,7 @@ print(response.status_code)   # 200
 ---
 
 > 📁 **Next:** [[File Handling (Read and Write)]→](./10_file_handling.md)
+
+---
+Previous: [08_error_handling.md](08_error_handling.md) Next: [10_file_handling.md](10_file_handling.md)
+---

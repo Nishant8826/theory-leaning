@@ -196,3 +196,7 @@ If Mumbai goes down → Singapore serves your data!
 ---
 
 > 📁 **Next:** [Architecture of Cloud Computing →](./06_Cloud_Architecture.md)
+
+---
+Previous: [04_What_is_Cloud_Computing.md](04_What_is_Cloud_Computing.md) Next: [06_Cloud_Architecture.md](06_Cloud_Architecture.md)
+---
