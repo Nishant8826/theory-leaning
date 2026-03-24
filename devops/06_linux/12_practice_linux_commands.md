@@ -50,4 +50,4 @@ grep "12:05" error.log
 2. Run `whoami` to see your current Linux username.
 
 ---
-Prev: [11_linux_unix_commands_in_devops.md](11_linux_unix_commands_in_devops.md) | Next: NA
+Prev: [11_linux_unix_commands_in_devops.md](11_linux_unix_commands_in_devops.md) | Next: [07_linux_commands_1.md](../07_linux_commands_1.md)
