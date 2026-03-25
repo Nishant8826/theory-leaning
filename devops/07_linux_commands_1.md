@@ -771,4 +771,4 @@ Here's a quick recap of everything covered:
 
 ---
 
-← Previous: [06_linux/01_what_is_operating_system.md](06_linux/01_what_is_operating_system.md) | Next: 08_linux_commands_2 →
+← Previous: [06_linux/01_what_is_operating_system.md](06_linux/01_what_is_operating_system.md) | Next: [08_linux_commands_2](08_linux_commands_2.md)
