@@ -1536,5 +1536,4 @@ sudo chage -l contractor_username
 
 ---
 
-*📁 Part of the DevOps Learning Series | File: `08_linux_commands_2.md`*  
-*⬅️ Previous: [07_linux_commands_1.md](./07_linux_commands_1.md)*
+← Previous: [07_linux_commands_1.md](07_linux_commands_1.md) | Next: [09_linux_commands_3.md](09_linux_commands_3.md)
