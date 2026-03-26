@@ -5,7 +5,6 @@
 > **Level:** 🟡 Intermediate  
 
 ---
-
 ## 📌 Introduction
 
 Welcome to **Part 3** of our Linux journey! 🚀
