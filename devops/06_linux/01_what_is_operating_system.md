@@ -37,4 +37,4 @@ In DevOps, we don't just use one OS. We use different ones for different tasks:
 2. Open your "Task Manager" (Windows) or "Activity Monitor" (Mac) to see how your OS is managing resources like CPU and RAM.
 
 ---
-Prev: NA | Next: [02_what_is_linux.md](02_what_is_linux.md)
+Prev: [05_DevOps_Basics_Tools_and_Roles.md](../05_DevOps_Basics_Tools_and_Roles.md) | Next: [02_what_is_linux.md](02_what_is_linux.md)

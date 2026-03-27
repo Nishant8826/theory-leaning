@@ -194,8 +194,5 @@ START: Which cloud should I pick?
 
 ---
 
-> 📁 **Back to:** [README — Table of Contents →](./README.md)
-
----
-Previous: [09_Cloud_Services.md](09_Cloud_Services.md) Next: [README.md](README.md)
+Previous: [09_Cloud_Services.md](09_Cloud_Services.md) Next: [01_get_docker_on_VM.txt](../04_scripts/01_get_docker_on_VM.txt)
 ---

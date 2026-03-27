@@ -74,5 +74,5 @@ The old data center model had many problems (we'll cover them in detail in the n
 > 📁 **Next:** [Why Cloud is Less Expensive →](./02_Cloud_vs_DataCenter_Cost.md)
 
 ---
-Next: [02_Cloud_vs_DataCenter_Cost.md](02_Cloud_vs_DataCenter_Cost.md)
+Previous: [02_Artificial_Intelligence.md](../02_Artificial_Intelligence.md) Next: [02_Cloud_vs_DataCenter_Cost.md](02_Cloud_vs_DataCenter_Cost.md)
 ---
