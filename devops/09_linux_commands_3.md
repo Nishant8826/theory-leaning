@@ -3,6 +3,7 @@
 > **File:** `09_linux_commands_3.md`  
 > **Topic:** Linux Revision, Bandit Practice, SSH Connectivity, VI Editor Deep Dive, File Viewing Commands, Package Management  
 > **Level:** 🟡 Intermediate  
+> **Prerequisites:** [08_linux_commands_2.md](./08_linux_commands_2.md)  
 
 ---
 ## 📌 Introduction
@@ -258,5 +259,7 @@ sudo yum install httpd
 | `apt install` | Install new software/tools |
 | `sudo` | Run commands with Admin (root) privileges |
 
+
 ---
-**Next Step:** In Part 4, we will dive into **Automation with Crontabs** and **Networking Troubleshooting (netstat, telnet, curl)**! 🚀
+
+← Previous: [08_linux_commands_2.md](08_linux_commands_2.md) | Next: [10_linux_commands_4.md](10_linux_commands_4.md)
