@@ -224,3 +224,8 @@ Perform these steps to become comfortable with troubleshooting:
 | `chmod` / `chown` | Fix permission and ownership issues |
 
 **Congratulations!** You now have a solid foundation in Linux troubleshooting. Keep practicing! 🚀
+
+
+---
+
+← Previous: [09_linux_commands_3.md](09_linux_commands_3.md) | Next: [11_aws_1.md](11_aws_1.md)
