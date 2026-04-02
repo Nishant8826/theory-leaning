@@ -166,3 +166,8 @@ Using an Application Load Balancer to route traffic depending on the URL path: `
 
 ### Q5: What is a Load Balancer Health Check?
 **Answer:** A health check is an automated ping or request sent by the Load Balancer to an instance (like asking for an HTTP 200 OK from an `/index.html` page). If the instance doesn't respond correctly, the ELB marks it "Unhealthy" and stops sending traffic there.
+
+
+---
+
+← Previous: [12_aws_iam_ec2_basics.md](12_aws_iam_ec2_basics.md) | Next: [14_AWS_EC2_AMI_EBS_LoadBalancer.md](14_AWS_EC2_AMI_EBS_LoadBalancer.md)
