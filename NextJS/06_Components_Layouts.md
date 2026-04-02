@@ -40,7 +40,7 @@ Without Layouts:                    With Layouts:
 
 Every Next.js app MUST have a root layout at `app/layout.js`. It wraps **every page** in the app.
 
-```jsx
+```tsx
 // app/layout.js — ROOT LAYOUT (Required)
 import './globals.css';
 
@@ -92,7 +92,7 @@ app/
 │       └── page.js        ← /dashboard/analytics
 ```
 
-```jsx
+```tsx
 // app/dashboard/layout.js — NESTED LAYOUT
 export default function DashboardLayout({ children }) {
   return (
@@ -143,7 +143,7 @@ This is the **most important concept** in modern Next.js.
 
 #### Server Components (Default)
 
-```jsx
+```tsx
 // app/products/page.js — Server Component (default, no directive)
 import { db } from '@/lib/db';
 
@@ -166,7 +166,7 @@ export default async function ProductsPage() {
 
 #### Client Components
 
-```jsx
+```tsx
 // app/components/SearchBar.js — Client Component
 "use client"; // ← This directive makes it a Client Component
 
@@ -220,7 +220,7 @@ export default function SearchBar() {
 
 The **key pattern**: Server Components can import Client Components, but NOT the other way around.
 
-```jsx
+```tsx
 // ✅ CORRECT: Server Component using a Client Component
 // app/products/page.js (Server)
 import AddToCartButton from '@/components/AddToCartButton'; // Client
@@ -238,7 +238,7 @@ export default async function ProductPage() {
 }
 ```
 
-```jsx
+```tsx
 // components/AddToCartButton.js (Client)
 "use client";
 
@@ -272,7 +272,7 @@ export default function AddToCartButton({ id }) {
 | Re-renders on navigation | ❌ No (persists, keeps state) | ✅ Yes (re-creates) |
 | Best for | Navbars, sidebars, persistent UI | Animations, page transitions, logging |
 
-```jsx
+```tsx
 // app/template.js — Re-renders on every navigation
 export default function Template({ children }) {
   // This console.log runs on EVERY page navigation
@@ -290,7 +290,7 @@ export default function Template({ children }) {
 
 Layouts support metadata that is important for SEO:
 
-```jsx
+```tsx
 // app/layout.js
 export const metadata = {
   title: {
@@ -301,7 +301,7 @@ export const metadata = {
 };
 ```
 
-```jsx
+```tsx
 // app/products/page.js
 export const metadata = {
   title: 'Products',    // Renders as: "Products | My Store"
@@ -373,5 +373,7 @@ app/
 ---
 
 ### 🔗 Navigation
-- ⬅️ Previous: [05_API_Routes.md](./05_API_Routes.md)
-- ➡️ Next: [07_Authentication.md](./07_Authentication.md)
+
+---
+
+← Previous: [05_API_Routes.md](05_API_Routes.md) | Next: [07_Authentication.md](07_Authentication.md) →

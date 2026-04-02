@@ -70,7 +70,7 @@ The Metadata API is the primary way to set SEO tags in the App Router.
 
 #### Static Metadata
 
-```jsx
+```tsx
 // app/page.js
 export const metadata = {
   title: 'Best Running Shoes 2024 | ShoeStore',
@@ -111,7 +111,7 @@ export default function HomePage() {
 
 #### Dynamic Metadata (Per-Page, Data-Driven)
 
-```jsx
+```tsx
 // app/products/[id]/page.js
 export async function generateMetadata({ params }) {
   const product = await fetch(`https://api.example.com/products/${params.id}`)
@@ -143,7 +143,7 @@ export default async function ProductPage({ params }) {
 
 #### Title Templates (Consistent Branding)
 
-```jsx
+```tsx
 // app/layout.js — Set a template
 export const metadata = {
   title: {
@@ -167,7 +167,7 @@ export const metadata = {
 
 Structured data tells Google exactly what your content is about using a format called JSON-LD.
 
-```jsx
+```tsx
 // app/products/[id]/page.js
 export default async function ProductPage({ params }) {
   const product = await fetchProduct(params.id);
@@ -211,7 +211,7 @@ export default async function ProductPage({ params }) {
 
 A sitemap is an XML file that tells search engines about all the pages on your site.
 
-```jsx
+```tsx
 // app/sitemap.js
 export default async function sitemap() {
   const products = await fetch('https://api.example.com/products')
@@ -248,7 +248,7 @@ export default async function sitemap() {
 
 Controls which pages search engines should or shouldn't crawl.
 
-```jsx
+```tsx
 // app/robots.js
 export default function robots() {
   return {
@@ -270,7 +270,7 @@ export default function robots() {
 
 Prevent duplicate content issues when the same page is accessible via multiple URLs.
 
-```jsx
+```tsx
 export const metadata = {
   alternates: {
     canonical: 'https://shoestore.com/products/running-shoes',
@@ -328,5 +328,7 @@ export const metadata = {
 ---
 
 ### 🔗 Navigation
-- ⬅️ Previous: [08_Performance_Optimization.md](./08_Performance_Optimization.md)
-- ➡️ Next: [10_Deployment.md](./10_Deployment.md)
+
+---
+
+← Previous: [08_Performance_Optimization.md](08_Performance_Optimization.md) | Next: [10_Deployment.md](10_Deployment.md) →

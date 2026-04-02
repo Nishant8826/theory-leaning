@@ -1,6 +1,5 @@
 # 07 - Event Handling 🖱️
 
-> **Previous: [06_state.md](./06_state.md)** | **Next: [08_conditional_rendering.md](./08_conditional_rendering.md)**
 
 ---
 
@@ -28,7 +27,7 @@ When a user **clicks a button**, **types in an input**, **submits a form**, or *
 
 ## 🖱️ Common Events in React
 
-```jsx
+```tsx
 <button onClick={handleClick}>Click</button>
 <input onChange={handleChange} />
 <form onSubmit={handleSubmit}>...</form>
@@ -42,7 +41,7 @@ When a user **clicks a button**, **types in an input**, **submits a form**, or *
 
 ## 🔧 Basic Click Event
 
-```jsx
+```tsx
 function AlertButton() {
   // Define the handler (event function)
   const handleClick = () => {
@@ -62,7 +61,7 @@ function AlertButton() {
 
 React passes an **event object** to your handler automatically:
 
-```jsx
+```tsx
 function InputLogger() {
   const handleChange = (event) => {
     console.log("Value:", event.target.value);
@@ -91,7 +90,7 @@ Common `event` properties:
 
 ### Example 1: Button with State
 
-```jsx
+```tsx
 function LikeButton() {
   const [liked, setLiked] = useState(false);
 
@@ -112,7 +111,7 @@ function LikeButton() {
 
 ### Example 2: Controlled Input
 
-```jsx
+```tsx
 function SearchBar() {
   const [query, setQuery] = useState("");
 
@@ -136,7 +135,7 @@ function SearchBar() {
 
 ### Example 3: Form Submit (preventDefault)
 
-```jsx
+```tsx
 function LoginForm() {
   const [email, setEmail] = useState("");
 
@@ -161,7 +160,7 @@ function LoginForm() {
 
 ### Example 4: Passing Arguments to Handler
 
-```jsx
+```tsx
 function ProductList() {
   const products = ["Apple", "Banana", "Orange"];
 
@@ -185,7 +184,7 @@ function ProductList() {
 
 ### Example 5: Keyboard Event
 
-```jsx
+```tsx
 function EnterPress() {
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -208,7 +207,7 @@ function EnterPress() {
 
 Events "bubble up" from child to parent by default:
 
-```jsx
+```tsx
 function Parent() {
   return (
     <div onClick={() => console.log("Parent clicked!")}>
@@ -258,4 +257,4 @@ Use `e.stopPropagation()` to stop events from bubbling up.
 
 ---
 
-> **Previous: [06_state.md](./06_state.md)** | **Next: [08_conditional_rendering.md](./08_conditional_rendering.md)**
+← Previous: [06_state.md](06_state.md) | Next: [08_conditional_rendering.md](08_conditional_rendering.md) →

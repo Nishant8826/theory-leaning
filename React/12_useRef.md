@@ -1,6 +1,5 @@
 # 12 - useRef Hook 🎯
 
-> **Previous: [11_useEffect.md](./11_useEffect.md)** | **Next: [13_useMemo_useCallback.md](./13_useMemo_useCallback.md)**
 
 ---
 
@@ -24,7 +23,7 @@ Think of it as a secret variable that React doesn't watch.
 
 ## 📌 Syntax
 
-```jsx
+```tsx
 import { useRef } from "react";
 
 const myRef = useRef(initialValue);
@@ -39,7 +38,7 @@ myRef.current
 
 ### Example: Auto-focus an input
 
-```jsx
+```tsx
 function AutoFocusInput() {
   const inputRef = useRef(null);
 
@@ -53,7 +52,7 @@ function AutoFocusInput() {
 
 ### Example: Scroll to element
 
-```jsx
+```tsx
 function ScrollToSection() {
   const sectionRef = useRef(null);
 
@@ -77,7 +76,7 @@ function ScrollToSection() {
 
 ### Example: Read input value without controlled component
 
-```jsx
+```tsx
 function UncontrolledInput() {
   const inputRef = useRef();
 
@@ -100,7 +99,7 @@ function UncontrolledInput() {
 
 ### Example: Count renders (without causing infinite loop)
 
-```jsx
+```tsx
 function RenderCounter() {
   const [count, setCount] = useState(0);
   const renderCount = useRef(0);
@@ -122,7 +121,7 @@ function RenderCounter() {
 
 ### Example: Store previous value
 
-```jsx
+```tsx
 function PreviousValue() {
   const [count, setCount] = useState(0);
   const prevCount = useRef(0);
@@ -143,7 +142,7 @@ function PreviousValue() {
 
 ### Example: Store a timer ID
 
-```jsx
+```tsx
 function StopwatchApp() {
   const [time, setTime] = useState(0);
   const [running, setRunning] = useState(false);
@@ -196,7 +195,7 @@ function StopwatchApp() {
 
 ## 🆚 useRef vs Variables
 
-```jsx
+```tsx
 // Normal variable — RESETS to 0 on every render!
 let count = 0;
 
@@ -236,4 +235,4 @@ const countRef = useRef(0);
 
 ---
 
-> **Previous: [11_useEffect.md](./11_useEffect.md)** | **Next: [13_useMemo_useCallback.md](./13_useMemo_useCallback.md)**
+← Previous: [11_useEffect.md](11_useEffect.md) | Next: [13_useMemo_useCallback.md](13_useMemo_useCallback.md) →

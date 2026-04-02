@@ -1,6 +1,5 @@
 # 21 - Performance Optimization 🚀
 
-> **Previous: [20_custom_hooks.md](./20_custom_hooks.md)** | **Next: [22_folder_structure.md](./22_folder_structure.md)**
 
 ---
 
@@ -30,7 +29,7 @@ Use the **React DevTools Profiler** to see which components re-render and how lo
 
 Wrapping a component in `React.memo` makes React **skip re-rendering** it if its props haven't changed.
 
-```jsx
+```tsx
 // Without memo — re-renders even when nothing changed
 function MovieCard({ title, rating }) {
   console.log("Rendering:", title);
@@ -62,7 +61,7 @@ function App() {
 
 (Covered in detail in `13_useMemo_useCallback.md`)
 
-```jsx
+```tsx
 // Re-calculates only when `products` or `filter` changes
 const filteredProducts = useMemo(() => {
   return products.filter((p) => p.category === filter);
@@ -75,7 +74,7 @@ const filteredProducts = useMemo(() => {
 
 (Covered in detail in `13_useMemo_useCallback.md`)
 
-```jsx
+```tsx
 // Same function reference between renders — prevents child re-renders
 const handleDelete = useCallback((id) => {
   setItems((prev) => prev.filter((item) => item.id !== id));
@@ -88,7 +87,7 @@ const handleDelete = useCallback((id) => {
 
 Instead of loading the entire app upfront, **lazy load** components only when needed:
 
-```jsx
+```tsx
 import { lazy, Suspense } from "react";
 
 // Load these components only when the route is visited!
@@ -119,7 +118,7 @@ If you have a list of 10,000 items, don't render all 10,000 at once! Render only
 npm install react-window
 ```
 
-```jsx
+```tsx
 import { FixedSizeList } from "react-window";
 
 function HugeList({ items }) {
@@ -144,7 +143,7 @@ function HugeList({ items }) {
 
 ### 6. Image Optimization
 
-```jsx
+```tsx
 // ❌ BAD — loads huge image, slow
 <img src="hero-photo.jpg" alt="Hero" />
 
@@ -162,7 +161,7 @@ function HugeList({ items }) {
 
 ### 7. Avoid Anonymous Functions in JSX
 
-```jsx
+```tsx
 // ❌ BAD — new function on every render
 <button onClick={() => handleDelete(item.id)}>Delete</button>
 
@@ -179,7 +178,7 @@ const handleDeleteItem = useCallback(() => handleDelete(item.id), [item.id]);
 
 When you have complex state with many updates, `useReducer` can be more efficient than many `useState` calls:
 
-```jsx
+```tsx
 const initialState = { count: 0, step: 1, history: [] };
 
 function reducer(state, action) {
@@ -215,7 +214,7 @@ function Counter() {
 
 ### 9. Debounce Expensive Operations
 
-```jsx
+```tsx
 // Debounce search — don't call API on every keystroke
 const debouncedSearch = useDebounce(searchQuery, 500);
 
@@ -282,4 +281,4 @@ useEffect(() => {
 
 ---
 
-> **Previous: [20_custom_hooks.md](./20_custom_hooks.md)** | **Next: [22_folder_structure.md](./22_folder_structure.md)**
+← Previous: [20_custom_hooks.md](20_custom_hooks.md) | Next: [22_folder_structure.md](22_folder_structure.md) →

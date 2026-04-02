@@ -1,6 +1,5 @@
 # 17 - React Router (Routing) 🗺️
 
-> **Previous: [16_context_api.md](./16_context_api.md)** | **Next: [18_api_calls.md](./18_api_calls.md)**
 
 ---
 
@@ -23,7 +22,7 @@ npm install react-router-dom
 
 ## 🔧 Basic Setup (React Router v6)
 
-```jsx
+```tsx
 // main.jsx or App.jsx
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 
@@ -72,7 +71,7 @@ function App() {
 
 ## 🔄 `<Link>` vs `<NavLink>` vs `<a>`
 
-```jsx
+```tsx
 // ❌ Regular <a> — reloads the page!
 <a href="/about">About</a>
 
@@ -104,7 +103,7 @@ src/
 ```
 
 ### App.jsx
-```jsx
+```tsx
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
@@ -128,7 +127,7 @@ function App() {
 ```
 
 ### Navbar.jsx
-```jsx
+```tsx
 import { NavLink } from "react-router-dom";
 
 function Navbar() {
@@ -149,7 +148,7 @@ function Navbar() {
 
 ## 🔗 Dynamic Routes (URL Parameters)
 
-```jsx
+```tsx
 // Route definition
 <Route path="/products/:id" element={<ProductDetail />} />
 
@@ -172,7 +171,7 @@ function ProductDetail() {
 
 ## 🔍 Query Parameters (Search/Filter)
 
-```jsx
+```tsx
 // URL: /search?q=react&category=books
 import { useSearchParams } from "react-router-dom";
 
@@ -196,7 +195,7 @@ function SearchPage() {
 
 ## 🧭 Programmatic Navigation
 
-```jsx
+```tsx
 import { useNavigate } from "react-router-dom";
 
 function LoginPage() {
@@ -217,7 +216,7 @@ function LoginPage() {
 
 ## 🔒 Protected Routes
 
-```jsx
+```tsx
 function ProtectedRoute({ children }) {
   const { user } = useAuth(); // From Context
 
@@ -243,7 +242,7 @@ function ProtectedRoute({ children }) {
 
 ## 📁 Nested Routes
 
-```jsx
+```tsx
 <Routes>
   <Route path="/dashboard" element={<DashboardLayout />}>
     <Route index element={<DashboardHome />} />         {/* /dashboard */}
@@ -299,4 +298,4 @@ function DashboardLayout() {
 
 ---
 
-> **Previous: [16_context_api.md](./16_context_api.md)** | **Next: [18_api_calls.md](./18_api_calls.md)**
+← Previous: [16_context_api.md](16_context_api.md) | Next: [18_api_calls.md](18_api_calls.md) →

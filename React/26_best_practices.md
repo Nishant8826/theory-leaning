@@ -1,6 +1,5 @@
 # 26 - Best Practices & Clean Code 🧹
 
-> **Previous: [25_react_vs_angular_vue.md](./25_react_vs_angular_vue.md)** | **Next: [27_mini_project.md](./27_mini_project.md)**
 
 ---
 
@@ -20,7 +19,7 @@ Clean code is like a **well-organized kitchen** — everything is in its place, 
 
 ### 1. Keep Components Small and Focused
 
-```jsx
+```tsx
 // ❌ BAD — one giant component doing everything!
 function UserDashboard() {
   // 300 lines of mixed logic for header, sidebar, content, footer...
@@ -44,7 +43,7 @@ function UserDashboard() {
 
 ### 2. Descriptive Naming
 
-```jsx
+```tsx
 // ❌ BAD — vague names
 function Comp({ data, fn }) { ... }
 function handleX() { ... }
@@ -60,7 +59,7 @@ function handleEditProfile() { ... }
 
 Each component, hook, and function should do **ONE thing**:
 
-```jsx
+```tsx
 // ❌ BAD — component fetches AND renders AND formats
 function Users() {
   const [users, setUsers] = useState([]);
@@ -89,7 +88,7 @@ function Users() {
 
 ### 4. Avoid Inline Logic in JSX
 
-```jsx
+```tsx
 // ❌ BAD — complex logic inside JSX
 <div>
   {users.filter(u => u.active && u.role === "admin").map(u => (
@@ -115,7 +114,7 @@ const handleSelectUser = (u) => {
 
 ### 5. Use Fragments Instead of Extra Divs
 
-```jsx
+```tsx
 // ❌ BAD — unnecessary div
 return (
   <div>
@@ -137,7 +136,7 @@ return (
 
 ### 6. Consistent Prop Naming
 
-```jsx
+```tsx
 // ❌ BAD — inconsistent
 <Button clickMe={handleClick} txt="Submit" isDisabled={false} show_icon />
 
@@ -151,7 +150,7 @@ return (
 
 ### 7. Don't Overuse State
 
-```jsx
+```tsx
 // ❌ BAD — derived value doesn't need to be state
 const [fullName, setFullName] = useState("");
 const [firstName, setFirstName] = useState("");
@@ -171,7 +170,7 @@ const fullName = `${firstName} ${lastName}`; // Just compute it!
 
 ### 8. Initialize State Smartly
 
-```jsx
+```tsx
 // ❌ BAD — heavy computation on every render for initial value
 const [data, setData] = useState(expensiveCompute()); // runs every render!
 
@@ -185,7 +184,7 @@ const [data, setData] = useState(() => expensiveCompute()); // only runs once
 
 ### 9. Import Order
 
-```jsx
+```tsx
 // 1. React imports
 import React, { useState, useEffect } from "react";
 
@@ -212,7 +211,7 @@ import "./UserPage.css";
 
 ### 10. Constants Over Magic Values
 
-```jsx
+```tsx
 // ❌ BAD — "magic" numbers and strings
 if (role === "admin") { ... }
 setTimeout(fn, 3000);
@@ -231,7 +230,7 @@ setTimeout(fn, NOTIFICATION_DELAY_MS);
 
 ### 11. Early Returns for Cleaner Code
 
-```jsx
+```tsx
 // ❌ BAD — deep nesting
 function UserProfile({ user }) {
   if (user) {
@@ -260,7 +259,7 @@ function UserProfile({ user }) {
 
 ### 12. Keys Must Be Unique and Stable
 
-```jsx
+```tsx
 // ❌ BAD — index as key for dynamic lists
 {items.map((item, index) => <Item key={index} {...item} />)}
 
@@ -272,7 +271,7 @@ function UserProfile({ user }) {
 
 ### 13. Memoize Wisely
 
-```jsx
+```tsx
 // ❌ BAD — memoizing everything, even tiny components
 const SimpleText = React.memo(() => <p>Hello</p>); // No benefit
 
@@ -377,4 +376,4 @@ npm install --save-dev prettier
 
 ---
 
-> **Previous: [25_react_vs_angular_vue.md](./25_react_vs_angular_vue.md)** | **Next: [27_mini_project.md](./27_mini_project.md)**
+← Previous: [25_react_vs_angular_vue.md](25_react_vs_angular_vue.md) | Next: [27_mini_project.md](27_mini_project.md) →

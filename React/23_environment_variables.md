@@ -1,6 +1,5 @@
 # 23 - Environment Variables 🔐
 
-> **Previous: [22_folder_structure.md](./22_folder_structure.md)** | **Next: [24_build_deployment.md](./24_build_deployment.md)**
 
 ---
 
@@ -15,13 +14,13 @@ Environment variables are **configuration values** that change based on where yo
 
 ## ⚠️ Why Not Hardcode API URLs?
 
-```jsx
+```tsx
 // ❌ BAD — don't hardcode!
 const API_URL = "http://localhost:5000/api"; // Won't work in production!
 const API_KEY = "sk-abc123-super-secret-key"; // Exposed in code!
 ```
 
-```jsx
+```tsx
 // ✅ GOOD — use environment variables!
 const API_URL = import.meta.env.VITE_API_URL;
 const API_KEY = import.meta.env.VITE_API_KEY;
@@ -61,7 +60,7 @@ VITE_FEATURE_DARK_MODE=true
 
 ### Using them in React:
 
-```jsx
+```tsx
 // Access with import.meta.env
 const apiUrl = import.meta.env.VITE_API_URL;
 const appName = import.meta.env.VITE_APP_NAME;
@@ -84,7 +83,7 @@ REACT_APP_API_URL=https://api.myapp.com
 REACT_APP_NAME=My React App
 ```
 
-```jsx
+```tsx
 // Access with process.env
 const apiUrl = process.env.REACT_APP_API_URL;
 console.log(process.env.NODE_ENV); // "development" or "production"
@@ -123,7 +122,7 @@ VITE_DEBUG=false
 ## 🌍 Real-World Usage Example
 
 ### services/api.js
-```jsx
+```tsx
 import axios from "axios";
 
 const api = axios.create({
@@ -138,7 +137,7 @@ export default api;
 ```
 
 ### App.jsx
-```jsx
+```tsx
 function App() {
   const isDev = import.meta.env.DEV;
 
@@ -156,7 +155,7 @@ function App() {
 ```
 
 ### Component using env
-```jsx
+```tsx
 function GoogleMap({ location }) {
   const mapKey = import.meta.env.VITE_GOOGLE_MAPS_KEY;
   const mapUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${location}&key=${mapKey}`;
@@ -249,4 +248,4 @@ When deploying, set env vars on the hosting platform — not in committed files:
 
 ---
 
-> **Previous: [22_folder_structure.md](./22_folder_structure.md)** | **Next: [24_build_deployment.md](./24_build_deployment.md)**
+← Previous: [22_folder_structure.md](22_folder_structure.md) | Next: [24_build_deployment.md](24_build_deployment.md) →

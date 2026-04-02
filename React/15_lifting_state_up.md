@@ -1,6 +1,5 @@
 # 15 - Lifting State Up ⬆️
 
-> **Previous: [14_lifecycle.md](./14_lifecycle.md)** | **Next: [16_context_api.md](./16_context_api.md)**
 
 ---
 
@@ -15,7 +14,7 @@ When two or more components need to **share the same state**, you move that stat
 
 ## 🧩 The Problem: Sibling Components Need Shared State
 
-```jsx
+```tsx
 // ❌ Problem: Two siblings can't access each other's state directly
 
 function TemperatureInput() {
@@ -33,7 +32,7 @@ function TemperatureDisplay() {
 
 ## ✅ The Solution: Lift State to Parent
 
-```jsx
+```tsx
 // ✅ Solution: Move state to the parent
 
 function TemperatureConverter() {
@@ -73,7 +72,7 @@ function TemperatureDisplay({ fahrenheit }) {
 
 ### Example 1: Shopping Cart
 
-```jsx
+```tsx
 // Parent holds cart state
 function ShopPage() {
   const [cart, setCart] = useState([]);
@@ -134,7 +133,7 @@ function Cart({ items, onRemove }) {
 
 ### Example 2: Filter + List (Sibling Communication)
 
-```jsx
+```tsx
 function App() {
   const [filter, setFilter] = useState("all"); // Lifted up here!
 
@@ -241,4 +240,4 @@ Pass down the value (read) and the setter (write) as props
 
 ---
 
-> **Previous: [14_lifecycle.md](./14_lifecycle.md)** | **Next: [16_context_api.md](./16_context_api.md)**
+← Previous: [14_lifecycle.md](14_lifecycle.md) | Next: [16_context_api.md](16_context_api.md) →

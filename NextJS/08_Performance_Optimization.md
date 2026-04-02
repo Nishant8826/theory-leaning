@@ -39,7 +39,7 @@ An e-commerce site that loads in 1.5 seconds vs 4 seconds will have drastically 
 
 **How:**
 
-```jsx
+```tsx
 // ❌ BAD — Raw <img> tag
 <img src="/hero-banner.png" alt="Hero" />
 // Problem: Full-size 5MB image loads for everyone
@@ -80,7 +80,7 @@ export default function HeroSection() {
 
 **Why:** External font requests add 200–500ms to page load and can cause layout shift (text visibly jumping when fonts load).
 
-```jsx
+```tsx
 // app/layout.js
 import { Inter } from 'next/font/google';
 
@@ -127,7 +127,7 @@ This happens **automatically** — you don't need to do anything.
 
 **Why:** Some components (charts, maps, rich text editors) are huge. Loading them upfront slows down the initial page load.
 
-```jsx
+```tsx
 // ❌ BAD — Chart library loads on initial page load
 import HeavyChart from '@/components/HeavyChart';
 
@@ -136,7 +136,7 @@ export default function Dashboard() {
 }
 ```
 
-```jsx
+```tsx
 // ✅ GOOD — Chart loads only when Dashboard is visited
 import dynamic from 'next/dynamic';
 
@@ -158,7 +158,7 @@ export default function Dashboard() {
 
 **Why:** When a user hovers near a link, Next.js has already loaded the page — clicking feels instant.
 
-```jsx
+```tsx
 import Link from 'next/link';
 
 // This page is automatically prefetched when it appears in the viewport
@@ -174,7 +174,7 @@ import Link from 'next/link';
 
 **Why:** If a page has a fast header and a slow data section, the user sees the header immediately while the data area shows a loading state.
 
-```jsx
+```tsx
 // app/dashboard/page.js
 import { Suspense } from 'react';
 import UserStats from '@/components/UserStats';       // Slow (DB query)
@@ -282,5 +282,7 @@ This opens a visual treemap showing which libraries take the most space. Common 
 ---
 
 ### 🔗 Navigation
-- ⬅️ Previous: [07_Authentication.md](./07_Authentication.md)
-- ➡️ Next: [09_SEO.md](./09_SEO.md)
+
+---
+
+← Previous: [07_Authentication.md](07_Authentication.md) | Next: [09_SEO.md](09_SEO.md) →

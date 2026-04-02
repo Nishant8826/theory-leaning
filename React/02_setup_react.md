@@ -1,6 +1,5 @@
 # 02 - Setting Up React ⚙️
 
-> **Previous: [01_introduction.md](./01_introduction.md)** | **Next: [03_jsx.md](./03_jsx.md)**
 
 ---
 
@@ -98,7 +97,7 @@ my-app/
 
 This is the **starting point** of your React app. It tells React: *"Hey, put the whole app inside this HTML div!"*
 
-```jsx
+```tsx
 // main.jsx (Vite)
 import React from 'react'
 import ReactDOM from 'react-dom/client'
@@ -175,4 +174,4 @@ Install these from the VS Code extension marketplace:
 
 ---
 
-> **Previous: [01_introduction.md](./01_introduction.md)** | **Next: [03_jsx.md](./03_jsx.md)**
+← Previous: [01_introduction.md](01_introduction.md) | Next: [03_jsx.md](03_jsx.md) →

@@ -39,7 +39,7 @@ A contact form on your website:
 
 ### Method 1: Inline Server Action (Inside a Server Component)
 
-```jsx
+```tsx
 // app/contact/page.js — Server Component
 export default function ContactPage() {
 
@@ -79,7 +79,7 @@ export default function ContactPage() {
 
 ### Method 2: Separate Action File (Recommended for Reuse)
 
-```jsx
+```tsx
 // app/actions/contact.js
 "use server";
 
@@ -108,7 +108,7 @@ export async function submitContactForm(formData) {
 }
 ```
 
-```jsx
+```tsx
 // app/contact/page.js
 import { submitContactForm } from '@/app/actions/contact';
 import ContactForm from '@/components/ContactForm';
@@ -123,7 +123,7 @@ export default function ContactPage() {
 }
 ```
 
-```jsx
+```tsx
 // components/ContactForm.js
 "use client";
 
@@ -179,7 +179,7 @@ export default function ContactForm({ action }) {
 
 After changing data (create, update, delete), you need to tell Next.js to refresh the cached data:
 
-```jsx
+```tsx
 "use server";
 
 import { revalidatePath } from 'next/cache';
@@ -201,7 +201,7 @@ export async function createPost(formData) {
 
 ### 3. Calling Server Actions from Client Components
 
-```jsx
+```tsx
 // app/actions/cart.js
 "use server";
 
@@ -221,7 +221,7 @@ export async function addToCart(productId) {
 }
 ```
 
-```jsx
+```tsx
 // components/AddToCartButton.js
 "use client";
 
@@ -256,7 +256,7 @@ export default function AddToCartButton({ productId }) {
 
 Show the expected result immediately, before the server confirms:
 
-```jsx
+```tsx
 "use client";
 
 import { useOptimistic } from 'react';
@@ -287,7 +287,7 @@ export default function LikeButton({ postId, initialLikes }) {
 
 Always validate input on the server — never trust the client:
 
-```jsx
+```tsx
 // app/actions/register.js
 "use server";
 
@@ -336,7 +336,7 @@ export async function registerUser(formData) {
 | **Update** | `<form action={updatePost}>` with hidden `id` field |
 | **Delete** | `<form action={deletePost}>` with hidden `id` field |
 
-```jsx
+```tsx
 // Delete example
 "use server";
 export async function deletePost(formData) {
@@ -380,5 +380,7 @@ export async function deletePost(formData) {
 ---
 
 ### 🔗 Navigation
-- ⬅️ Previous: [12_Middleware.md](./12_Middleware.md)
-- ➡️ Next: [14_Caching.md](./14_Caching.md)
+
+---
+
+← Previous: [12_Middleware.md](12_Middleware.md) | Next: [14_Caching.md](14_Caching.md) →

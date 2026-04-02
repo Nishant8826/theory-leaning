@@ -1,6 +1,5 @@
 # 18 - API Calls (fetch / axios) 🌐
 
-> **Previous: [17_react_router.md](./17_react_router.md)** | **Next: [19_error_handling.md](./19_error_handling.md)**
 
 ---
 
@@ -29,7 +28,7 @@ API calls let your React app **communicate with a backend server** to get or sen
 ## 📡 Method 1: `fetch` API
 
 ### GET Request
-```jsx
+```tsx
 function UserList() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -65,7 +64,7 @@ function UserList() {
 ```
 
 ### POST Request with `fetch`
-```jsx
+```tsx
 const createPost = async () => {
   const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
     method: "POST",
@@ -94,7 +93,7 @@ npm install axios
 ```
 
 ### GET Request
-```jsx
+```tsx
 import axios from "axios";
 
 function UserList() {
@@ -121,7 +120,7 @@ function UserList() {
 ```
 
 ### Using async/await with axios
-```jsx
+```tsx
 function App() {
   const [posts, setPosts] = useState([]);
 
@@ -146,7 +145,7 @@ function App() {
 
 ## 🌍 Real-World CRUD Example
 
-```jsx
+```tsx
 import axios from "axios";
 
 const API = "https://jsonplaceholder.typicode.com/posts";
@@ -199,7 +198,7 @@ function PostManager() {
 
 Create a central axios instance so you don't repeat base URL and headers:
 
-```jsx
+```tsx
 // api/axiosInstance.js
 import axios from "axios";
 
@@ -220,7 +219,7 @@ api.interceptors.request.use((config) => {
 export default api;
 ```
 
-```jsx
+```tsx
 // Usage — clean and reusable!
 import api from "./api/axiosInstance";
 
@@ -232,7 +231,7 @@ const res = await api.post("/login", { email, password });
 
 ## ⏳ Loading States Pattern
 
-```jsx
+```tsx
 function DataComponent() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -293,4 +292,4 @@ function DataComponent() {
 
 ---
 
-> **Previous: [17_react_router.md](./17_react_router.md)** | **Next: [19_error_handling.md](./19_error_handling.md)**
+← Previous: [17_react_router.md](17_react_router.md) | Next: [19_error_handling.md](19_error_handling.md) →

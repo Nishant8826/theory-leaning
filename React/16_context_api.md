@@ -1,6 +1,5 @@
 # 16 - Context API 🌐
 
-> **Previous: [15_lifting_state_up.md](./15_lifting_state_up.md)** | **Next: [17_react_router.md](./17_react_router.md)**
 
 ---
 
@@ -30,7 +29,7 @@ Without Context, you'd have to pass `user` as a prop through **every** level, ev
 ## 🧰 Context API: 3 Steps
 
 ### Step 1: Create the Context
-```jsx
+```tsx
 // UserContext.js
 import { createContext } from "react";
 
@@ -39,7 +38,7 @@ export default UserContext;
 ```
 
 ### Step 2: Provide the Context (Wrap components)
-```jsx
+```tsx
 // App.jsx
 import UserContext from "./UserContext";
 
@@ -56,7 +55,7 @@ function App() {
 ```
 
 ### Step 3: Consume the Context (Use it anywhere!)
-```jsx
+```tsx
 // UserAvatar.jsx — deep inside the tree, no prop drilling!
 import { useContext } from "react";
 import UserContext from "./UserContext";
@@ -77,7 +76,7 @@ function UserAvatar() {
 
 ## 🌍 Real-World Example: Theme Switcher
 
-```jsx
+```tsx
 // ThemeContext.js
 import { createContext, useContext, useState } from "react";
 
@@ -102,7 +101,7 @@ export function useTheme() {
 }
 ```
 
-```jsx
+```tsx
 // App.jsx
 import { ThemeProvider } from "./ThemeContext";
 
@@ -117,7 +116,7 @@ function App() {
 }
 ```
 
-```jsx
+```tsx
 // Navbar.jsx — can use theme without any props!
 import { useTheme } from "./ThemeContext";
 
@@ -135,7 +134,7 @@ function Navbar() {
 }
 ```
 
-```jsx
+```tsx
 // Footer.jsx — also uses theme without any props!
 import { useTheme } from "./ThemeContext";
 
@@ -153,7 +152,7 @@ function Footer() {
 
 ## 🔐 Real-World Example: Auth Context
 
-```jsx
+```tsx
 // AuthContext.js
 import { createContext, useContext, useState } from "react";
 
@@ -177,7 +176,7 @@ export function useAuth() {
 }
 ```
 
-```jsx
+```tsx
 // LoginPage.jsx
 import { useAuth } from "./AuthContext";
 
@@ -216,7 +215,7 @@ function Navbar() {
 
 You can have multiple providers — just nest them:
 
-```jsx
+```tsx
 function App() {
   return (
     <AuthProvider>
@@ -276,4 +275,4 @@ function App() {
 
 ---
 
-> **Previous: [15_lifting_state_up.md](./15_lifting_state_up.md)** | **Next: [17_react_router.md](./17_react_router.md)**
+← Previous: [15_lifting_state_up.md](15_lifting_state_up.md) | Next: [17_react_router.md](17_react_router.md) →

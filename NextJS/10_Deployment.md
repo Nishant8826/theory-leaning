@@ -141,7 +141,7 @@ docker run -p 3000:3000 my-next-app
 
 **Why:** Deploy to any static hosting (GitHub Pages, S3, Netlify).
 
-```jsx
+```tsx
 // next.config.js
 const nextConfig = {
   output: 'export',   // Enable static export
@@ -180,7 +180,7 @@ GOOGLE_CLIENT_ID=123456.apps.googleusercontent.com
 | `NEXT_PUBLIC_` | Both server AND client (browser) | Public API URLs, Google Analytics ID |
 | No prefix | Server ONLY | Database URLs, API keys, secrets |
 
-```jsx
+```tsx
 // ✅ Server Component — can access ALL env vars
 const dbUrl = process.env.DATABASE_URL; // Works
 
@@ -286,5 +286,7 @@ feature-branch  → https://myapp-git-feature-branch.vercel.app (Preview)
 ---
 
 ### 🔗 Navigation
-- ⬅️ Previous: [09_SEO.md](./09_SEO.md)
-- ➡️ Next: [11_App_Router.md](./11_App_Router.md)
+
+---
+
+← Previous: [09_SEO.md](09_SEO.md) | Next: [11_App_Router.md](11_App_Router.md) →

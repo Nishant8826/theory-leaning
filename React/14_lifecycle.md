@@ -1,6 +1,5 @@
 # 14 - Component Lifecycle 🔄
 
-> **Previous: [13_useMemo_useCallback.md](./13_useMemo_useCallback.md)** | **Next: [15_lifting_state_up.md](./15_lifting_state_up.md)**
 
 ---
 
@@ -27,7 +26,7 @@ Every React component goes through a **lifecycle** — it gets created, shows on
 
 In modern React, you handle lifecycle with `useEffect`:
 
-```jsx
+```tsx
 import { useState, useEffect } from "react";
 
 function MyComponent() {
@@ -63,7 +62,7 @@ function MyComponent() {
 
 Even though class components are old, you might encounter them in legacy code:
 
-```jsx
+```tsx
 import React, { Component } from "react";
 
 class MyComponent extends Component {
@@ -121,7 +120,7 @@ class MyComponent extends Component {
 
 ### Example 1: Real Mounting/Unmounting
 
-```jsx
+```tsx
 function Parent() {
   const [showChild, setShowChild] = useState(true);
 
@@ -151,7 +150,7 @@ function ChildWithLifecycle() {
 
 ### Example 2: Data Fetching on Mount
 
-```jsx
+```tsx
 function UserProfile({ userId }) {
   const [user, setUser] = useState(null);
 
@@ -181,7 +180,7 @@ function UserProfile({ userId }) {
 
 ### Example 3: WebSocket Connection
 
-```jsx
+```tsx
 function ChatRoom({ roomId }) {
   const [messages, setMessages] = useState([]);
 
@@ -256,4 +255,4 @@ New useEffect runs
 
 ---
 
-> **Previous: [13_useMemo_useCallback.md](./13_useMemo_useCallback.md)** | **Next: [15_lifting_state_up.md](./15_lifting_state_up.md)**
+← Previous: [13_useMemo_useCallback.md](13_useMemo_useCallback.md) | Next: [15_lifting_state_up.md](15_lifting_state_up.md) →

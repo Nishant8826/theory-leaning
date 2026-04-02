@@ -167,3 +167,7 @@ npm install styled-components
 ---
 
 > Made with ❤️ for beginner React developers. Happy coding! 🚀
+
+---
+
+← Previous: [27_mini_project.md](27_mini_project.md) | Next: []()

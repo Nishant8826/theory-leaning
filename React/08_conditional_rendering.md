@@ -1,6 +1,5 @@
 # 08 - Conditional Rendering 🔀
 
-> **Previous: [07_event_handling.md](./07_event_handling.md)** | **Next: [09_lists_and_keys.md](./09_lists_and_keys.md)**
 
 ---
 
@@ -17,7 +16,7 @@ Conditional rendering means **showing or hiding parts of your UI** based on a co
 
 ### Method 1: `if` / `else` Statement (Outside JSX)
 
-```jsx
+```tsx
 function Greeting({ isLoggedIn }) {
   if (isLoggedIn) {
     return <h1>Welcome back! 👋</h1>;
@@ -35,7 +34,7 @@ function Greeting({ isLoggedIn }) {
 
 ### Method 2: Ternary Operator `condition ? "yes" : "no"` (✅ Most popular)
 
-```jsx
+```tsx
 function AuthStatus({ user }) {
   return (
     <div>
@@ -55,7 +54,7 @@ function AuthStatus({ user }) {
 
 Use when you only want to show something, and nothing otherwise:
 
-```jsx
+```tsx
 function Notification({ hasAlert }) {
   return (
     <div>
@@ -68,7 +67,7 @@ function Notification({ hasAlert }) {
 ```
 
 > ⚠️ **Gotcha:** Don't use `0 && <Component />` because React renders `0` as text!
-> ```jsx
+> ```tsx
 > {0 && <Alert />}         // ❌ Renders "0" on screen
 > {count > 0 && <Alert />} // ✅ Boolean condition
 > ```
@@ -77,7 +76,7 @@ function Notification({ hasAlert }) {
 
 ### Method 4: `||` Fallback (Default value)
 
-```jsx
+```tsx
 function UserName({ name }) {
   return <p>{name || "Anonymous User"}</p>;
   // If name is empty/null/undefined → shows "Anonymous User"
@@ -88,7 +87,7 @@ function UserName({ name }) {
 
 ### Method 5: Switch/Object Map (Multiple conditions)
 
-```jsx
+```tsx
 function StatusBadge({ status }) {
   const statusMap = {
     active: { label: "Active ✅", color: "green" },
@@ -116,7 +115,7 @@ function StatusBadge({ status }) {
 
 ### Example 1: Login/Logout Toggle
 
-```jsx
+```tsx
 function AuthPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -141,7 +140,7 @@ function AuthPage() {
 
 ### Example 2: Loading Spinner
 
-```jsx
+```tsx
 function DataFetcher() {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
@@ -163,7 +162,7 @@ function DataFetcher() {
 
 ### Example 3: Role-Based UI
 
-```jsx
+```tsx
 function Dashboard({ role }) {
   return (
     <div>
@@ -223,4 +222,4 @@ function Dashboard({ role }) {
 
 ---
 
-> **Previous: [07_event_handling.md](./07_event_handling.md)** | **Next: [09_lists_and_keys.md](./09_lists_and_keys.md)**
+← Previous: [07_event_handling.md](07_event_handling.md) | Next: [09_lists_and_keys.md](09_lists_and_keys.md) →

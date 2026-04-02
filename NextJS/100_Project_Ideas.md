@@ -326,4 +326,7 @@ Advanced:
 ---
 
 ### 🔗 Navigation
-- ⬅️ Previous: [99_Revision_CheatSheet.md](./99_Revision_CheatSheet.md)
+
+---
+
+← Previous: [99_Revision_CheatSheet.md](99_Revision_CheatSheet.md) | Next: []()

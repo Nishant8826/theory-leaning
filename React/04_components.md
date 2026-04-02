@@ -1,6 +1,5 @@
 # 04 - Components (Functional vs Class) 🧩
 
-> **Previous: [03_jsx.md](./03_jsx.md)** | **Next: [05_props.md](./05_props.md)**
 
 ---
 
@@ -24,7 +23,7 @@ A component is a **reusable piece of UI**. Think of it like a LEGO block — you
 
 A simple JavaScript function that returns JSX.
 
-```jsx
+```tsx
 // Simple functional component
 function Greeting() {
   return <h1>Hello, World! 👋</h1>;
@@ -40,7 +39,7 @@ const Greeting = () => {
 
 A class that extends `React.Component` and has a `render()` method.
 
-```jsx
+```tsx
 import React, { Component } from "react";
 
 class Greeting extends Component {
@@ -72,7 +71,7 @@ class Greeting extends Component {
 
 1. **Component name MUST start with a Capital letter**
 
-```jsx
+```tsx
 // ❌ WRONG - React will treat it as HTML tag
 function mybutton() { return <button>Click</button>; }
 
@@ -93,7 +92,7 @@ src/
 
 3. **Always export your component**
 
-```jsx
+```tsx
 // Named export
 export function Greeting() {
   return <h1>Hello!</h1>;
@@ -111,7 +110,7 @@ export default Greeting;
 ## 🌍 Real-World Component Example
 
 ### App.jsx (assembles everything)
-```jsx
+```tsx
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import Footer from "./components/Footer";
@@ -130,7 +129,7 @@ export default App;
 ```
 
 ### Navbar.jsx
-```jsx
+```tsx
 function Navbar() {
   return (
     <nav className="navbar">
@@ -148,7 +147,7 @@ export default Navbar;
 ```
 
 ### Footer.jsx
-```jsx
+```tsx
 function Footer() {
   return (
     <footer>
@@ -166,7 +165,7 @@ export default Footer;
 
 You can nest components inside other components — this is called **composition**.
 
-```jsx
+```tsx
 function Button() {
   return <button className="btn">Click Me</button>;
 }
@@ -225,4 +224,4 @@ function App() {
 
 ---
 
-> **Previous: [03_jsx.md](./03_jsx.md)** | **Next: [05_props.md](./05_props.md)**
+← Previous: [03_jsx.md](03_jsx.md) | Next: [05_props.md](05_props.md) →

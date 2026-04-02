@@ -1,6 +1,5 @@
 # 03 - JSX (JavaScript XML) 📝
 
-> **Previous: [02_setup_react.md](./02_setup_react.md)** | **Next: [04_components.md](./04_components.md)**
 
 ---
 
@@ -12,7 +11,7 @@ Think of it like this:
 
 > Normally in a restaurant, the kitchen (JavaScript) and the menu display (HTML) are separate. JSX is like a chef who can write the menu directly **while cooking** — combining both in one place!
 
-```jsx
+```tsx
 // This is JSX — looks like HTML but it's inside JavaScript!
 const element = <h1>Hello, World!</h1>;
 ```
@@ -36,7 +35,7 @@ const element = <h1>Hello, World!</h1>;
 
 ### Rule 1: Every JSX must return ONE parent element
 
-```jsx
+```tsx
 // ❌ WRONG - two sibling elements at top level
 return (
   <h1>Hello</h1>
@@ -62,7 +61,7 @@ return (
 
 ### Rule 2: Use `className` instead of `class`
 
-```jsx
+```tsx
 // ❌ WRONG
 <div class="container">Hello</div>
 
@@ -72,7 +71,7 @@ return (
 
 ### Rule 3: Self-close all empty tags
 
-```jsx
+```tsx
 // ❌ WRONG
 <input type="text">
 <img src="photo.jpg">
@@ -84,7 +83,7 @@ return (
 
 ### Rule 4: Use `{}` to write JavaScript inside JSX
 
-```jsx
+```tsx
 const name = "Nishant";
 const age = 25;
 
@@ -99,7 +98,7 @@ return (
 
 ### Rule 5: Inline styles use double curly braces `{{}}`
 
-```jsx
+```tsx
 // ❌ WRONG
 <p style="color: red; font-size: 18px">Hello</p>
 
@@ -115,7 +114,7 @@ return (
 
 ### Example 1: Displaying User Info
 
-```jsx
+```tsx
 function UserCard() {
   const user = {
     name: "Nishant",
@@ -135,7 +134,7 @@ function UserCard() {
 
 ### Example 2: Dynamic List
 
-```jsx
+```tsx
 function FruitList() {
   const fruits = ["🍎 Apple", "🍌 Banana", "🍊 Orange"];
 
@@ -155,7 +154,7 @@ function FruitList() {
 
 JSX is not real HTML. It gets **compiled** (transformed) into regular JavaScript by **Babel** or **Vite**.
 
-```jsx
+```tsx
 // What you write (JSX):
 const element = <h1 className="title">Hello</h1>;
 
@@ -199,4 +198,4 @@ You never have to write `React.createElement()` yourself — JSX handles it! �
 
 ---
 
-> **Previous: [02_setup_react.md](./02_setup_react.md)** | **Next: [04_components.md](./04_components.md)**
+← Previous: [02_setup_react.md](02_setup_react.md) | Next: [04_components.md](04_components.md) →

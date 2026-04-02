@@ -1,6 +1,5 @@
 # 19 - Error Handling in React ⚠️
 
-> **Previous: [18_api_calls.md](./18_api_calls.md)** | **Next: [20_custom_hooks.md](./20_custom_hooks.md)**
 
 ---
 
@@ -30,7 +29,7 @@ An **Error Boundary** is a component that **catches JavaScript errors** in the c
 
 > Think of it like a try/catch for your UI!
 
-```jsx
+```tsx
 import React from "react";
 
 class ErrorBoundary extends React.Component {
@@ -71,7 +70,7 @@ export default ErrorBoundary;
 
 ### How to Use Error Boundary:
 
-```jsx
+```tsx
 import ErrorBoundary from "./ErrorBoundary";
 
 function App() {
@@ -93,7 +92,7 @@ function App() {
 
 ## 🌐 API Error Handling
 
-```jsx
+```tsx
 function UserData() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -145,7 +144,7 @@ function ErrorMessage({ message, onRetry }) {
 
 ## 📋 Form Validation Error Handling
 
-```jsx
+```tsx
 function LoginForm() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
@@ -228,7 +227,7 @@ function LoginForm() {
 
 ## 🛡️ Axios Error Handling (Detailed)
 
-```jsx
+```tsx
 try {
   const res = await axios.get("/api/user");
   setUser(res.data);
@@ -259,7 +258,7 @@ Instead of showing errors inline, use toast notifications for a better UX:
 npm install react-toastify
 ```
 
-```jsx
+```tsx
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -317,4 +316,4 @@ function App() {
 
 ---
 
-> **Previous: [18_api_calls.md](./18_api_calls.md)** | **Next: [20_custom_hooks.md](./20_custom_hooks.md)**
+← Previous: [18_api_calls.md](18_api_calls.md) | Next: [20_custom_hooks.md](20_custom_hooks.md) →

@@ -47,7 +47,7 @@ In the App Router, you create a `route.js` file (not `page.js`) to define an API
 
 #### Basic GET Endpoint
 
-```jsx
+```tsx
 // app/api/products/route.js
 import { NextResponse } from 'next/server';
 
@@ -67,7 +67,7 @@ export async function GET() {
 
 #### POST Endpoint (Receive Data)
 
-```jsx
+```tsx
 // app/api/contact/route.js
 import { NextResponse } from 'next/server';
 
@@ -95,7 +95,7 @@ export async function POST(request) {
 
 #### Dynamic API Routes
 
-```jsx
+```tsx
 // app/api/products/[id]/route.js
 import { NextResponse } from 'next/server';
 
@@ -121,7 +121,7 @@ export async function GET(request, { params }) {
 
 #### All HTTP Methods in One File
 
-```jsx
+```tsx
 // app/api/posts/route.js
 import { NextResponse } from 'next/server';
 
@@ -163,7 +163,7 @@ export async function DELETE(request) {
 
 ### 1. Reading Request Data
 
-```jsx
+```tsx
 export async function POST(request) {
   // Read JSON body
   const body = await request.json();
@@ -185,7 +185,7 @@ export async function POST(request) {
 
 ### 2. Setting Response Headers & Cookies
 
-```jsx
+```tsx
 export async function POST(request) {
   const response = NextResponse.json({ success: true });
 
@@ -220,7 +220,7 @@ export async function POST(request) {
 
 ### 4. Handling Errors Properly
 
-```jsx
+```tsx
 // app/api/users/[id]/route.js
 import { NextResponse } from 'next/server';
 
@@ -250,7 +250,7 @@ export async function GET(request, { params }) {
 
 ### 5. Protecting API Routes
 
-```jsx
+```tsx
 // app/api/admin/route.js
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
@@ -297,7 +297,7 @@ export async function GET(request) {
 
 ## Pages Router (Legacy) — For Reference
 
-```jsx
+```tsx
 // pages/api/products.js
 export default function handler(req, res) {
   if (req.method === 'GET') {
@@ -341,5 +341,7 @@ export default function handler(req, res) {
 ---
 
 ### 🔗 Navigation
-- ⬅️ Previous: [04_Data_Fetching.md](./04_Data_Fetching.md)
-- ➡️ Next: [06_Components_Layouts.md](./06_Components_Layouts.md)
+
+---
+
+← Previous: [04_Data_Fetching.md](04_Data_Fetching.md) | Next: [06_Components_Layouts.md](06_Components_Layouts.md) →

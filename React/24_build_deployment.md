@@ -1,6 +1,5 @@
 # 24 - Build & Deployment 🚀
 
-> **Previous: [23_environment_variables.md](./23_environment_variables.md)** | **Next: [25_react_vs_angular_vue.md](./25_react_vs_angular_vue.md)**
 
 ---
 
@@ -143,7 +142,7 @@ npm run deploy
 ```
 
 **Note:** For Vite, set the base in `vite.config.js`:
-```js
+```ts
 export default {
   base: "/your-repo-name/",
 }
@@ -277,4 +276,4 @@ Before deploying check these:
 
 ---
 
-> **Previous: [23_environment_variables.md](./23_environment_variables.md)** | **Next: [25_react_vs_angular_vue.md](./25_react_vs_angular_vue.md)**
+← Previous: [23_environment_variables.md](23_environment_variables.md) | Next: [25_react_vs_angular_vue.md](25_react_vs_angular_vue.md) →

@@ -69,7 +69,7 @@ npm install next-auth
 
 ### Step 2: Configure Auth
 
-```jsx
+```tsx
 // app/api/auth/[...nextauth]/route.js
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
@@ -118,7 +118,7 @@ export { handler as GET, handler as POST };
 
 ### Step 3: Create Login Page
 
-```jsx
+```tsx
 // app/login/page.js
 "use client";
 
@@ -182,7 +182,7 @@ export default function LoginPage() {
 
 ### Step 4: SessionProvider Wrapper
 
-```jsx
+```tsx
 // app/providers.js
 "use client";
 
@@ -193,7 +193,7 @@ export default function Providers({ children }) {
 }
 ```
 
-```jsx
+```tsx
 // app/layout.js
 import Providers from './providers';
 
@@ -212,7 +212,7 @@ export default function RootLayout({ children }) {
 
 #### Client-Side Protection:
 
-```jsx
+```tsx
 // app/dashboard/page.js
 "use client";
 
@@ -236,7 +236,7 @@ export default function DashboardPage() {
 
 #### Server-Side Protection (Recommended):
 
-```jsx
+```tsx
 // app/dashboard/page.js — Server Component
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
@@ -298,7 +298,7 @@ User is logged in — session created
 
 ### 3. Protecting API Routes
 
-```jsx
+```tsx
 // app/api/protected/route.js
 import { getServerSession } from 'next-auth';
 import { NextResponse } from 'next/server';
@@ -322,7 +322,7 @@ export async function GET() {
 
 ### 4. Role-Based Authorization
 
-```jsx
+```tsx
 // app/admin/page.js
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
@@ -339,7 +339,7 @@ export default async function AdminPage() {
 
 ### 5. Middleware-Based Protection (Entire Routes)
 
-```jsx
+```tsx
 // middleware.js (root of project)
 import { withAuth } from 'next-auth/middleware';
 
@@ -406,5 +406,7 @@ Server-side protection is recommended because it prevents any UI flash.
 ---
 
 ### 🔗 Navigation
-- ⬅️ Previous: [06_Components_Layouts.md](./06_Components_Layouts.md)
-- ➡️ Next: [08_Performance_Optimization.md](./08_Performance_Optimization.md)
+
+---
+
+← Previous: [06_Components_Layouts.md](06_Components_Layouts.md) | Next: [08_Performance_Optimization.md](08_Performance_Optimization.md) →

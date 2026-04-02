@@ -47,7 +47,7 @@
 | **CSR** | In browser | Client | ❌ | Slow initial | Dashboards, admin panels |
 
 **Quick Fetch Rules:**
-```jsx
+```tsx
 fetch(url)                              // → SSG (cached forever)
 fetch(url, { cache: 'no-store' })       // → SSR (fresh every request)
 fetch(url, { next: { revalidate: 60 }}) // → ISR (cached 60s)
@@ -67,7 +67,7 @@ fetch(url, { next: { revalidate: 60 }}) // → ISR (cached 60s)
 
 ## 5. API Routes
 
-```jsx
+```tsx
 // app/api/users/route.js
 import { NextResponse } from 'next/server';
 
@@ -124,7 +124,7 @@ export async function POST(request) {
 
 ## 9. SEO
 
-```jsx
+```tsx
 // Static metadata
 export const metadata = {
   title: 'Page Title',
@@ -162,7 +162,7 @@ export async function generateMetadata({ params }) {
 
 ## 11. Middleware
 
-```jsx
+```tsx
 // middleware.js (project root)
 export function middleware(request) {
   if (!request.cookies.get('token')) {
@@ -177,7 +177,7 @@ export const config = { matcher: ['/dashboard/:path*'] };
 
 ## 12. Server Actions
 
-```jsx
+```tsx
 // Action file
 "use server";
 export async function createPost(formData) {
@@ -233,5 +233,7 @@ Need a backend endpoint?
 ---
 
 ### 🔗 Navigation
-- ⬅️ Previous: [14_Caching.md](./14_Caching.md)
-- ➡️ Next: [100_Project_Ideas.md](./100_Project_Ideas.md)
+
+---
+
+← Previous: [14_Caching.md](14_Caching.md) | Next: [100_Project_Ideas.md](100_Project_Ideas.md) →

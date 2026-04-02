@@ -1,6 +1,5 @@
 # 22 - Folder Structure Best Practices 📁
 
-> **Previous: [21_performance_optimization.md](./21_performance_optimization.md)** | **Next: [23_environment_variables.md](./23_environment_variables.md)**
 
 ---
 
@@ -167,7 +166,7 @@ src/
 
 ## 🔗 Services Layer (API Organization)
 
-```jsx
+```tsx
 // services/api.js — Central axios instance
 import axios from "axios";
 
@@ -188,7 +187,7 @@ export const updateUser = (id, data) => api.put(`/users/${id}`, data);
 export const deleteUser = (id) => api.delete(`/users/${id}`);
 ```
 
-```jsx
+```tsx
 // Usage in component — clean!
 import { getUsers, deleteUser } from "../services/userService";
 
@@ -205,7 +204,7 @@ function UserList() {
 
 ## 📐 Constants File
 
-```jsx
+```tsx
 // constants/routes.js
 export const ROUTES = {
   HOME: "/",
@@ -230,7 +229,7 @@ import { ROUTES } from "../constants/routes";
 - ✅ Create a `services/` layer for all API calls
 - ✅ Don't put logic inside JSX — extract to functions/hooks
 - ✅ Add an `index.js` to folders for clean imports:
-  ```jsx
+  ```tsx
   // components/index.js
   export { default as Button } from "./Button/Button";
   export { default as Modal } from "./Modal/Modal";
@@ -271,4 +270,4 @@ import { ROUTES } from "../constants/routes";
 
 ---
 
-> **Previous: [21_performance_optimization.md](./21_performance_optimization.md)** | **Next: [23_environment_variables.md](./23_environment_variables.md)**
+← Previous: [21_performance_optimization.md](21_performance_optimization.md) | Next: [23_environment_variables.md](23_environment_variables.md) →

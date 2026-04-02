@@ -1,6 +1,5 @@
 # 10 - Forms and Controlled Components 📝
 
-> **Previous: [09_lists_and_keys.md](./09_lists_and_keys.md)** | **Next: [11_useEffect.md](./11_useEffect.md)**
 
 ---
 
@@ -31,7 +30,7 @@ Typing in input → onChange fires → setState updates → React re-renders →
 
 ## 🔧 Basic Controlled Input
 
-```jsx
+```tsx
 function ControlledInput() {
   const [value, setValue] = useState("");
 
@@ -53,7 +52,7 @@ function ControlledInput() {
 
 ## 🌍 Real-World Form Example: Registration Form
 
-```jsx
+```tsx
 function RegistrationForm() {
   const [formData, setFormData] = useState({
     name: "",
@@ -195,7 +194,7 @@ function RegistrationForm() {
 
 ## 📐 Textarea
 
-```jsx
+```tsx
 function CommentBox() {
   const [comment, setComment] = useState("");
 
@@ -246,4 +245,4 @@ function CommentBox() {
 
 ---
 
-> **Previous: [09_lists_and_keys.md](./09_lists_and_keys.md)** | **Next: [11_useEffect.md](./11_useEffect.md)**
+← Previous: [09_lists_and_keys.md](09_lists_and_keys.md) | Next: [11_useEffect.md](11_useEffect.md) →

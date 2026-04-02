@@ -1,6 +1,5 @@
 # 11 - useEffect Hook 🔁
 
-> **Previous: [10_forms.md](./10_forms.md)** | **Next: [12_useRef.md](./12_useRef.md)**
 
 ---
 
@@ -22,7 +21,7 @@
 
 ## 🔧 Basic Syntax
 
-```jsx
+```tsx
 import { useEffect } from "react";
 
 useEffect(() => {
@@ -54,7 +53,7 @@ The **dependency array** (second argument) controls **when** the effect runs:
 
 ### Pattern 1: Run ONCE (on mount) — `[]`
 
-```jsx
+```tsx
 function App() {
   const [data, setData] = useState(null);
 
@@ -70,7 +69,7 @@ function App() {
 
 ### Pattern 2: Run when value changes — `[value]`
 
-```jsx
+```tsx
 function Search() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
@@ -94,7 +93,7 @@ function Search() {
 
 ### Pattern 3: Cleanup (on unmount)
 
-```jsx
+```tsx
 function Timer() {
   const [seconds, setSeconds] = useState(0);
 
@@ -120,7 +119,7 @@ function Timer() {
 
 ### Example 1: Fetch API Data
 
-```jsx
+```tsx
 function UserList() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -148,7 +147,7 @@ function UserList() {
 
 ### Example 2: Update Document Title
 
-```jsx
+```tsx
 function PageTitle() {
   const [count, setCount] = useState(0);
 
@@ -162,7 +161,7 @@ function PageTitle() {
 
 ### Example 3: Window Resize Listener
 
-```jsx
+```tsx
 function WindowSize() {
   const [size, setSize] = useState({ width: window.innerWidth, height: window.innerHeight });
 
@@ -183,7 +182,7 @@ function WindowSize() {
 
 ### Example 4: Debounced Search (Advanced but Practical)
 
-```jsx
+```tsx
 function DebouncedSearch() {
   const [query, setQuery] = useState("");
   const [result, setResult] = useState("");
@@ -214,7 +213,7 @@ function DebouncedSearch() {
 
 You can have multiple `useEffect` hooks — each handles a different concern:
 
-```jsx
+```tsx
 function Dashboard() {
   useEffect(() => {
     // Fetch user data
@@ -245,7 +244,7 @@ function Dashboard() {
 - ✅ Always clean up timers, listeners, subscriptions in the return function
 - ✅ Use `async/await` inside useEffect with a wrapper function:
 
-```jsx
+```tsx
 useEffect(() => {
   const fetchData = async () => {
     const res = await fetch("/api/data");
@@ -279,4 +278,4 @@ useEffect(() => {
 
 ---
 
-> **Previous: [10_forms.md](./10_forms.md)** | **Next: [12_useRef.md](./12_useRef.md)**
+← Previous: [10_forms.md](10_forms.md) | Next: [12_useRef.md](12_useRef.md) →

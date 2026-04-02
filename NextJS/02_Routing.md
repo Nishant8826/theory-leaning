@@ -18,7 +18,7 @@ In Next.js, **routing is file-based** — you don't configure routes manually. Y
 
 ### In Plain React (with react-router-dom):
 
-```jsx
+```tsx
 // You manually define every route
 <Routes>
   <Route path="/" element={<Home />} />
@@ -85,7 +85,7 @@ app/
 │       └── page.js       → /products/1, /products/abc, /products/anything
 ```
 
-```jsx
+```tsx
 // app/products/[id]/page.js
 export default function ProductPage({ params }) {
   return <h1>Product ID: {params.id}</h1>;
@@ -105,7 +105,7 @@ app/
 │       └── page.js
 ```
 
-```jsx
+```tsx
 // app/docs/[...slug]/page.js
 export default function DocsPage({ params }) {
   return <p>Path: {params.slug.join('/')}</p>;
@@ -168,7 +168,7 @@ Next.js uses special file names for specific purposes:
 | `not-found.js` | 404 page | Custom "page not found" |
 | `template.js` | Like layout but re-renders on navigation | Animations, logging |
 
-```jsx
+```tsx
 // app/dashboard/loading.js
 export default function Loading() {
   return <div className="spinner">Loading dashboard...</div>;
@@ -176,7 +176,7 @@ export default function Loading() {
 // This automatically shows when /dashboard is loading!
 ```
 
-```jsx
+```tsx
 // app/dashboard/error.js
 "use client"; // Error boundaries must be client components
 
@@ -195,7 +195,7 @@ export default function Error({ error, reset }) {
 
 #### Method 1: `<Link>` Component (Most Common)
 
-```jsx
+```tsx
 import Link from 'next/link';
 
 export default function Navbar() {
@@ -216,7 +216,7 @@ export default function Navbar() {
 
 #### Method 2: `useRouter()` Hook (Programmatic Navigation)
 
-```jsx
+```tsx
 "use client";
 
 import { useRouter } from 'next/navigation';
@@ -249,7 +249,7 @@ app/
 └── page.js            → Main content
 ```
 
-```jsx
+```tsx
 // app/layout.js
 export default function Layout({ children, feed, sidebar }) {
   return (
@@ -310,5 +310,7 @@ Always use `<Link>` for internal navigation in Next.js.
 ---
 
 ### 🔗 Navigation
-- ⬅️ Previous: [01_Introduction.md](./01_Introduction.md)
-- ➡️ Next: [03_Rendering_Methods.md](./03_Rendering_Methods.md)
+
+---
+
+← Previous: [01_Introduction.md](01_Introduction.md) | Next: [03_Rendering_Methods.md](03_Rendering_Methods.md) →

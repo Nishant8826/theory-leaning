@@ -1,6 +1,5 @@
 # 25 - React vs Angular vs Vue ⚔️
 
-> **Previous: [24_build_deployment.md](./24_build_deployment.md)** | **Next: [26_best_practices.md](./26_best_practices.md)**
 
 ---
 
@@ -51,7 +50,7 @@ React, Angular, and Vue are the three most popular JavaScript UI frameworks/libr
 - When you want flexibility to choose your stack
 
 ### Code Style:
-```jsx
+```tsx
 import { useState } from "react";
 
 function Counter() {
@@ -220,4 +219,4 @@ const count = ref(0)
 
 ---
 
-> **Previous: [24_build_deployment.md](./24_build_deployment.md)** | **Next: [26_best_practices.md](./26_best_practices.md)**
+← Previous: [24_build_deployment.md](24_build_deployment.md) | Next: [26_best_practices.md](26_best_practices.md) →

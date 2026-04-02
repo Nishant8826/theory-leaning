@@ -57,7 +57,7 @@ Next.js has **4 layers of caching**. Understanding them is essential.
 
 **Why?** In a component tree, multiple components might need the same data. Without memoization, the same API would be called 3–4 times.
 
-```jsx
+```tsx
 // These components are separate but both need user data
 
 // components/UserHeader.js
@@ -85,7 +85,7 @@ async function UserSidebar() {
 
 **Why?** Avoid calling external APIs or databases repeatedly for the same data.
 
-```jsx
+```tsx
 // Cached FOREVER (until revalidation or rebuild)
 const res = await fetch('https://api.example.com/products');
 
@@ -114,7 +114,7 @@ const res = await fetch('https://api.example.com/products', {
 
 **Why?** If a page is fully static (SSG), why re-render it on every request? Serve the pre-built HTML.
 
-```jsx
+```tsx
 // This page is fully static → Full Route Cache applies
 export default function AboutPage() {
   return <h1>About Us</h1>;
@@ -122,7 +122,7 @@ export default function AboutPage() {
 // The rendered HTML is cached → served instantly from CDN
 ```
 
-```jsx
+```tsx
 // This page is dynamic → Full Route Cache is SKIPPED
 export default async function FeedPage() {
   const res = await fetch('https://api.example.com/feed', {
@@ -161,7 +161,7 @@ User clicks Back → /products served from Router Cache → INSTANT! (no server 
 
 Sometimes you NEED fresh data on every request:
 
-```jsx
+```tsx
 // Method 1: Per-fetch opt-out
 await fetch(url, { cache: 'no-store' });
 
@@ -176,7 +176,7 @@ export const revalidate = 0;
 
 Instead of waiting for the timer to expire, manually trigger cache refresh:
 
-```jsx
+```tsx
 // app/actions/posts.js
 "use server";
 
@@ -196,7 +196,7 @@ export async function publishPost(formData) {
 
 For tag-based revalidation, tag your fetches:
 
-```jsx
+```tsx
 // Fetch with a tag
 const res = await fetch('https://api.example.com/posts', {
   next: { tags: ['posts'] }
@@ -210,7 +210,7 @@ A CMS admin publishes a new blog post → calls `revalidateTag('posts')` → the
 
 ### 3. Revalidation via API (Webhook Pattern)
 
-```jsx
+```tsx
 // app/api/revalidate/route.js
 import { revalidateTag } from 'next/cache';
 import { NextResponse } from 'next/server';
@@ -274,7 +274,6 @@ export async function POST(request) {
 **Answer:** Four layers: (1) Request Memoization — deduplicates same fetch calls in a single render, (2) Data Cache — stores fetch responses on the server, (3) Full Route Cache — caches entire rendered HTML for static pages, (4) Router Cache — stores visited pages in browser memory for instant back-navigation.
 
 ### Q2: How is fetch cached by default in the App Router?
-**Answer:** By default, `fetch()` responses are cached indefinitely in the Data Cache. You can opt into time-based revalidation with `next: { revalidate: seconds }` or opt out entirely with `cache: 'no-store'`. This default caching is what makes pages static (SSG) by default.
 
 ### Q3: What is the difference between `revalidatePath` and `revalidateTag`?
 **Answer:** `revalidatePath('/blog')` purges the cache for a specific URL path. `revalidateTag('posts')` purges the cache for all fetch calls tagged with `'posts'`. Tags are more granular and flexible — a single tag can revalidate multiple fetches across multiple pages.
@@ -294,5 +293,7 @@ export async function POST(request) {
 ---
 
 ### 🔗 Navigation
-- ⬅️ Previous: [13_Server_Actions.md](./13_Server_Actions.md)
-- ➡️ Next: [99_Revision_CheatSheet.md](./99_Revision_CheatSheet.md)
+
+---
+
+← Previous: [13_Server_Actions.md](13_Server_Actions.md) | Next: [99_Revision_CheatSheet.md](99_Revision_CheatSheet.md) →

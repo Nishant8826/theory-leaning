@@ -1,6 +1,5 @@
 # 13 - useMemo and useCallback ⚡
 
-> **Previous: [12_useRef.md](./12_useRef.md)** | **Next: [14_lifecycle.md](./14_lifecycle.md)**
 
 ---
 
@@ -18,12 +17,12 @@ In React, every time a component re-renders, **every function is re-created** an
 `useMemo` stores (memoizes) the **result of a calculation** and only re-calculates it when the specified dependencies change.
 
 ### Syntax:
-```jsx
+```tsx
 const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
 ```
 
 ### Without useMemo (Problem):
-```jsx
+```tsx
 function App() {
   const [count, setCount] = useState(0);
   const [input, setInput] = useState("");
@@ -42,7 +41,7 @@ function App() {
 ```
 
 ### With useMemo (Solution):
-```jsx
+```tsx
 function App() {
   const [count, setCount] = useState(0);
   const [input, setInput] = useState("");
@@ -69,7 +68,7 @@ function App() {
 
 ### Example 1: Expensive Filter
 
-```jsx
+```tsx
 function ProductSearch() {
   const [search, setSearch] = useState("");
   const [darkMode, setDarkMode] = useState(false);
@@ -111,7 +110,7 @@ function ProductSearch() {
 
 ### Why? Because in React, functions are re-created on every render!
 
-```jsx
+```tsx
 // Every render creates a NEW handleClick function
 const handleClick = () => {
   console.log("Clicked!");
@@ -120,7 +119,7 @@ const handleClick = () => {
 ```
 
 ### Syntax:
-```jsx
+```tsx
 const memoizedFn = useCallback(() => {
   doSomething(a, b);
 }, [a, b]);
@@ -132,7 +131,7 @@ const memoizedFn = useCallback(() => {
 
 ### Without useCallback:
 
-```jsx
+```tsx
 function Parent() {
   const [count, setCount] = useState(0);
 
@@ -159,7 +158,7 @@ const Child = React.memo(({ onClick }) => {
 
 ### With useCallback:
 
-```jsx
+```tsx
 function Parent() {
   const [count, setCount] = useState(0);
 
@@ -193,7 +192,7 @@ const Child = React.memo(({ onClick }) => {
 | Use for | Expensive computations | Stable function references |
 | Example | Filtered list, calculated total | Event handlers passed to children |
 
-```jsx
+```tsx
 // useMemo → caches the RESULT
 const total = useMemo(() => items.reduce((sum, i) => sum + i.price, 0), [items]);
 
@@ -246,4 +245,4 @@ For most small/medium apps, they're **unnecessary** and add complexity!
 
 ---
 
-> **Previous: [12_useRef.md](./12_useRef.md)** | **Next: [14_lifecycle.md](./14_lifecycle.md)**
+← Previous: [12_useRef.md](12_useRef.md) | Next: [14_lifecycle.md](14_lifecycle.md) →

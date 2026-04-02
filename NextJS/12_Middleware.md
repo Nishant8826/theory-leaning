@@ -52,7 +52,7 @@ my-app/
 
 ### Basic Example: Auth Protection
 
-```jsx
+```tsx
 // middleware.js
 import { NextResponse } from 'next/server';
 
@@ -95,7 +95,7 @@ Checks for 'session-token' cookie
 
 `matcher` controls WHICH routes the middleware runs on:
 
-```jsx
+```tsx
 // Run on specific paths
 export const config = {
   matcher: ['/dashboard/:path*', '/admin/:path*'],
@@ -116,7 +116,7 @@ export const config = {
 
 ### 2. What Middleware CAN Do
 
-```jsx
+```tsx
 import { NextResponse } from 'next/server';
 
 export function middleware(request) {
@@ -162,7 +162,7 @@ export function middleware(request) {
 
 #### A/B Testing
 
-```jsx
+```tsx
 // middleware.js
 export function middleware(request) {
   // Randomly assign users to variant A or B
@@ -189,7 +189,7 @@ export function middleware(request) {
 
 #### Geo-Based Redirects
 
-```jsx
+```tsx
 // middleware.js
 export function middleware(request) {
   const country = request.geo?.country || 'US';
@@ -210,7 +210,7 @@ export function middleware(request) {
 
 #### Rate Limiting (Simple)
 
-```jsx
+```tsx
 // middleware.js
 const rateLimit = new Map();
 
@@ -279,5 +279,7 @@ export const config = {
 ---
 
 ### 🔗 Navigation
-- ⬅️ Previous: [11_App_Router.md](./11_App_Router.md)
-- ➡️ Next: [13_Server_Actions.md](./13_Server_Actions.md)
+
+---
+
+← Previous: [11_App_Router.md](11_App_Router.md) | Next: [13_Server_Actions.md](13_Server_Actions.md) →

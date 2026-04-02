@@ -1,6 +1,5 @@
 # 09 - Lists and Keys 📋
 
-> **Previous: [08_conditional_rendering.md](./08_conditional_rendering.md)** | **Next: [10_forms.md](./10_forms.md)**
 
 ---
 
@@ -17,7 +16,7 @@ A "list" in React means **displaying an array of data** as multiple UI elements.
 
 The most common way to render a list in React is using the `.map()` array method:
 
-```jsx
+```tsx
 function FruitList() {
   const fruits = ["🍎 Apple", "🍌 Banana", "🍊 Orange", "🍇 Grapes"];
 
@@ -45,7 +44,7 @@ A `key` is a **unique identifier** you give to each item in a list. React uses i
 
 ## ✅ Good Keys vs ❌ Bad Keys
 
-```jsx
+```tsx
 // ❌ BAD: Using array index as key (causes bugs when order changes)
 {items.map((item, index) => <li key={index}>{item}</li>)}
 
@@ -64,7 +63,7 @@ A `key` is a **unique identifier** you give to each item in a list. React uses i
 
 ### Example 1: Product List (From Array of Objects)
 
-```jsx
+```tsx
 const products = [
   { id: 1, name: "iPhone 15", price: "₹79,999", qty: 5 },
   { id: 2, name: "MacBook Air", price: "₹1,14,900", qty: 3 },
@@ -89,7 +88,7 @@ function ProductList() {
 
 ### Example 2: Dynamic Todo List
 
-```jsx
+```tsx
 function TodoList() {
   const [todos, setTodos] = useState([
     { id: 1, text: "Buy groceries", done: false },
@@ -121,7 +120,7 @@ function TodoList() {
 
 ### Example 3: Table from API-like Data
 
-```jsx
+```tsx
 const users = [
   { id: 101, name: "Nishant", email: "nishant@dev.com", role: "Admin" },
   { id: 102, name: "Priya", email: "priya@dev.com", role: "User" },
@@ -158,7 +157,7 @@ function UserTable() {
 
 ## 🔗 Nested Lists
 
-```jsx
+```tsx
 const categories = [
   {
     id: 1,
@@ -194,7 +193,7 @@ function SkillTree() {
 
 ## 🔍 Filtering Lists
 
-```jsx
+```tsx
 function FilteredList() {
   const [filter, setFilter] = useState("all");
 
@@ -258,4 +257,4 @@ function FilteredList() {
 
 ---
 
-> **Previous: [08_conditional_rendering.md](./08_conditional_rendering.md)** | **Next: [10_forms.md](./10_forms.md)**
+← Previous: [08_conditional_rendering.md](08_conditional_rendering.md) | Next: [10_forms.md](10_forms.md) →

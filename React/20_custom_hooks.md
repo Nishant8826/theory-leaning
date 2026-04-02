@@ -1,6 +1,5 @@
 # 20 - Custom Hooks 🎣
 
-> **Previous: [19_error_handling.md](./19_error_handling.md)** | **Next: [21_performance_optimization.md](./21_performance_optimization.md)**
 
 ---
 
@@ -25,7 +24,7 @@ A **custom hook** is a function that you create yourself that uses built-in Reac
 ## 🔧 Why Create Custom Hooks?
 
 Without custom hooks:
-```jsx
+```tsx
 // ❌ Repeating the same fetch logic in every component!
 function UserList() {
   const [data, setData] = useState(null);
@@ -40,7 +39,7 @@ function UserList() {
 ```
 
 With custom hooks:
-```jsx
+```tsx
 // ✅ Extract to hook, use anywhere!
 const { data, loading, error } = useFetch("/api/users");
 ```
@@ -51,7 +50,7 @@ const { data, loading, error } = useFetch("/api/users");
 
 ### Hook 1: `useFetch` — Reusable Data Fetching
 
-```jsx
+```tsx
 // hooks/useFetch.js
 import { useState, useEffect } from "react";
 
@@ -89,7 +88,7 @@ function useFetch(url) {
 export default useFetch;
 ```
 
-```jsx
+```tsx
 // Usage — SO CLEAN!
 function UserList() {
   const { data: users, loading, error } = useFetch("https://jsonplaceholder.typicode.com/users");
@@ -110,7 +109,7 @@ function PostList() {
 
 ### Hook 2: `useLocalStorage` — Persist State in Browser
 
-```jsx
+```tsx
 // hooks/useLocalStorage.js
 import { useState } from "react";
 
@@ -140,7 +139,7 @@ function useLocalStorage(key, initialValue) {
 export default useLocalStorage;
 ```
 
-```jsx
+```tsx
 // Usage — works like useState but persists after refresh!
 function ThemeToggle() {
   const [theme, setTheme] = useLocalStorage("theme", "light");
@@ -157,7 +156,7 @@ function ThemeToggle() {
 
 ### Hook 3: `useDebounce` — Delay Input Actions
 
-```jsx
+```tsx
 // hooks/useDebounce.js
 import { useState, useEffect } from "react";
 
@@ -178,7 +177,7 @@ function useDebounce(value, delay = 500) {
 export default useDebounce;
 ```
 
-```jsx
+```tsx
 // Usage
 function SearchBar() {
   const [query, setQuery] = useState("");
@@ -198,7 +197,7 @@ function SearchBar() {
 
 ### Hook 4: `useCounter` — Reusable Counter Logic
 
-```jsx
+```tsx
 // hooks/useCounter.js
 import { useState } from "react";
 
@@ -215,7 +214,7 @@ function useCounter(initialValue = 0, step = 1) {
 export default useCounter;
 ```
 
-```jsx
+```tsx
 // Usage
 function Counter() {
   const { count, increment, decrement, reset } = useCounter(0, 5);
@@ -235,7 +234,7 @@ function Counter() {
 
 ### Hook 5: `useWindowSize` — Track Window Dimensions
 
-```jsx
+```tsx
 // hooks/useWindowSize.js
 import { useState, useEffect } from "react";
 
@@ -259,7 +258,7 @@ function useWindowSize() {
 export default useWindowSize;
 ```
 
-```jsx
+```tsx
 function ResponsiveLayout() {
   const { width } = useWindowSize();
 
@@ -324,4 +323,4 @@ src/
 
 ---
 
-> **Previous: [19_error_handling.md](./19_error_handling.md)** | **Next: [21_performance_optimization.md](./21_performance_optimization.md)**
+← Previous: [19_error_handling.md](19_error_handling.md) | Next: [21_performance_optimization.md](21_performance_optimization.md) →

@@ -35,7 +35,7 @@ In the App Router, Server Components can **directly use `async/await`** to fetch
 
 #### 1. Basic Server-Side Fetch (Default = Cached / SSG)
 
-```jsx
+```tsx
 // app/products/page.js — Server Component
 export default async function ProductsPage() {
   // This fetch is CACHED by default (SSG behavior)
@@ -58,7 +58,7 @@ export default async function ProductsPage() {
 
 #### 2. Server-Side Fetch — Fresh on Every Request (SSR)
 
-```jsx
+```tsx
 // app/feed/page.js
 export default async function FeedPage() {
   // 'no-store' = fetch fresh data on every request
@@ -79,7 +79,7 @@ export default async function FeedPage() {
 
 #### 3. Server-Side Fetch — Revalidate Periodically (ISR)
 
-```jsx
+```tsx
 // app/news/page.js
 export default async function NewsPage() {
   // Revalidate every 5 minutes (300 seconds)
@@ -100,7 +100,7 @@ export default async function NewsPage() {
 
 #### 4. Client-Side Fetch (CSR)
 
-```jsx
+```tsx
 // app/dashboard/page.js
 "use client";
 
@@ -147,7 +147,7 @@ This is **critical** to understand:
 | `fetch(url, { cache: 'no-store' })` | Never cached | SSR |
 | `fetch(url, { next: { revalidate: 60 } })` | Cached for 60s | ISR |
 
-```jsx
+```tsx
 // These three lines produce completely different behaviors:
 await fetch(url);                              // SSG — cached forever
 await fetch(url, { cache: 'no-store' });       // SSR — fresh every time
@@ -158,7 +158,7 @@ await fetch(url, { next: { revalidate: 60 }}); // ISR — cached for 60s
 
 In Server Components, you can **skip the API entirely** and query the database directly:
 
-```jsx
+```tsx
 // app/users/page.js — Server Component
 import { db } from '@/lib/database';
 
@@ -187,7 +187,7 @@ With Server Components, step 1 and 2 are **eliminated**. The component IS the se
 
 #### ❌ Sequential (Slow) — One after another
 
-```jsx
+```tsx
 export default async function Page() {
   const user = await fetchUser();        // Takes 1 second
   const posts = await fetchPosts();      // Takes 1 second
@@ -198,7 +198,7 @@ export default async function Page() {
 
 #### ✅ Parallel (Fast) — All at the same time
 
-```jsx
+```tsx
 export default async function Page() {
   // Start ALL fetches simultaneously
   const [user, posts, comments] = await Promise.all([
@@ -216,7 +216,7 @@ export default async function Page() {
 
 Instead of setting cache options on every `fetch()`, you can set defaults for the entire page:
 
-```jsx
+```tsx
 // app/dashboard/page.js
 
 // Force this entire page to be dynamic (SSR)
@@ -233,7 +233,7 @@ export const revalidate = 60; // ISR: 60 seconds
 
 For client-side fetching with caching, retries, and real-time updates:
 
-```jsx
+```tsx
 "use client";
 
 import useSWR from 'swr';
@@ -275,7 +275,7 @@ export default function Notifications() {
 
 ## Pages Router (Legacy) — For Reference
 
-```jsx
+```tsx
 // SSG — getStaticProps (runs at build time)
 export async function getStaticProps() {
   const res = await fetch('https://api.example.com/posts');
@@ -305,7 +305,6 @@ export async function getStaticPaths() {
 ## Interview Questions & Answers
 
 ### Q1: How does data fetching work in the App Router?
-**Answer:** In the App Router, Server Components can directly use `async/await` with the native `fetch()` API. By default, fetch responses are cached (SSG). You can opt into SSR with `cache: 'no-store'` or ISR with `next: { revalidate: seconds }`. No special functions like `getServerSideProps` are needed.
 
 ### Q2: What is the difference between `cache: 'no-store'` and `next: { revalidate: 60 }`?
 **Answer:** `cache: 'no-store'` means fetch fresh data on **every request** (SSR behavior). `next: { revalidate: 60 }` means cache the response for 60 seconds; after that, the next request triggers a background regeneration (ISR behavior). ISR is more efficient because most users hit the cache.
@@ -331,5 +330,7 @@ export async function getStaticPaths() {
 ---
 
 ### 🔗 Navigation
-- ⬅️ Previous: [03_Rendering_Methods.md](./03_Rendering_Methods.md)
-- ➡️ Next: [05_API_Routes.md](./05_API_Routes.md)
+
+---
+
+← Previous: [03_Rendering_Methods.md](03_Rendering_Methods.md) | Next: [05_API_Routes.md](05_API_Routes.md) →

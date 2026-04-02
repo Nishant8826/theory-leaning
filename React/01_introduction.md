@@ -1,6 +1,5 @@
 # 01 - Introduction to React ⚛️
 
-> **Next: [02_setup_react.md](./02_setup_react.md)**
 
 ---
 
@@ -43,7 +42,7 @@ Think of it like this:
 ```
 
 ### With React:
-```jsx
+```tsx
 import { useState } from "react";
 
 function Counter() {
@@ -129,4 +128,4 @@ This process is called **Reconciliation** and it makes React very fast!
 
 ---
 
-> **Next: [02_setup_react.md](./02_setup_react.md)**
+← Previous: []() | Next: [02_setup_react.md](02_setup_react.md) →

@@ -1,6 +1,5 @@
 # 27 - Mini Project Guide 🏗️
 
-> **Previous: [26_best_practices.md](./26_best_practices.md)**
 
 ---
 
@@ -56,7 +55,7 @@ todo-app/
 
 ### Step 1: `useTodos.js` — Custom Hook for All Logic
 
-```jsx
+```tsx
 // hooks/useTodos.js
 import { useState, useEffect } from "react";
 
@@ -108,7 +107,7 @@ export default useTodos;
 
 ### Step 2: `TodoInput.jsx`
 
-```jsx
+```tsx
 // components/TodoInput.jsx
 import { useState } from "react";
 
@@ -140,7 +139,7 @@ export default TodoInput;
 
 ### Step 3: `TodoItem.jsx`
 
-```jsx
+```tsx
 // components/TodoItem.jsx
 function TodoItem({ todo, onToggle, onDelete }) {
   return (
@@ -167,7 +166,7 @@ export default TodoItem;
 
 ### Step 4: `TodoList.jsx`
 
-```jsx
+```tsx
 // components/TodoList.jsx
 import TodoItem from "./TodoItem";
 
@@ -195,7 +194,7 @@ export default TodoList;
 
 ### Step 5: `FilterBar.jsx`
 
-```jsx
+```tsx
 // components/FilterBar.jsx
 function FilterBar({ filter, onFilter, remaining, onClearCompleted }) {
   return (
@@ -224,7 +223,7 @@ export default FilterBar;
 
 ### Step 6: `App.jsx` — Assemble
 
-```jsx
+```tsx
 // App.jsx
 import useTodos from "./hooks/useTodos";
 import TodoInput from "./components/TodoInput";
@@ -304,7 +303,7 @@ blog-app/
 ## 📄 Key Code Pieces
 
 ### `services/api.js`
-```jsx
+```tsx
 import axios from "axios";
 const api = axios.create({ baseURL: "https://jsonplaceholder.typicode.com" });
 export const getPosts = () => api.get("/posts");
@@ -314,7 +313,7 @@ export default api;
 ```
 
 ### `hooks/usePosts.js`
-```jsx
+```tsx
 import { useState, useEffect } from "react";
 import { getPosts } from "../services/api";
 
@@ -342,7 +341,7 @@ export default usePosts;
 ```
 
 ### `pages/Home.jsx`
-```jsx
+```tsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import usePosts from "../hooks/usePosts";
@@ -378,7 +377,7 @@ export default Home;
 ```
 
 ### `pages/PostDetail.jsx`
-```jsx
+```tsx
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { getPost, getComments } from "../services/api";
@@ -486,6 +485,9 @@ Going from 0 to knowing React is a huge achievement. Keep building, keep learnin
 
 ---
 
-> **Previous: [26_best_practices.md](./26_best_practices.md)**
 >
 > 📂 **[View Full Index → README.md](./README.md)**
+
+---
+
+← Previous: [26_best_practices.md](26_best_practices.md) | Next: [README.md](README.md) →
