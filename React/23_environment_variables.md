@@ -7,9 +7,6 @@
 
 Environment variables are **configuration values** that change based on where your app is running — development, testing, or production.
 
-> **Real-world analogy:**
-> Imagine your office has a **development server** (for testing) and a **production server** (for real users). Your app needs to connect to different databases, APIs, and URLs in each place. Instead of changing code every time, you use environment variables — like a settings file that changes per environment.
-
 ---
 
 ## ⚠️ Why Not Hardcode API URLs?

@@ -7,9 +7,6 @@
 
 React is fast by default, but as apps grow, they can become slow if you're not careful. Optimization means making your app **faster, smoother, and more efficient**.
 
-> **Real-world analogy:**
-> A delivery company (React) that re-delivers every package to every house every time one package changes is wasteful. Optimization teaches it to only re-deliver the packages that actually changed.
-
 ---
 
 ## 🔍 The First Rule of Optimization

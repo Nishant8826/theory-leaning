@@ -7,9 +7,6 @@
 
 API calls let your React app **communicate with a backend server** to get or send data.
 
-> **Real-world analogy:**
-> Think of a restaurant. You (React app) give your order to the waiter (API). The waiter goes to the kitchen (backend/server), gets your food (data), and brings it back. The API is the waiter!
-
 ---
 
 ## 🔧 Two Ways to Make API Calls

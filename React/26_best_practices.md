@@ -376,4 +376,4 @@ npm install --save-dev prettier
 
 ---
 
-← Previous: [25_react_vs_angular_vue.md](25_react_vs_angular_vue.md) | Next: [27_mini_project.md](27_mini_project.md) →
+← Previous: [25_react_vs_angular_vue.md](25_react_vs_angular_vue.md)

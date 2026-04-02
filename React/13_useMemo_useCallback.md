@@ -7,9 +7,6 @@
 
 In React, every time a component re-renders, **every function is re-created** and **every calculation is re-run** from scratch — even if the data hasn't changed.
 
-> **Real-world analogy:**
-> Imagine you're at a restaurant. Every time a new customer walks in, the chef re-bakes ALL the cakes, even if the same ones are already ready. That's wasteful! `useMemo` and `useCallback` are like a caching tray — you only re-bake when the recipe changes.
-
 ---
 
 ## 🧮 useMemo — Cache a Computed Value

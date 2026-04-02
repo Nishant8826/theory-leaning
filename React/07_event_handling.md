@@ -7,9 +7,6 @@
 
 When a user **clicks a button**, **types in an input**, **submits a form**, or **moves the mouse** — those are **events**. Event handling means writing code that **reacts** to those events.
 
-> **Real-world analogy:**
-> A doorbell is an event system. When someone presses the bell (event), your speaker rings (handler). React events work the same — an action happens, and a function runs.
-
 ---
 
 ## 🆚 React Events vs HTML Events

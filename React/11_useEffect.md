@@ -7,9 +7,6 @@
 
 `useEffect` lets you perform **side effects** in your component — things that happen **after** the component renders.
 
-> **Real-world analogy:**
-> When you open WhatsApp (component mounts), your phone automatically checks for new messages (side effect). When you close WhatsApp (component unmounts), it stops checking. `useEffect` works the same way!
-
 **Side effects include:**
 - Fetching data from an API
 - Setting up timers / intervals

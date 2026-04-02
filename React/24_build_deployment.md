@@ -8,10 +8,6 @@
 - **Build** = Converting your React dev code into optimized files a browser can understand (HTML + CSS + JS)
 - **Deploy** = Uploading those files to a server so anyone on the internet can visit your app
 
-> **Real-world analogy:**
-> **Build** = Baking a cake in the kitchen (development) and boxing it up perfectly (build).
-> **Deploy** = Delivering that box to the customer (putting it on a server for users).
-
 ---
 
 ## 🔄 Development vs Production

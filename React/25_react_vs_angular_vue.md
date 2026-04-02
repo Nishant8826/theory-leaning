@@ -7,11 +7,6 @@
 
 React, Angular, and Vue are the three most popular JavaScript UI frameworks/libraries. Understanding the differences helps you make the right choice for a project — and helps you in interviews!
 
-> **Real-world analogy:**
-> - **React** = A box of LEGO pieces — total freedom, you build whatever you want
-> - **Angular** = A premium furniture kit — everything is included, very structured
-> - **Vue** = A DIY kit with guidance — easier than LEGO, simpler than a full kit
-
 ---
 
 ## 🗺️ Overview

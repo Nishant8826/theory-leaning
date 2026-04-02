@@ -11,9 +11,6 @@ A good folder structure makes your codebase:
 - Easy for teammates to understand
 - Easier to maintain long-term
 
-> **Real-world analogy:**
-> A good filing cabinet has labeled drawers (folders) with organized sections. A messy one with everything dumped in one spot wastes hours looking for things. Your `src/` folder is that cabinet!
-
 ---
 
 ## 🗂️ Small App Structure (< 20 components)

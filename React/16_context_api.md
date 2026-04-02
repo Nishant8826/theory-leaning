@@ -7,9 +7,6 @@
 
 Context API lets you **share data globally** across your whole app without passing props through every level.
 
-> **Real-world analogy:**
-> In a big company, instead of the CEO telling the Manager, who tells the Team Lead, who tells the Developer about a policy (prop drilling) — the company just sends a **company-wide email** (Context). Everyone can read it directly!
-
 ---
 
 ## 😫 The Problem: Prop Drilling

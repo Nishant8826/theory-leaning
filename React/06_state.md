@@ -7,9 +7,6 @@
 
 **State** is data that **changes over time** inside a component. When state changes, React automatically **re-renders** the component to reflect the new data.
 
-> **Real-world analogy:**
-> Think of a scoreboard at a cricket match. The score **changes** as runs are scored — that changing score is "state". Every time it changes, the board updates automatically. React does the same for your UI!
-
 ---
 
 ## 🆚 State vs Props Quick Recap

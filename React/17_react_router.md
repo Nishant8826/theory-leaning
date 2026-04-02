@@ -7,9 +7,6 @@
 
 Routing means **navigating between different pages** in your app without refreshing the browser.
 
-> **Real-world analogy:**
-> Think of a shopping mall. The mall has multiple shops (pages) — Electronics, Clothing, Food Court. When you walk from one shop to another, the whole mall doesn't disappear and rebuild (page reload) — you just move to a different section. React Router works the same way!
-
 ---
 
 ## 📦 Installing React Router

@@ -9,9 +9,6 @@
 
 Think of it as a secret variable that React doesn't watch.
 
-> **Real-world analogy:**
-> A sticky note on your desk. You can write on it and change it anytime — but unlike a whiteboard (state), **nobody watches the sticky note**. No announcements, no re-renders. Just a private reference.
-
 ---
 
 ## 🔧 Two Main Uses of useRef

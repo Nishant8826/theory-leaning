@@ -7,9 +7,6 @@
 
 Things go wrong — APIs fail, users type invalid inputs, code has bugs. Good error handling means your app **doesn't crash** and users see helpful messages instead of a broken screen.
 
-> **Real-world analogy:**
-> A good pilot doesn't just know how to fly in clear weather. They also know what to do when an engine fails (error!). React error handling is your app's emergency plan.
-
 ---
 
 ## 📦 Types of Errors in React

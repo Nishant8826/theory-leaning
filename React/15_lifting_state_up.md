@@ -7,9 +7,6 @@
 
 When two or more components need to **share the same state**, you move that state up to their **closest common parent** and pass it down as props.
 
-> **Real-world analogy:**
-> Two siblings (components) want to share a TV remote (state). Instead of each having their own remote (which would cause conflicts), they give it to their parent (lift state up), and the parent controls the TV and passes the channel info down to both kids.
-
 ---
 
 ## 🧩 The Problem: Sibling Components Need Shared State

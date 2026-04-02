@@ -7,9 +7,6 @@
 
 A "list" in React means **displaying an array of data** as multiple UI elements.
 
-> **Real-world analogy:**
-> Think of a shopping cart on Amazon. You have 5 items in your cart — each item displayed the same way (image, name, price, quantity). React renders all of them by **looping** over the data array.
-
 ---
 
 ## 🔄 Rendering Lists with `.map()`

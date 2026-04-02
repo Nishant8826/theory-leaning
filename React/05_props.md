@@ -7,9 +7,6 @@
 
 **Props** (short for **Properties**) are how you **pass data from a parent component to a child component**.
 
-> **Real-world analogy:**
-> Think of a function that makes a cake 🎂. You pass in ingredients (flavor, size, color). Props are those **ingredients** you send to a component to customize it.
-
 ```
 Parent sends data → via Props → Child receives and displays it
 ```

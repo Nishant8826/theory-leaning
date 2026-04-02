@@ -7,9 +7,6 @@
 
 A **custom hook** is a function that you create yourself that uses built-in React hooks (like `useState`, `useEffect`) to **extract and reuse logic** across multiple components.
 
-> **Real-world analogy:**
-> Instead of re-explaining how to make coffee every time someone asks, you write a recipe (custom hook). Now anyone can just follow the recipe — no need to reinvent the wheel every time!
-
 ---
 
 ## 🔑 Rules of Custom Hooks
