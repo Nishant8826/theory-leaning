@@ -236,4 +236,4 @@ Need a backend endpoint?
 
 ---
 
-← Previous: [14_Caching.md](14_Caching.md) | Next: [100_Project_Ideas.md](100_Project_Ideas.md) →
+← Previous: [14_Caching.md](14_Caching.md)
