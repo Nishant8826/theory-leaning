@@ -17,12 +17,12 @@ In React, every time a component re-renders, **every function is re-created** an
 `useMemo` stores (memoizes) the **result of a calculation** and only re-calculates it when the specified dependencies change.
 
 ### Syntax:
-```tsx
+```jsx
 const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
 ```
 
 ### Without useMemo (Problem):
-```tsx
+```jsx
 function App() {
   const [count, setCount] = useState(0);
   const [input, setInput] = useState("");
@@ -41,7 +41,7 @@ function App() {
 ```
 
 ### With useMemo (Solution):
-```tsx
+```jsx
 function App() {
   const [count, setCount] = useState(0);
   const [input, setInput] = useState("");
@@ -68,7 +68,7 @@ function App() {
 
 ### Example 1: Expensive Filter
 
-```tsx
+```jsx
 function ProductSearch() {
   const [search, setSearch] = useState("");
   const [darkMode, setDarkMode] = useState(false);
@@ -110,7 +110,7 @@ function ProductSearch() {
 
 ### Why? Because in React, functions are re-created on every render!
 
-```tsx
+```jsx
 // Every render creates a NEW handleClick function
 const handleClick = () => {
   console.log("Clicked!");
@@ -119,7 +119,7 @@ const handleClick = () => {
 ```
 
 ### Syntax:
-```tsx
+```jsx
 const memoizedFn = useCallback(() => {
   doSomething(a, b);
 }, [a, b]);
@@ -131,7 +131,7 @@ const memoizedFn = useCallback(() => {
 
 ### Without useCallback:
 
-```tsx
+```jsx
 function Parent() {
   const [count, setCount] = useState(0);
 
@@ -158,7 +158,7 @@ const Child = React.memo(({ onClick }) => {
 
 ### With useCallback:
 
-```tsx
+```jsx
 function Parent() {
   const [count, setCount] = useState(0);
 
@@ -192,7 +192,7 @@ const Child = React.memo(({ onClick }) => {
 | Use for | Expensive computations | Stable function references |
 | Example | Filtered list, calculated total | Event handlers passed to children |
 
-```tsx
+```jsx
 // useMemo → caches the RESULT
 const total = useMemo(() => items.reduce((sum, i) => sum + i.price, 0), [items]);
 

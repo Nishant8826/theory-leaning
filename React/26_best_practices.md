@@ -19,7 +19,7 @@ Clean code is like a **well-organized kitchen** — everything is in its place, 
 
 ### 1. Keep Components Small and Focused
 
-```tsx
+```jsx
 // ❌ BAD — one giant component doing everything!
 function UserDashboard() {
   // 300 lines of mixed logic for header, sidebar, content, footer...
@@ -43,7 +43,7 @@ function UserDashboard() {
 
 ### 2. Descriptive Naming
 
-```tsx
+```jsx
 // ❌ BAD — vague names
 function Comp({ data, fn }) { ... }
 function handleX() { ... }
@@ -59,7 +59,7 @@ function handleEditProfile() { ... }
 
 Each component, hook, and function should do **ONE thing**:
 
-```tsx
+```jsx
 // ❌ BAD — component fetches AND renders AND formats
 function Users() {
   const [users, setUsers] = useState([]);
@@ -88,7 +88,7 @@ function Users() {
 
 ### 4. Avoid Inline Logic in JSX
 
-```tsx
+```jsx
 // ❌ BAD — complex logic inside JSX
 <div>
   {users.filter(u => u.active && u.role === "admin").map(u => (
@@ -114,7 +114,7 @@ const handleSelectUser = (u) => {
 
 ### 5. Use Fragments Instead of Extra Divs
 
-```tsx
+```jsx
 // ❌ BAD — unnecessary div
 return (
   <div>
@@ -136,7 +136,7 @@ return (
 
 ### 6. Consistent Prop Naming
 
-```tsx
+```jsx
 // ❌ BAD — inconsistent
 <Button clickMe={handleClick} txt="Submit" isDisabled={false} show_icon />
 
@@ -150,7 +150,7 @@ return (
 
 ### 7. Don't Overuse State
 
-```tsx
+```jsx
 // ❌ BAD — derived value doesn't need to be state
 const [fullName, setFullName] = useState("");
 const [firstName, setFirstName] = useState("");
@@ -170,7 +170,7 @@ const fullName = `${firstName} ${lastName}`; // Just compute it!
 
 ### 8. Initialize State Smartly
 
-```tsx
+```jsx
 // ❌ BAD — heavy computation on every render for initial value
 const [data, setData] = useState(expensiveCompute()); // runs every render!
 
@@ -184,7 +184,7 @@ const [data, setData] = useState(() => expensiveCompute()); // only runs once
 
 ### 9. Import Order
 
-```tsx
+```jsx
 // 1. React imports
 import React, { useState, useEffect } from "react";
 
@@ -211,7 +211,7 @@ import "./UserPage.css";
 
 ### 10. Constants Over Magic Values
 
-```tsx
+```jsx
 // ❌ BAD — "magic" numbers and strings
 if (role === "admin") { ... }
 setTimeout(fn, 3000);
@@ -230,7 +230,7 @@ setTimeout(fn, NOTIFICATION_DELAY_MS);
 
 ### 11. Early Returns for Cleaner Code
 
-```tsx
+```jsx
 // ❌ BAD — deep nesting
 function UserProfile({ user }) {
   if (user) {
@@ -259,7 +259,7 @@ function UserProfile({ user }) {
 
 ### 12. Keys Must Be Unique and Stable
 
-```tsx
+```jsx
 // ❌ BAD — index as key for dynamic lists
 {items.map((item, index) => <Item key={index} {...item} />)}
 
@@ -271,7 +271,7 @@ function UserProfile({ user }) {
 
 ### 13. Memoize Wisely
 
-```tsx
+```jsx
 // ❌ BAD — memoizing everything, even tiny components
 const SimpleText = React.memo(() => <p>Hello</p>); // No benefit
 

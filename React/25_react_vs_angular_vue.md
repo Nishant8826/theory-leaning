@@ -50,7 +50,7 @@ React, Angular, and Vue are the three most popular JavaScript UI frameworks/libr
 - When you want flexibility to choose your stack
 
 ### Code Style:
-```tsx
+```jsx
 import { useState } from "react";
 
 function Counter() {
@@ -87,7 +87,7 @@ function Counter() {
 - When TypeScript is a requirement
 
 ### Code Style:
-```typescript
+```javascript
 // counter.component.ts
 import { Component } from '@angular/core';
 

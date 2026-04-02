@@ -141,7 +141,7 @@ docker run -p 3000:3000 my-next-app
 
 **Why:** Deploy to any static hosting (GitHub Pages, S3, Netlify).
 
-```tsx
+```jsx
 // next.config.js
 const nextConfig = {
   output: 'export',   // Enable static export
@@ -180,7 +180,7 @@ GOOGLE_CLIENT_ID=123456.apps.googleusercontent.com
 | `NEXT_PUBLIC_` | Both server AND client (browser) | Public API URLs, Google Analytics ID |
 | No prefix | Server ONLY | Database URLs, API keys, secrets |
 
-```tsx
+```jsx
 // ✅ Server Component — can access ALL env vars
 const dbUrl = process.env.DATABASE_URL; // Works
 

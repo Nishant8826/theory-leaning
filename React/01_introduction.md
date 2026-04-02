@@ -7,10 +7,6 @@
 
 React is a **JavaScript library** made by Facebook (Meta) that helps you build **user interfaces** — basically the part of a website/app that users see and click on.
 
-Think of it like this:
-
-> Imagine you're building a house. Instead of building the entire house at once, you build **rooms (components)** separately — kitchen, bedroom, bathroom — and then assemble them together. React works the same way!
-
 ---
 
 ## 🌍 Real-World Analogy
@@ -42,7 +38,7 @@ Think of it like this:
 ```
 
 ### With React:
-```tsx
+```jsx
 import { useState } from "react";
 
 function Counter() {
@@ -56,6 +52,11 @@ function Counter() {
   );
 }
 ```
+
+- **What:** This is a basic React Component using the `useState` hook to manage dynamic data.
+- **Why:** React handles DOM updates automatically instead of writing tedious `document.getElementById` queries.
+- **How:** `useState(0)` initializes state, and `setCount` updates it. React automatically detects the state change and re-renders only the changed DOM node.
+- **Impact:** Less boilerplate code, fewer bugs, and highly maintainable components for large-scale applications.
 
 **Difference:** In React, you don't manually update the DOM. React does it automatically when data changes. 🎉
 
@@ -125,6 +126,19 @@ This process is called **Reconciliation** and it makes React very fast!
 2. Visit a website you use daily. Try to identify what the "components" might be (navbar, card, sidebar, etc.)
 3. Write down: What problem do you think React solves compared to plain HTML + JS?
 4. Bookmark this folder — you'll be coming back to it a lot! 😄
+
+---
+
+## 🎤 Interview Questions
+
+**Q1: What is the Virtual DOM and how does it differ from the Real DOM?**
+**Answer:** The Virtual DOM is a lightweight memory representation of the Real DOM. React compares the new Virtual DOM with the old one (Diffing) and updates only the changed parts in the Real DOM (Reconciliation), making it much faster.
+
+**Q2: What is the difference between a Library and a Framework? Why is React considered a library?**
+**Answer:** A framework (like Angular) dictates how you write the application and comes with built-in routing, HTTP modules, etc. React is a library because it only handles the UI (the View layer) and leaves routing and data management to other packages you choose.
+
+**Q3: What are React Components?**
+**Answer:** Components are independent, reusable building blocks of a React application. They accept inputs (props) and return React elements describing what should appear on the screen.
 
 ---
 

@@ -22,7 +22,7 @@ npm install react-router-dom
 
 ## 🔧 Basic Setup (React Router v6)
 
-```tsx
+```jsx
 // main.jsx or App.jsx
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 
@@ -71,7 +71,7 @@ function App() {
 
 ## 🔄 `<Link>` vs `<NavLink>` vs `<a>`
 
-```tsx
+```jsx
 // ❌ Regular <a> — reloads the page!
 <a href="/about">About</a>
 
@@ -103,7 +103,7 @@ src/
 ```
 
 ### App.jsx
-```tsx
+```jsx
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
@@ -127,7 +127,7 @@ function App() {
 ```
 
 ### Navbar.jsx
-```tsx
+```jsx
 import { NavLink } from "react-router-dom";
 
 function Navbar() {
@@ -148,7 +148,7 @@ function Navbar() {
 
 ## 🔗 Dynamic Routes (URL Parameters)
 
-```tsx
+```jsx
 // Route definition
 <Route path="/products/:id" element={<ProductDetail />} />
 
@@ -171,7 +171,7 @@ function ProductDetail() {
 
 ## 🔍 Query Parameters (Search/Filter)
 
-```tsx
+```jsx
 // URL: /search?q=react&category=books
 import { useSearchParams } from "react-router-dom";
 
@@ -195,7 +195,7 @@ function SearchPage() {
 
 ## 🧭 Programmatic Navigation
 
-```tsx
+```jsx
 import { useNavigate } from "react-router-dom";
 
 function LoginPage() {
@@ -216,7 +216,7 @@ function LoginPage() {
 
 ## 🔒 Protected Routes
 
-```tsx
+```jsx
 function ProtectedRoute({ children }) {
   const { user } = useAuth(); // From Context
 
@@ -242,7 +242,7 @@ function ProtectedRoute({ children }) {
 
 ## 📁 Nested Routes
 
-```tsx
+```jsx
 <Routes>
   <Route path="/dashboard" element={<DashboardLayout />}>
     <Route index element={<DashboardHome />} />         {/* /dashboard */}

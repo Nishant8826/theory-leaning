@@ -142,7 +142,7 @@ npm run deploy
 ```
 
 **Note:** For Vite, set the base in `vite.config.js`:
-```ts
+```javascript
 export default {
   base: "/your-repo-name/",
 }

@@ -29,7 +29,7 @@ Without Context, you'd have to pass `user` as a prop through **every** level, ev
 ## 🧰 Context API: 3 Steps
 
 ### Step 1: Create the Context
-```tsx
+```jsx
 // UserContext.js
 import { createContext } from "react";
 
@@ -38,7 +38,7 @@ export default UserContext;
 ```
 
 ### Step 2: Provide the Context (Wrap components)
-```tsx
+```jsx
 // App.jsx
 import UserContext from "./UserContext";
 
@@ -55,7 +55,7 @@ function App() {
 ```
 
 ### Step 3: Consume the Context (Use it anywhere!)
-```tsx
+```jsx
 // UserAvatar.jsx — deep inside the tree, no prop drilling!
 import { useContext } from "react";
 import UserContext from "./UserContext";
@@ -76,7 +76,7 @@ function UserAvatar() {
 
 ## 🌍 Real-World Example: Theme Switcher
 
-```tsx
+```jsx
 // ThemeContext.js
 import { createContext, useContext, useState } from "react";
 
@@ -101,7 +101,7 @@ export function useTheme() {
 }
 ```
 
-```tsx
+```jsx
 // App.jsx
 import { ThemeProvider } from "./ThemeContext";
 
@@ -116,7 +116,7 @@ function App() {
 }
 ```
 
-```tsx
+```jsx
 // Navbar.jsx — can use theme without any props!
 import { useTheme } from "./ThemeContext";
 
@@ -134,7 +134,7 @@ function Navbar() {
 }
 ```
 
-```tsx
+```jsx
 // Footer.jsx — also uses theme without any props!
 import { useTheme } from "./ThemeContext";
 
@@ -152,7 +152,7 @@ function Footer() {
 
 ## 🔐 Real-World Example: Auth Context
 
-```tsx
+```jsx
 // AuthContext.js
 import { createContext, useContext, useState } from "react";
 
@@ -176,7 +176,7 @@ export function useAuth() {
 }
 ```
 
-```tsx
+```jsx
 // LoginPage.jsx
 import { useAuth } from "./AuthContext";
 
@@ -215,7 +215,7 @@ function Navbar() {
 
 You can have multiple providers — just nest them:
 
-```tsx
+```jsx
 function App() {
   return (
     <AuthProvider>

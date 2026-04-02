@@ -45,7 +45,7 @@ JavaScript runs and builds the page
 User finally sees the content (SLOW!)
 ```
 
-```tsx
+```jsx
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -94,7 +94,7 @@ Sends full HTML to browser (FAST first paint!)
 React hydrates the page (makes it interactive)
 ```
 
-```tsx
+```jsx
 // App Router — SSR by default with dynamic data
 // app/feed/page.js
 export default async function FeedPage() {
@@ -117,7 +117,7 @@ export default async function FeedPage() {
 }
 ```
 
-```tsx
+```jsx
 // Pages Router (Legacy) — SSR with getServerSideProps
 export async function getServerSideProps() {
   const res = await fetch('https://api.example.com/feed');
@@ -163,7 +163,7 @@ User requests page → CDN instantly serves pre-built HTML
 React hydrates the page
 ```
 
-```tsx
+```jsx
 // App Router — SSG is DEFAULT behavior
 // app/about/page.js
 export default function AboutPage() {
@@ -177,7 +177,7 @@ export default function AboutPage() {
 // This page is automatically statically generated at build time!
 ```
 
-```tsx
+```jsx
 // SSG with data fetching (fetch is cached by default)
 // app/blog/page.js
 export default async function BlogPage() {
@@ -193,7 +193,7 @@ export default async function BlogPage() {
 }
 ```
 
-```tsx
+```jsx
 // SSG with dynamic routes — generateStaticParams
 // app/blog/[slug]/page.js
 export async function generateStaticParams() {
@@ -251,7 +251,7 @@ New HTML replaces the old cached version
 Next user gets the updated page
 ```
 
-```tsx
+```jsx
 // App Router — ISR with revalidate
 // app/products/page.js
 export default async function ProductsPage() {
@@ -273,7 +273,7 @@ export default async function ProductsPage() {
 }
 ```
 
-```tsx
+```jsx
 // Pages Router (Legacy) — ISR with revalidate
 export async function getStaticProps() {
   const res = await fetch('https://api.example.com/products');

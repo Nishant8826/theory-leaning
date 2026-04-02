@@ -97,7 +97,7 @@ my-app/
 
 This is the **starting point** of your React app. It tells React: *"Hey, put the whole app inside this HTML div!"*
 
-```tsx
+```jsx
 // main.jsx (Vite)
 import React from 'react'
 import ReactDOM from 'react-dom/client'

@@ -23,7 +23,7 @@ A component is a **reusable piece of UI**. Think of it like a LEGO block — you
 
 A simple JavaScript function that returns JSX.
 
-```tsx
+```jsx
 // Simple functional component
 function Greeting() {
   return <h1>Hello, World! 👋</h1>;
@@ -39,7 +39,7 @@ const Greeting = () => {
 
 A class that extends `React.Component` and has a `render()` method.
 
-```tsx
+```jsx
 import React, { Component } from "react";
 
 class Greeting extends Component {
@@ -71,7 +71,7 @@ class Greeting extends Component {
 
 1. **Component name MUST start with a Capital letter**
 
-```tsx
+```jsx
 // ❌ WRONG - React will treat it as HTML tag
 function mybutton() { return <button>Click</button>; }
 
@@ -92,7 +92,7 @@ src/
 
 3. **Always export your component**
 
-```tsx
+```jsx
 // Named export
 export function Greeting() {
   return <h1>Hello!</h1>;
@@ -110,7 +110,7 @@ export default Greeting;
 ## 🌍 Real-World Component Example
 
 ### App.jsx (assembles everything)
-```tsx
+```jsx
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import Footer from "./components/Footer";
@@ -129,7 +129,7 @@ export default App;
 ```
 
 ### Navbar.jsx
-```tsx
+```jsx
 function Navbar() {
   return (
     <nav className="navbar">
@@ -147,7 +147,7 @@ export default Navbar;
 ```
 
 ### Footer.jsx
-```tsx
+```jsx
 function Footer() {
   return (
     <footer>
@@ -165,7 +165,7 @@ export default Footer;
 
 You can nest components inside other components — this is called **composition**.
 
-```tsx
+```jsx
 function Button() {
   return <button className="btn">Click Me</button>;
 }

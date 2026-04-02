@@ -27,7 +27,7 @@ When a user **clicks a button**, **types in an input**, **submits a form**, or *
 
 ## 🖱️ Common Events in React
 
-```tsx
+```jsx
 <button onClick={handleClick}>Click</button>
 <input onChange={handleChange} />
 <form onSubmit={handleSubmit}>...</form>
@@ -41,7 +41,7 @@ When a user **clicks a button**, **types in an input**, **submits a form**, or *
 
 ## 🔧 Basic Click Event
 
-```tsx
+```jsx
 function AlertButton() {
   // Define the handler (event function)
   const handleClick = () => {
@@ -61,7 +61,7 @@ function AlertButton() {
 
 React passes an **event object** to your handler automatically:
 
-```tsx
+```jsx
 function InputLogger() {
   const handleChange = (event) => {
     console.log("Value:", event.target.value);
@@ -90,7 +90,7 @@ Common `event` properties:
 
 ### Example 1: Button with State
 
-```tsx
+```jsx
 function LikeButton() {
   const [liked, setLiked] = useState(false);
 
@@ -111,7 +111,7 @@ function LikeButton() {
 
 ### Example 2: Controlled Input
 
-```tsx
+```jsx
 function SearchBar() {
   const [query, setQuery] = useState("");
 
@@ -135,7 +135,7 @@ function SearchBar() {
 
 ### Example 3: Form Submit (preventDefault)
 
-```tsx
+```jsx
 function LoginForm() {
   const [email, setEmail] = useState("");
 
@@ -160,7 +160,7 @@ function LoginForm() {
 
 ### Example 4: Passing Arguments to Handler
 
-```tsx
+```jsx
 function ProductList() {
   const products = ["Apple", "Banana", "Orange"];
 
@@ -184,7 +184,7 @@ function ProductList() {
 
 ### Example 5: Keyboard Event
 
-```tsx
+```jsx
 function EnterPress() {
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -207,7 +207,7 @@ function EnterPress() {
 
 Events "bubble up" from child to parent by default:
 
-```tsx
+```jsx
 function Parent() {
   return (
     <div onClick={() => console.log("Parent clicked!")}>

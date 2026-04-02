@@ -26,7 +26,7 @@ Every React component goes through a **lifecycle** — it gets created, shows on
 
 In modern React, you handle lifecycle with `useEffect`:
 
-```tsx
+```jsx
 import { useState, useEffect } from "react";
 
 function MyComponent() {
@@ -62,7 +62,7 @@ function MyComponent() {
 
 Even though class components are old, you might encounter them in legacy code:
 
-```tsx
+```jsx
 import React, { Component } from "react";
 
 class MyComponent extends Component {
@@ -120,7 +120,7 @@ class MyComponent extends Component {
 
 ### Example 1: Real Mounting/Unmounting
 
-```tsx
+```jsx
 function Parent() {
   const [showChild, setShowChild] = useState(true);
 
@@ -150,7 +150,7 @@ function ChildWithLifecycle() {
 
 ### Example 2: Data Fetching on Mount
 
-```tsx
+```jsx
 function UserProfile({ userId }) {
   const [user, setUser] = useState(null);
 
@@ -180,7 +180,7 @@ function UserProfile({ userId }) {
 
 ### Example 3: WebSocket Connection
 
-```tsx
+```jsx
 function ChatRoom({ roomId }) {
   const [messages, setMessages] = useState([]);
 

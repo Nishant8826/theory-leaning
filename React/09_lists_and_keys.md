@@ -16,7 +16,7 @@ A "list" in React means **displaying an array of data** as multiple UI elements.
 
 The most common way to render a list in React is using the `.map()` array method:
 
-```tsx
+```jsx
 function FruitList() {
   const fruits = ["🍎 Apple", "🍌 Banana", "🍊 Orange", "🍇 Grapes"];
 
@@ -44,7 +44,7 @@ A `key` is a **unique identifier** you give to each item in a list. React uses i
 
 ## ✅ Good Keys vs ❌ Bad Keys
 
-```tsx
+```jsx
 // ❌ BAD: Using array index as key (causes bugs when order changes)
 {items.map((item, index) => <li key={index}>{item}</li>)}
 
@@ -63,7 +63,7 @@ A `key` is a **unique identifier** you give to each item in a list. React uses i
 
 ### Example 1: Product List (From Array of Objects)
 
-```tsx
+```jsx
 const products = [
   { id: 1, name: "iPhone 15", price: "₹79,999", qty: 5 },
   { id: 2, name: "MacBook Air", price: "₹1,14,900", qty: 3 },
@@ -88,7 +88,7 @@ function ProductList() {
 
 ### Example 2: Dynamic Todo List
 
-```tsx
+```jsx
 function TodoList() {
   const [todos, setTodos] = useState([
     { id: 1, text: "Buy groceries", done: false },
@@ -120,7 +120,7 @@ function TodoList() {
 
 ### Example 3: Table from API-like Data
 
-```tsx
+```jsx
 const users = [
   { id: 101, name: "Nishant", email: "nishant@dev.com", role: "Admin" },
   { id: 102, name: "Priya", email: "priya@dev.com", role: "User" },
@@ -157,7 +157,7 @@ function UserTable() {
 
 ## 🔗 Nested Lists
 
-```tsx
+```jsx
 const categories = [
   {
     id: 1,
@@ -193,7 +193,7 @@ function SkillTree() {
 
 ## 🔍 Filtering Lists
 
-```tsx
+```jsx
 function FilteredList() {
   const [filter, setFilter] = useState("all");
 

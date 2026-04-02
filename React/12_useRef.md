@@ -23,7 +23,7 @@ Think of it as a secret variable that React doesn't watch.
 
 ## 📌 Syntax
 
-```tsx
+```jsx
 import { useRef } from "react";
 
 const myRef = useRef(initialValue);
@@ -38,7 +38,7 @@ myRef.current
 
 ### Example: Auto-focus an input
 
-```tsx
+```jsx
 function AutoFocusInput() {
   const inputRef = useRef(null);
 
@@ -52,7 +52,7 @@ function AutoFocusInput() {
 
 ### Example: Scroll to element
 
-```tsx
+```jsx
 function ScrollToSection() {
   const sectionRef = useRef(null);
 
@@ -76,7 +76,7 @@ function ScrollToSection() {
 
 ### Example: Read input value without controlled component
 
-```tsx
+```jsx
 function UncontrolledInput() {
   const inputRef = useRef();
 
@@ -99,7 +99,7 @@ function UncontrolledInput() {
 
 ### Example: Count renders (without causing infinite loop)
 
-```tsx
+```jsx
 function RenderCounter() {
   const [count, setCount] = useState(0);
   const renderCount = useRef(0);
@@ -121,7 +121,7 @@ function RenderCounter() {
 
 ### Example: Store previous value
 
-```tsx
+```jsx
 function PreviousValue() {
   const [count, setCount] = useState(0);
   const prevCount = useRef(0);
@@ -142,7 +142,7 @@ function PreviousValue() {
 
 ### Example: Store a timer ID
 
-```tsx
+```jsx
 function StopwatchApp() {
   const [time, setTime] = useState(0);
   const [running, setRunning] = useState(false);
@@ -195,7 +195,7 @@ function StopwatchApp() {
 
 ## 🆚 useRef vs Variables
 
-```tsx
+```jsx
 // Normal variable — RESETS to 0 on every render!
 let count = 0;
 

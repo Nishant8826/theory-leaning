@@ -14,13 +14,13 @@ Environment variables are **configuration values** that change based on where yo
 
 ## ⚠️ Why Not Hardcode API URLs?
 
-```tsx
+```jsx
 // ❌ BAD — don't hardcode!
 const API_URL = "http://localhost:5000/api"; // Won't work in production!
 const API_KEY = "sk-abc123-super-secret-key"; // Exposed in code!
 ```
 
-```tsx
+```jsx
 // ✅ GOOD — use environment variables!
 const API_URL = import.meta.env.VITE_API_URL;
 const API_KEY = import.meta.env.VITE_API_KEY;
@@ -60,7 +60,7 @@ VITE_FEATURE_DARK_MODE=true
 
 ### Using them in React:
 
-```tsx
+```jsx
 // Access with import.meta.env
 const apiUrl = import.meta.env.VITE_API_URL;
 const appName = import.meta.env.VITE_APP_NAME;
@@ -83,7 +83,7 @@ REACT_APP_API_URL=https://api.myapp.com
 REACT_APP_NAME=My React App
 ```
 
-```tsx
+```jsx
 // Access with process.env
 const apiUrl = process.env.REACT_APP_API_URL;
 console.log(process.env.NODE_ENV); // "development" or "production"
@@ -122,7 +122,7 @@ VITE_DEBUG=false
 ## 🌍 Real-World Usage Example
 
 ### services/api.js
-```tsx
+```jsx
 import axios from "axios";
 
 const api = axios.create({
@@ -137,7 +137,7 @@ export default api;
 ```
 
 ### App.jsx
-```tsx
+```jsx
 function App() {
   const isDev = import.meta.env.DEV;
 
@@ -155,7 +155,7 @@ function App() {
 ```
 
 ### Component using env
-```tsx
+```jsx
 function GoogleMap({ location }) {
   const mapKey = import.meta.env.VITE_GOOGLE_MAPS_KEY;
   const mapUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${location}&key=${mapKey}`;

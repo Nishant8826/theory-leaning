@@ -20,7 +20,7 @@ Parent sends data → via Props → Child receives and displays it
 
 Imagine you have a `UserCard` component. Instead of hardcoding data, you pass it via props:
 
-```tsx
+```jsx
 // Parent Component (App.jsx)
 function App() {
   return (
@@ -33,7 +33,7 @@ function App() {
 }
 ```
 
-```tsx
+```jsx
 // Child Component (UserCard.jsx)
 function UserCard({ name, role, age }) {
   return (
@@ -67,7 +67,7 @@ UserCard (Child) — receives and uses the props
 ## 🔧 Using Props: Two Ways
 
 ### Way 1: Destructuring (Recommended ✅)
-```tsx
+```jsx
 function Greeting({ name, message }) {
   return <p>{message}, {name}!</p>;
 }
@@ -77,7 +77,7 @@ function Greeting({ name, message }) {
 ```
 
 ### Way 2: Using the `props` object
-```tsx
+```jsx
 function Greeting(props) {
   return <p>{props.message}, {props.name}!</p>;
 }
@@ -92,7 +92,7 @@ Both work, but **destructuring is cleaner and more common**.
 
 ## 🎨 Passing Different Prop Types
 
-```tsx
+```jsx
 function Profile({ name, age, isAdmin, hobbies, address }) {
   return (
     <div>
@@ -125,7 +125,7 @@ function Profile({ name, age, isAdmin, hobbies, address }) {
 
 What if a parent doesn't pass a prop? Use **default values**!
 
-```tsx
+```jsx
 function Button({ label = "Click Me", color = "blue" }) {
   return (
     <button style={{ backgroundColor: color }}>
@@ -147,7 +147,7 @@ function Button({ label = "Click Me", color = "blue" }) {
 
 You can pass **JSX content** between component tags using the special `children` prop:
 
-```tsx
+```jsx
 function Card({ children, title }) {
   return (
     <div className="card">

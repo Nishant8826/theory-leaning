@@ -30,7 +30,7 @@ Typing in input → onChange fires → setState updates → React re-renders →
 
 ## 🔧 Basic Controlled Input
 
-```tsx
+```jsx
 function ControlledInput() {
   const [value, setValue] = useState("");
 
@@ -52,7 +52,7 @@ function ControlledInput() {
 
 ## 🌍 Real-World Form Example: Registration Form
 
-```tsx
+```jsx
 function RegistrationForm() {
   const [formData, setFormData] = useState({
     name: "",
@@ -178,6 +178,11 @@ function RegistrationForm() {
 }
 ```
 
+- **What:** A comprehensive, multi-input controlled form structure handling multiple distinct data types synchronously.
+- **Why:** Creating individual `useState` hooks and `handleChange` functions for every single input is extremely repetitive and slow.
+- **How:** We use a centralized `formData` state object and a dynamic `handleChange` function utilizing the compute property `[name]: value` pattern to update specific fields.
+- **Impact:** Delivers highly scalable forms, clean code, and allows robust and structured form submission logic with validation built-in.
+
 ---
 
 ## 📋 Form Element Cheat Sheet
@@ -194,7 +199,7 @@ function RegistrationForm() {
 
 ## 📐 Textarea
 
-```tsx
+```jsx
 function CommentBox() {
   const [comment, setComment] = useState("");
 
@@ -242,6 +247,19 @@ function CommentBox() {
 3. Add real-time validation (password must be 8+ chars, email must have @)
 4. Build a **survey form** with radio buttons and a dropdown
 5. After submit, show a "Thank you!" message and clear the form
+
+---
+
+## 🎤 Interview Questions
+
+**Q1: What is the difference between a Controlled and an Uncontrolled component in React?**
+**Answer:** In a controlled component, form data is handled by the React component's state (`value` and `onChange`). In an uncontrolled component, form data relies on the DOM itself to manage the value, commonly accessed via the `useRef` hook.
+
+**Q2: How do you handle multiple input fields efficiently inside a controlled React form?**
+**Answer:** Instead of creating a separate state Hook and onChange handler for every input, we establish one state object to hold all fields. We assign a `name` attribute to each input matching the state object key, and use a unified `handleChange` function utilizing `[e.target.name]: e.target.value`.
+
+**Q3: What role does `e.preventDefault()` play in forms?**
+**Answer:** Standard HTML forms trigger a full page reload when a submit button is clicked. By calling `e.preventDefault()` inside the `onSubmit` handler, we stop that default reload behavior so we can evaluate the data via React and submit it behind the scenes (e.g. via an API call).
 
 ---
 

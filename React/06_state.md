@@ -26,7 +26,7 @@
 
 To use state in a functional component, use the `useState` hook:
 
-```tsx
+```jsx
 import { useState } from "react";
 
 function Counter() {
@@ -55,7 +55,7 @@ function Counter() {
 
 ### Example 1: Toggle (Show/Hide)
 
-```tsx
+```jsx
 function FAQ() {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -75,7 +75,7 @@ function FAQ() {
 
 ### Example 2: Like Button
 
-```tsx
+```jsx
 function LikeButton() {
   const [likes, setLikes] = useState(0);
   const [liked, setLiked] = useState(false);
@@ -100,7 +100,7 @@ function LikeButton() {
 
 ### Example 3: Input Field (Text State)
 
-```tsx
+```jsx
 function NameInput() {
   const [name, setName] = useState("");
 
@@ -124,7 +124,7 @@ function NameInput() {
 
 You can store objects in state too, but always **spread** the old values when updating:
 
-```tsx
+```jsx
 function UserForm() {
   const [user, setUser] = useState({
     name: "",
@@ -154,7 +154,7 @@ function UserForm() {
 
 ## 📋 State with Arrays
 
-```tsx
+```jsx
 function TodoList() {
   const [todos, setTodos] = useState(["Buy milk", "Go gym"]);
   const [input, setInput] = useState("");
@@ -191,7 +191,7 @@ function TodoList() {
 ## ⚠️ Important Rules of State
 
 ### 1. NEVER mutate state directly
-```tsx
+```jsx
 // ❌ WRONG - modifying state directly won't trigger re-render
 count = count + 1;
 todos.push("New item");
@@ -202,7 +202,7 @@ setTodos([...todos, "New item"]);
 ```
 
 ### 2. State updates may be asynchronous
-```tsx
+```jsx
 // ❌ May cause bugs when relying on previous value
 setCount(count + 1);
 setCount(count + 1);  // second one uses stale count!

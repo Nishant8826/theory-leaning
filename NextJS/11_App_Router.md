@@ -108,7 +108,7 @@ RootLayout
 
 Every component in the App Router is a Server Component **unless** you add `"use client"`.
 
-```tsx
+```jsx
 // ✅ Server Component (default)
 // This code NEVER reaches the user's browser
 export default async function UsersPage() {
@@ -130,7 +130,7 @@ export default async function UsersPage() {
 
 ### 2. Nested Layouts (Persistent)
 
-```tsx
+```jsx
 // app/layout.js — Global: Navbar + Footer
 export default function RootLayout({ children }) {
   return (
@@ -145,7 +145,7 @@ export default function RootLayout({ children }) {
 }
 ```
 
-```tsx
+```jsx
 // app/dashboard/layout.js — Dashboard: Sidebar
 export default function DashboardLayout({ children }) {
   return (
@@ -170,7 +170,7 @@ This means sidebar state, scroll position, and input values are **preserved**.
 
 ### 3. Loading & Error States (Automatic)
 
-```tsx
+```jsx
 // app/dashboard/loading.js
 export default function Loading() {
   return (
@@ -183,7 +183,7 @@ export default function Loading() {
 // Automatically wraps the page in a Suspense boundary
 ```
 
-```tsx
+```jsx
 // app/dashboard/error.js
 "use client"; // Error boundaries must be Client Components
 
@@ -245,7 +245,7 @@ app/
 │   └── loading.js
 ```
 
-```tsx
+```jsx
 // app/layout.js
 export default function Layout({ children, team, analytics }) {
   return (

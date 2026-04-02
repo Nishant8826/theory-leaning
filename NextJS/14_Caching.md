@@ -57,7 +57,7 @@ Next.js has **4 layers of caching**. Understanding them is essential.
 
 **Why?** In a component tree, multiple components might need the same data. Without memoization, the same API would be called 3–4 times.
 
-```tsx
+```jsx
 // These components are separate but both need user data
 
 // components/UserHeader.js
@@ -85,7 +85,7 @@ async function UserSidebar() {
 
 **Why?** Avoid calling external APIs or databases repeatedly for the same data.
 
-```tsx
+```jsx
 // Cached FOREVER (until revalidation or rebuild)
 const res = await fetch('https://api.example.com/products');
 
@@ -114,7 +114,7 @@ const res = await fetch('https://api.example.com/products', {
 
 **Why?** If a page is fully static (SSG), why re-render it on every request? Serve the pre-built HTML.
 
-```tsx
+```jsx
 // This page is fully static → Full Route Cache applies
 export default function AboutPage() {
   return <h1>About Us</h1>;
@@ -122,7 +122,7 @@ export default function AboutPage() {
 // The rendered HTML is cached → served instantly from CDN
 ```
 
-```tsx
+```jsx
 // This page is dynamic → Full Route Cache is SKIPPED
 export default async function FeedPage() {
   const res = await fetch('https://api.example.com/feed', {
@@ -161,7 +161,7 @@ User clicks Back → /products served from Router Cache → INSTANT! (no server 
 
 Sometimes you NEED fresh data on every request:
 
-```tsx
+```jsx
 // Method 1: Per-fetch opt-out
 await fetch(url, { cache: 'no-store' });
 
@@ -176,7 +176,7 @@ export const revalidate = 0;
 
 Instead of waiting for the timer to expire, manually trigger cache refresh:
 
-```tsx
+```jsx
 // app/actions/posts.js
 "use server";
 
@@ -196,7 +196,7 @@ export async function publishPost(formData) {
 
 For tag-based revalidation, tag your fetches:
 
-```tsx
+```jsx
 // Fetch with a tag
 const res = await fetch('https://api.example.com/posts', {
   next: { tags: ['posts'] }
@@ -210,7 +210,7 @@ A CMS admin publishes a new blog post → calls `revalidateTag('posts')` → the
 
 ### 3. Revalidation via API (Webhook Pattern)
 
-```tsx
+```jsx
 // app/api/revalidate/route.js
 import { revalidateTag } from 'next/cache';
 import { NextResponse } from 'next/server';

@@ -7,11 +7,7 @@
 
 JSX stands for **JavaScript XML**. It lets you write **HTML-like code inside JavaScript**.
 
-Think of it like this:
-
-> Normally in a restaurant, the kitchen (JavaScript) and the menu display (HTML) are separate. JSX is like a chef who can write the menu directly **while cooking** — combining both in one place!
-
-```tsx
+```jsx
 // This is JSX — looks like HTML but it's inside JavaScript!
 const element = <h1>Hello, World!</h1>;
 ```
@@ -35,7 +31,7 @@ const element = <h1>Hello, World!</h1>;
 
 ### Rule 1: Every JSX must return ONE parent element
 
-```tsx
+```jsx
 // ❌ WRONG - two sibling elements at top level
 return (
   <h1>Hello</h1>
@@ -61,7 +57,7 @@ return (
 
 ### Rule 2: Use `className` instead of `class`
 
-```tsx
+```jsx
 // ❌ WRONG
 <div class="container">Hello</div>
 
@@ -71,7 +67,7 @@ return (
 
 ### Rule 3: Self-close all empty tags
 
-```tsx
+```jsx
 // ❌ WRONG
 <input type="text">
 <img src="photo.jpg">
@@ -83,7 +79,7 @@ return (
 
 ### Rule 4: Use `{}` to write JavaScript inside JSX
 
-```tsx
+```jsx
 const name = "Nishant";
 const age = 25;
 
@@ -98,7 +94,7 @@ return (
 
 ### Rule 5: Inline styles use double curly braces `{{}}`
 
-```tsx
+```jsx
 // ❌ WRONG
 <p style="color: red; font-size: 18px">Hello</p>
 
@@ -114,7 +110,7 @@ return (
 
 ### Example 1: Displaying User Info
 
-```tsx
+```jsx
 function UserCard() {
   const user = {
     name: "Nishant",
@@ -132,9 +128,14 @@ function UserCard() {
 }
 ```
 
+- **What:** Writing conditional variables and dynamic data inside a component.
+- **Why:** Standard HTML is static; JSX allows embedding JavaScript logic seamlessly to create data-driven structures.
+- **How:** We use `{}` interpolation to access `user` object properties and a ternary operator for the conditional `isActive` rendering.
+- **Impact:** Enables clean rendering of rich, dynamic components without complex DOM manipulation.
+
 ### Example 2: Dynamic List
 
-```tsx
+```jsx
 function FruitList() {
   const fruits = ["🍎 Apple", "🍌 Banana", "🍊 Orange"];
 
@@ -148,13 +149,18 @@ function FruitList() {
 }
 ```
 
+- **What:** Looping through an array to generate a list of JSX elements.
+- **Why:** To efficiently render data lists without manually copying and pasting repetitive markup.
+- **How:** We use the array `.map()` function inside `{}` to iterate over the `fruits` and return an `<li>` for each.
+- **Impact:** Drastically reduces code duplication and dynamically handles lists of any size.
+
 ---
 
 ## 🔄 How JSX Works Behind the Scenes
 
 JSX is not real HTML. It gets **compiled** (transformed) into regular JavaScript by **Babel** or **Vite**.
 
-```tsx
+```jsx
 // What you write (JSX):
 const element = <h1 className="title">Hello</h1>;
 
@@ -195,6 +201,22 @@ You never have to write `React.createElement()` yourself — JSX handles it! �
 3. Try using a ternary operator to show "Good Morning 🌅" or "Good Night 🌙" based on a variable
 4. Apply inline styles to a JSX element using the double `{{}}` syntax
 5. Try using a Fragment `<>...</>` and see that no extra `<div>` appears in the browser's DevTools
+
+---
+
+## 🎤 Interview Questions
+
+**Q1: What is JSX and why do we use it in React?**
+**Answer:** JSX is a syntax extension for JavaScript that allows you to write HTML-like structures directly inside JS code. We use it because it makes writing React components highly readable and intuitive compared to writing raw `React.createElement()` functions.
+
+**Q2: Can web browsers read JSX directly?**
+**Answer:** No. Browsers can only read standard JavaScript. JSX must be compiled down to standard JavaScript (specifically `React.createElement` calls) using a tool like Babel or Vite before the browser executes it.
+
+**Q3: Why must JSX return a single parent element?**
+**Answer:** Because JSX is translated into functional calls under the hood (`React.createElement()`), a function can only return one single object value at a time. A wrapper `<div />` or a React Fragment `<></>` helps bundle multiple elements into one return value.
+
+**Q4: How do you add CSS inline styles in JSX?**
+**Answer:** You must pass a JavaScript object containing camelCased CSS properties. This requires double curly braces: the first pair tells JSX to evaluate a JavaScript expression, and the second pair represents the actual JavaScript object (e.g. `style={{ color: 'red' }}`).
 
 ---
 

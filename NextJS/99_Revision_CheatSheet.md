@@ -47,7 +47,7 @@
 | **CSR** | In browser | Client | ❌ | Slow initial | Dashboards, admin panels |
 
 **Quick Fetch Rules:**
-```tsx
+```jsx
 fetch(url)                              // → SSG (cached forever)
 fetch(url, { cache: 'no-store' })       // → SSR (fresh every request)
 fetch(url, { next: { revalidate: 60 }}) // → ISR (cached 60s)
@@ -67,7 +67,7 @@ fetch(url, { next: { revalidate: 60 }}) // → ISR (cached 60s)
 
 ## 5. API Routes
 
-```tsx
+```jsx
 // app/api/users/route.js
 import { NextResponse } from 'next/server';
 
@@ -124,7 +124,7 @@ export async function POST(request) {
 
 ## 9. SEO
 
-```tsx
+```jsx
 // Static metadata
 export const metadata = {
   title: 'Page Title',
@@ -162,7 +162,7 @@ export async function generateMetadata({ params }) {
 
 ## 11. Middleware
 
-```tsx
+```jsx
 // middleware.js (project root)
 export function middleware(request) {
   if (!request.cookies.get('token')) {
@@ -177,7 +177,7 @@ export const config = { matcher: ['/dashboard/:path*'] };
 
 ## 12. Server Actions
 
-```tsx
+```jsx
 // Action file
 "use server";
 export async function createPost(formData) {

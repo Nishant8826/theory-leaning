@@ -28,7 +28,7 @@ API calls let your React app **communicate with a backend server** to get or sen
 ## 📡 Method 1: `fetch` API
 
 ### GET Request
-```tsx
+```jsx
 function UserList() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -64,7 +64,7 @@ function UserList() {
 ```
 
 ### POST Request with `fetch`
-```tsx
+```jsx
 const createPost = async () => {
   const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
     method: "POST",
@@ -93,7 +93,7 @@ npm install axios
 ```
 
 ### GET Request
-```tsx
+```jsx
 import axios from "axios";
 
 function UserList() {
@@ -120,7 +120,7 @@ function UserList() {
 ```
 
 ### Using async/await with axios
-```tsx
+```jsx
 function App() {
   const [posts, setPosts] = useState([]);
 
@@ -145,7 +145,7 @@ function App() {
 
 ## 🌍 Real-World CRUD Example
 
-```tsx
+```jsx
 import axios from "axios";
 
 const API = "https://jsonplaceholder.typicode.com/posts";
@@ -198,7 +198,7 @@ function PostManager() {
 
 Create a central axios instance so you don't repeat base URL and headers:
 
-```tsx
+```jsx
 // api/axiosInstance.js
 import axios from "axios";
 
@@ -219,7 +219,7 @@ api.interceptors.request.use((config) => {
 export default api;
 ```
 
-```tsx
+```jsx
 // Usage — clean and reusable!
 import api from "./api/axiosInstance";
 
@@ -231,7 +231,7 @@ const res = await api.post("/login", { email, password });
 
 ## ⏳ Loading States Pattern
 
-```tsx
+```jsx
 function DataComponent() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);

@@ -174,7 +174,7 @@ Client Component (opt-in with "use client"):
   - Needed for interactive UI
 ```
 
-```tsx
+```jsx
 // ✅ Server Component (default) — no directive needed
 export default async function ProductPage() {
   const res = await fetch('https://api.example.com/products');
@@ -188,7 +188,7 @@ export default async function ProductPage() {
 }
 ```
 
-```tsx
+```jsx
 // ✅ Client Component — needs "use client" at the top
 "use client";
 

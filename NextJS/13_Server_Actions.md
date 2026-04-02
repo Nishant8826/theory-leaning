@@ -39,7 +39,7 @@ A contact form on your website:
 
 ### Method 1: Inline Server Action (Inside a Server Component)
 
-```tsx
+```jsx
 // app/contact/page.js — Server Component
 export default function ContactPage() {
 
@@ -79,7 +79,7 @@ export default function ContactPage() {
 
 ### Method 2: Separate Action File (Recommended for Reuse)
 
-```tsx
+```jsx
 // app/actions/contact.js
 "use server";
 
@@ -108,7 +108,7 @@ export async function submitContactForm(formData) {
 }
 ```
 
-```tsx
+```jsx
 // app/contact/page.js
 import { submitContactForm } from '@/app/actions/contact';
 import ContactForm from '@/components/ContactForm';
@@ -123,7 +123,7 @@ export default function ContactPage() {
 }
 ```
 
-```tsx
+```jsx
 // components/ContactForm.js
 "use client";
 
@@ -179,7 +179,7 @@ export default function ContactForm({ action }) {
 
 After changing data (create, update, delete), you need to tell Next.js to refresh the cached data:
 
-```tsx
+```jsx
 "use server";
 
 import { revalidatePath } from 'next/cache';
@@ -201,7 +201,7 @@ export async function createPost(formData) {
 
 ### 3. Calling Server Actions from Client Components
 
-```tsx
+```jsx
 // app/actions/cart.js
 "use server";
 
@@ -221,7 +221,7 @@ export async function addToCart(productId) {
 }
 ```
 
-```tsx
+```jsx
 // components/AddToCartButton.js
 "use client";
 
@@ -256,7 +256,7 @@ export default function AddToCartButton({ productId }) {
 
 Show the expected result immediately, before the server confirms:
 
-```tsx
+```jsx
 "use client";
 
 import { useOptimistic } from 'react';
@@ -287,7 +287,7 @@ export default function LikeButton({ postId, initialLikes }) {
 
 Always validate input on the server — never trust the client:
 
-```tsx
+```jsx
 // app/actions/register.js
 "use server";
 
@@ -336,7 +336,7 @@ export async function registerUser(formData) {
 | **Update** | `<form action={updatePost}>` with hidden `id` field |
 | **Delete** | `<form action={deletePost}>` with hidden `id` field |
 
-```tsx
+```jsx
 // Delete example
 "use server";
 export async function deletePost(formData) {

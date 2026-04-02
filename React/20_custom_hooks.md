@@ -24,7 +24,7 @@ A **custom hook** is a function that you create yourself that uses built-in Reac
 ## 🔧 Why Create Custom Hooks?
 
 Without custom hooks:
-```tsx
+```jsx
 // ❌ Repeating the same fetch logic in every component!
 function UserList() {
   const [data, setData] = useState(null);
@@ -39,7 +39,7 @@ function UserList() {
 ```
 
 With custom hooks:
-```tsx
+```jsx
 // ✅ Extract to hook, use anywhere!
 const { data, loading, error } = useFetch("/api/users");
 ```
@@ -50,7 +50,7 @@ const { data, loading, error } = useFetch("/api/users");
 
 ### Hook 1: `useFetch` — Reusable Data Fetching
 
-```tsx
+```jsx
 // hooks/useFetch.js
 import { useState, useEffect } from "react";
 
@@ -88,7 +88,7 @@ function useFetch(url) {
 export default useFetch;
 ```
 
-```tsx
+```jsx
 // Usage — SO CLEAN!
 function UserList() {
   const { data: users, loading, error } = useFetch("https://jsonplaceholder.typicode.com/users");
@@ -109,7 +109,7 @@ function PostList() {
 
 ### Hook 2: `useLocalStorage` — Persist State in Browser
 
-```tsx
+```jsx
 // hooks/useLocalStorage.js
 import { useState } from "react";
 
@@ -139,7 +139,7 @@ function useLocalStorage(key, initialValue) {
 export default useLocalStorage;
 ```
 
-```tsx
+```jsx
 // Usage — works like useState but persists after refresh!
 function ThemeToggle() {
   const [theme, setTheme] = useLocalStorage("theme", "light");
@@ -156,7 +156,7 @@ function ThemeToggle() {
 
 ### Hook 3: `useDebounce` — Delay Input Actions
 
-```tsx
+```jsx
 // hooks/useDebounce.js
 import { useState, useEffect } from "react";
 
@@ -177,7 +177,7 @@ function useDebounce(value, delay = 500) {
 export default useDebounce;
 ```
 
-```tsx
+```jsx
 // Usage
 function SearchBar() {
   const [query, setQuery] = useState("");
@@ -197,7 +197,7 @@ function SearchBar() {
 
 ### Hook 4: `useCounter` — Reusable Counter Logic
 
-```tsx
+```jsx
 // hooks/useCounter.js
 import { useState } from "react";
 
@@ -214,7 +214,7 @@ function useCounter(initialValue = 0, step = 1) {
 export default useCounter;
 ```
 
-```tsx
+```jsx
 // Usage
 function Counter() {
   const { count, increment, decrement, reset } = useCounter(0, 5);
@@ -234,7 +234,7 @@ function Counter() {
 
 ### Hook 5: `useWindowSize` — Track Window Dimensions
 
-```tsx
+```jsx
 // hooks/useWindowSize.js
 import { useState, useEffect } from "react";
 
@@ -258,7 +258,7 @@ function useWindowSize() {
 export default useWindowSize;
 ```
 
-```tsx
+```jsx
 function ResponsiveLayout() {
   const { width } = useWindowSize();
 

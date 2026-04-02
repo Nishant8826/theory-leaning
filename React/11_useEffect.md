@@ -21,7 +21,7 @@
 
 ## 🔧 Basic Syntax
 
-```tsx
+```jsx
 import { useEffect } from "react";
 
 useEffect(() => {
@@ -53,7 +53,7 @@ The **dependency array** (second argument) controls **when** the effect runs:
 
 ### Pattern 1: Run ONCE (on mount) — `[]`
 
-```tsx
+```jsx
 function App() {
   const [data, setData] = useState(null);
 
@@ -69,7 +69,7 @@ function App() {
 
 ### Pattern 2: Run when value changes — `[value]`
 
-```tsx
+```jsx
 function Search() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
@@ -93,7 +93,7 @@ function Search() {
 
 ### Pattern 3: Cleanup (on unmount)
 
-```tsx
+```jsx
 function Timer() {
   const [seconds, setSeconds] = useState(0);
 
@@ -119,7 +119,7 @@ function Timer() {
 
 ### Example 1: Fetch API Data
 
-```tsx
+```jsx
 function UserList() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -147,7 +147,7 @@ function UserList() {
 
 ### Example 2: Update Document Title
 
-```tsx
+```jsx
 function PageTitle() {
   const [count, setCount] = useState(0);
 
@@ -161,7 +161,7 @@ function PageTitle() {
 
 ### Example 3: Window Resize Listener
 
-```tsx
+```jsx
 function WindowSize() {
   const [size, setSize] = useState({ width: window.innerWidth, height: window.innerHeight });
 
@@ -182,7 +182,7 @@ function WindowSize() {
 
 ### Example 4: Debounced Search (Advanced but Practical)
 
-```tsx
+```jsx
 function DebouncedSearch() {
   const [query, setQuery] = useState("");
   const [result, setResult] = useState("");
@@ -213,7 +213,7 @@ function DebouncedSearch() {
 
 You can have multiple `useEffect` hooks — each handles a different concern:
 
-```tsx
+```jsx
 function Dashboard() {
   useEffect(() => {
     // Fetch user data
@@ -244,7 +244,7 @@ function Dashboard() {
 - ✅ Always clean up timers, listeners, subscriptions in the return function
 - ✅ Use `async/await` inside useEffect with a wrapper function:
 
-```tsx
+```jsx
 useEffect(() => {
   const fetchData = async () => {
     const res = await fetch("/api/data");

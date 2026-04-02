@@ -55,7 +55,7 @@ todo-app/
 
 ### Step 1: `useTodos.js` — Custom Hook for All Logic
 
-```tsx
+```jsx
 // hooks/useTodos.js
 import { useState, useEffect } from "react";
 
@@ -107,7 +107,7 @@ export default useTodos;
 
 ### Step 2: `TodoInput.jsx`
 
-```tsx
+```jsx
 // components/TodoInput.jsx
 import { useState } from "react";
 
@@ -139,7 +139,7 @@ export default TodoInput;
 
 ### Step 3: `TodoItem.jsx`
 
-```tsx
+```jsx
 // components/TodoItem.jsx
 function TodoItem({ todo, onToggle, onDelete }) {
   return (
@@ -166,7 +166,7 @@ export default TodoItem;
 
 ### Step 4: `TodoList.jsx`
 
-```tsx
+```jsx
 // components/TodoList.jsx
 import TodoItem from "./TodoItem";
 
@@ -194,7 +194,7 @@ export default TodoList;
 
 ### Step 5: `FilterBar.jsx`
 
-```tsx
+```jsx
 // components/FilterBar.jsx
 function FilterBar({ filter, onFilter, remaining, onClearCompleted }) {
   return (
@@ -223,7 +223,7 @@ export default FilterBar;
 
 ### Step 6: `App.jsx` — Assemble
 
-```tsx
+```jsx
 // App.jsx
 import useTodos from "./hooks/useTodos";
 import TodoInput from "./components/TodoInput";
@@ -303,7 +303,7 @@ blog-app/
 ## 📄 Key Code Pieces
 
 ### `services/api.js`
-```tsx
+```jsx
 import axios from "axios";
 const api = axios.create({ baseURL: "https://jsonplaceholder.typicode.com" });
 export const getPosts = () => api.get("/posts");
@@ -313,7 +313,7 @@ export default api;
 ```
 
 ### `hooks/usePosts.js`
-```tsx
+```jsx
 import { useState, useEffect } from "react";
 import { getPosts } from "../services/api";
 
@@ -341,7 +341,7 @@ export default usePosts;
 ```
 
 ### `pages/Home.jsx`
-```tsx
+```jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import usePosts from "../hooks/usePosts";
@@ -377,7 +377,7 @@ export default Home;
 ```
 
 ### `pages/PostDetail.jsx`
-```tsx
+```jsx
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { getPost, getComments } from "../services/api";

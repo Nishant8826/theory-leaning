@@ -16,7 +16,7 @@ Conditional rendering means **showing or hiding parts of your UI** based on a co
 
 ### Method 1: `if` / `else` Statement (Outside JSX)
 
-```tsx
+```jsx
 function Greeting({ isLoggedIn }) {
   if (isLoggedIn) {
     return <h1>Welcome back! 👋</h1>;
@@ -34,7 +34,7 @@ function Greeting({ isLoggedIn }) {
 
 ### Method 2: Ternary Operator `condition ? "yes" : "no"` (✅ Most popular)
 
-```tsx
+```jsx
 function AuthStatus({ user }) {
   return (
     <div>
@@ -54,7 +54,7 @@ function AuthStatus({ user }) {
 
 Use when you only want to show something, and nothing otherwise:
 
-```tsx
+```jsx
 function Notification({ hasAlert }) {
   return (
     <div>
@@ -67,7 +67,7 @@ function Notification({ hasAlert }) {
 ```
 
 > ⚠️ **Gotcha:** Don't use `0 && <Component />` because React renders `0` as text!
-> ```tsx
+> ```jsx
 > {0 && <Alert />}         // ❌ Renders "0" on screen
 > {count > 0 && <Alert />} // ✅ Boolean condition
 > ```
@@ -76,7 +76,7 @@ function Notification({ hasAlert }) {
 
 ### Method 4: `||` Fallback (Default value)
 
-```tsx
+```jsx
 function UserName({ name }) {
   return <p>{name || "Anonymous User"}</p>;
   // If name is empty/null/undefined → shows "Anonymous User"
@@ -87,7 +87,7 @@ function UserName({ name }) {
 
 ### Method 5: Switch/Object Map (Multiple conditions)
 
-```tsx
+```jsx
 function StatusBadge({ status }) {
   const statusMap = {
     active: { label: "Active ✅", color: "green" },
@@ -115,7 +115,7 @@ function StatusBadge({ status }) {
 
 ### Example 1: Login/Logout Toggle
 
-```tsx
+```jsx
 function AuthPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -140,7 +140,7 @@ function AuthPage() {
 
 ### Example 2: Loading Spinner
 
-```tsx
+```jsx
 function DataFetcher() {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
@@ -162,7 +162,7 @@ function DataFetcher() {
 
 ### Example 3: Role-Based UI
 
-```tsx
+```jsx
 function Dashboard({ role }) {
   return (
     <div>

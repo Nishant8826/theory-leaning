@@ -166,7 +166,7 @@ src/
 
 ## 🔗 Services Layer (API Organization)
 
-```tsx
+```jsx
 // services/api.js — Central axios instance
 import axios from "axios";
 
@@ -187,7 +187,7 @@ export const updateUser = (id, data) => api.put(`/users/${id}`, data);
 export const deleteUser = (id) => api.delete(`/users/${id}`);
 ```
 
-```tsx
+```jsx
 // Usage in component — clean!
 import { getUsers, deleteUser } from "../services/userService";
 
@@ -204,7 +204,7 @@ function UserList() {
 
 ## 📐 Constants File
 
-```tsx
+```jsx
 // constants/routes.js
 export const ROUTES = {
   HOME: "/",
@@ -229,7 +229,7 @@ import { ROUTES } from "../constants/routes";
 - ✅ Create a `services/` layer for all API calls
 - ✅ Don't put logic inside JSX — extract to functions/hooks
 - ✅ Add an `index.js` to folders for clean imports:
-  ```tsx
+  ```jsx
   // components/index.js
   export { default as Button } from "./Button/Button";
   export { default as Modal } from "./Modal/Modal";
