@@ -8,6 +8,18 @@ Check system disk space, identify the full partition, and track down the largest
 
 ## 4. Step-by-step Solution
 
+### Prerequisite: Setting up the Practice Environment
+*To practice locating large files, let's create a simulated large log file safely inside the `/var/log` directory:*
+
+```bash
+sudo mkdir -p /var/log
+sudo truncate -s 48G /var/log/nginx-error.log
+```
+* **What:** Uses the `truncate` command to instantly create a simulated 48-Gigabyte file named `nginx-error.log`.
+* **Why:** We need a large target file to exist so the `ls -S` commands actually have a massive file to discover and sort.
+* **How:** The `truncate -s 48G` command creates a "sparse file" which pretends to be 48GB in size to `ls`, without actually consuming real hard drive space (Note: `du -sh` might show 0 usage unless run as `du -sh --apparent-size`). 
+* **Impact:** Safely mimics a critical storage failure scenario without actually filling your server's disk.
+
 **Step 1: Check overall disk space on all mounted filesystems**
 ```bash
 df -h

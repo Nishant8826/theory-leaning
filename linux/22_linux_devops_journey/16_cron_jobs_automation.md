@@ -8,6 +8,23 @@ Schedule an automated recurrent task using the Linux Cron daemon.
 
 ## 4. Step-by-step Solution
 
+### Prerequisite: Setting up the Practice Environment
+*To practice automating scripts with cron, the target directory and the mock backup script must exist first:*
+
+```bash
+sudo mkdir -p /opt/scripts
+sudo bash -c 'cat <<EOF > /opt/scripts/backup_db.sh
+#!/bin/bash
+echo "Backup starting at \$(date)"
+# Database dump logic goes here...
+echo "Backup complete!"
+EOF'
+```
+* **What:** Creates the `/opt/scripts` system directory and generates a simple skeleton shell script named `backup_db.sh`.
+* **Why:** The scenario requires modifying the permissions on this script and scheduling it. If the file doesn't actually exist, the `chmod` command and the automated job will instantly fail.
+* **How:** Elevated permissions (`sudo mkdir`) create the restricted folder, and an automated heredoc securely injects the basic script text directly into the file.
+* **Impact:** Provides the exact prerequisite target script needed for your cron scheduler to successfully execute.
+
 **Step 1: Ensure the script is executable**
 ```bash
 chmod +x /opt/scripts/backup_db.sh

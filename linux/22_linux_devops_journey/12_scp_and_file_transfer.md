@@ -8,6 +8,22 @@ Transfer a local file to a remote server, and then transfer a remote folder down
 
 ## 4. Step-by-step Solution
 
+### Prerequisite: Setting up the Practice Environment
+*Since we cannot actually connect to a fake remote IP like `54.12.33.10` in reality, we can simulate the scenario by creating the local mock files needed to practice the SCP syntax natively:*
+
+```bash
+touch firewall-rules.sh
+mkdir -p nginx_configs
+touch nginx_configs/nginx.conf
+touch nginx_configs/sites-enabled_default
+touch prod_key.pem
+chmod 400 prod_key.pem
+```
+* **What:** Generates the raw shell script, a folder of configs, and the dummy identity key exactly as referenced in the scenario.
+* **Why:** If these local files don't exist, the `scp` commands will immediately fail with a "No such file or directory" error before even attempting the network connection.
+* **How:** Standard `touch` and `mkdir` commands build the local directory structure.
+* **Impact:** Prepares your local computer perfectly. *(Note: The commands in the exercise will still ultimately fail to connect to the dummy server, but you will safely practice typing the exact syntax needed for real file transfers).*
+
 **Step 1: Transfer a local file the the remote server (Upload)**
 ```bash
 scp -i prod_key.pem firewall-rules.sh ubuntu@54.12.33.10:/home/ubuntu/

@@ -8,6 +8,20 @@ Manage background services using systemd. Check service statuses, restart them, 
 
 ## 4. Step-by-step Solution
 
+### Prerequisite: Setting up the Practice Environment
+*To practice managing Nginx with `systemctl`, the service needs to be installed. We will also intentionally break it temporarily to perfectly match the scenario:*
+
+```bash
+sudo apt update && sudo apt install -y nginx
+sudo bash -c 'echo "broken_config_directive test;" > /etc/nginx/conf.d/broken.conf'
+sudo systemctl restart nginx || true
+sudo rm /etc/nginx/conf.d/broken.conf
+```
+* **What:** Installs Nginx, introduces a fatal configuration syntax error, crashes the server, and then immediately repairs the configuration file.
+* **Why:** The scenario expects Nginx to be in a "failed" state due to a bad config that was roughly "just fixed". This simulates the exact conditions without permanently destroying your web server.
+* **How:** We write garbage text into a `.conf` file and attempt a restart. `|| true` prevents the script from stopping when it predictably crashes. We then delete the garbage file so you can cleanly restart Nginx as designed in Step 2.
+* **Impact:** Recreates a highly authentic, stressful web server outage scenario.
+
 **Step 1: Check the operational status of the service**
 ```bash
 sudo systemctl status nginx

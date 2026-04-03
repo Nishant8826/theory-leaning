@@ -8,6 +8,19 @@ Locate current configuration files, create secure backups, and move an outdated 
 
 ## 4. Step-by-step Solution
 
+### Prerequisite: Setting up the Practice Environment
+*If you are practicing on a fresh Linux instance, the required directory and files won't exist yet. Run this command to create the mock environment before starting:*
+
+```bash
+sudo mkdir -p /var/www/html/backend
+cd /var/www/html/backend
+sudo touch database.yml secrets.env old_startup.sh temp_debug.log
+```
+* **What:** Creates the `/var/www/html/backend` directory and generates several empty text files inside it.
+* **Why:** We need these mock files to exist so you can practice copying, moving, and removing them without errors.
+* **How:** `sudo mkdir -p` creates the directory tree. `cd` navigates into it. `sudo touch` creates empty versions of the target files.
+* **Impact:** Prepares the starting state, ensuring your practice closely mirrors a real-world server deployment scenario.
+
 **Step 1: Check your current directory to ensure you are in the application root**
 ```bash
 pwd

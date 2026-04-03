@@ -8,6 +8,18 @@ Create a new user, assign them a password, create a specific user group, and att
 
 ## 4. Step-by-step Solution
 
+### Prerequisite: Setting up the Practice Environment
+*Since we are learning how to create users and groups from scratch, there are no mock files to create. However, to ensure a clean slate if you are re-running this exercise, you can optionally remove `alice` and the `developers` group if they exist:*
+
+```bash
+sudo userdel -r alice 2>/dev/null || true
+sudo groupdel developers 2>/dev/null || true
+```
+* **What:** Attempts to delete the user `alice` and the `developers` group, ignoring errors if they don't exist.
+* **Why:** Ensures that creating them in the subsequent steps doesn't throw a "user already exists" error.
+* **How:** `userdel -r` removes the user and home directory. `groupdel` removes the group. `2>/dev/null` hides error output, and `|| true` prevents the script from failing.
+* **Impact:** Provides a clean starting state, guaranteeing the commands below work smoothly every time.
+
 **Step 1: Create the new 'developers' group**
 ```bash
 sudo groupadd developers

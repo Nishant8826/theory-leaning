@@ -8,6 +8,19 @@ Initialize an Uncomplicated Firewall (UFW), allow specific traffic ports, block 
 
 ## 4. Step-by-step Solution
 
+### Prerequisite: Setting up the Practice Environment
+*To practice configuring the Uncomplicated Firewall (UFW), we first need to ensure the firewall software is installed and completely disabled so we have a clean slate:*
+
+```bash
+sudo apt update && sudo apt install -y ufw
+sudo ufw --force reset
+sudo ufw disable
+```
+* **What:** Installs the firewall, aggressively resets any existing rules to factory defaults, and disables it.
+* **Why:** It is extremely dangerous to experiment with firewalls blindly. This ensures the firewall starts deactivated and completely empty, matching the blank-slate scenario perfectly.
+* **How:** `--force reset` deletes everything without asking for confirmation, and `disable` effectively turns the packet filtering kernel module off safely.
+* **Impact:** Provides a secure, zero-state environment for you to safely build up your incoming firewall rules from scratch.
+
 **Step 1: Check the default firewall status**
 ```bash
 sudo ufw status

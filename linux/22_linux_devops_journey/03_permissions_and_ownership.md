@@ -8,6 +8,23 @@ Change the owner of the sensitive file to the correct user and restrict its read
 
 ## 4. Step-by-step Solution
 
+### Prerequisite: Setting up the Practice Environment
+*If you are practicing on a fresh Linux instance, the sensitive file and mock users won't exist yet. Run this command before starting:*
+
+```bash
+sudo groupadd developer || true
+sudo useradd -m -g developer developer || true
+sudo groupadd appgroup || true
+sudo useradd -m -g appgroup appuser || true
+sudo touch api_secret.key
+sudo chown developer:developer api_secret.key
+sudo chmod 664 api_secret.key
+```
+* **What:** Creates the necessary mock users, groups, and an `api_secret.key` file with overly open permissions.
+* **Why:** We need an open credential file and specific users (`appuser` and `developer`) to exist so we can practice locking down permissions.
+* **How:** `useradd` and `groupadd` create the system identities. `touch` creates the file, and `chmod 664` sets the insecure permissions we need to fix.
+* **Impact:** Prepares the system exactly as described in the scenario, allowing the security audit commands to run as expected.
+
 **Step 1: Check current permissions and ownership**
 ```bash
 ls -l api_secret.key

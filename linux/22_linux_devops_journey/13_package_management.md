@@ -8,6 +8,18 @@ Update the package index, search for software, install a web server and a utilit
 
 ## 4. Step-by-step Solution
 
+### Prerequisite: Setting up the Practice Environment
+*To practice removing a conflicting package, we should intentionally install the "wrong" package first so that Step 4 (`apt remove apache2`) actually has something to delete:*
+
+```bash
+sudo apt update
+sudo apt install -y apache2
+```
+* **What:** Instructs the package manager to download and install the `apache2` web server.
+* **Why:** In the scenario, you will remove `apache2` to prevent conflicts with Nginx. It needs to exist on the server to be removed successfully.
+* **How:** Standard `apt install` using the `-y` flag to bypass human confirmation prompts.
+* **Impact:** Modifies your Linux server to perfectly match the conflicting state described in the exercise.
+
 **Step 1: Update the remote package list**
 ```bash
 sudo apt update

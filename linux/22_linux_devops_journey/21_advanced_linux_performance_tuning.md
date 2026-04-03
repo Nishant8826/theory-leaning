@@ -8,6 +8,18 @@ Read, modify, and permanently apply Linux kernel runtime parameters using the `s
 
 ## 4. Step-by-step Solution
 
+### Prerequisite: Setting up the Practice Environment
+*Since `sysctl` directly commands the running kernel, no specific mock files are dynamically required. The network parameters already actively exist on any Linux system. However, for a pristine practice slate, let's reset the specific TCP parameter back to the Linux default mentioned in the scenario:*
+
+```bash
+sudo sysctl -w net.ipv4.tcp_keepalive_time=7200
+sudo sed -i '/net.ipv4.tcp_keepalive_time/d' /etc/sysctl.conf
+```
+* **What:** Reverts the `tcp_keepalive_time` variable in active memory reliably to 7200 seconds, and safely scrubs any previous permanent rules out from the `/etc/sysctl.conf` configuration file.
+* **Why:** If you previously completed this scenario, the variable would already be heavily optimized to 300! This guarantees the scenario actually starts organically from the beginning state.
+* **How:** `sysctl -w` forces it directly into memory, while `sed -i '/pattern/d'` dynamically finds and legally deletes old matching text lines from the config file.
+* **Impact:** Safely standardizes the OS networking kernel settings required for the optimization steps.
+
 **Step 1: Check the current TCP keepalive time threshold**
 ```bash
 sysctl net.ipv4.tcp_keepalive_time

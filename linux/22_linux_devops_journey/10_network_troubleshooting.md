@@ -8,6 +8,18 @@ Diagnose network connectivity, check DNS resolution, make direct HTTP requests t
 
 ## 4. Step-by-step Solution
 
+### Prerequisite: Setting up the Practice Environment
+*Since we cannot physically control remote firewalls safely, this exercise relies heavily on live networking concepts. However, we can start a dummy local HTTP server so your `curl` command hits something:*
+
+```bash
+python3 -m http.server 8080 &
+sleep 2
+```
+* **What:** Starts a basic local HTTP server on port 8080 in the background.
+* **Why:** So that the `curl` and `netstat` commands in the scenario actually have a local listening service to successfully interact with and discover.
+* **How:** Python's built-in `http.server` module instantly binds to port 8080 and serves the current directory without needing full configuration.
+* **Impact:** Simulates a running backend application, giving your network diagnostic commands a real local socket to test.
+
 **Step 1: Check basic network reachability**
 ```bash
 ping db.internal-company.com

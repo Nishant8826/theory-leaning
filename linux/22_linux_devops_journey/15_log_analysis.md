@@ -8,6 +8,18 @@ Extract, filter, and analyze historical system Service logs using `journalctl`.
 
 ## 4. Step-by-step Solution
 
+### Prerequisite: Setting up the Practice Environment
+*To realistically search logs by service name, the service needs to actually exist on the system. We will install PostgreSQL so you have authentic data to query:*
+
+```bash
+sudo apt update && sudo apt install -y postgresql
+sudo systemctl restart postgresql
+```
+* **What:** Installs and actively starts the PostgreSQL database software.
+* **Why:** The command `journalctl -u postgresql` filters strictly by the background `systemd` unit metadata. If PostgreSQL has never run on your machine, the queries will return purely blank screens.
+* **How:** Uses standard package installation commands to bootstrap the environment.
+* **Impact:** Provides the exact underlying background daemon required to make your logging investigation commands actually functional.
+
 **Step 1: View all logs specifically for the database service**
 ```bash
 journalctl -u postgresql

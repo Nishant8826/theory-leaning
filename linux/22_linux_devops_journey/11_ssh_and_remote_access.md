@@ -8,6 +8,18 @@ Connect remotely to a Linux server over SSH, authenticate using a private key fi
 
 ## 4. Step-by-step Solution
 
+### Prerequisite: Setting up the Practice Environment
+*To practice locking down SSH keys, you need a dummy key file to intentionally restrict:*
+
+```bash
+touch prod_key.pem
+chmod 777 prod_key.pem
+```
+* **What:** Creates an empty file named `prod_key.pem` and intentionally sets its permissions to be dangerously open (read/write/execute for everyone).
+* **Why:** You need an insecure key file locally so that you can practice securing it with `chmod 400`. *(Note: The actual `ssh` connection in Step 2 will fail because the IP is a dummy, but practicing the command syntax is what matters).*
+* **How:** `touch` creates the file, and `chmod 777` makes it completely unprotected.
+* **Impact:** Prepares the local environment so you can experience directly locking down a vulnerable identity file.
+
 **Step 1: Secure the private key file locally**
 ```bash
 chmod 400 prod_key.pem

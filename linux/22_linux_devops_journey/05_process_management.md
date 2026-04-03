@@ -8,6 +8,23 @@ Identify resource-hogging background tasks and forcefully terminate them using L
 
 ## 4. Step-by-step Solution
 
+### Prerequisite: Setting up the Practice Environment
+*To practice searching and killing a process without breaking a real system, let's start a harmless background process called `node` first:*
+
+```bash
+sudo useradd -m appuser || true
+sudo bash -c 'cat <<EOF > /tmp/dummy_node
+#!/bin/bash
+while true; do sleep 60; done
+EOF'
+sudo chmod +x /tmp/dummy_node
+sudo -u appuser bash -c "exec -a node /tmp/dummy_node &"
+```
+* **What:** Creates a fake process that masquerades under the name `node` and runs harmlessly in the background.
+* **Why:** So that `top` and `ps aux | grep node` will actually find something for you to safely kill in the scenario.
+* **How:** We write a tiny sleep loop into a file, make it executable, and run it as the `appuser` using the `exec -a node` trick to artificially set its process name to `node`.
+* **Impact:** Provides a safe, isolated dummy process to practice fatal `kill -9` commands on without risking a real server.
+
 **Step 1: Check real-time system metrics**
 ```bash
 top

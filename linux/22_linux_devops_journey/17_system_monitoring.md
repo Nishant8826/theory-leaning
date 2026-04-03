@@ -8,6 +8,17 @@ Utilize high-level system monitoring tools to diagnose hardware saturation (CPU,
 
 ## 4. Step-by-step Solution
 
+### Prerequisite: Setting up the Practice Environment
+*To practice monitoring system resources, we don't necessarily need mock files, as every Linux system naturally generates CPU, RAM, and internal IO metrics. However, to ensure all the tools in the scenario are available, we should install them:*
+
+```bash
+sudo apt update && sudo apt install -y htop sysstat
+```
+* **What:** Installs the interactive `htop` monitor and the `sysstat` package (which fundamentally provides the `vmstat` command).
+* **Why:** While commands like `free` and `uptime` are built into the kernel core, advanced utilities sometimes need to be installed manually on barebones cloud servers.
+* **How:** Standard package installation without human intervention (`-y`).
+* **Impact:** Equips your environment with the proper analysis tools required to complete the exercise.
+
 **Step 1: Check available System RAM (Memory)**
 ```bash
 free -h

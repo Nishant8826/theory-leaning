@@ -8,6 +8,35 @@ Set up the correct folder structure, securely move and copy necessary files, and
 
 ## 4. Step-by-step Solution
 
+### Prerequisite: Setting up a Dummy Template
+*If you are practicing on a fresh Linux instance, the template file we need to copy later (`/etc/template/nginx.conf`) won't exist yet. Run this command before starting the main exercise:*
+
+```bash
+sudo mkdir -p /etc/template
+sudo bash -c 'cat <<EOF > /etc/template/nginx.conf
+worker_processes auto;
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    server {
+        listen       80;
+        server_name  localhost;
+
+        location / {
+            proxy_pass http://127.0.0.1:8080;
+        }
+    }
+}
+EOF'
+```
+* **What:** Creates an `/etc/template` directory and generates a basic NGINX configuration file inside it.
+* **Why:** We need this dummy template file to exist on the server so that the copy (`cp`) command in Step 3 succeeds without error.
+* **How:** `sudo mkdir -p` creates the folder with root permissions. `sudo bash -c 'cat <<EOF > ...'` uses a heredoc to elegantly write multiple lines directly into a protected system file block.
+* **Impact:** Prepares the environment properly, guaranteeing that the learning commands operate identical to a real production system.
+
 **Step 1: Create the main project directory**
 ```bash
 mkdir -p /opt/payment-app/config

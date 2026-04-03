@@ -8,6 +8,23 @@ Search, parse, format, and manipulate raw text files using core Linux command-li
 
 ## 4. Step-by-step Solution
 
+### Prerequisite: Setting up the Practice Environment
+*To practice searching and filtering text, let's generate a mock application log file:*
+
+```bash
+cat <<EOF > app.log
+2026-10-27 10:00:01 INFO System booted up normal
+2026-10-27 10:00:05 ERROR USER_ID:9042 Login Failed
+2026-10-27 10:01:10 INFO User uploaded file
+2026-10-27 10:05:32 ERROR USER_ID:8422 Missing Token
+2026-10-27 10:10:00 INFO System running healthy
+EOF
+```
+* **What:** Uses a heredoc to create a file named `app.log` containing five lines of simulated server log data.
+* **Why:** We need a structured text file containing both "INFO" and "ERROR" lines to successfully demonstrate `grep`, `awk`, and `sed`.
+* **How:** `cat <<EOF > app.log` writes the block of text into the file in your current directory.
+* **Impact:** Provides the exact dataset required so that your text parsing outputs match the examples perfectly.
+
 **Step 1: Check the head and tail of the file to understand the structure**
 ```bash
 head -n 5 app.log

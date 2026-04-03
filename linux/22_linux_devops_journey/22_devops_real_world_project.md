@@ -8,6 +8,36 @@ Deploy a full-stack debugging methodology: Inspect routing, assess disk capacity
 
 ## 4. Step-by-step Solution
 
+### Prerequisite: Setting up the Practice Environment
+*This is the final project. To simulate this major catastrophe authentically without needing a massive full backend codebase, we will mock the proxy, the systemd daemon, and explicitly build the permission crisis:*
+
+```bash
+sudo apt update && sudo apt install -y nginx
+sudo bash -c 'cat <<EOF > /etc/nginx/sites-available/default
+server { listen 80 default_server; location / { proxy_pass http://127.0.0.1:4000; } }
+EOF'
+sudo systemctl restart nginx
+sudo groupadd appgroup || true
+sudo useradd -M -g appgroup appuser || true
+sudo mkdir -p /etc/node
+sudo touch /etc/node/production.json
+sudo chown root:root /etc/node/production.json
+sudo chmod 600 /etc/node/production.json
+sudo bash -c 'cat <<EOF > /etc/systemd/system/node-api.service
+[Service]
+User=appuser
+ExecStart=/bin/bash -c "if ! cat /etc/node/production.json >/dev/null 2>&1; then echo \"ERROR: Cannot read config file: /etc/node/production.json - Permission denied\"; exit 1; else python3 -m http.server 4000; fi"
+[Install]
+WantedBy=multi-user.target
+EOF'
+sudo systemctl daemon-reload
+sudo systemctl restart node-api || true
+```
+* **What:** Constructs a fake "node-api" web service running as a newly restricted unprivileged user, and sets it to aggressively read a config file unfortunately owned solely by `root`. It deliberately crashes because it naturally generates a "Permission denied" error.
+* **Why:** It actively engineers the exact "murder mystery" root cause—proving Nginx works flawlessly, that the Node app crashes instantly on boot, and leaving undeniable forensic evidence strictly in `journalctl`.
+* **How:** Standard Linux permissions (`chown`, `chmod`) securely isolate the file, and an intelligent `systemd` bash script is ordered to execute against it (answering on port 4000 if successful).
+* **Impact:** Deploys a brilliant, highly sophisticated simulation of a major PagerDuty production incident. You can now follow the step-by-step diagnostic chain comprehensively and organically.
+
 **Step 1: Network Check (Is the server actually online?)**
 ```bash
 curl -I http://localhost

@@ -8,6 +8,29 @@ Understand the architecture of reverse proxies, diagnose a 502 error, check loca
 
 ## 4. Step-by-step Solution
 
+### Prerequisite: Setting up the Practice Environment
+*To thoroughly investigate a 502 Bad Gateway and a crashing background service, we need to artificially inject that comprehensive failure scenario into the server:*
+
+```bash
+sudo apt update && sudo apt install -y nginx
+sudo bash -c 'cat <<EOF > /etc/nginx/sites-available/default
+server { listen 80 default_server; location / { proxy_pass http://127.0.0.1:3000; } }
+EOF'
+sudo systemctl restart nginx
+sudo bash -c 'cat <<EOF > /etc/systemd/system/backend-node.service
+[Service]
+ExecStart=/bin/bash -c "echo \"SyntaxError: Missing initializer in const declaration\" >&2; exit 1"
+[Install]
+WantedBy=multi-user.target
+EOF'
+sudo systemctl daemon-reload
+sudo systemctl restart backend-node || true
+```
+* **What:** Installs Nginx and hardcodes it to dynamically forward traffic to port 3000. It then creates a fake completely broken backend service designed explicitly to crash on startup.
+* **Why:** The entire scenario revolves around diagnosing *why* Nginx is returning a 502 error and *why* the backend is failing. We are intentionally engineering a murder mystery.
+* **How:** Nginx configs are pointed to a dead local port. A systemd `.service` file is created running a bash script that instantly spits the fake `SyntaxError` and exits. 
+* **Impact:** Triggers authentic reverse-proxy network failure conditions and populates `journalctl` and `nginx/error.log` with identical error codes from the exercise.
+
 **Step 1: Understand what a 502 actually means**
 * **Concept:** A 502 Bad Gateway means Nginx (the frontend proxy) successfully received the customer's request over the internet, turned around to hand it to the Node.js backend Application running locally on port 3000... but the Node app entirely failed to respond. Nginx gives up and throws the 502 to the customer.
 

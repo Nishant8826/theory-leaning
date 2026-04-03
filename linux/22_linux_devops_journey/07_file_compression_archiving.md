@@ -8,6 +8,22 @@ Use Linux archiving tools to bundle a large directory into a single compressed `
 
 ## 4. Step-by-step Solution
 
+### Prerequisite: Setting up the Practice Environment
+*To practice compressing a large directory, let's create a simulated legacy application folder:*
+
+```bash
+sudo mkdir -p /var/www/legacy-app/css
+sudo bash -c 'cat <<EOF > /var/www/legacy-app/index.html
+<html><body>Hello World</body></html>
+EOF'
+sudo touch /var/www/legacy-app/css/style.css
+sudo fallocate -l 500M /var/www/legacy-app/dummy_data.bin || sudo truncate -s 500M /var/www/legacy-app/dummy_data.bin
+```
+* **What:** Creates the `/var/www/legacy-app` directory structure and uses `fallocate` or `truncate` to create a 500MB dummy file inside it.
+* **Why:** We need a realistically sized folder to compress so that the `tar` command has something substantial to work with and the output matches the expected 500M size.
+* **How:** `mkdir` creates the folders, `cat` writes a mock HTML file, and `fallocate`/`truncate` allocates 500MB of space for a dummy binary file.
+* **Impact:** Mocks a legacy web application, ensuring the compression exercise provides realistic feedback and sizes.
+
 **Step 1: Check the folder size before compressing**
 ```bash
 du -sh /var/www/legacy-app

@@ -8,6 +8,23 @@ Utilize advanced searching tools to locate files based on specific attributes (l
 
 ## 4. Step-by-step Solution
 
+### Prerequisite: Setting up the Practice Environment
+*To practice hunting for malicious files, let's inject a fake "hacked" JavaScript file into a web directory structure:*
+
+```bash
+sudo mkdir -p /var/www/html/core
+sudo mkdir -p /var/www/html/assets
+sudo touch /var/www/html/core/login.js
+sudo bash -c 'cat <<EOF > /var/www/html/assets/obfuscated_temp.js
+// basic script
+run(eval(base64_decode(x)));
+EOF'
+```
+* **What:** Creates web directories and generates a few `.js` files, actively inserting a mock malicious `eval(base64` string into one of them.
+* **Why:** The `find` and `grep -rn` commands require these files and specific string contents to exist in order to successfully "discover" them.
+* **How:** `mkdir` builds the folder tree, `touch` creates a benign recently-modified file, and a heredoc writes the "malicious" string into another file.
+* **Impact:** Safely replicates a compromised web server scenario to test forensic search techniques.
+
 **Step 1: Find all files modified within the last 1 day**
 ```bash
 find /var/www/html -mtime -1
