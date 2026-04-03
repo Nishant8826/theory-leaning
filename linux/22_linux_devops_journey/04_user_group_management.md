@@ -90,3 +90,6 @@ uid=1001(alice) gid=1001(alice) groups=1001(alice),1002(developers)
    **A:** The `-a` (append) flag ensures the user is added to the new group without being removed from their current secondary groups.
 3. **Q:** How can you delete a user and their home directory simultaneously?
    **A:** Using the command `userdel -r username`.
+
+---
+[⬅️ Previous: 03_permissions_and_ownership](03_permissions_and_ownership.md) | [Next ➡️: 05_process_management](05_process_management.md)

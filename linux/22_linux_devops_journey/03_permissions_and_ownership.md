@@ -83,3 +83,6 @@ $ ls -l api_secret.key
    **A:** `sudo` allows a permitted user to execute a command as the superuser (root). Tasks like changing another user's file ownership require root privileges.
 3. **Q:** What is the difference between `chown` and `chmod`?
    **A:** `chown` changes WHO owns the file. `chmod` changes WHAT permissions users have on the file.
+
+---
+[⬅️ Previous: 02_file_operations_backup](02_file_operations_backup.md) | [Next ➡️: 04_user_group_management](04_user_group_management.md)

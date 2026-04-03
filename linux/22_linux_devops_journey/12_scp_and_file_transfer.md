@@ -79,3 +79,6 @@ sites-enabled/default                    100%   2KB   2.0MB/s   00:00
 
 ## 9. DevOps Insight
 In modern DevOps, engineers rarely push files manually with SCP. Instead, CI/CD systems (like GitLab Runners or GitHub Actions) securely hold the SSH keys and run automated SCP or Rsync scripts to push built code artifacts to server fleets simultaneously. Understanding the manual commands makes debugging those automated pipelines possible.
+
+---
+[⬅️ Previous: 11_ssh_and_remote_access](11_ssh_and_remote_access.md) | [Next ➡️: 13_package_management](13_package_management.md)

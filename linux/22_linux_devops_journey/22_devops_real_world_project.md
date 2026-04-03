@@ -192,3 +192,6 @@ If the CI/CD pipeline (e.g., Jenkins) ran a smoke test script containing `curl -
 Linux is arguably the largest and most critical linchpin holding modern enterprise architecture fully together. When an engineer configures a Kubernetes cluster, they are simply programming heavily automated Linux control groups (`cgroups`) and namespaces. 
 
 Every API that functions, every database that commits, and every container that launches relies on the precise orchestration of Linux file descriptors, systemd commands, and kernel boundaries. Therefore, the most elite "DevOps Practitioners" are, at their absolute core, highly systematic Linux System Administrators capable of writing code. By completing this journey, you are equipped to not just build pipelines, but fundamentally understand and salvage the systems they run on.
+
+---
+[⬅️ Previous: 21_advanced_linux_performance_tuning](21_advanced_linux_performance_tuning.md)

@@ -85,3 +85,6 @@ procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----
 
 ## 9. DevOps Insight
 Logging into a server to type `htop` is considered "reactive" firefighting. In a mature DevOps environment, all of these metrics (RAM, CPU, I/O) are silently collected by agents (Prometheus/Telegraf/Datadog) every 10 seconds and plotted beautifully on Grafana dashboards. The goal is to set automated alerts that ping PagerDuty *before* the CPU hits 99% and causes the website to lag.
+
+---
+[⬅️ Previous: 16_cron_jobs_automation](16_cron_jobs_automation.md) | [Next ➡️: 18_basic_server_setup](18_basic_server_setup.md)

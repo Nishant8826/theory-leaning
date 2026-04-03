@@ -89,3 +89,6 @@ Removing apache2 (2.4.41) ...
 
 ## 9. DevOps Insight
 In the DevOps world, servers are "Immutable". This means DevOps engineers rarely log in and run `apt install` manually. Instead, they write Dockerfiles or Bash automation scripts that strictly define the `apt-get install -y nginx` commands. This ensures that a server can be rebuilt from scratch identically, 100 times over, without human error.
+
+---
+[⬅️ Previous: 12_scp_and_file_transfer](12_scp_and_file_transfer.md) | [Next ➡️: 14_service_management_systemctl](14_service_management_systemctl.md)

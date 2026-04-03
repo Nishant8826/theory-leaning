@@ -100,3 +100,6 @@ Filesystem      Size  Used Avail Use% Mounted on
    **A:** A process is still holding the deleted file open in memory. The space won't truly free until you restart the parent process, or you should have truncated the file instead.
 3. **Q:** What does the `-h` flag do in both `df` and `du`?
    **A:** It formats the output into human-readable sizes like KB, MB, or GB instead of raw block/byte numbers.
+
+---
+[⬅️ Previous: 05_process_management](05_process_management.md) | [Next ➡️: 07_file_compression_archiving](07_file_compression_archiving.md)

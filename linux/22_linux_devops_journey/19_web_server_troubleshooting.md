@@ -97,3 +97,6 @@ $ sudo systemctl status backend-node
 
 ## 9. DevOps Insight
 To prevent these scenarios, DevOps utilizes complex CI/CD "Zero Downtime Deployments" (like Blue/Green deployment). The new code would spin up on a temporary port (3001). Test scripts check if port 3001 answers 200 OK. Only if the tests pass does the pipeline dynamically rewrite the Nginx config to point at 3001 instead of 3000 securely. This completely eliminates end-user 502s during rollouts.
+
+---
+[⬅️ Previous: 18_basic_server_setup](18_basic_server_setup.md) | [Next ➡️: 20_production_issue_debugging](20_production_issue_debugging.md)

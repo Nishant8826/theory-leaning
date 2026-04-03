@@ -97,3 +97,6 @@ Nginx Full                 ALLOW       Anywhere
 
 ## 9. DevOps Insight
 Deploying firewalls manually via UFW is excellent for single-server sysadmin work. However, in DevOps, infrastructure is defined as "Code" (IaC). DevOps engineers use tools like HashiCorp Terraform to construct firewall rules (like AWS Security Groups) via structured `.tf` files. The concepts (Ports, Ingress, Allow/Deny) remain identical; only the tooling changes from Bash commands to declarative code.
+
+---
+[⬅️ Previous: 17_system_monitoring](17_system_monitoring.md) | [Next ➡️: 19_web_server_troubleshooting](19_web_server_troubleshooting.md)

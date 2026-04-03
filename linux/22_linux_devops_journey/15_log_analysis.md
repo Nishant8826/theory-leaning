@@ -81,3 +81,6 @@ Oct 27 01:14:02 devserver kernel: Out of memory: Killed process 142 (postgres)
 
 ## 9. DevOps Insight
 In an enterprise DevOps environment, writing logs to a single server's disk using systemd is just the first step. DevOps engineers deploy "Log Forwarders" (like Promtail, Fluentd, or Filebeat) to automatically scrape these systemd logs and transport them to a central analytics server like Datadog, Splunk, or the ELK stack. Never hoard logs on production servers.
+
+---
+[⬅️ Previous: 14_service_management_systemctl](14_service_management_systemctl.md) | [Next ➡️: 16_cron_jobs_automation](16_cron_jobs_automation.md)

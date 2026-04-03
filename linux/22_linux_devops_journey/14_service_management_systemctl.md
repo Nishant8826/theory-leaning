@@ -88,3 +88,6 @@ Executing: /lib/systemd/systemd-sysv-install enable nginx
 
 ## 9. DevOps Insight
 Modern containerization platforms like Docker and Kubernetes have largely abstracted `systemd` away from the developer. However, the machines *running* Docker or Kubernetes (the worker nodes) heavily rely on `systemctl status kubelet` or `systemctl status docker`. To be an expert DevOps or Platform Engineer, you must master managing the host-level services that run the orchestration engines.
+
+---
+[⬅️ Previous: 13_package_management](13_package_management.md) | [Next ➡️: 15_log_analysis](15_log_analysis.md)

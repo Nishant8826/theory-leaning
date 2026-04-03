@@ -84,3 +84,6 @@ prod-server
 
 ## 9. DevOps Insight
 SSH is the backbone of infrastructure automation. CI/CD runners (like Jenkins or GitHub Actions) and configuration management tools (like Ansible) use SSH under the hood to remotely execute commands on hundreds of servers simultaneously without human logging in manually. Automation relies entirely on key-based SSH authentication.
+
+---
+[⬅️ Previous: 10_network_troubleshooting](10_network_troubleshooting.md) | [Next ➡️: 12_scp_and_file_transfer](12_scp_and_file_transfer.md)

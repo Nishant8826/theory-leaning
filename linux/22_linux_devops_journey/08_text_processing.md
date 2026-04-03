@@ -93,3 +93,6 @@ $ grep "ERROR" app.log | awk '{print $4}' | sed 's/USER_ID://g'
    **A:** It takes the standard output (`stdout`) of the command to its left and uses it as the standard input (`stdin`) for the command on its right.
 3. **Q:** What command would you use to replace all instances of "apple" with "orange" in a text stream?
    **A:** `sed 's/apple/orange/g'`
+
+---
+[⬅️ Previous: 07_file_compression_archiving](07_file_compression_archiving.md) | [Next ➡️: 09_searching_files_logs](09_searching_files_logs.md)

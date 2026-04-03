@@ -90,3 +90,6 @@ database.yml  old_startup.sh  secrets.env
    **A:** It will throw an error because you cannot copy a directory without the `-r` (recursive) flag.
 3. **Q:** How can you force `rm` to ask you yes/no before deleting every single file?
    **A:** By using the `-i` (interactive) flag: `rm -i file.txt`.
+
+---
+[⬅️ Previous: 01_linux_basics_file_management](01_linux_basics_file_management.md) | [Next ➡️: 03_permissions_and_ownership](03_permissions_and_ownership.md)

@@ -81,3 +81,6 @@ Connection to 10.0.1.55 5432 port [tcp/postgresql] succeeded!
 
 ## 9. DevOps Insight
 Understanding networking bridges the gap between SysAdmins and DevOps. In AWS, network bugs are usually Security Group or Subnet misconfigurations. Combining `curl` and `nc` allows Jenkins or GitLab CI/CD pipelines to run automated health checks instantly after deploying infrastructure.
+
+---
+[⬅️ Previous: 09_searching_files_logs](09_searching_files_logs.md) | [Next ➡️: 11_ssh_and_remote_access](11_ssh_and_remote_access.md)

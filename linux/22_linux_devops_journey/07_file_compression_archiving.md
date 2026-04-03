@@ -91,3 +91,6 @@ $ ls -lh legacy-app-backup.tar.gz
    **A:** You extract it using `tar -xzvf data.tar.gz`.
 3. **Q:** Why do we compress logs or folders before transferring them using SCP or SFTP?
    **A:** Transferring one single large file is vastly quicker than transferring thousands of tiny files because it drastically reduces network protocol overhead and I/O wait times.
+
+---
+[⬅️ Previous: 06_disk_management](06_disk_management.md) | [Next ➡️: 08_text_processing](08_text_processing.md)

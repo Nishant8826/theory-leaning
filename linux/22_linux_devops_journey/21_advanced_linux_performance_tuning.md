@@ -86,3 +86,6 @@ net.ipv4.tcp_keepalive_time = 300
 
 ## 9. DevOps Insight
 When utilizing Infrastructure as Code tools like Ansible or Chef, engineers maintain dedicated repositories purely for "Kernel Tuning" modules. Whenever a fresh server instance boots up in AWS, Ansible connects via SSH and auto-injects an optimized, battle-tested `sysctl.conf` file. This guarantees that every newly provisioned node launches with production-ready performance ceilings, rather than generic desktop default constraints.
+
+---
+[⬅️ Previous: 20_production_issue_debugging](20_production_issue_debugging.md) | [Next ➡️: 22_devops_real_world_project](22_devops_real_world_project.md)

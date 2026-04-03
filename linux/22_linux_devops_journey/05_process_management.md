@@ -86,3 +86,6 @@ admin    14560   0.0  0.0  12312   912 pts/1 S+  10:05   0:00 grep 14502
    **A:** `ps aux` or `ps -ef`.
 3. **Q:** How can you tell if a process is a "zombie"?
    **A:** In the `top` or `ps` output, the status column (S or STAT) will show a 'Z' for zombie processes.
+
+---
+[⬅️ Previous: 04_user_group_management](04_user_group_management.md) | [Next ➡️: 06_disk_management](06_disk_management.md)

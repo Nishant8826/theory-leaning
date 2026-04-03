@@ -87,3 +87,6 @@ Oct 27 15:02:14 devserver sshd[1205]: Failed password for admin
    **A:** `-r` causes grep to recursively look inside all nested files in the directory. `-n` prints the line number where the matching text was found in each file.
 3. **Q:** How does `tail -f` differ from a regular `tail` command?
    **A:** A regular `tail` command prints the last 10 lines and exits. `tail -f` actively "follows" the file, continuously streaming new lines to the screen as they are written.
+
+---
+[⬅️ Previous: 08_text_processing](08_text_processing.md) | [Next ➡️: 10_network_troubleshooting](10_network_troubleshooting.md)

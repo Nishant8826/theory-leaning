@@ -88,3 +88,6 @@ $ crontab -l
 
 ## 9. DevOps Insight
 Cron is the grandfather of automation. While invaluable for basic servers, modern DevOps heavily replaces Cron with tools like GitLab Scheduled Pipelines, AWS EventBridge, or Kubernetes CronJobs. These modern tools provide dashboards, automatic retry logic, and Slack alerts if a job fails, whereas Linux Cron silently fails unless you explicitly write log-monitoring scripts around it.
+
+---
+[⬅️ Previous: 15_log_analysis](15_log_analysis.md) | [Next ➡️: 17_system_monitoring](17_system_monitoring.md)

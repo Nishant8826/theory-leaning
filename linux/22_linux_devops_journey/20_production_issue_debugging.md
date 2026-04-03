@@ -93,3 +93,6 @@ $ ulimit -n
 
 ## 9. DevOps Insight
 In cloud-native architectures, developers often complain their Docker container crashed abruptly, blaming AWS or Kubernetes. However, a Docker container is just an isolated Linux process. It inherits kernel limits! If the host server limits everything to 1024 file descriptors, every container running on it will crash under load regardless of how many Gigabytes of RAM they have. Understanding deep Linux kernel parameters separates Junior engineers from Senior Platform Architects.
+
+---
+[⬅️ Previous: 19_web_server_troubleshooting](19_web_server_troubleshooting.md) | [Next ➡️: 21_advanced_linux_performance_tuning](21_advanced_linux_performance_tuning.md)
