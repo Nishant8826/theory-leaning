@@ -115,29 +115,43 @@ const count = useSelector((state: RootState) => state.counter.count);
 ### Complete Visual:
 
 ```
-┌──────────────────────────────────────────────────────────┐
-│                    REDUX DATA FLOW                       │
-├──────────────────────────────────────────────────────────┤
-│                                                          │
-│  1. EVENT         User clicks "+1" button                │
-│       ↓                                                  │
-│  2. DISPATCH      dispatch(increment())                  │
-│       ↓                                                  │
-│  3. ACTION        { type: "counter/increment" }          │
-│       ↓                                                  │
-│  4. MIDDLEWARE     (logging, thunks, etc. — optional)    │
-│       ↓                                                  │
-│  5. REDUCER       counterReducer(state, action)          │
-│       ↓                                                  │
-│  6. NEW STATE     { counter: { count: 1 } }             │
-│       ↓                                                  │
-│  7. STORE         Saves the new state                    │
-│       ↓                                                  │
-│  8. SELECTORS     useSelector detects the change         │
-│       ↓                                                  │
-│  9. RE-RENDER     Component shows updated count          │
-│                                                          │
-└──────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────┐
+│                    REDUX DATA FLOW                           │
+├──────────────────────────────────────────────────────────────┤
+│                                                              │
+│  1. EVENT                                                    │
+│     User interacts (clicks button / loads page)              │
+│       ↓                                                      │
+│  2. DISPATCH                                                 │
+│     Sends action → dispatch(action / asyncThunk)             │
+│       ↓                                                      │
+│  3. ACTION                                                   │
+│     Plain object OR async function                           │
+│     { type, payload }                                        │
+│       ↓                                                      │
+│  4. MIDDLEWARE ⭐                                            │
+│     Handles SIDE EFFECTS:                                    │
+│     - API calls (fetch / axios)                              │
+│     - Async logic (thunk / saga)                             │
+│     - Logging / debugging                                    │
+│     → Dispatches new actions (success/failure)               │
+│       ↓                                                      │
+│  5. REDUCER                                                  │
+│     Pure function → updates state based on action            │
+│       ↓                                                      │
+│  6. NEW STATE                                                │
+│     Updated immutable state object                           │
+│       ↓                                                      │
+│  7. STORE                                                    │
+│     Central place that saves state                           │
+│       ↓                                                      │
+│  8. SELECTORS                                                │
+│     useSelector reads updated state                          │
+│       ↓                                                      │
+│  9. RE-RENDER                                                │
+│     UI updates automatically                                 │
+│                                                              │
+└──────────────────────────────────────────────────────────────┘
 ```
 
 ---
