@@ -290,5 +290,4 @@ Here are some common, beginner-friendly interview questions related to this sess
 
 ### Navigation
 
-- ⬅️ Previous: [14_AWS_EC2_AMI_EBS_LoadBalancer.md](./14_AWS_EC2_AMI_EBS_LoadBalancer.md)  
-- ➡️ Next: [16.aws-s3-static-website-hosting.md](./16.aws-s3-static-website-hosting.md)  
+- ⬅️ Previous: [14_AWS_EC2_AMI_EBS_LoadBalancer.md](./14_AWS_EC2_AMI_EBS_LoadBalancer.md) | ➡️ Next: [16_aws-s3-static-website-hosting.md](./16_aws-s3-static-website-hosting.md)  

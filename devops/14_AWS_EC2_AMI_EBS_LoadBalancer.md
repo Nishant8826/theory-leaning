@@ -782,4 +782,4 @@ An **Elastic IP** is a static, permanent public IP address. Here's the tricky pa
 
 ---
 
-← Prev: [13_ELB_and_EC2.md](13_ELB_and_EC2.md) | Next: [15_AWS_S3_and_Storage.md](15_AWS_S3_and_Storage.md) →
+← Prev: [13_ELB_and_EC2.md](13_ELB_and_EC2.md) | Next: [15_Linux_Practical_Session.md](15_Linux_Practical_Session.md) →

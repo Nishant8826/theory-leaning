@@ -254,3 +254,7 @@ my-portfolio-bucket/
 
 **Q: Can you host a dynamic PHP or Python website on S3?**
 *A: No. S3 only hosts **Static** content (HTML, CSS, JS). For PHP/Python, you need a server like EC2 or a service like Lambda.*
+
+
+
+- ⬅️ Previous: [15_Linux_Practical_Session.md](./15_Linux_Practical_Session.md) | ➡️ Next: [17_S3_Storage_Classes_Lifecycle_RDS](./17_S3_Storage_Classes_Lifecycle_RDS)  
