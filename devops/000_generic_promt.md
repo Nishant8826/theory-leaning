@@ -24,7 +24,7 @@ I will share a class summary. From that summary, generate detailed study notes.
 5. **Interview Q&A** – At least 5–8 interview questions with answers covering this topic.
 
 6. **Navigation Footer** – Single line at the bottom with links to Previous and Next notes:
-   ← Previous: `[file]` | Home: `README.md` | Next: `[file]` →
+   ← Previous: `[file]` | Next: `[file]` →
 
 ---
 
