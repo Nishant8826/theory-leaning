@@ -73,7 +73,7 @@ Databases come in different types, each designed for specific data patterns and 
 │  │                     │    │                      │                        │
 │  │  Examples:          │    │  Examples:           │                        │
 │  │  CSV, Spreadsheets  │    │  MySQL, PostgreSQL,  │                        │
-│  │                     │    │  Oracle, SQL Server   │                        │
+│  │                     │    │  Oracle, SQL Server  │                        │
 │  └─────────────────────┘    └──────────────────────┘                        │
 │                                                                             │
 │  ┌─────────────────────┐    ┌──────────────────────┐                        │
