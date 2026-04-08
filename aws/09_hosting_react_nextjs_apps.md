@@ -280,7 +280,7 @@ Think of Nginx as the **Front Desk / Receptionist** for your server.
 1.  **Install Nginx:** `sudo apt install nginx -y`
 2.  **Open the Config File:**
     ```bash
-    sudo nano /etc/nginx/sites-available/default
+    sudo vi /etc/nginx/sites-available/default
     ```
 3.  **Replace the `location /` block with this:**
     ```nginx
@@ -375,13 +375,41 @@ If you are new to Linux, here is exactly what those commands mean:
 | **`curl`** | **"Client URL"**. A tool to download or send data to/from a website via terminal. |
 | **`ls`** | **"List"**. Shows you all files and folders in your current directory. |
 | **`cd`** | **"Change Directory"**. Moves you into a different folder (e.g., `cd my-repo`). |
-| **`nano`** | A simple text editor inside the terminal (like Notepad for Linux). |
+| **`vi`** | The industry-standard terminal editor. More complex than nano but incredibly powerful. |
 | **`systemctl`** | A tool to manage background services (like starting/restarting Nginx). |
 | **`&&`** | **"And Then"**. Runs the first command, and if it succeeds, runs the second. |
 | **`|` (Pipe)** | Takes the output of one command and gives it to the next command. |
 | **`unzip`** | Extracts files from a compressed ZIP folder. |
 | **`ssh`** | **"Secure Shell"**. An encrypted way to log in to your remote server. |
 | **`git clone`** | Downloads your code from GitHub to the server. |
+
+---
+
+### 🛠️ VI Editor Mastery (The "I'm Stuck in the Terminal" Guide)
+In professional DevOps, `vi` (or `vim`) is the standard. Unlike VS Code, it uses **Modes**. If you don't know what mode you are in, you will get frustrated.
+
+**The Golden Rule:** If you are confused, hit `Esc` 3 times. You are now in **Command Mode**.
+
+| Scenario | Mode | Key / Command | Explanation |
+| :--- | :--- | :--- | :--- |
+| **Start Typing** | Edit | `i` | Enter **INSERT** mode at cursor. |
+| **Append Text** | Edit | `a` | Enter **INSERT** mode after cursor. |
+| **New Line Below** | Edit | `o` | Opens a new line below and enters Insert mode. |
+| **Stop Editing** | Command | `Esc` | Returns to **COMMAND** mode (Standard). |
+| **Save & Exit** | Command | `:wq` + `Enter` | **W**rite (Save) and **Q**uit. |
+| **Force Exit** | Command | `:q!` + `Enter` | Quit **without saving** (Nuclear option). |
+| **Delete Line** | Command | `dd` | Deletes the entire current line. |
+| **Copy Line** | Command | `yy` | **Y**ank (Copy) the current line. |
+| **Paste** | Command | `p` | **P**ut (Paste) below the cursor. |
+| **Undo** | Command | `u` | Undo the last action. |
+| **Go to Top** | Command | `gg` | Jumps to the first line. |
+| **Go to Bottom** | Command | `G` | Jumps to the last line. |
+| **Search** | Command | `/search_term` | Search forward for a word. |
+| **Replace (Line)** | Command | `:s/old/new/g` | Replaces 'old' with 'new' in the current line. |
+| **Replace (All)** | Command | `:%s/old/new/g` | Replaces every instance in the whole file. |
+| **Line Numbers** | Command | `:set nu` | Shows line numbers (helpful for debugging). |
+
+**Pro-Tip:** Most developers accidentally open `vi` and can't leave. Remember `:q!` if you ever mess up the configuration and want to start over!
 
 ### Node / NPM Commands (The "Kitchen")
 - **`npm install`**: Downloads all the "ingredients" (dependencies/modules) needed for your app.
