@@ -669,4 +669,4 @@ RDS fits PaaS because AWS handles the database engine, OS, patching, backups, an
 
 ---
 
-← Previous: [`17_S3_Storage_Classes_Lifecycle_RDS.md`](17_S3_Storage_Classes_Lifecycle_RDS.md) | Next: [`19_TBD.md`](19_TBD.md) →
+← Previous: [`17_S3_Storage_Classes_Lifecycle_RDS.md`](17_S3_Storage_Classes_Lifecycle_RDS.md) | Next: [`19_AWS_RDS_MySQL_Setup_and_Management.md`](19_AWS_RDS_MySQL_Setup_and_Management.md) →
