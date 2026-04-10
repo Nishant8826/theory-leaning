@@ -103,4 +103,4 @@ Answer: Because it allows you to automatically provision thousands of servers wh
 * Elasticity ensures your app survives viral traffic spikes.
 
 ---
-Prev : [Start] | Next : [02_aws_global_infrastructure.md](./02_aws_global_infrastructure.md)
+Prev : [00_Introduction_to_AWS](./00_Introduction_to_AWS.md) | Next : [02_aws_global_infrastructure.md](./02_aws_global_infrastructure.md)
