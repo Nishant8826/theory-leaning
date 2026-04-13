@@ -1093,7 +1093,7 @@ We built a complete, production-ready VPC from scratch with:
   1. Go to **Route Tables** → **Create route table** → Name: `Public-RT`, Select VPC.
   2. Select `Public-RT` → **Routes** tab → **Edit routes**.
   3. Add route: Destination `0.0.0.0/0`, Target `Internet Gateway` (select `My-IGW`). Save. *(👉 This is what makes it a public subnet)*
-  4. Go to **Subnet associations** tab → **Edit subnet associations** → Select both Public Subnets (`Public-Subnet-AZ1` & `Public-Subnet-AZ2`). Save.
+  4. Go to **Subnet associations** tab → Under **Explicit subnet associations**, click **Edit subnet associations** (ignore the one under "Subnets without explicit associations") → Select both Public Subnets (`Public-Subnet-AZ1` & `Public-Subnet-AZ2`). Save.
 - **Impact:** Turns the associated subnets into verified public subnets capable of hosting internet-facing resources like load balancers or a NAT Gateway.
 
 ---
@@ -1129,7 +1129,7 @@ We built a complete, production-ready VPC from scratch with:
   1. Go to **Route Tables** → **Create route table** → Name: `Private-RT`, Select VPC.
   2. Select `Private-RT` → **Routes** tab → **Edit routes**.
   3. Add route: Destination `0.0.0.0/0`, Target `NAT Gateway` (select `My-NAT`). Save.
-  4. Go to **Subnet associations** tab → **Edit subnet associations** → Select both Private Subnets (`Private-Subnet-AZ1` & `Private-Subnet-AZ2`). Save.
+  4. Go to **Subnet associations** tab → Under **Explicit subnet associations**, click **Edit subnet associations** (ignore the one under "Subnets without explicit associations") → Select both Private Subnets (`Private-Subnet-AZ1` & `Private-Subnet-AZ2`). Save.
 - **Impact:** Directs outbound internet traffic from private subnets through the NAT Gateway.
 
 ---
