@@ -36,9 +36,9 @@ User browser: fetch('https://api.myapp.com/products')
 Step 1: Browser DNS cache → "Do I already know this?" → MISS
 Step 2: OS DNS cache → "Has any app looked this up?" → MISS
 Step 3: Router DNS cache → "Has anyone on the network asked?" → MISS
-Step 4: ISP's recursive resolver → "Let me find out..."
-Step 5: Root DNS server → "I know who handles .com" → return .com NS
-Step 6: .com TLD server → "I know who handles myapp.com" → return NS records
+Step 4: ISP's(Internet Service Providers) recursive resolver → "Let me find out..."
+Step 5: Root DNS server → "I know who handles .com" → return .com NS(Name Server)
+Step 6: .com TLD(Top Level Domain) server → "I know who handles myapp.com" → return NS records
 Step 7: myapp.com authoritative DNS (Route 53) → "api.myapp.com = 54.23.189.12"
 Step 8: Result cached at every level (TTL-based)
 
@@ -147,6 +147,12 @@ Fix: Check VPC settings:
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
+#### Diagram Explanation (The Traffic Cop)
+Route 53 doesn't just hand out IP addresses blindly; it acts like an intelligent internet traffic cop:
+- **Latency Policy:** If a user in London asks for the IP, Route 53 detects their location and hands them the IP of your EU server instead of your US server.
+- **Weighted Policy (A/B Testing):** You can tell Route 53 to give out the old server's IP 90% of the time, and the new server's IP 10% of the time to test a new version safely.
+- **Failover:** If Route 53 detects your primary server is offline (via health checks), it automatically flips a switch and starts handing out the IP address of your backup survivor server.
+
 ---
 
 ## Visual Diagram — DNS Resolution Chain
@@ -180,6 +186,14 @@ Browser Cache ──→ OS Cache ──→ Router ──→ ISP Resolver
                                     Answer: 54.23.189.12
                                Cached for TTL (e.g., 300 seconds)
 ```
+
+#### Diagram Explanation (The Phonebook Hunt)
+Think of DNS resolution like trying to find a friend's phone number before smartphones existed:
+1. **Your Memory (Browser/OS cache):** You check your own brain first. "Do I already know API.myapp.com?" If not, you check your physical address book on your desk (OS cache). 
+2. **The Local Operator (ISP Resolver):** You call the local neighborhood operator and ask. They don't know either, but they promise to go find out for you.
+3. **The Global Directory (Root & TLD Servers):** The operator calls the Global Directory. They don't know the specific number, but they route you: "I know who manages all `.com` numbers. Go ask them." Then the `.com` manager says "I know who manages `myapp.com`. Go ask Route 53."
+4. **The Authoritative Answer (Route 53):** The operator finally reaches Route 53 (the actual authoritative owner of the domain) and gets the precise IP address (`54.23.189.12`).
+5. **Caching:** The operator tells you the number, but importantly, they write it down so the next person who asks gets the answer instantly!
 
 ---
 

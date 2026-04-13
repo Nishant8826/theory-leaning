@@ -206,6 +206,11 @@ app.listen(8080, () => console.log('API Gateway on :8080'));
         └──────────┘ └─────────┘ └───────────┘
 ```
 
+#### Diagram Explanation (The Single Front Desk)
+Imagine your microservice architecture as a massive hospital with dozens of specialized departments.
+- **Without an API Gateway:** Every single patient (the Client apps) has to figure out exactly which building to go to, wait in a separate security line at every single building (authentication), and find the exact doctor's room. 
+- **With an API Gateway:** There is one massive, centralized Front Desk at the front of the entire hospital! The patient walks up, shows their ID *once* (centralized Auth), the receptionist checks to make sure they aren't spamming visits (Rate Limiting), and then the receptionist internally routes the patient directly to the correct department (`/api/users` vs `/api/orders`).
+
 ---
 
 ## API Gateway vs ALB — When to Use Which

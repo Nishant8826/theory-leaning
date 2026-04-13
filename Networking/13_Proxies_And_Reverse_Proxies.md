@@ -242,6 +242,13 @@ Headers Node.js receives:
   Connection: keep-alive
 ```
 
+#### Diagram Explanation (The Corporate Hierarchy)
+Think of a Reverse Proxy Chain like the structural hierarchy of a large corporation handling incoming customer requests:
+- **CloudFront (The International Receptionist):** Located all over the world, they intercept international requests immediately. If the customer just wants a standard brochure (Static Files), the receptionist hands it to them instantly and ends the interaction.
+- **ALB (The Regional Manager):** If the customer needs custom account help, they are explicitly routed to the central AWS region. The ALB decides which department they need (`/api/*` vs `/ws/*`) and passes them to whichever employee currently has the least amount of work.
+- **Nginx (The Department Secretary):** Before the backend developer even sees the request, Nginx checks their ID card, squishes the data down to save space (gzip), and acts as a buffer so the developer doesn't get overwhelmed with slow talkers.
+- **Node.js (The Worker):** Finally, Node executes the core business logic and builds the response, blissfully unaware of the immense sophisticated infrastructure flawlessly shielding and scaling it!
+
 ---
 
 ## Node.js — Working Behind a Proxy

@@ -227,6 +227,14 @@ RDS (10.0.10.5) → Internet: ❌ No route (private subnet, no IGW)
 Internet → RDS: ❌ Blocked (private subnet + security group)
 ```
 
+#### Diagram Explanation (The AWS Neighborhood)
+Think of a VPC exactly like planning a gated neighborhood:
+
+- **The VPC (The Property Line):** Defined by `10.0.0.0/16`, this is the grand piece of land AWS gives you. It's totally private by default.
+- **Internet Gateway (The Front Gate):** The only physical way out to the public internet. Nothing gets in or out without passing through this.
+- **Public Subnet (The Front Lawn):** Because this subnet (e.g. `10.0.1.0/24`) is explicitly connected to the Internet Gateway, the EC2 instances inside it have public internet access. This is where your load balancers or public web servers live.
+- **Private Subnet (The Safe Room):** Notice that the private subnet (`10.0.10.0/24`) has absolutely no line connecting it to the Internet Gateway. Your RDS (Database) and Redis live here. A hacker cannot reach them because there is literally no physical path from the internet. Only your web servers in the public subnet know the internal "hallways" to reach the safe room.
+
 ---
 
 ## Commands & Debugging Tools
@@ -372,6 +380,12 @@ x.x.x.x/32 = "this exact IP only"
 10.0.1.0/24 = "any IP in this subnet"
 sg-xxxxx   = "any instance in this security group"
 ```
+
+#### Diagram Explanation (The Security Bouncers)
+Think of Security Groups like bouncers at different doors of a club:
+
+- **The EC2 Bouncer (Public):** The rule `443 | TCP | 0.0.0.0/0` means "Let absolutely anyone in the world (`0.0.0.0/0`) connect to my server, but *only* if they are knocking on Port 443 (HTTPS)." This makes sense for a public web server. The SSH rule limits access *only* to your specific home IP address so nobody else can hijack your terminal.
+- **The RDS Bouncer (Private):** The rule `5432 | TCP | 10.0.1.0/24` means "Only let traffic into my database if it is coming from the `10.0.1.x` subnet." Even better, you can say `sg-ec2-xxxxx`, meaning "Only let traffic in if the bouncer at the EC2 door specifically approved them first."
 
 ---
 

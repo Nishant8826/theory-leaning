@@ -59,6 +59,11 @@ UDP (User Datagram Protocol) is TCP's lightweight sibling — it sends data with
 └────────────────────────────────────────────────────────────────────┘
 ```
 
+#### Diagram Explanation (The Postal Service vs. The Paper Airplane)
+Think of the difference between TCP and UDP as two ways to send a message:
+- **TCP (Certified Mail):** You send a tracked package. The post office makes you sign for it (handshake), guarantees it will arrive in perfect sequence, and calls you to confirm delivery. It's incredibly secure but much slower.
+- **UDP (Throwing a Paper Airplane):** You fold your message and chuck it out the window. You don't know if it hit the person, you don't know if the wind blew it away, and you honestly don't care. But it's *instantaneous*. This is exactly why live video calls use UDP. It's better for a single frame of video to drop completely than for the video to freeze while waiting for an old frame to arrive 5 seconds late.
+
 ---
 
 ## How does it actually work?
@@ -206,6 +211,11 @@ sendMetric('api.active_connections', 150, 'g'); // Gauge
 │  Node.js QUIC: experimental (node --experimental-quic)         │
 └──────────────────────────────────────────────────────────────────┘
 ```
+
+#### Diagram Explanation (Fixing the Traffic Jam)
+This diagram perfectly highlights "Head-of-Line Blocking."
+- Under **HTTP/2 (TCP)**, imagine all your website's data (HTML, JS, Images) is driving in a single lane on the highway. If the front car (a packet of data) crashes on its way, *every single car behind it* has to instantly stop and wait for it to be repaired and retransmitted. 
+- Under **HTTP/3 (QUIC/UDP)**, each stream of data gets its own dedicated lane! If an image packet crashes, the HTML and JS packets driving right next to it in other lanes keep cruising unbothered. By building reliability directly on top of "unreliable" UDP, QUIC creates the fastest, most flexible transport ever designed.
 
 ---
 

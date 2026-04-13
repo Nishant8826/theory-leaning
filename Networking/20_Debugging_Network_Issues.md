@@ -31,6 +31,10 @@ Network debugging is the art of finding WHERE in the network stack a problem liv
 └──────────────────────────────────────────────────────────────────┘
 ```
 
+#### Diagram Explanation (The Detective's Filter)
+Think of network debugging strictly like solving a water leak in a 5-story building:
+You ALWAYS start by checking the main water valve first (Layer 1: DNS), then the main pipes (Layer 2: IPs), then the individual floor's valve (Layer 3: TCP), then the specific room's faucet (Layer 5: HTTP). If you just blindly start ripping open the drywall on the 5th floor (Layer 6: Application code) without initially checking if the city simply turned off the water main (DNS errors), you will brutally waste hours of your life on a wild goose chase!
+
 ---
 
 ## Layer-by-Layer Debugging
@@ -353,6 +357,13 @@ Diagnosis:
 │  "DB connection failing"    │ nc -zv db-host db-port            │
 └─────────────────────────────┴───────────────────────────────────┘
 ```
+
+#### Diagram Explanation (The Mechanic's Toolbox)
+Just like a master mechanic wouldn't use a hammer to check oil levels, you must use the exact right networking tool for the exact networking symptom.
+- `nc` (Netcat) strictly checks the raw physical pipes (Is the server plugged in and listening?).
+- `curl` checks the sophisticated end-product (Is the web server actually legally returning a webpage?).
+- `dig` explicitly checks the city directory (Is the phone book updated?).
+Memorizing this toolbox instantly graduates you from a frontend web developer struggling with APIs into a serious full-stack engineer.
 
 ---
 

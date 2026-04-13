@@ -113,6 +113,11 @@ Health check config:
 └──────────────────────────────────────────────────────────────────┘
 ```
 
+#### Diagram Explanation (The Dealing Strategies)
+Load balancing algorithms determine *how* the Host distributes new requests:
+- **Round Robin:** "One for you, one for you, one for you." Mathematically fair, but it completely ignores whether a server currently has a massive workload or a tiny one.
+- **Least Outstanding Requests:** "Who currently has the fewest open connections?" Much smarter for heavy processing! If EC2 #1 is bogged down with a slow, complex database query, the ALB sees this and sends the next new user immediately to EC2 #2 instead.
+
 ---
 
 ## Visual Diagram — ALB Architecture
@@ -144,6 +149,13 @@ Health check config:
          │(Atlas)  │   │(Elasti)│
          └─────────┘   └────────┘
 ```
+
+#### Diagram Explanation (The Restaurant Host)
+Think of an Application Load Balancer perfectly like a Host at a busy restaurant:
+- **The Front Door:** Users arrive at the single front door (the ALB's public IP). They never know exactly which waiter (EC2 instance) they are going to get.
+- **The Routing Rules:** If the user asks for the bar (`/ws/*`), the Host explicitly routes them to the tables equipped for drinks (Target Group 2). If they ask for food (`/api/*`), they are routed to the dining room (Target Group 1).
+- **Sticky Sessions:** If a customer builds a rapport with Waiter #2, the Host remembers this (via an `AWSALB` cookie) and makes sure to send that specific customer back to Waiter #2 every time they return. 
+- **The Kitchen (Databases):** All the waiters, regardless of who they serve, go to the exact same kitchen (MongoDB/Redis) at the back to get the data to bring back to the customer!
 
 ---
 

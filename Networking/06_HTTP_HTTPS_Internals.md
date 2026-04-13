@@ -68,6 +68,13 @@ Strict-Transport-Security: max-age=31536000                  ← Force HTTPS
 {"products": [{"id": 1, "name": "Laptop"}, ...]}           ← JSON body
 ```
 
+#### Diagram Explanation (The Envelope and Letter)
+An HTTP request is basically plain text sent over the wire. It relies entirely on an invisible "Blank Line" to separate the envelope from the letter:
+- **The Top Line:** Dictates the core action (`GET /api`) or result (`HTTP 200 OK`).
+- **The Headers (The Envelope):** Everything down to the empty line. This tells the server *who* you are (Cookies, JWTs) and *what format* you speak (JSON, gzip compression).
+- **The Empty Line:** This is a hard-coded standard. It tells the parser "Stop reading headers, the actual data is starting."
+- **The Body (The Letter):** Your actual JSON payload. If you mess up the `Content-Length` header, the server won't know where the letter ends!
+
 ### HTTP Methods in Your Stack
 
 ```
@@ -156,6 +163,11 @@ Connection 1: ──[html][css][js][img1][img2][img3][font]───────
               All requests happen simultaneously on ONE TCP connection
               No waiting, no head-of-line blocking at HTTP level
 ```
+
+#### Diagram Explanation (The Checkout Line)
+The difference between HTTP/1.1 and HTTP/2 is like the difference between a grocery store checkout line:
+- **HTTP/1.1:** You are allowed to have a maximum of 6 checkout lines (TCP connections) open at once. If you need 10 items (images, CSS, JS), item 7 has to wait in line until the first few are finished checking out. This is called "Head-of-Line Blocking," and it's why old websites loaded images sequentially!
+- **HTTP/2 (Multiplexing):** You only have ONE checkout line, but the cashier is superhuman and scans all 10 items concurrently. All data is sliced up and sent simultaneously over a single TCP connection. This dramatically speeds up modern React/Next.js architectures.
 
 ---
 

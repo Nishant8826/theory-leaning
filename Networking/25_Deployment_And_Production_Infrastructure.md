@@ -64,6 +64,13 @@ This is the capstone — putting everything together for a production deployment
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
+#### Diagram Explanation (The Corporate Headquarters)
+This is the ultimate, final view of your entire infrastructure, heavily mirroring a massive secure corporate headquarters:
+- **The Global Mailroom (CloudFront):** Sitting at the absolute edge of the internet world, intercepting all physical mail. If a customer just wants a standard public company brochure (`/static`), CloudFront instantly blindly hands it to them without ever physically bothering the actual main corporate office.
+- **The Front Desk (ALB):** Deep inside the secure strict perimeter (VPC), this receptionist receives complex highly custom requests (`/api`) and securely carefully routes them to an explicitly available employee.
+- **The Workforce (EC2 Node.js):** The actual employees sitting securely in the secure private cubicles, technically processing exactly what the customer needs. If they crucially need to explicitly check the strict permanent company archives, they safely securely badge directly into... 
+- **The Vault (RDS/Redis):** The most fiercely strictly protected room securely buried in the entire network, fundamentally completely isolated directly from the outside internet, securely reliably holding your most valuable asset: the actual Data.
+
 ---
 
 ## Deployment Pipeline

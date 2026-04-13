@@ -134,6 +134,12 @@ Internet → RDS: ❌ BLOCKED (no IGW route, no public IP)
 EC2 → RDS: Direct (local route within VPC, 10.0.0.0/16 → local)
 ```
 
+#### Diagram Explanation (The Internal Highway System)
+Think of Routing and NAT like traffic control in a large corporate campus mapping exactly to your AWS subnets:
+- **VPC & Local Routes:** Any car (EC2 instance) driving around the campus (`10.0.x.x`) can automatically navigate to any other building (RDS instance) because they share the same internal road network (`local` route).
+- **Public Subnet (The Front Office):** Buildings here have direct driveways to the public road (Internet Gateway). Anyone from the public can drive in if they are allowed (via Security Groups), and cars inside can drive out to the public.
+- **Private Subnet (The Vault):** Buildings here have NO driveways to the public road. If an employee (EC2) inside the Vault needs to go get lunch from the outside world (like downloading an npm package), they have to ask a secure courier (`NAT Gateway`) located up in the Front Office to go get the lunch for them and bring it back!
+
 ---
 
 ## Node.js — Diagnosing Routing Issues

@@ -55,6 +55,18 @@ Client                          Server
   Cross-continent: 1.5 × 200ms = 300ms ← THIS IS WHY LATENCY MATTERS
 ```
 
+#### What Do These Flags Actually Mean?
+- **SYN (Synchronize):** A 1-bit flag inside the TCP header. The client sends this to *synchronize* its initial sequence number (a randomly generated starting number, e.g., 100) with the server. It formally asks: "I want to start a conversation, are you open and listening on this port?"
+- **SYN-ACK (Synchronize-Acknowledge):** A response from the server containing two flags. **SYN:** "I also want to synchronize my own initial sequence number (e.g., 300) with you." **ACK:** "I explicitly *acknowledge* receiving your SYN request (and I expect packet #101 next)." 
+- **ACK (Acknowledge):** A 1-bit flag from the client. It formally tells the server: "I *acknowledge* receiving your connection sequence number (and expect packet #301 next)." The connection is now 100% open and ESTABLISHED.
+
+#### Diagram Explanation (The Formal Introduction)
+Think of the 3-Way Handshake like calling a business partner entirely through a slow postal service:
+- **SYN (Hi!):** You send the first letter saying "I'd like to initiate a conversation, and my starting reference number is 100."
+- **SYN-ACK (Hi! I acknowledge!):** The server sends a letter back: "I acknowledge your #100 (so I know you exist), and I also want to talk! My reference number is 300."
+- **ACK (I acknowledge your Hi!):** You reply: "I acknowledge your #300. We are now officially talking."
+Because every one of these "letters" involves a physical trip over the internet (a Round-Trip Time or RTT), setting up a new TCP connection is *expensive*. This is exactly why you want connection pooling!
+
 ### Data Transfer
 
 ```
@@ -100,6 +112,11 @@ Client                          Server
   │  ═══ TIME_WAIT (2 min) ═══   │   Client waits to handle late packets
 ```
 
+#### What Do These Flags Actually Mean?
+- **FIN (Finish):** A 1-bit flag inside the TCP header indicating that the sender has officially entirely finished sending data. Unlike simply shutting off power, it politely notifies the other side: "I will not send any more data, but I will keep listening until you are also finished."
+- **ACK (Acknowledge):** Just like in the setup phase, the other side acknowledges receiving the Finish packet.
+*(Note: It's a 4-way handshake because TCP connections are "full-duplex" / bi-directional. Both the Client and the Server must independently say "I am finished" and receive a corresponding "I acknowledge you are finished".)*
+
 ### TCP States You'll See
 
 ```
@@ -122,6 +139,13 @@ Client                          Server
 │ SYN_SENT stuck = server unreachable (firewall, wrong IP)          │
 └─────────────────────────────────────────────────────────────────────┘
 ```
+
+#### Diagram Explanation (The Relationship Status)
+TCP states perfectly track the "relationship status" of a connection you can view using terminal commands like `netstat`:
+- `LISTEN`: Single and looking. Your server is actively waiting for users to reach out.
+- `ESTABLISHED`: Married. Data flows back and forth happily.
+- `CLOSE_WAIT`: "It's complicated." The client has hung up, but your backend code hasn't officially cleaned up and closed the connection yet. If you have thousands of connections stuck in this state, you have a memory leak!
+- `TIME_WAIT`: Divorced, but waiting around for a couple of minutes to make sure the paperwork clears so you don't accidentally receive your ex's delayed mail (preventing cross-connection bugs).
 
 ---
 

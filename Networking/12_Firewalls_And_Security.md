@@ -50,6 +50,10 @@ Firewalls filter network traffic based on rules — allowing or blocking connect
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
+#### Diagram Explanation (The Bouncer vs. The Roadblock)
+- **Security Groups (The Club Bouncer):** Protects a specific building/door (your EC2 instance). SGs are **Stateful**. If the Bouncer lets a user *in* to the club, he inherently remembers their face and automatically lets their data back *out* without needing a separate rule to check their ID again.
+- **Network ACLs (The Neighborhood Roadblock):** Protects the entire neighborhood (your Subnet). NACLs are **Stateless**. The police at the roadblock check IDs upon entering the neighborhood, and when that exact same car tries to leave, the police have no memory of them and must check their IDs completely from scratch again! You must explicitly configure rules for both "In" and "Out".
+
 ---
 
 ## Real-World Security Group Design
@@ -86,6 +90,13 @@ Firewalls filter network traffic based on rules — allowing or blocking connect
 Key principle: Reference security groups by ID not by IP.
 If EC2 IPs change, the rules still work.
 ```
+
+#### Diagram Explanation (The Russian Dolls)
+Look at how these Security Groups perfectly daisy-chain together. This is the ultimate "Defense in Depth" architecture:
+- The **ALB** faces the terrifying public internet (`0.0.0.0/0`) but solely accepts web traffic (ports 80/443).
+- The **EC2 instances** refuse to talk to the internet whatsoever! They *only* accept traffic that possesses the exact ID of the `sg-alb` Bouncer. If a hacker somehow hits the EC2 IP directly, they are dropped instantly.
+- The **RDS Database** refuses to talk to anyone except the EC2 instances (`sg-ec2`). 
+Because they are linked by logical Security Group IDs instead of hardcoded IPs, AWS can autoscale your EC2 instances from 2 to 20 servers under heavy load, and the database will flawlessly accept the 18 new IPs automatically!
 
 ---
 

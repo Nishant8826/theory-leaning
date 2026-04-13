@@ -43,6 +43,11 @@ AWS ECS production:
   └────────────────────────────────────────┘
 ```
 
+#### Diagram Explanation (The Apartment Building)
+- **Localhost (The Studio Apartment):** Currently, your code and database all live in one single room (`localhost`). They can just yell across the room to talk to each other without explicitly resolving an address.
+- **Docker Compose (The Apartment Building):** You moved your code and databases into their own separate apartments (`node-app`, `mongodb`), but they are all tightly contained in the exact same building structure (`app-network`). Instead of yelling, they just call each other by name via the building intercom (Docker DNS).
+- **ECS Production (The Master Planned Community):** In production, your code lives realistically in one house (ECS Fargate), and your core databases live miles away in completely managed gated facilities (MongoDB Atlas, ElastiCache). They strictly must use the exact public roads (VPC Networking) to securely commute and explicitly communicate!
+
 ---
 
 ## Docker Networking Modes
@@ -255,6 +260,10 @@ CMD ["node", "dist/server.js"]
 │  This is why Fargate is simpler than EC2 for containers.       │
 └──────────────────────────────────────────────────────────────────┘
 ```
+
+#### Diagram Explanation (The Direct Address)
+In legacy traditional setups (EC2), you had to use highly complicated "Port Mapping" where literally dozens of dynamic apps shared a single host EC2 IP address. 
+Fargate explicitly forces the `awsvpc` network mode. Think of it like giving every single employee in a 5,000-person skyscraper exactly their own dedicated physical outside phone line (`10.0.10.5`) instead of forcing them to all bottleneck through sharing the company's single main switchboard (`10.0.0.1:3000`). This completely mathematically eliminates all potential port conflicts and allows you to attach extremely specific firewall rules (Security Groups) directly to an individual container!
 
 ### ECS Task Definition (Networking)
 

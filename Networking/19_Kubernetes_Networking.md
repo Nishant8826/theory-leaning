@@ -71,6 +71,10 @@ Rule 4: The IP a Pod sees for itself = the IP others see for it
 └──────────────────────────────────────────────────────────────────┘
 ```
 
+#### Diagram Explanation (The Highway System)
+Kubernetes networking uniquely relies on a sophisticated internal Highway System (the CNI - Container Network Interface). 
+Imagine each Node (EC2 instance) is a physical local city. Inside that city, every Pod (app) gets its exact own uniquely assigned street address (IP Address). Because of the CNI highway system, a pod in City 1 (Node 1) can send a data package *directly* to a pod in City 2 (Node 2) without needing a complex post office or any address translation (NAT). They just logically drive straight there using the completely flat network!
+
 ---
 
 ## Services — Load Balancing & Discovery

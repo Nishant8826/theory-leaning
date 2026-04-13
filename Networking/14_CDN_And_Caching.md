@@ -71,6 +71,12 @@ A CDN (Content Delivery Network) caches your content at edge locations worldwide
                            └─────────┘
 ```
 
+#### Diagram Explanation (The Memory Game)
+Caching is all about having different layers of memory. Think of it like taking a test:
+- **CloudFront (Short-Term Memory / Open Book):** For static files, CloudFront instantly knows the answer. It doesn't even need to ask the brain. (Cache HIT)
+- **Redis (Working Memory):** For dynamic API endpoints, CloudFront has to ask the backend. Node.js then checks its own immediate working memory (Redis). If the database calculated this exact complex query 5 minutes ago, Redis literally remembers it and hands it back in 1ms!
+- **Database (Deep Calculation):** If the data is totally new or specific strictly to a user's session (like a Checkout cart), the system bypasses all the caches completely down to the final database (`Cache MISS`), forcefully does the heavy calculation, and comprehensively sends the response back up the chain!
+
 ---
 
 ## How does it actually work?
@@ -151,6 +157,10 @@ Origin 3: ALB (Server-Side Rendering)
 │  Further from user = slower but always fresh                    │
 └──────────────────────────────────────────────────────────────────┘
 ```
+
+#### Diagram Explanation (The Caching Golden Rule)
+This diagram perfectly visualizes the golden rule of caching: **"Closer to the user = Faster but drastically harder to invalidate."**
+If you accidentally cache a broken javascript file on `Layer 1: Browser Cache`, you practically have no way of legally forcing the user to delete it off their computer. They will see a completely broken site for a full year until the TTL drops, unless you change the filename itself (Hashing: `bundle.abc.js` -> `bundle.xyz.js`). Conversely, if you cache bad logic deeply on `Layer 3: Redis`, you can manually run a 1-second `DEL` command from your terminal and instantly fix the bug globally. Always be incredibly careful with volatile CDN/Browser caches!
 
 ---
 

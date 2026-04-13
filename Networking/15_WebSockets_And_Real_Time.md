@@ -85,6 +85,11 @@ For your stack:
   - Regular CRUD: REST API (always)
 ```
 
+#### Diagram Explanation (The Telephone vs The Walkie-Talkie)
+- **HTTP (Sending a Letter):** You send a request, the server writes back, and the transaction is 100% over. If you want to know if they replied again, you have to write *another* letter asking.
+- **SSE (The Radio Broadcast):** You tune in to the server's station. The server can continuously broadcast live updates (like live sports scores) to you forever, but you *cannot* talk back on that channel. 
+- **WebSocket (The Phone Call):** You call the server, they pick up, and you **stay on the line**. For hours. Both of you can talk instantly at any exact moment without needing to redial!
+
 ---
 
 ## Socket.IO Implementation (Production)
@@ -349,6 +354,11 @@ All servers share state through Redis.
 │  3 EC2 instances = ~30,000-150,000 concurrent users            │
 └──────────────────────────────────────────────────────────────────┘
 ```
+
+#### Diagram Explanation (The Megaphone)
+WebSockets are inherently incredibly tricky to scale purely because they are "Stateful" (the server memorizes exactly who is currently connected to it).
+If you have 3 different servers perfectly load balanced, User A might connect to Server 1. User B connects to Server 2. If User A logs into the app and sends a chat message directly to User B, Server 1 has *no clue* who User B is or where they are, so the message drops!
+The solution is a **Redis Pub/Sub Adapter**. This acts like a giant megaphone. When User A messages User B, Server 1 yells into the Redis megaphone: "Hey, does ANY server have User B currently connected?!" Server 2 hears this from the megaphone, says "Yep, I do!", grabs the payload, and instantly pushes the message down to User B.
 
 ---
 
