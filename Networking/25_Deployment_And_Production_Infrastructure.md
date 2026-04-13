@@ -390,3 +390,6 @@ app.set('trust proxy', true);
 
 **Q5: How do you design for high availability?**
 > Multi-AZ: EC2 ASG across 2+ AZs, RDS Multi-AZ, ElastiCache Multi-AZ. Multi-region for global apps: Route 53 latency-based routing, read replicas in secondary region, CloudFront global edge. No single points of failure: every component has redundancy. Auto-scaling handles load spikes. Health checks detect and route around failures automatically.
+
+
+Prev : [24 Network Monitoring And Observability](./24_Network_Monitoring_And_Observability.md) | Index: [0 Index](./0_Index.md) | Next : N/A

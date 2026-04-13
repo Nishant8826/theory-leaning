@@ -266,3 +266,6 @@ Run `traceroute google.com` from your machine. Identify your router, ISP, and th
 
 **Q5: What is VPC Peering and when would you use it?**
 > Connects two VPCs so instances can communicate using private IPs. Used for: multi-account architectures, shared services (logging, monitoring), cross-region databases. Routes must be added in both VPCs. No transitive peering — for that, use Transit Gateway.
+
+
+Prev : [09 TLS SSL Handshake](./09_TLS_SSL_Handshake.md) | Index: [0 Index](./0_Index.md) | Next : [11 Load Balancing](./11_Load_Balancing.md)

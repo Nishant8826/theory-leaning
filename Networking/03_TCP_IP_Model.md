@@ -421,3 +421,6 @@ Start your Express server, make 10 requests with `curl`, and use `netstat` to ob
 
 **Q5: What happens when you run out of ephemeral ports?**
 > The OS has a limited range of ephemeral ports (~16,000-48,000). Each outbound TCP connection uses one. In TIME_WAIT state, ports aren't reusable for ~60 seconds. Under heavy load (many short-lived connections), you can exhaust ports. Fix: connection pooling, SO_REUSEADDR, reduce TIME_WAIT.
+
+
+Prev : [02 OSI Model Vs Real World](./02_OSI_Model_Vs_Real_World.md) | Index: [0 Index](./0_Index.md) | Next : [04 IP Addressing And Subnetting](./04_IP_Addressing_And_Subnetting.md)

@@ -427,3 +427,6 @@ app.post('/api/users', (req, res) => {
 
 **Q5: When would you use HTTP/3 over HTTP/2?**
 > HTTP/3 uses QUIC (UDP) instead of TCP. It eliminates TCP head-of-line blocking, reduces connection setup time (0-RTT), and handles network switches better (WiFi→cellular). Best for mobile users with unstable connections. CloudFront supports it — enable in distribution settings.
+
+
+Prev : [05 DNS Deep Dive](./05_DNS_Deep_Dive.md) | Index: [0 Index](./0_Index.md) | Next : [07 TCP Deep Dive](./07_TCP_Deep_Dive.md)

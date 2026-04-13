@@ -401,3 +401,6 @@ Deploy your Dockerized app to ECS Fargate. Configure ALB, security groups, and v
 
 **Q5: How do you handle secrets in Docker containers?**
 > Never in Dockerfiles or environment variables in docker-compose.yml (visible in logs). Use: AWS Secrets Manager (ECS integrates natively), Docker secrets (Swarm), or mounted volumes. ECS can inject secrets from Secrets Manager/SSM Parameter Store directly into container environment.
+
+
+Prev : [17 Microservices Networking](./17_Microservices_Networking.md) | Index: [0 Index](./0_Index.md) | Next : [19 Kubernetes Networking](./19_Kubernetes_Networking.md)

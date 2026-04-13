@@ -283,3 +283,6 @@ Add helmet to your Express app. Use `curl -I` to verify all security headers are
 
 **Q5: What security headers should every Express app set?**
 > `Strict-Transport-Security` (force HTTPS), `X-Content-Type-Options: nosniff` (prevent MIME sniffing), `X-Frame-Options: DENY` (prevent clickjacking), `Content-Security-Policy` (prevent XSS/injection), `X-XSS-Protection` (browser XSS filter). Use `helmet` middleware for all of these.
+
+
+Prev : [11 Load Balancing](./11_Load_Balancing.md) | Index: [0 Index](./0_Index.md) | Next : [13 Proxies And Reverse Proxies](./13_Proxies_And_Reverse_Proxies.md)

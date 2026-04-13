@@ -313,3 +313,6 @@ Configure API Gateway throttling: 100 requests/second steady, 200 burst. Test wi
 
 **Q5: What is the cold start problem with Lambda behind API Gateway?**
 > First request to an idle Lambda takes 100-500ms to provision a container. Subsequent requests reuse the warm container (~1ms overhead). Solutions: provisioned concurrency (keeps containers warm, costs more), regular pings to keep warm, or accept cold starts for non-critical paths.
+
+
+Prev : [15 WebSockets And Real Time](./15_WebSockets_And_Real_Time.md) | Index: [0 Index](./0_Index.md) | Next : [17 Microservices Networking](./17_Microservices_Networking.md)

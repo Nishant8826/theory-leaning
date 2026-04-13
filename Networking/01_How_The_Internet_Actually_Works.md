@@ -462,3 +462,6 @@ Measure total time difference.
 
 **Q5: What is the N+1 API problem and how does it relate to networking?**
 > Fetching a list of items with N related resources — 1 request for the list + N requests for each item's details. Each request has network overhead (RTT). Solution: batch endpoints, GraphQL, or embed related data in the response. This is the network equivalent of the N+1 database query problem.
+
+
+Prev : [00 Introduction And Setup](./00_Introduction_And_Setup.md) | Index: [0 Index](./0_Index.md) | Next : [02 OSI Model Vs Real World](./02_OSI_Model_Vs_Real_World.md)

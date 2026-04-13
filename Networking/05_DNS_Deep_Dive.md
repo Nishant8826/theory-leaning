@@ -420,3 +420,6 @@ Compare DNS resolution time for `google.com` using different resolvers: `8.8.8.8
 
 **Q5: How does MongoDB Atlas use DNS (SRV records)?**
 > Atlas uses SRV DNS records (`_mongodb._tcp.cluster0.xxxxx.mongodb.net`) that return a list of all replica set members with ports and priorities. The driver queries SRV on connect, discovers all nodes, and handles failover automatically. This is why the `mongodb+srv://` connection string works.
+
+
+Prev : [04 IP Addressing And Subnetting](./04_IP_Addressing_And_Subnetting.md) | Index: [0 Index](./0_Index.md) | Next : [06 HTTP HTTPS Internals](./06_HTTP_HTTPS_Internals.md)

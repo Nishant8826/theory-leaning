@@ -335,3 +335,6 @@ Use Wireshark to capture traffic while your browser loads a page. Identify:
 
 **Q5: How does encapsulation work?**
 > Each layer wraps the data from the layer above with its own header. Application data is wrapped in TCP (ports), wrapped in IP (addresses), wrapped in Ethernet (MACs). The receiving side unwraps in reverse. Each layer only reads its own header and passes the rest up.
+
+
+Prev : [01 How The Internet Actually Works](./01_How_The_Internet_Actually_Works.md) | Index: [0 Index](./0_Index.md) | Next : [03 TCP IP Model](./03_TCP_IP_Model.md)

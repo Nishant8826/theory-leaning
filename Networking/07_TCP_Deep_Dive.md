@@ -442,3 +442,6 @@ Count TCP handshakes in tcpdump output.
 
 **Q5: How does TCP keep-alive work and why is it important for database connections?**
 > TCP keep-alive sends probe packets on idle connections to detect dead peers. Default Linux timer is 2 hours — too long for NAT gateways (AWS: 350s timeout). Set keep-alive interval shorter than NAT timeout to prevent silent connection drops.
+
+
+Prev : [06 HTTP HTTPS Internals](./06_HTTP_HTTPS_Internals.md) | Index: [0 Index](./0_Index.md) | Next : [08 UDP And When To Use It](./08_UDP_And_When_To_Use_It.md)

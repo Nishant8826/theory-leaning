@@ -398,3 +398,6 @@ Create a self-signed certificate and set up an HTTPS Express server. Test with `
 
 **Q5: What happens if your TLS certificate expires?**
 > All HTTPS connections fail. Browsers show security warnings. Users can't reach your site. API clients get certificate errors. SEO ranking drops. Prevention: ACM auto-renewal, Let's Encrypt certbot timer, monitoring with certificate expiry alerts.
+
+
+Prev : [08 UDP And When To Use It](./08_UDP_And_When_To_Use_It.md) | Index: [0 Index](./0_Index.md) | Next : [10 Routing And NAT](./10_Routing_And_NAT.md)

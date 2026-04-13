@@ -482,3 +482,6 @@ Display WebSocket connection status, transport type, and latency in your React a
 
 **Q5: How do you handle WebSocket authentication?**
 > Pass JWT token in the `auth` object during Socket.IO handshake. Verify in server-side middleware before allowing connection. Don't pass tokens in query strings (logged in URLs). Implement token refresh: if token expires, disconnect → refresh token → reconnect with new token.
+
+
+Prev : [14 CDN And Caching](./14_CDN_And_Caching.md) | Index: [0 Index](./0_Index.md) | Next : [16 API Gateways](./16_API_Gateways.md)

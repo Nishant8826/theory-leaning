@@ -396,3 +396,6 @@ Add Redis caching to your slowest endpoint. Measure response time before and aft
 
 **Q5: How do you handle the thundering herd problem?**
 > When a cache key expires, hundreds of concurrent requests hit the DB. Solutions: cache lock (only first request queries DB, others wait), stale-while-revalidate (serve stale data while refreshing in background), random TTL jitter (prevent simultaneous expiry), pre-warming before expiry.
+
+
+Prev : [20 Debugging Network Issues](./20_Debugging_Network_Issues.md) | Index: [0 Index](./0_Index.md) | Next : [22 Database Networking](./22_Database_Networking.md)

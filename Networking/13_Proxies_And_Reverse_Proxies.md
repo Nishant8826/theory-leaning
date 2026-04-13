@@ -396,3 +396,6 @@ Configure Nginx to proxy WebSocket connections to your Socket.IO server. Verify 
 
 **Q5: How do you handle WebSocket connections through a reverse proxy?**
 > The reverse proxy must forward the `Upgrade` and `Connection` headers for the HTTP→WebSocket upgrade. In Nginx: `proxy_set_header Upgrade $http_upgrade; proxy_set_header Connection "upgrade"`. Also set `proxy_read_timeout` high enough for long-lived connections.
+
+
+Prev : [12 Firewalls And Security](./12_Firewalls_And_Security.md) | Index: [0 Index](./0_Index.md) | Next : [14 CDN And Caching](./14_CDN_And_Caching.md)

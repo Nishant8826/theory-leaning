@@ -330,3 +330,6 @@ Set up a PostgreSQL read replica on RDS. Configure separate writer and reader po
 
 **Q5: What is the NAT Gateway timeout problem for database connections?**
 > AWS NAT Gateway drops idle TCP connections after 350 seconds. If your database connection pool has idle connections longer than 350s, NAT silently drops them. Next query fails with ECONNRESET. Fix: set TCP keep-alive interval < 350s on all database connections.
+
+
+Prev : [21 Performance Optimization](./21_Performance_Optimization.md) | Index: [0 Index](./0_Index.md) | Next : [23 VPC Architecture And Design](./23_VPC_Architecture_And_Design.md)

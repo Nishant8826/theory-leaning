@@ -411,3 +411,6 @@ readinessProbe:
 
 **Q5: ECS Fargate vs EKS — when to use which?**
 > ECS Fargate: simpler, less operational overhead, AWS-native, good for < 10 services. EKS: more powerful, K8s ecosystem (Helm charts, operators), multi-cloud portable, better for complex microservices (> 10 services). ECS is AWS-only; K8s skills are transferable.
+
+
+Prev : [18 Containers And Networking](./18_Containers_And_Networking.md) | Index: [0 Index](./0_Index.md) | Next : [20 Debugging Network Issues](./20_Debugging_Network_Issues.md)

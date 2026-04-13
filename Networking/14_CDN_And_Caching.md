@@ -431,3 +431,6 @@ Add X-Cache-Status headers to your API responses. Monitor hit rate over 1 hour. 
 
 **Q5: How do you cache API responses correctly with CloudFront?**
 > Set `Cache-Control: public, s-maxage=300` for cacheable responses. Use `Vary: Accept-Encoding` for compressed responses. Forward only needed headers (Authorization bypasses cache). Don't cache authenticated endpoints. Use `private, no-store` for user-specific data.
+
+
+Prev : [13 Proxies And Reverse Proxies](./13_Proxies_And_Reverse_Proxies.md) | Index: [0 Index](./0_Index.md) | Next : [15 WebSockets And Real Time](./15_WebSockets_And_Real_Time.md)

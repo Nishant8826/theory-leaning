@@ -382,3 +382,6 @@ Use `wrk` or `autocannon` to load test your API with 100 concurrent connections.
 
 **Q5: How do you handle the ALB idle timeout problem?**
 > ALB closes TCP connections after 60 seconds of inactivity. If Node.js closes first (default keepAliveTimeout was 5s), ALB sends requests to a closed connection → 502 error. Fix: set Node.js `keepAliveTimeout` > ALB idle timeout (e.g., 65s > 60s).
+
+
+Prev : [10 Routing And NAT](./10_Routing_And_NAT.md) | Index: [0 Index](./0_Index.md) | Next : [12 Firewalls And Security](./12_Firewalls_And_Security.md)

@@ -282,3 +282,6 @@ Enable VPC Flow Logs. Generate traffic and analyze the logs. Identify: accepted 
 
 **Q5: What is the cost of a NAT Gateway and how do you reduce it?**
 > ~$32/month + $0.045/GB data processing. Reduce by: S3/DynamoDB VPC endpoints (free, skip NAT for AWS traffic), caching (reduce outbound API calls), pulling Docker images from ECR via VPC endpoint, and using a single NAT Gateway in dev (save $32/month per extra AZ).
+
+
+Prev : [22 Database Networking](./22_Database_Networking.md) | Index: [0 Index](./0_Index.md) | Next : [24 Network Monitoring And Observability](./24_Network_Monitoring_And_Observability.md)

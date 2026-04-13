@@ -445,3 +445,6 @@ List the security group rules for your EC2 instance. Identify: which rules are t
 
 **Q5: How do IPv4 and IPv6 differ for your applications?**
 > IPv4: 32-bit, ~4.3 billion addresses, running out. IPv6: 128-bit, virtually unlimited. Most AWS services support dual-stack. Your Node.js apps work on both (`::` binds to both). IPv6 is direct (no NAT needed), which can simplify architectures but requires security group attention.
+
+
+Prev : [03 TCP IP Model](./03_TCP_IP_Model.md) | Index: [0 Index](./0_Index.md) | Next : [05 DNS Deep Dive](./05_DNS_Deep_Dive.md)

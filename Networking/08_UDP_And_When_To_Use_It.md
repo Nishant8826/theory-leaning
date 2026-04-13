@@ -272,3 +272,6 @@ For larger data: use TCP or implement your own chunking + reassembly
 
 **Q5: Can you build a reliable protocol on top of UDP?**
 > Yes — that's exactly what QUIC does. You implement sequence numbers, acknowledgments, retransmission, and flow control in your application layer. This gives you TCP's reliability with UDP's flexibility (custom congestion control, no head-of-line blocking). But it's complex — use existing implementations (QUIC libraries).
+
+
+Prev : [07 TCP Deep Dive](./07_TCP_Deep_Dive.md) | Index: [0 Index](./0_Index.md) | Next : [09 TLS SSL Handshake](./09_TLS_SSL_Handshake.md)

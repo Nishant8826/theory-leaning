@@ -430,3 +430,6 @@ Run your Express server under load (use `autocannon`). Monitor connection states
 
 **Q5: What tools do you use for network debugging in production?**
 > `curl -v`/`curl -w` (HTTP debugging + timing), `tcpdump`/Wireshark (packet capture), `ss`/`netstat` (connection states), `dig`/`nslookup` (DNS), `traceroute`/`mtr` (path analysis), CloudWatch/Datadog (metrics + logs), and application-level logging with request IDs for distributed tracing.
+
+
+Prev : [19 Kubernetes Networking](./19_Kubernetes_Networking.md) | Index: [0 Index](./0_Index.md) | Next : [21 Performance Optimization](./21_Performance_Optimization.md)
