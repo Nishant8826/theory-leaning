@@ -288,6 +288,12 @@ VPC-D──TGW──VPC-B
 
 ---
 
+**Q11. I ran `ipconfig` on my laptop and got `192.168.1.6`. Can I block this IP in an AWS NACL to stop my laptop from accessing AWS?**
+
+> **No.** `192.168.x.x` is a **Private IP** assigned by your local WiFi router. It only exists inside your house/office network. When you connect to the internet, your home router uses NAT (Network Address Translation) to convert your private IP into a single **Public IP**. AWS only ever sees your Public IP. To block your laptop, you must search "What is my IP" on Google to find your true Public IP (e.g., `103.55.x.x`) and block *that* in the NACL.
+
+---
+
 ## 7. 🧪 Hands-On Practicals — Real Industry Scenarios
 
 > These practicals are based on **real industry problems and client requirements**.
@@ -322,25 +328,59 @@ Create a NACL rule to immediately block an IP range (`203.0.113.0/24`) that is f
 **Client Scenario:** A FinTech company's payment gateway servers (spread across 3 subnets) are under a distributed attack from IP range `203.0.113.0/24`. The SOC team has identified the source. Updating Security Groups on 15+ EC2 instances one-by-one is too slow — the attack is ongoing. They need an **instant subnet-level block**.
 
 #### 🎯 Pre-requisites
-- An existing VPC with at least 2 subnets (public/private)
-- At least 1 EC2 instance running in each subnet
-- Security Groups already configured (to see the difference)
-- AWS Console access with VPC permissions
+- An existing VPC with at least 2 subnets (e.g., both public for easy testing).
+- **Setup 3 EC2 Instances (Ubuntu)**:
+  - **Target Instance 1**: Subnet A, install a basic web server.
+  - **Target Instance 2**: Subnet B, install a basic web server.
+  - **Attacker Instance**: Any subnet, will act as the malicious IP.
+  *(To install a web server easily, add this to User Data when launching Target 1 & 2: `#!/bin/bash` then `apt update -y && apt install nginx -y` and `systemctl start nginx`)*
+- Security Groups for Target 1 & 2 must allow **HTTP (80)** and **SSH (22)** from `0.0.0.0/0`.
+- Note down the **Private IP or Public IP** of the "Attacker" instance (we will use this exact IP to block it).
+- AWS Console access with VPC permissions.
 
 #### 🎯 How (Step-by-Step)
 
-**Step 1: Identify the Default NACL**
+**Step 0: Setup Environment (Completing Pre-requisites)**
 ```
-AWS Console → VPC → Network ACLs → Select the NACL associated with your subnet
-Note: Every subnet has a default NACL that ALLOWS ALL traffic
+1. Setup a VPC Manually (or use your Default VPC):
+   - Go to AWS Console → VPC → Create VPC. Select "VPC only" (CIDR: 10.0.0.0/16).
+   - Subnets → Create 2 Subnets in your VPC (e.g., 10.0.1.0/24 and 10.0.2.0/24).
+   - Internet Gateways → Create an IGW and attach it to your VPC.
+   - Route Tables → Edit the route table associated with your subnets. Add a route: `0.0.0.0/0` pointing to your IGW.
+2. Go to EC2 → Launch Instances.
+3. Launch Target 1 & Target 2:
+   - Name: Target-1 (and later Target-2)
+   - OS: Ubuntu (e.g., 24.04 LTS)
+   - Network: Select your newly created VPC. Pick Subnet A (for Target 1) and Subnet B (for Target 2).
+   - Auto-assign Public IP: Enable
+   - Security Group: Create one allowing SSH (22) and HTTP (80) from Anywhere (0.0.0.0/0), and select it for both Target 1 and Target 2.
+   - Advanced Details → User Data: Paste the script:
+     #!/bin/bash
+     apt update -y
+     apt install nginx -y
+     systemctl start nginx
+     systemctl enable nginx
+   - Launch!
+4. Launch Attacker Instance:
+   - Name: Attacker-Node
+   - Setup exactly like above, but you can skip the User Data (no web server needed).
+   - Once running, go to Instances → select Attacker-Node → Copy its Public IP (e.g., 54.12.34.56).
+```
+
+**Step 1: Identify the Default NACL (Just Observe)**
+```
+1. AWS Console → VPC → Network ACLs.
+2. Find the NACL associated with your newly created VPC.
+3. Click on the "Inbound Rules" and "Outbound Rules" tabs at the bottom.
+Note: You will see it ALLOWS ALL traffic by default. We will NOT edit this default NACL. Best practice is to leave the default alone and create a custom one!
 ```
 
 **Step 2: Create a Custom NACL**
 ```
-VPC → Network ACLs → Create Network ACL
-  - Name: prod-block-nacl
-  - VPC: Select your VPC
-  - Click Create
+1. Still in Network ACLs → Click the "Create network ACL" button.
+2. Name: prod-block-nacl
+3. VPC: Select your new VPC.
+4. Click Create.
 ```
 
 **Step 3: Add the DENY Rule for the Attacker IP Range (Inbound)**
@@ -348,7 +388,7 @@ VPC → Network ACLs → Create Network ACL
 Select prod-block-nacl → Inbound Rules → Edit
   Rule #: 50
   Type: All Traffic
-  Source: 203.0.113.0/24
+  Source: <Your-Attacker-Instance-IP>/32    <-- Replace with the exact IP of the Attacker Server
   Action: DENY
 
   Rule #: 100
@@ -363,7 +403,7 @@ Select prod-block-nacl → Inbound Rules → Edit
 
   Rule #: 120
   Type: SSH (22)
-  Source: <your-ip>/32
+  Source: 0.0.0.0/0    <-- (Or use your Local Laptop IP /32 if you want strict security)
   Action: ALLOW
 ```
 
@@ -379,18 +419,21 @@ Outbound Rules → Edit
 
 **Step 5: Associate the NACL with Target Subnets**
 ```
-Subnet Associations tab → Edit → Select all 3 production subnets → Save
+Subnet Associations tab → Edit → Select both Subnet A and Subnet B → Save
 ```
 
 **Step 6: Verify the Block**
 ```bash
-# From an instance in the blocked IP range (or simulate):
-curl http://<your-ec2-public-ip>
-# Expected: Connection timeout (blocked by NACL rule 50)
+# 1. SSH into the ATTACKER Instance
+ssh -i "your-key.pem" ec2-user@<attacker-instance-public-ip>
 
-# From your own IP:
-curl http://<your-ec2-public-ip>
-# Expected: 200 OK (allowed by NACL rule 100)
+# 2. Try to hit Target 1 or Target 2 from the Attacker:
+curl -v http://<target-1-ip>
+# Expected: Connection timeout. The firewall blocks it at the subnet layer!
+
+# 3. Disconnect from Attacker, and try from your LOCAL LAPTOP/another instance (which is NOT blocked):
+curl -v http://<target-1-ip>
+# Expected: 200 OK. The web server responds!
 ```
 
 #### 🎯 Impact
@@ -412,9 +455,16 @@ Configure a custom NACL on a public subnet to allow **only HTTPS (port 443)** in
 **Client Scenario:** A healthcare client (HIPAA compliance) requires that **all web traffic must be encrypted**. Their compliance auditor flagged that HTTP (port 80) is still accessible on their public-facing subnet. The client needs a network-level enforcement — not just application-level redirects.
 
 #### 🎯 Pre-requisites
-- A VPC with a public subnet
-- An EC2 instance running a web server (Nginx/Apache) with SSL configured
-- An Elastic IP or public IP assigned
+- Launch **1 EC2 instance** and paste the following into **User Data** to install Nginx and auto-configure a dummy SSL certificate for port 443 testing:
+  ```bash
+  #!/bin/bash
+  apt update -y
+  apt install nginx ssl-cert -y
+  sed -i '/listen 80 default_server;/a \ \ \ \ listen 443 ssl default_server;\n    ssl_certificate /etc/ssl/certs/ssl-cert-snakeoil.pem;\n    ssl_certificate_key /etc/ssl/private/ssl-cert-snakeoil.key;' /etc/nginx/sites-available/default
+  systemctl restart nginx
+  ```
+- Security Group must allow **HTTP (80)** and **HTTPS (443)** from `0.0.0.0/0`.
+- An Elastic IP or public IP assigned to the instance.
 
 #### 🎯 How (Step-by-Step)
 
@@ -476,8 +526,9 @@ Demonstrate and troubleshoot why a web application stops responding after applyi
 **Client Scenario:** A junior DevOps engineer at a SaaS startup applied a custom NACL to their production subnet. They added inbound rules for HTTP and SSH, but forgot to add outbound rules. All web applications immediately went down. The team is panicking — "Security Groups are fine, why is the app down?"
 
 #### 🎯 Pre-requisites
-- A VPC with a public subnet and an EC2 instance running a web app
-- The web app should be accessible before starting this practical
+- Launch **1 EC2 instance** with a web server (`apt update -y && apt install nginx -y; systemctl start nginx`).
+- Security Group must allow **HTTP (80)** and **SSH (22)** from `0.0.0.0/0`.
+- Verify the web app is accessible from your browser before starting.
 
 #### 🎯 How (Step-by-Step)
 
@@ -561,8 +612,9 @@ Build a **two-layer security model**: NACL blocks known bad IPs at the subnet le
 
 #### 🎯 Pre-requisites
 - VPC with public + private subnets
-- EC2 instance running a web server in the public subnet
-- Know your office/home IP address
+- **Launch 1 EC2 instance** in the public subnet. Install a web server (`apt update -y && apt install nginx -y; systemctl start nginx`).
+- Know your office/home IP address (Search "What is my IP" online, append `/32` for the CIDR).
+- **Setup 1 Attacker Instance**: Launch a separate EC2 instance in a different VPC (or simulate using another laptop). Note its Public IP.
 
 #### 🎯 How (Step-by-Step)
 
@@ -883,8 +935,10 @@ Set up VPC Peering between a **Development VPC** and a **Production VPC** within
 - 2 VPCs with **non-overlapping** CIDRs
   - Dev VPC: `10.0.0.0/16`
   - Prod VPC: `10.1.0.0/16`
-- At least 1 EC2 instance in each VPC
-- Security Groups on both instances allowing traffic from the peer VPC CIDR
+- **Launch 1 EC2 Instance in each VPC**:
+  - Dev Instance (e.g., 10.0.1.5)
+  - Prod Instance (e.g., 10.1.1.10)
+- Security Groups on both instances allowing traffic (like ICMP Ping or MySQL port 3306) from the peer VPC CIDR.
 
 #### 🎯 How (Step-by-Step)
 
@@ -972,6 +1026,9 @@ Establish VPC Peering between two VPCs in **different AWS accounts** — simulat
 - 2 AWS accounts (or use AWS Organizations)
 - VPC in Account A: `10.0.0.0/16`
 - VPC in Account B: `172.16.0.0/16`
+- **Launch 1 EC2 Instance in each VPC**:
+  - Account A Instance (e.g., 10.0.1.5)
+  - Account B Instance (e.g., 172.16.1.10)
 - IAM permissions for VPC Peering in both accounts
 
 #### 🎯 How (Step-by-Step)
@@ -1046,7 +1103,8 @@ Set up 3 VPCs (A, B, C), peer A↔B and B↔C, then **prove** that A **cannot** 
   - VPC-A (Staging): `10.0.0.0/16`
   - VPC-B (Shared Services): `10.1.0.0/16`
   - VPC-C (Production): `10.2.0.0/16`
-- 1 EC2 instance in each VPC
+- **Launch 1 EC2 instance in each VPC**:
+  - Make sure their Security Groups allow **ICMP - IPv4 (Ping)** and SSH from *all* the other VPC CIDR ranges so you can test freely.
 
 #### 🎯 How (Step-by-Step)
 
@@ -1161,8 +1219,8 @@ Compliance─TGW─Risk
   - Risk: `10.1.0.0/16`
   - Compliance: `10.2.0.0/16`
   - Operations: `10.3.0.0/16`
+- **Launch 1 EC2 instance in each VPC** and ensure their Security Groups allow **All ICMP - IPv4** (ping).
 - AWS account with Transit Gateway permissions
-- EC2 instance in each VPC for testing
 
 #### 🎯 How (Step-by-Step)
 
@@ -1265,7 +1323,9 @@ Instead of deploying these services in every VPC, they deploy once in a **Shared
 #### 🎯 Pre-requisites
 - Transit Gateway created
 - 3+ VPCs (1 shared services + 2 spoke VPCs)
-- EC2 instances in shared services VPC running monitoring/logging
+- **Launch EC2 instances**:
+  - In Spoke VPCs (e.g., Marketing, Engineering).
+  - In Shared Services VPC: Launch an instance and install dummy services to simulate apps (e.g., run a Python HTTP server on port 3000 to mock Grafana: `python3 -m http.server 3000`).
 
 #### 🎯 How (Step-by-Step)
 
@@ -1567,4 +1627,4 @@ Use this to track your practical completion:
 > 💡 **Tip:** Start with Practicals 1-3 (NACL), then 5-6 (CIDR), then 8 & 10 (VPC Peering), and finally 11-12 (Transit Gateway). Practical 13 is the capstone — do it last.
 
 ---
-> ← Previous: [`20_VPC_&_Networking.md`](20_VPC_&_Networking.md) | Next: [`22_TBD.md`](22_TBD.md) →
+> ← Previous: [`20_VPC_&_Networking.md`](20_VPC_&_Networking.md) | Next: [`22_aws_cloudwatch_monitoring_and_billing.md`](22_aws_cloudwatch_monitoring_and_billing.md) →
