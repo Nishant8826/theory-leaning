@@ -457,7 +457,8 @@ Security Groups (SG):                Network ACLs (NACL):
 3. VPC: `mern-vpc`
 4. Inbound rules:
    - Type: SSH | Port: 22 | Source: `mern-bastion-sg` (security group ID, not CIDR)
-   - Type: Custom TCP | Port: 5000 | Source: `0.0.0.0/0` (or restrict to frontend SG)
+   - Type: Custom TCP | Port: 5000 | Source: `0.0.0.0/0` 
+     *(🚨 CRITICAL: Do NOT restrict this to the frontend SG! React runs in the user's browser, so your backend API must be reachable from the general internet!)*
    - Type: HTTP | Port: 80 | Source: `0.0.0.0/0`
 5. Create.
 
