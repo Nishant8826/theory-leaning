@@ -332,12 +332,64 @@ We use `10.0.0.0/16` for the VPC so we have room to carve out many `/24` subnets
 > - For learning/dev, skip NAT Gateway and instead use a Bastion Host to SSH into private instances for updates.
 
 **FREE Alternative — Use EC2 Instance as NAT (t2.micro Free Tier):**
-- Launch a t2.micro in the public subnet.
-- Enable source/destination check disabled.
-- Install `iptables` and configure NAT forwarding.
-- Point private route table to this instance's ENI.
 
 This is more complex to manage but completely free under Free Tier.
+
+**Step 1: Launch the NAT Instance**
+1. EC2 Dashboard → **Launch Instances**.
+2. **Name:** `mern-nat-instance`
+3. **AMI:** Ubuntu Server 24.04 LTS (Free Tier Eligible).
+4. **Instance Type:** `t2.micro`
+5. **Key Pair:** Select your `mern-keypair`.
+6. **Network Settings:** 
+   - **VPC:** `mern-vpc`
+   - **Subnet:** `mern-public-subnet-1a` (Must be a public subnet).
+   - **Auto-assign public IP:** Enable.
+   - **Security Group:** Create new `mern-nat-sg`. 
+     > 💡 **AWS Console Tip - Resolving Default Rules:** AWS usually auto-populates some default rules here. Update them to match exactly this:
+     > - **Change Rule 1 (Default SSH `0.0.0.0/0`):** Change the Source from `Anywhere-IPv4` to **My IP**. This secures your server so only you can remote into it.
+     > - **Change Rule 2 (Default Custom TCP):** Change the Type from `Custom TCP` to **All traffic**. Change the Source to **Custom**, and type exactly `10.0.0.0/16` into the box. This allows all traffic from your private subnet (like MongoDB) to route through this NAT.
+7. Click **Launch Instance**.
+
+**Step 2: Disable Source/Destination Check**
+> **Why do this?** By default, AWS blocks an EC2 instance from sending or receiving traffic if it isn't the final destination. Since a NAT instance acts as a "middleman" router passing traffic from your private database out to the internet, we must disable this security check so it allows third-party traffic to pass through.
+1. EC2 Dashboard → **Instances**.
+2. Select your `mern-nat-instance`.
+3. Click **Actions** → **Networking** → **Change source/destination check**.
+4. Check **Stop** (Disable). 
+5. Click **Save**.
+
+**Step 3: Configure NAT Routing (Inside EC2)**
+1. SSH into the instance: `ssh -i ~/Downloads/mern-keypair.pem ubuntu@<nat-instance-public-ip>`
+2. Enable IP Forwarding in Linux:
+   > **How this works:** Even though AWS allows the traffic through (Step 2), the Linux OS inside the EC2 will block it by default. We tell the Linux kernel it is allowed to route packets by appending `net.ipv4.ip_forward = 1` to its system configuration file, and `sysctl -p` applies the rule immediately.
+   ```bash
+   # Add the routing rule to the configuration file
+   echo "net.ipv4.ip_forward = 1" | sudo tee -a /etc/sysctl.conf
+   
+   # Apply the change immediately
+   sudo sysctl -p
+   ```
+3. Configure `iptables` (Ubuntu version):
+   ```bash
+   # Add the NAT masking rule (maps private IPs to this instance's public IP)
+   sudo iptables -t nat -A POSTROUTING -o ens5 -s 10.0.0.0/16 -j MASQUERADE
+   
+   # Install persistent iptables to save the rule across server reboots
+   # (Note: Press ENTER for "Yes" if a pink screen prompts you during install)
+   sudo apt-get update
+   sudo apt-get install -y iptables-persistent
+   sudo netfilter-persistent save
+   ```
+4. Exit the SSH session.
+
+**Step 4: Update Private Route Table**
+1. VPC Dashboard → **Route Tables**.
+2. Select `mern-private-rt`.
+3. **Routes** tab → **Edit routes** → **Add route**:
+   - **Destination:** `0.0.0.0/0`
+   - **Target:** Instance → Select your `mern-nat-instance`.
+4. Save changes.
 
 **If you do create a NAT Gateway (paid):**
 1. VPC Dashboard → **NAT gateways** → **Create NAT gateway**.
@@ -350,22 +402,6 @@ This is more complex to manage but completely free under Free Tier.
    - Destination: `0.0.0.0/0`
    - Target: `mern-nat-gw`
 
-### 4.6 — Elastic IP Addresses
-
-**What:** A static public IPv4 address that you own until you explicitly release it.
-
-**Why:** EC2 instances get a new public IP every time they restart. An Elastic IP stays the same, so your domain's DNS record doesn't break.
-
-> 💰 **Cost Alert:**
-> - **One Elastic IP attached to a running instance = FREE** (within Free Tier).
-> - **Elastic IP NOT attached to a running instance = $0.005/hour charge.**
-> - **Always release Elastic IPs you're not using.**
-
-1. VPC Dashboard → **Elastic IPs** → **Allocate Elastic IP address**.
-2. Keep defaults → **Allocate**.
-3. Select the newly created EIP → **Actions** → **Associate Elastic IP address**.
-4. Select your backend EC2 instance and its private IP.
-5. Click **Associate**.
 
 ---
 
@@ -427,7 +463,7 @@ Security Groups (SG):                Network ACLs (NACL):
 
 **Create Security Group: Database (MongoDB) SG**
 1. Name: `mern-db-sg`
-2. Description: `MongoDB — private subnet only`
+2. Description: `MongoDB private subnet only`
 3. VPC: `mern-vpc`
 4. Inbound rules:
    - Type: Custom TCP | Port: 27017 | Source: `mern-backend-sg` (ONLY the backend SG)
@@ -437,11 +473,12 @@ Security Groups (SG):                Network ACLs (NACL):
 
 **Create Security Group: Frontend SG (if hosting on EC2)**
 1. Name: `mern-frontend-sg`
-2. Inbound:
+2. Description: `Frontend React application`
+3. Inbound:
    - HTTP (80) from `0.0.0.0/0`
    - HTTPS (443) from `0.0.0.0/0`
    - SSH (22) from `mern-bastion-sg`
-3. Create.
+4. Create.
 
 ### 5.2 — Network ACLs (NACLs)
 
@@ -484,22 +521,37 @@ Your Laptop
 [MongoDB EC2 — Private Subnet — Private IP only]
 ```
 
-**Setup:**
-1. Launch a t2.micro EC2 in `mern-public-subnet-1a` with `mern-bastion-sg`.
-2. On your laptop, use SSH agent forwarding:
+**Setup Step-by-Step:**
 
+**Step 1: Launch the Bastion EC2**
+1. EC2 Dashboard → **Launch Instances**.
+2. **Name:** `mern-bastion-host`
+3. **AMI:** Ubuntu Server 24.04 LTS (Free Tier Eligible).
+4. **Instance Type:** `t2.micro`
+5. **Key Pair:** Select your `mern-keypair`.
+6. **Network Settings:** 
+   - **VPC:** `mern-vpc`
+   - **Subnet:** `mern-public-subnet-1a` (Must be public).
+   - **Auto-assign public IP:** Enable.
+   - **Security Group:** Select existing → `mern-bastion-sg`. 
+7. Click **Launch Instance**.
+
+**Step 2: Connect using SSH Agent Forwarding**
+> **Why Agent Forwarding?** To SSH from the Bastion into your private MongoDB, the Bastion usually needs your secret `.pem` key file. But copying a master private key onto a server is a huge security risk! SSH Agent Forwarding magically passes your laptop's key authentication through the secure connection. This lets you log into the private database *without* ever uploading the key file to the Bastion.
+
+Run these commands on your local laptop terminal:
 ```bash
-# Add your key to SSH agent
-ssh-add ~/.ssh/your-key.pem
+# 1. Add your key to your laptop's SSH agent
+ssh-add ~/Downloads/mern-keypair.pem
 
-# SSH to bastion with agent forwarding (-A)
-ssh -A ec2-user@<bastion-public-ip>
+# 2. SSH to bastion with agent forwarding (the -A flag does the magic!)
+ssh -A ubuntu@<bastion-public-ip>
 
-# From inside bastion, SSH to private instance
-ssh ec2-user@<mongodb-private-ip>
+# 3. Now you are inside the Bastion! 
+# Note: You will create the MongoDB instance in Section 7. Once created,
+# you can SSH directly to its private IP from inside the Bastion like this:
+ssh ubuntu@<mongodb-private-ip>
 ```
-
-> Never copy your private key to the Bastion. Use agent forwarding so the key stays on your local machine.
 
 ---
 
@@ -530,7 +582,7 @@ chmod 400 ~/Downloads/mern-keypair.pem
 
 1. EC2 Dashboard → **Instances** → **Launch instances**.
 2. **Name:** `mern-backend`
-3. **AMI:** Amazon Linux 2023 (Free Tier eligible, denoted by "Free tier eligible" badge)
+3. **AMI:** Ubuntu Server 24.04 LTS (Free Tier eligible)
 4. **Instance type:** `t2.micro` (Free Tier eligible)
 5. **Key pair:** `mern-keypair`
 6. **Network settings → Edit:**
@@ -544,28 +596,45 @@ chmod 400 ~/Downloads/mern-keypair.pem
 ```bash
 #!/bin/bash
 # Update system
-yum update -y
+apt-get update -y
 
 # Install Node.js 20 (LTS)
-curl -fsSL https://rpm.nodesource.com/setup_20.x | bash -
-yum install -y nodejs
+curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+apt-get install -y nodejs
 
 # Install PM2 globally
 npm install -g pm2
 
 # Install git
-yum install -y git
+apt-get install -y git
 
 # Create app directory
 mkdir -p /var/www/backend
-chown ec2-user:ec2-user /var/www/backend
+chown ubuntu:ubuntu /var/www/backend
 
 echo "Backend setup complete" > /var/log/setup.log
 ```
 
 9. Click **Launch instance**.
 
-### 6.3 — Launch Frontend EC2 (Optional — React Build)
+### 6.3 — Assign an Elastic IP to the Backend
+
+**What:** A static public IPv4 address that you own until you explicitly release it.
+
+**Why:** EC2 instances get a new public IP every time they restart. An Elastic IP stays the same, so your domain's DNS record doesn't break.
+
+> 💰 **Cost Alert:**
+> - **One Elastic IP attached to a running instance = FREE** (within Free Tier).
+> - **Elastic IP NOT attached to a running instance = $0.005/hour charge.**
+> - **Always release Elastic IPs if you stop your instance.**
+
+1. EC2 Dashboard → **Elastic IPs** (under Network & Security) → **Allocate Elastic IP address**.
+2. Keep defaults → **Allocate**.
+3. Select the newly created EIP → **Actions** → **Associate Elastic IP address**.
+4. Select your newly created `mern-backend` EC2 instance and its private IP.
+5. Click **Associate**.
+
+### 6.4 — Launch Frontend EC2 (Optional — React Build)
 
 Same process, but:
 - Name: `mern-frontend`
@@ -575,8 +644,8 @@ Same process, but:
 
 ```bash
 #!/bin/bash
-yum update -y
-yum install -y nginx
+apt-get update -y
+apt-get install -y nginx
 systemctl enable nginx
 systemctl start nginx
 mkdir -p /var/www/frontend
@@ -587,11 +656,11 @@ mkdir -p /var/www/frontend
 > - CloudFront: 1 TB data transfer + 10 million requests/month free.
 > - No server to maintain, auto-scaling, global CDN.
 
-### 6.4 — SSH Into Your EC2 Instance
+### 6.5 — SSH Into Your EC2 Instance
 
 ```bash
 # SSH to backend EC2
-ssh -i ~/Downloads/mern-keypair.pem ec2-user@<backend-public-ip>
+ssh -i ~/Downloads/mern-keypair.pem ubuntu@<backend-public-ip>
 
 # Verify Node.js and PM2 are installed
 node --version
@@ -599,7 +668,7 @@ npm --version
 pm2 --version
 ```
 
-### 6.5 — Instance Type Reference
+### 6.6 — Instance Type Reference
 
 | Instance | vCPU | RAM | Free Tier | Use Case |
 |---|---|---|---|---|
@@ -629,7 +698,7 @@ pm2 --version
 **Step 7.1 — Launch MongoDB EC2**
 1. Launch a new EC2 instance:
    - Name: `mern-mongodb`
-   - AMI: Amazon Linux 2023
+   - AMI: Ubuntu Server 24.04 LTS
    - Instance type: `t2.micro`
    - Key pair: `mern-keypair`
    - **Subnet: `mern-private-subnet-1a`** (CRITICAL — private subnet only)
@@ -641,22 +710,22 @@ pm2 --version
 **Step 7.2 — Install MongoDB via Bastion**
 ```bash
 # SSH to Bastion first
-ssh -A -i ~/Downloads/mern-keypair.pem ec2-user@<bastion-public-ip>
+ssh -A -i ~/Downloads/mern-keypair.pem ubuntu@<bastion-public-ip>
 
 # From Bastion, SSH to MongoDB instance using private IP
-ssh ec2-user@10.0.3.xxx
+ssh ubuntu@10.0.3.xxx
 
-# Install MongoDB 7.0 Community on Amazon Linux 2023
-cat > /etc/yum.repos.d/mongodb-org-7.0.repo << 'EOF'
-[mongodb-org-7.0]
-name=MongoDB Repository
-baseurl=https://repo.mongodb.org/yum/amazon/2023/mongodb-org/7.0/x86_64/
-gpgcheck=1
-enabled=1
-gpgkey=https://pgp.mongodb.com/server-7.0.asc
-EOF
+# Install MongoDB 7.0 Community on Ubuntu Linux
+sudo apt-get install gnupg curl
 
-sudo yum install -y mongodb-org
+curl -fsSL https://www.mongodb.org/static/pgp/server-7.0.asc | \
+   sudo gpg -o /usr/share/keyrings/mongodb-server-7.0.gpg \
+   --dearmor
+
+echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+
+sudo apt-get update
+sudo apt-get install -y mongodb-org
 
 # Start and enable MongoDB
 sudo systemctl start mongod
