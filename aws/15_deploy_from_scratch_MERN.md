@@ -541,7 +541,14 @@ Your Laptop
 
 Run these commands on your local laptop terminal:
 ```bash
-# 1. Add your key to your laptop's SSH agent
+# 1. Start the SSH agent (Required if you get "Could not open a connection" error)
+# For Mac/Linux / Git Bash (Windows):
+eval "$(ssh-agent -s)"
+
+# OR For Windows PowerShell (Run as Administrator if the service is disabled):
+# Start-Service ssh-agent
+
+# 2. Add your key to your laptop's SSH agent
 ssh-add ~/Downloads/mern-keypair.pem
 
 # 2. SSH to bastion with agent forwarding (the -A flag does the magic!)
@@ -645,6 +652,10 @@ Same process, but:
 ```bash
 #!/bin/bash
 apt-get update -y
+# Install Node.js so we can build the React app
+curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+apt-get install -y nodejs
+# Install and Start Nginx
 apt-get install -y nginx
 systemctl enable nginx
 systemctl start nginx
@@ -658,11 +669,16 @@ mkdir -p /var/www/frontend
 
 ### 6.5 — SSH Into Your EC2 Instance
 
-```bash
-# SSH to backend EC2
-ssh -i ~/Downloads/mern-keypair.pem ubuntu@<backend-public-ip>
+Because we only allowed SSH from the Bastion Host in our Security Group (`mern-backend-sg`), you cannot SSH directly into the backend from your laptop!
 
-# Verify Node.js and PM2 are installed
+```bash
+# 1. SSH into your Bastion Host from your laptop (with SSH Agent Forwarding)
+ssh -A ubuntu@<bastion-public-ip>
+
+# 2. From INSIDE the Bastion, SSH to your backend EC2 using its PRIVATE IP
+ssh ubuntu@<backend-private-ip>
+
+# 3. Verify Node.js and PM2 are installed
 node --version
 npm --version
 pm2 --version
@@ -763,7 +779,14 @@ exit
 
 **Step 7.4 — Enable MongoDB Authentication**
 ```bash
-sudo nano /etc/mongod.conf
+# Open the configuration file using the vi editor
+sudo vi /etc/mongod.conf
+
+# 💡 vi Editor Quick Guide:
+# 1. Press 'i' to enter Insert mode.
+# 2. Make your changes (use arrow keys to navigate).
+# 3. Press 'Esc' to exit Insert mode.
+# 4. Type ':wq' and press Enter to save and quit.
 ```
 
 ```yaml
@@ -818,20 +841,18 @@ mongodb+srv://mernAppUser:password@cluster0.xxxxx.mongodb.net/merndb?retryWrites
 
 ### 8.1 — Upload and Run the Backend
 
-**Step 8.1.1 — Transfer Code to EC2**
+**Step 8.1.1 — Transfer Code to EC2 via Git**
 
-Option 1 — SCP (Secure Copy):
+*Note: Since our backend Security Group only allows SSH access from the Bastion Host, we cannot use SCP directly from our laptop. Instead, we will log into the backend and pull the code directly from GitHub!*
+
 ```bash
-# From your local machine
-scp -i ~/Downloads/mern-keypair.pem -r ./backend ec2-user@<backend-public-ip>:/var/www/backend
-```
+# 1. SSH into the Bastion Host from your laptop (with agent forwarding)
+ssh -A ubuntu@<bastion-public-ip>
 
-Option 2 — Git Clone (recommended for real projects):
-```bash
-# SSH into backend EC2
-ssh -i ~/Downloads/mern-keypair.pem ec2-user@<backend-public-ip>
+# 2. SSH from Bastion to the Backend EC2 using its Private IP
+ssh ubuntu@<backend-private-ip>
 
-# Clone your repo
+# 3. Clone your repository directly into the backend
 cd /var/www
 git clone https://github.com/yourusername/mern-backend.git backend
 cd backend
@@ -888,9 +909,47 @@ pm2 save
 | `pm2 monit` | Dashboard monitor |
 | `pm2 delete myapp` | Remove from PM2 |
 
-### 8.2 — Deploy React Frontend on S3 + CloudFront (Recommended Free Option)
+### 8.2 — Deploy React Frontend (Option A: Using the Frontend EC2)
 
-**Step 8.2.1 — Build React App Locally**
+If you chose to create the optional `mern-frontend` EC2 instance in Section 6.4, here is how you deploy to it using Git:
+
+**Step 8.2.1 — Connect and Clone**
+```bash
+# 1. SSH into the Bastion Host from your laptop (with agent forwarding)
+ssh -A ubuntu@<bastion-public-ip>
+
+# 2. SSH from Bastion to the Frontend EC2 using its Private IP
+ssh ubuntu@<frontend-private-ip>
+
+# 3. Clone your frontend repository
+cd /var/www
+git clone https://github.com/yourusername/mern-frontend.git frontend
+cd frontend
+```
+
+**Step 8.2.2 — Build and Serve via Nginx**
+```bash
+# Update API URL & Install/Build (Make sure this points to your Backend Public IP API!)
+npm install
+npm run build
+
+# Because we installed NGINX in Section 6.4's user data script, 
+# we just need to copy the built files to our web directory:
+sudo cp -r build/* /var/www/frontend/
+
+# 🚨 IMPORTANT: Tell Nginx to serve our frontend folder instead of the default "Welcome" page
+sudo sed -i 's|root /var/www/html;|root /var/www/frontend;|g' /etc/nginx/sites-available/default
+
+# (Optional but recommended): Fix React Router so direct links don't throw 404 errors
+sudo sed -i 's|try_files $uri $uri/ =404;|try_files $uri $uri/ /index.html;|g' /etc/nginx/sites-available/default
+
+# Reload Nginx to apply the changes
+sudo systemctl restart nginx
+```
+
+### 8.3 — Deploy React Frontend (Option B: S3 + CloudFront — Recommended Free Option)
+
+**Step 8.3.1 — Build React App Locally**
 ```bash
 # In your local React project directory
 # Update your API base URL to point to the backend EC2
@@ -902,7 +961,7 @@ npm run build
 # This creates a /build folder with static files
 ```
 
-**Step 8.2.2 — Create an S3 Bucket for Static Hosting**
+**Step 8.3.2 — Create an S3 Bucket for Static Hosting**
 1. Open **S3** in the Console → **Create bucket**.
 2. Bucket name: `mern-frontend-yourinitials-2024` (must be globally unique).
 3. **Region:** us-east-1.
