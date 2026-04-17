@@ -3,9 +3,9 @@
 In Linux, every file and folder has its own "security guard." This ensures only the right people can see or change its content.
 
 ## 🛡️ The Three Power Permissions
-1.  **Read (r):** You can look at the content.
-2.  **Write (w):** You can change or delete the content.
-3.  **Execute (x):** You can run the file (like a script or program).
+1.  **Read (r):** For files: look at the content. For folders: list files inside.
+2.  **Write (w):** For files: change or delete the content. For folders: create/delete files inside.
+3.  **Execute (x):** For files: run the file (like a script). For folders: **enter** the folder (using `cd`).
 
 ---
 
@@ -30,8 +30,10 @@ A permission like `755` means:
 *   **`chmod` (Change Mode):** Change permissions.
     *   *Example:* `chmod 777 file.txt` (Everyone can do anything!)
     *   *Example:* `chmod a+x script.sh` (Make the script runnable).
+    *   *Example:* `chmod -R 755 /folder` (`-R` stands for **Recursive**. It applies the change to the folder AND all files inside it).
 *   **`chown` (Change Owner):** Change who "owns" the file.
     *   *Example:* `sudo chown mary file.txt` (Mary is now the boss of this file).
+    *   *Example:* `sudo chown -R mary:mary /folder` (Recursively changes the user owner to `mary` and the group owner to `mary` for the folder and everything inside it).
 
 ---
 

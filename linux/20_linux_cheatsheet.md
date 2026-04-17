@@ -2,6 +2,10 @@
 
 Bookmark this page! This is your "Cheat Code" for surviving inside the Linux terminal.
 
+> **🚩 What are Flags?** 
+> You'll see letters with dashes (like `-r`, `-h`, `-f`) attached to commands. These are called **flags** or **arguments**. They modify how a command behaves (e.g., `-h` turns computer bytes into "human readable" format). 
+> *Good news: Every single flag used in this cheatsheet is already explained at the bottom of its 'Action' box!*
+
 ## 📂 Navigation & Files
 | Command | Action |
 | :--- | :--- |

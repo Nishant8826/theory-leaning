@@ -18,18 +18,36 @@ These are users like `john` or `mary`. They can only touch their own files in `/
     *   **How Mary logs in after you add her:**
         *   **Switching Users (Local):** If you are an administrator on the same machine, Mary can start working by typing `su - mary` (switch user) in the terminal.
         *   **Remote Login (SSH):** If the server is remote, Mary can log in from her own computer using `ssh mary@<server_ip_address>`.
-*   **`passwd`:** Set or change a password. (Mary needs a password before she can log in!)
-    *   *Example:* `sudo passwd mary`
+            *   > **⚠️ Common Error:** `Permission denied (publickey)` when trying to login with a `.pem` key (e.g., `ssh -i mykey.pem mary@<server_ip>`).
+            *   > **Why this happens:** In cloud servers (like AWS), newly created users do not automatically receive SSH keys. Mary's `~/.ssh/authorized_keys` file is missing, so the server rejects the connection.
+            *   > **The Solution (Copy the key):** You must copy the existing SSH keys to the new user's home directory.
+            *   >   1. Log in to the server normally using your default user (e.g., `ubuntu` or `ec2-user`).
+            *   >   2. Switch to the root user: `sudo -i`
+            *   >   3. Create the `.ssh` directory for Mary: `mkdir -p /home/mary/.ssh`
+            *   >   4. Copy the authorized keys from the default user to Mary's directory (replace `ubuntu` with `ec2-user` if needed):
+            *   >      `cp /home/ubuntu/.ssh/authorized_keys /home/mary/.ssh/`
+            *   >   5. Fix the ownership and permissions so SSH will accept it securely:
+            *   >      *   `chown -R mary:mary /home/mary/.ssh` (Makes `mary` the actual owner, instead of `root`)
+            *   >      *   `chmod 700 /home/mary/.ssh` (Secures the folder: ONLY `mary` can enter/read it)
+            *   >      *   `chmod 600 /home/mary/.ssh/authorized_keys` (Secures the key file: ONLY `mary` can read/write it)
+            *   >   6. Done! Now, `ssh -i linux-practicles.pem mary@<server_ip>` will connect successfully.
+*   **`passwd`:** Set or change a user's password.
+    *   *Example:* `sudo passwd mary` (You will be prompted to type her new password twice).
+    *   *What it does:* It securely hashes (encrypts) the password and stores it in the `/etc/shadow` file. Without a password or an SSH key, Mary cannot log in at all.
 *   **`userdel`:** Remove a user account.
     *   *Example:* `sudo userdel -r mary` (The `-r` removes her home directory too).
 
 ## 👥 Groups (The Teams)
 Instead of giving permissions to 50 people one by one, we put them in a group.
 *   **Team Analogy:** Group "DevOps" can access the server, group "Marketing" cannot.
-*   **`groupadd`:** Create a new group.
+*   **`groupadd`:** Create an empty, new group.
     *   *Example:* `sudo groupadd devops`
-*   **`usermod`:** Add a user to a group.
+    *   *What it does:* Creates a new team label inside the `/etc/group` file. Right now, the team is empty.
+*   **`usermod`:** Modify existing user properties (like adding them to groups).
     *   *Example:* `sudo usermod -aG devops mary`
+    *   *What the flags mean:*
+        *   **`-a` (Append):** CRITICAL FLAG. It means "add to this group *without* removing them from their other groups." If you forget the `-a`, Mary will be ripped out of every other team she is currently in!
+        *   **`-G` (Groups):** Tells the command we are modifying the user's supplementary (secondary) groups.
 
 ---
 

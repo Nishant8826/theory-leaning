@@ -15,8 +15,13 @@ Once you know the basics, it's time to learn the commands that save DevOps engin
     *   *Example:* `sed -i 's/blue/red/g' config.txt` (Changes all "blue" to "red" inside the file).
 
 ## 📦 Archiving & Permissions
-*   **`tar`:** Bundle multiple files into one "archive" package.
+*   **`tar`:** Bundle multiple files into one single "archive" package (similar to a `.zip` file).
     *   *Example:* `tar -cvf backup.tar my_folder`
+    *   *What the flags mean (`-cvf`):*
+        *   **`-c` (Create):** Tells the system you want to *create* a new archive file.
+        *   **`-v` (Verbose):** "Talkative mode." The terminal will print out the name of every single file as it packs it, so you can see exactly what is happening.
+        *   **`-f` (File):** Tells the command that the very next word (`backup.tar`) is the name of the new file. *(Always put `-f` last!)*
+        *   ***Bonus Note:*** `tar` only groups files together. To make them strictly *smaller*, add `-z` (`-czvf`) to "zip" it into a `.tar.gz` file!
 *   **`chmod` & `chown`:** Change who can read/write a file (covered more in Topic 07).
 
 ## 🌐 Networking & Others
