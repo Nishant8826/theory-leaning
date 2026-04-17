@@ -29,6 +29,12 @@ Linux is the fuel for the "Networked Universe." Understanding how computers talk
 ### 💡 Dev Tip
 *   `netstat -tulpn` or `lsof -i :3000` helps debug "port already in use" issues with Next.js or React dev servers or for port debugging.
 
+## 🧠 Core Concepts Summary
+*   **What:** Tools and principles mapping how your Linux container fundamentally speaks over Ethernet/WiFi with other machines globally using IP addresses and ports.
+*   **Why:** Microservice backend logic is entirely network dependent; if a connection drops, you must diagnose *where* the routing broke down.
+*   **How:** Sending ICMP packets (`ping`), tracing connection routes (`traceroute`), or explicitly testing ports via `curl` and `netstat`.
+*   **Impact:** Gives you the forensic tools to confidently blame a faulty Cloudfare gateway, broken VPC setting, or internal firewall explicitly when APIs fail.
+
 ---
-Prev: [13_ssh_key_management.md](13_ssh_key_management.md) | Index: [00_index.md](00_index.md) | Next: [14_vi_editor.md](14_vi_editor.md)
+Prev: [15_ssh_key_management.md](15_ssh_key_management.md) | Index: [00_index.md](00_index.md) | Next: [17_vi_editor.md](17_vi_editor.md)
 ---

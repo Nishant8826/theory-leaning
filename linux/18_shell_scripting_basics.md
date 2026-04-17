@@ -47,6 +47,12 @@ DevOps is all about "Automation." Instead of manually creating a database every 
    ```
 3. Run `chmod +x backup.sh` and then `./backup.sh`.
 
+## 🧠 Core Concepts Summary
+*   **What:** Writing files with sequential chains of shell logic `.sh` (loops, variables) to automate repetitive terminal chores.
+*   **Why:** Performing identical 10-step server deployments manually creates inevitable human error and exhausts time.
+*   **How:** You wrap standard commands in bash logic structures and invoke them natively (`./deploy.sh`) or via temporal triggers like `cron`.
+*   **Impact:** The literal backbone of DevOps automation—allowing scripts to handle routine backups, disk cleaning, and scaling configurations dynamically.
+
 ---
-Prev: [14_vi_editor.md](14_vi_editor.md) | Index: [00_index.md](00_index.md) | Next: [05_advanced_commands.md](05_advanced_commands.md)
+Prev: [17_vi_editor.md](17_vi_editor.md) | Index: [00_index.md](00_index.md) | Next: [19_advanced_commands.md](19_advanced_commands.md)
 ---

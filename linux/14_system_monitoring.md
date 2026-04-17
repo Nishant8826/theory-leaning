@@ -28,6 +28,12 @@ As a DevOps engineer, you are the doctor for your servers. You need tools to che
 ### 💡 Dev Tip
 *   `df -h` is critical to prevent filled up disk space from logs, which can silently crash Node.js PM2 apps or databases operations.
 
+## 🧠 Core Concepts Summary
+*   **What:** Utilizing CLI instrumentation (`htop`, `df`, `free`) to visualize the CPU, Memory, and Disk usage health metrics.
+*   **Why:** If CPU spikes to 100% or storage reaches 100% capacity, systems grind to a lethal halt; proactive monitoring prevents spontaneous server death.
+*   **How:** Periodically inspecting the dashboard outputs or setting up automated alerts based on disk volume blocks (`df -h`).
+*   **Impact:** Predicts scaling requirements before a major business release and avoids terrifying 3 AM production outages.
+
 ---
-Prev: [18_http_status_codes.md](18_http_status_codes.md) | Index: [00_index.md](00_index.md) | Next: [13_ssh_key_management.md](13_ssh_key_management.md)
+Prev: [13_http_status_codes.md](13_http_status_codes.md) | Index: [00_index.md](00_index.md) | Next: [15_ssh_key_management.md](15_ssh_key_management.md)
 ---

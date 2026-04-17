@@ -50,6 +50,12 @@ Imagine you need to deploy a website. You would:
 ### 💡 Dev Tip
 *   `cp -r build/ /var/www/html/` to upload your React/Next.js production builds.
 
+## 🧠 Core Concepts Summary
+*   **What:** The fundamental toolset of console instructions (`cd`, `ls`, `mkdir`, `cp`, `mv`, `rm`) used to maneuver files.
+*   **Why:** GUIs are rarely installed on production web servers. Without these primitives, you cannot manage your project files or environments.
+*   **How:** By combining commands with specific flags (like `ls -la` to show hidden files or `rm -rf` to force delete).
+*   **Impact:** Drastically speeds up everyday operations, allowing developers to script automated clean-ups and manage codebase structures instantly.
+
 ---
-Prev: [03_filesystem_hierarchy.md](03_filesystem_hierarchy.md) | Index: [00_index.md](00_index.md) | Next: [06_user_management.md](06_user_management.md)
+Prev: [03_filesystem_hierarchy.md](03_filesystem_hierarchy.md) | Index: [00_index.md](00_index.md) | Next: [05_user_management.md](05_user_management.md)
 ---

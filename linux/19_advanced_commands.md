@@ -36,6 +36,12 @@ Your server is running slow because a log file is too big. You use `grep` to fin
 2. Use `grep "Linux" data.txt` to find the line.
 3. Try to use `find . -name "*.txt"` to see all text files in your current folder.
 
+## 🧠 Core Concepts Summary
+*   **What:** Evolving beyond basic interactions to leverage pipeline operators (`|`), structured find utilities (`find`), and streaming parsers (`awk`, `sed`).
+*   **Why:** Extracting 3 unique IDs from 1,000,000 lines of chaotic logs manually is impossible; you require text-manipulation powerhouses.
+*   **How:** Splicing commands perfectly together: locating a file, passing its content through a regex filter, and writing out statistics instantly.
+*   **Impact:** Demonstrates supreme environment mastery, allowing engineering leads to conjure data insights instantaneously without complex code.
+
 ---
-Prev: [15_shell_scripting_basics.md](15_shell_scripting_basics.md) | Index: [00_index.md](00_index.md) | Next: [20_linux_cheatsheet.md](20_linux_cheatsheet.md)
+Prev: [18_shell_scripting_basics.md](18_shell_scripting_basics.md) | Index: [00_index.md](00_index.md) | Next: [20_linux_cheatsheet.md](20_linux_cheatsheet.md)
 ---

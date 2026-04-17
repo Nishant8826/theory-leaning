@@ -34,6 +34,12 @@ In DevOps, we rarely use a mouse. We use the **Terminal** to talk to the **Shell
 2. Type `echo $SHELL` and press Enter. 
 3. This will tell you which "Waiter" (Shell) is currently serving you!
 
+## 🧠 Core Concepts Summary
+*   **What:** The Linux architecture isolates hardware, the kernel (core brain), the shell (user interface), and end-user applications.
+*   **Why:** Modular architecture ensures that a single bad program cannot crash the underlying hardware or kernel.
+*   **How:** When you type a command, the shell interprets it and delegates the heavy lifting to the kernel, which talks to the RAM and CPU.
+*   **Impact:** Complete resource efficiency and security isolation, meaning servers can run continuously for years without rebooting.
+
 ---
 Prev: [01_linux_overview.md](01_linux_overview.md) | Index: [00_index.md](00_index.md) | Next: [03_filesystem_hierarchy.md](03_filesystem_hierarchy.md)
 ---

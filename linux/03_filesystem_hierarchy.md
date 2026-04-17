@@ -31,6 +31,12 @@ Imagine a huge tree. The Root is the ground (`/`). Every folder branches out fro
 3. Type `ls` to see all the folders mentioned above.
 4. Go to the "Bedroom" by typing `cd /home`.
 
+## 🧠 Core Concepts Summary
+*   **What:** A standardized tree-like directory structure starting exclusively from a single root (`/`).
+*   **Why:** Guarantees that essential system files (like boot configs, logs, and user homes) are cleanly separated, preventing chaotic file sprawl.
+*   **How:** You navigate via `cd` and absolute/relative logic (e.g., `/var/log` for logs, `/etc` for configurations, `/home` for personal files).
+*   **Impact:** Simplifies deployment standardization. Knowing exactly where to store `.env` files or read Nginx logs drastically cuts down debugging time.
+
 ---
 Prev: [02_linux_architecture_shell.md](02_linux_architecture_shell.md) | Index: [00_index.md](00_index.md) | Next: [04_basic_commands.md](04_basic_commands.md)
 ---

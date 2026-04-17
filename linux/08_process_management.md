@@ -34,6 +34,12 @@ Your website is suddenly slow. You log into the server, run `top`, and see that 
 ### 💡 Dev Tip
 *   `ps aux | grep node` (or `top`) helps verify if your Express or Next app is still checking Node server processes in the background.
 
+## 🧠 Core Concepts Summary
+*   **What:** Tools and logic to monitor, pause, prioritize, and terminate active running programs (like a Node server) on the system.
+*   **Why:** If an internal process enters an infinite loop, it exhausts CPU/Memory, starving other databases or web interfaces connected to the machine.
+*   **How:** You analyze resource utilization dynamically via `top` or `ps`, and terminate chaotic processes safely using `kill` (SIGTERM) or forcefully (`kill -9`).
+*   **Impact:** Resolves emergency server freezes immediately, restoring app functionality and effectively load-balancing hardware limits.
+
 ---
-Prev: [16_linux_boot_process.md](16_linux_boot_process.md) | Index: [00_index.md](00_index.md) | Next: [17_logs_debugging.md](17_logs_debugging.md)
+Prev: [07_linux_boot_process.md](07_linux_boot_process.md) | Index: [00_index.md](00_index.md) | Next: [09_logs_debugging.md](09_logs_debugging.md)
 ---

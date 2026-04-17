@@ -21,6 +21,12 @@ Why should you care? If a server doesn't "come back to life" after a reboot, you
 1. Look at your processes by typing `ps -p 1`.
 2. See what is listed under the "COMMAND" column. It should either be `/sbin/init` or `systemd`. This is the "Grandfather" of every other process on your computer!
 
+## 🧠 Core Concepts Summary
+*   **What:** The sequential multi-stage lifecycle (BIOS -> MBR -> GRUB -> Kernel -> Init) a server undertakes from power-on to a usable login state.
+*   **Why:** Understanding this pipeline is necessary to diagnose why a server failed to start, especially when creating custom virtual machine images.
+*   **How:** The system verifies hardware, loads a boot loader from a disk sector, injects the Linux kernel into memory, and spins up `systemd` to start all services.
+*   **Impact:** Allows DevOps operators to alter Kernel parameters, automate hardware mount operations on startup, and intercept crashed systems.
+
 ---
-Prev: [07_file_permissions.md](07_file_permissions.md) | Index: [00_index.md](00_index.md) | Next: [08_process_management.md](08_process_management.md)
+Prev: [06_file_permissions.md](06_file_permissions.md) | Index: [00_index.md](00_index.md) | Next: [08_process_management.md](08_process_management.md)
 ---

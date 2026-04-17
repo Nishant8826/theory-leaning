@@ -50,6 +50,12 @@ You have a "database config" file containing a password. Only the "app" should r
 ### 💡 Dev Tip
 *   `chmod +x` is often the key to fixing deployment issues when executing Node.js processes or shell scripts on AWS EC2.
 
+## 🧠 Core Concepts Summary
+*   **What:** A stringent 3-tier access system (Read/Write/Execute) applied to every single file and folder individually.
+*   **Why:** Prevents unauthorized personnel or malicious bots from altering vital configuration files or reading sensitive environment variables.
+*   **How:** We assign numeric (octal) or symbolic blocks (e.g., `chmod 755 app.js` or `chown john:devs index.html`) defining privileges for the owner, the group, and everyone else.
+*   **Impact:** Enforces a rigid web-security model, directly stopping unauthorized script executions from disrupting live production apps.
+
 ---
-Prev: [06_user_management.md](06_user_management.md) | Index: [00_index.md](00_index.md) | Next: [16_linux_boot_process.md](16_linux_boot_process.md)
+Prev: [05_user_management.md](05_user_management.md) | Index: [00_index.md](00_index.md) | Next: [07_linux_boot_process.md](07_linux_boot_process.md)
 ---

@@ -31,6 +31,12 @@ This installs everything you need in seconds without a single click!
 ### 💡 Dev Tip
 *   You often need system packages to build Node modules like `node-gyp` or to serve a React app correctly.
 
+## 🧠 Core Concepts Summary
+*   **What:** The systematized process of querying, installing, updating, and removing external libraries and software via centralized repositories (APT/YUM).
+*   **Why:** Compiling complex software like Node.js or Nginx from raw C++ source code is hazardous and slow; package managers resolve dependencies automatically.
+*   **How:** You execute standard commands (`apt-get install`) which reach out to verified internet mirrors to download the requested binaries.
+*   **Impact:** Ensures environment consistency across multiple cloud nodes and drastically speeds up virtual machine cloning.
+
 ---
-Prev: [19_linux_day_to_day_tasks.md](19_linux_day_to_day_tasks.md) | Index: [00_index.md](00_index.md) | Next: [10_service_management.md](10_service_management.md)
+Prev: [10_linux_day_to_day_tasks.md](10_linux_day_to_day_tasks.md) | Index: [00_index.md](00_index.md) | Next: [12_service_management.md](12_service_management.md)
 ---

@@ -28,6 +28,12 @@ You just updated your website's configuration. For the changes to take effect, y
 2. See if it's "Active (running)". 
 3. Exit by pressing `q`.
 
+## 🧠 Core Concepts Summary
+*   **What:** Managing persistent background "daemons" (applications that remain running forever without an active terminal, like databases).
+*   **Why:** When servers reboot or a web app crashes, you need a manager that ensures critical systems resurrect themselves automatically.
+*   **How:** Utilizing the `systemctl` toolkit (`start`, `stop`, `enable`) to dictate precisely which background software should be initialized on boot.
+*   **Impact:** Secures High Availability (HA)—meaning your Node servers and DB clusters recover organically from hardware interrupts without manual human intervention.
+
 ---
-Prev: [11_package_management.md](11_package_management.md) | Index: [00_index.md](00_index.md) | Next: [18_http_status_codes.md](18_http_status_codes.md)
+Prev: [11_package_management.md](11_package_management.md) | Index: [00_index.md](00_index.md) | Next: [13_http_status_codes.md](13_http_status_codes.md)
 ---

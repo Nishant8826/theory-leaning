@@ -33,6 +33,12 @@ Imagine you're fixing a server at 3 AM. You only have a terminal. You use `vi` t
 5. Type `:wq` and press Enter.
 6. Verify your work with `cat test.txt`.
 
+## 🧠 Core Concepts Summary
+*   **What:** A modal command-line text editor deeply integrated by default into universally every Linux distribution in existence.
+*   **Why:** You often must edit live server environment variable files or Nginx definitions immediately where bulky graphical editors simply cannot operate.
+*   **How:** Operating across "Command Mode" (for rapid copy/pasting) and "Insert Mode" (to type text) using keystrokes like `:wq` to save.
+*   **Impact:** Guarantees you are genuinely never stranded on a naked server—you can edit raw configurations efficiently regardless of constraints.
+
 ---
-Prev: [12_networking.md](12_networking.md) | Index: [00_index.md](00_index.md) | Next: [15_shell_scripting_basics.md](15_shell_scripting_basics.md)
+Prev: [16_networking.md](16_networking.md) | Index: [00_index.md](00_index.md) | Next: [18_shell_scripting_basics.md](18_shell_scripting_basics.md)
 ---

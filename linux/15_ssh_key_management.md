@@ -31,6 +31,12 @@ When you upload your code to GitHub, you use SSH. This way, GitHub knows it's *y
 ### 💡 Dev Tip
 *   Use `scp` to quickly sync `.env` files or application builds to your AWS EC2 instances securely for uploading build to EC2.
 
+## 🧠 Core Concepts Summary
+*   **What:** Creating cryptographic public/private key pairs to securely authenticate into remote machines without typing passwords.
+*   **Why:** Human-made passwords are brute-forceable and inherently insecure; 2048-bit RSA keys are mathematically impenetrable.
+*   **How:** Using `ssh-keygen` locally, pushing the lock part (`id_rsa.pub`) into the server's `~/.ssh/authorized_keys`, and letting cryptography verify your identity.
+*   **Impact:** Radically hardens server entrance boundaries and enables zero-touch automated CI/CD pipeline deployments.
+
 ---
-Prev: [09_system_monitoring.md](09_system_monitoring.md) | Index: [00_index.md](00_index.md) | Next: [12_networking.md](12_networking.md)
+Prev: [14_system_monitoring.md](14_system_monitoring.md) | Index: [00_index.md](00_index.md) | Next: [16_networking.md](16_networking.md)
 ---

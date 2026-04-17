@@ -28,6 +28,12 @@ Most senior DevOps engineers don't do these things manually. They write "Cron Jo
 1. Type `last` in your terminal to see a list of every time you logged into your computer recently.
 2. Type `history` to see a list of every command you typed today. It's like a time machine for your work!
 
+## 🧠 Core Concepts Summary
+*   **What:** Practical, workflow-centric operations combining navigation, process inspection, and light text editing.
+*   **Why:** You need muscle memory to interact gracefully with remote endpoints—these are the routines performed thousands of times by engineering leads.
+*   **How:** Chaining sequences (e.g., checking history, editing configs, bouncing a service, and immediately verifying logs).
+*   **Impact:** Promotes extreme developer velocity and reduces friction when reacting to real-time engineering hurdles.
+
 ---
-Prev: [17_logs_debugging.md](17_logs_debugging.md) | Index: [00_index.md](00_index.md) | Next: [11_package_management.md](11_package_management.md)
+Prev: [09_logs_debugging.md](09_logs_debugging.md) | Index: [00_index.md](00_index.md) | Next: [11_package_management.md](11_package_management.md)
 ---

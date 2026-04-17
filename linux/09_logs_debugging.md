@@ -39,6 +39,12 @@ A website is showing "Internal Server Error."
 ### 💡 Dev Tip
 *   Use `tail -f` to stream real-time logs for backend Node apps or database queries when tracking down a live AWS workflow error.
 
+## 🧠 Core Concepts Summary
+*   **What:** The practice of inspecting continuous text streams maintained explicitly by the OS and applications for analytical tracking.
+*   **Why:** When the "app crashes in production but works locally," logs are the absolute *only* artifact you have to discover the root cause.
+*   **How:** By using real-time streaming tools like `tail -f /var/log/syslog` or filtering massive text files instantly using `grep` to isolate the word "ERROR".
+*   **Impact:** Transforms hours of blind guessing into minutes of targeted debugging, minimizing downtime and saving enterprise revenue.
+
 ---
-Prev: [08_process_management.md](08_process_management.md) | Index: [00_index.md](00_index.md) | Next: [19_linux_day_to_day_tasks.md](19_linux_day_to_day_tasks.md)
+Prev: [08_process_management.md](08_process_management.md) | Index: [00_index.md](00_index.md) | Next: [10_linux_day_to_day_tasks.md](10_linux_day_to_day_tasks.md)
 ---

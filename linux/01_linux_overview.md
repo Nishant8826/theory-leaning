@@ -46,6 +46,12 @@ Before we dive into Linux commands, you should know about GitHub. It's where dev
 1. Search on Google: "Which operating system does NASA use for its rovers?" (Spoiler: It's Linux!)
 2. Create a free account on [GitHub](https://github.com) if you haven't already.
 
+## 🧠 Core Concepts Summary
+*   **What:** Linux is an open-source, Unix-like operating system kernel that controls hardware resources and runs software.
+*   **Why:** It provides unmatched stability, zero licensing costs, and massive community support, making it the default OS for global cloud infrastructure (AWS/Azure/GCP).
+*   **How:** You interact via a command-line interface (CLI) directly sending commands to the shell, bypassing heavy graphical processing.
+*   **Impact:** Empowers developers to run reliable CI/CD pipelines, containerize with Docker, and orchestrate resilient backend services globally.
+
 ---
 Prev: None | Index: [00_index.md](00_index.md) | Next: [02_linux_architecture_shell.md](02_linux_architecture_shell.md)
 ---

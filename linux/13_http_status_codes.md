@@ -28,6 +28,12 @@ When monitoring a massive system (like Netflix or Uber), DevOps engineers look a
 2. Type `curl -I https://google.com` (The `-I` means "Show headers only").
 3. Look for the line that says `HTTP/2 200`.
 
+## 🧠 Core Concepts Summary
+*   **What:** Universal 3-digit numerical responses sent by the server to inform a client's browser if their web request succeeded, failed, or was blocked.
+*   **Why:** These are fundamentally how frontend single-page apps (React) or debugging tools understand error logic from an API.
+*   **How:** By classifying actions (200s for success, 400s for user error, 500s for server explosions) and reading them via networking hooks.
+*   **Impact:** Rapid triage capability: seeing a 403 vs a 502 immediately dictates whether your problem is an authentication flaw or a crashed Docker container.
+
 ---
-Prev: [10_service_management.md](10_service_management.md) | Index: [00_index.md](00_index.md) | Next: [09_system_monitoring.md](09_system_monitoring.md)
+Prev: [12_service_management.md](12_service_management.md) | Index: [00_index.md](00_index.md) | Next: [14_system_monitoring.md](14_system_monitoring.md)
 ---
