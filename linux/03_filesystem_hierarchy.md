@@ -32,5 +32,5 @@ Imagine a huge tree. The Root is the ground (`/`). Every folder branches out fro
 4. Go to the "Bedroom" by typing `cd /home`.
 
 ---
-Previous: [02_linux_architecture_shell.md](02_linux_architecture_shell.md) Next: [04_basic_commands.md](04_basic_commands.md)
+Prev: [02_linux_architecture_shell.md](02_linux_architecture_shell.md) | Index: [00_index.md](00_index.md) | Next: [04_basic_commands.md](04_basic_commands.md)
 ---

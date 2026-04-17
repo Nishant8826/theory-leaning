@@ -46,6 +46,10 @@ Imagine you need to deploy a website. You would:
 5. List the files to see both.
 6. Delete the original `hello.txt`.
 
+
+### 💡 Dev Tip
+*   `cp -r build/ /var/www/html/` to upload your React/Next.js production builds.
+
 ---
-Previous: [03_filesystem_hierarchy.md](03_filesystem_hierarchy.md) Next: [05_advanced_commands.md](05_advanced_commands.md)
+Prev: [03_filesystem_hierarchy.md](03_filesystem_hierarchy.md) | Index: [00_index.md](00_index.md) | Next: [06_user_management.md](06_user_management.md)
 ---

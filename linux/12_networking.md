@@ -25,6 +25,10 @@ Linux is the fuel for the "Networked Universe." Understanding how computers talk
 2. Type `curl http://wttr.in/`. (This is a cool weather service in the terminal!)
 3. Check your IP address by typing `ip addr` or `ifconfig`. Look for the "inet" number.
 
+
+### 💡 Dev Tip
+*   `netstat -tulpn` or `lsof -i :3000` helps debug "port already in use" issues with Next.js or React dev servers or for port debugging.
+
 ---
-Previous: [11_package_management.md](11_package_management.md) Next: [13_ssh_key_management.md](13_ssh_key_management.md)
+Prev: [13_ssh_key_management.md](13_ssh_key_management.md) | Index: [00_index.md](00_index.md) | Next: [14_vi_editor.md](14_vi_editor.md)
 ---

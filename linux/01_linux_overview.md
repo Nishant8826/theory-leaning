@@ -47,5 +47,5 @@ Before we dive into Linux commands, you should know about GitHub. It's where dev
 2. Create a free account on [GitHub](https://github.com) if you haven't already.
 
 ---
-Next: [02_linux_architecture_shell.md](02_linux_architecture_shell.md)
+Prev: None | Index: [00_index.md](00_index.md) | Next: [02_linux_architecture_shell.md](02_linux_architecture_shell.md)
 ---

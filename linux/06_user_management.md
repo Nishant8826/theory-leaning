@@ -44,5 +44,5 @@ When a new developer joins your company:
 3. Read the `/etc/passwd` file (using `cat /etc/passwd`) to see all the users on the system.
 
 ---
-Previous: [05_advanced_commands.md](05_advanced_commands.md) Next: [07_file_permissions.md](07_file_permissions.md)
+Prev: [04_basic_commands.md](04_basic_commands.md) | Index: [00_index.md](00_index.md) | Next: [07_file_permissions.md](07_file_permissions.md)
 ---

@@ -27,6 +27,10 @@ When you upload your code to GitHub, you use SSH. This way, GitHub knows it's *y
 2. See if you already have any keys (Look for files starting with `id_`).
 3. If not, try creating one using `ssh-keygen`.
 
+
+### 💡 Dev Tip
+*   Use `scp` to quickly sync `.env` files or application builds to your AWS EC2 instances securely for uploading build to EC2.
+
 ---
-Previous: [12_networking.md](12_networking.md) Next: [14_vi_editor.md](14_vi_editor.md)
+Prev: [09_system_monitoring.md](09_system_monitoring.md) | Index: [00_index.md](00_index.md) | Next: [12_networking.md](12_networking.md)
 ---

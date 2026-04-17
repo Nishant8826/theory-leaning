@@ -28,5 +28,5 @@ In the world of DevOps, Linux is not just a tool; it's the **foundation**. If yo
 **Welcome to the club, Linux Ninja!** 🥷
 
 ---
-Previous: [20_linux_cheatsheet.md](20_linux_cheatsheet.md)
+Prev: [20_linux_cheatsheet.md](20_linux_cheatsheet.md) | Index: [00_index.md](00_index.md) | Next: None
 ---

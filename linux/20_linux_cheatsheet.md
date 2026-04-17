@@ -146,5 +146,5 @@ Bookmark this page! This is your "Cheat Code" for surviving inside the Linux ter
 | `export VAR="val"` | **Set an environment variable** (Stores data dynamically in memory that programs or scripts can read globally). |
 
 ---
-Previous: [19_linux_day_to_day_tasks.md](19_linux_day_to_day_tasks.md) Next: [21_linux_tips_2026.md](21_linux_tips_2026.md)
+Prev: [05_advanced_commands.md](05_advanced_commands.md) | Index: [00_index.md](00_index.md) | Next: [21_linux_tips_2026.md](21_linux_tips_2026.md)
 ---

@@ -27,6 +27,10 @@ This installs everything you need in seconds without a single click!
 2. Try to install the `sl` (Steam Locomotive) package: `sudo apt install sl`.
 3. If it installs, type `sl` and watch what happens! (It's a fun prank command).
 
+
+### 💡 Dev Tip
+*   You often need system packages to build Node modules like `node-gyp` or to serve a React app correctly.
+
 ---
-Previous: [10_service_management.md](10_service_management.md) Next: [12_networking.md](12_networking.md)
+Prev: [19_linux_day_to_day_tasks.md](19_linux_day_to_day_tasks.md) | Index: [00_index.md](00_index.md) | Next: [10_service_management.md](10_service_management.md)
 ---

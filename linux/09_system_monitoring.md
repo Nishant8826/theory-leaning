@@ -24,6 +24,10 @@ As a DevOps engineer, you are the doctor for your servers. You need tools to che
 2. Run `free -m`. Check the "Available" column.
 3. Type `uptime` to see if your computer has been awake for a long time!
 
+
+### 💡 Dev Tip
+*   `df -h` is critical to prevent filled up disk space from logs, which can silently crash Node.js PM2 apps or databases operations.
+
 ---
-Previous: [08_process_management.md](08_process_management.md) Next: [10_service_management.md](10_service_management.md)
+Prev: [18_http_status_codes.md](18_http_status_codes.md) | Index: [00_index.md](00_index.md) | Next: [13_ssh_key_management.md](13_ssh_key_management.md)
 ---

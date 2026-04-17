@@ -35,6 +35,10 @@ A website is showing "Internal Server Error."
 2. Look through the login history: `sudo tail /var/log/auth.log`.
 3. Try giving a wrong command and seeing if it gets recorded anywhere!
 
+
+### 💡 Dev Tip
+*   Use `tail -f` to stream real-time logs for backend Node apps or database queries when tracking down a live AWS workflow error.
+
 ---
-Previous: [16_linux_boot_process.md](16_linux_boot_process.md) Next: [18_http_status_codes.md](18_http_status_codes.md)
+Prev: [08_process_management.md](08_process_management.md) | Index: [00_index.md](00_index.md) | Next: [19_linux_day_to_day_tasks.md](19_linux_day_to_day_tasks.md)
 ---

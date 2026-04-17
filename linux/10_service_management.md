@@ -29,5 +29,5 @@ You just updated your website's configuration. For the changes to take effect, y
 3. Exit by pressing `q`.
 
 ---
-Previous: [09_system_monitoring.md](09_system_monitoring.md) Next: [11_package_management.md](11_package_management.md)
+Prev: [11_package_management.md](11_package_management.md) | Index: [00_index.md](00_index.md) | Next: [18_http_status_codes.md](18_http_status_codes.md)
 ---

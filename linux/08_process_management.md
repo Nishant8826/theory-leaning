@@ -30,6 +30,10 @@ Your website is suddenly slow. You log into the server, run `top`, and see that 
 3. To exit `top`, just press the letter `q` on your keyboard.
 4. Try typing `ps ux` to see only your own running processes.
 
+
+### 💡 Dev Tip
+*   `ps aux | grep node` (or `top`) helps verify if your Express or Next app is still checking Node server processes in the background.
+
 ---
-Previous: [07_file_permissions.md](07_file_permissions.md) Next: [09_system_monitoring.md](09_system_monitoring.md)
+Prev: [16_linux_boot_process.md](16_linux_boot_process.md) | Index: [00_index.md](00_index.md) | Next: [17_logs_debugging.md](17_logs_debugging.md)
 ---

@@ -46,6 +46,10 @@ You have a "database config" file containing a password. Only the "app" should r
 3. Change it so only you can read it: `chmod 400 private.txt`.
 4. Try to list it again. It now says `r--------`.
 
+
+### 💡 Dev Tip
+*   `chmod +x` is often the key to fixing deployment issues when executing Node.js processes or shell scripts on AWS EC2.
+
 ---
-Previous: [06_user_management.md](06_user_management.md) Next: [08_process_management.md](08_process_management.md)
+Prev: [06_user_management.md](06_user_management.md) | Index: [00_index.md](00_index.md) | Next: [16_linux_boot_process.md](16_linux_boot_process.md)
 ---
