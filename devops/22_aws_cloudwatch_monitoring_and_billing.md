@@ -512,4 +512,4 @@ Detailed monitoring is useful for applications that need faster detection of sho
 
 
 ---
-> ← Previous: [`21_NACL_CIDR_VPC_Peering_&_Transit_Gateway.md`](21_NACL_CIDR_VPC_Peering_&_Transit_Gateway.md) | Next: [`.md`](.md) →
+> ← Previous: [`21_NACL_CIDR_VPC_Peering_&_Transit_Gateway.md`](21_NACL_CIDR_VPC_Peering_&_Transit_Gateway.md) | Next: [`23_AWS_Lambda_&_Serverless_Architecture.md`](23_AWS_Lambda_&_Serverless_Architecture.md) →
