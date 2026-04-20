@@ -517,4 +517,4 @@ SERVERLESS (Lambda-based):
 
 *Notes generated from class session on AWS Lambda Serverless Architecture – Image Resizing Project.*
 
-> ← Previous: [`22_aws_cloudwatch_monitoring_and_billing`](22_aws_cloudwatch_monitoring_and_billing.md) | Next: [``](.md) →
+> ← Previous: [`22_aws_cloudwatch_monitoring_and_billing`](22_aws_cloudwatch_monitoring_and_billing.md) | Next: [`24_Git_&_GitHub_Fundamentals.md`](24_Git_&_GitHub_Fundamentals.md) →
