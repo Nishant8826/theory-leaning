@@ -74,6 +74,14 @@ console.log(secondLargestBrute([10, 10, 10]));             // -1
 console.log(secondLargestBrute([5, 8]));                   // 5
 ```
 
+
+#### Code Story
+- This problem is about finding the 'runner-up' in a group of numbers.
+- First, we keep two markers: one for the leader and one for the second place.
+- Then, as we look at each number, if it's bigger than our leader, the current leader moves to second place and the new number takes the lead.
+- Finally, we return the value held in second place.
+- This works because by tracking the top two contenders at all times, we only need to pass through the list once.
+
 ### Line-by-Line Explanation
 
 1. **`[...arr].sort((a, b) => a - b)`** — Create a copy and sort it smallest to largest.
@@ -206,6 +214,14 @@ console.log(rotateOptimized([1, 2, 3, 4, 5], 2)); // [4, 5, 1, 2, 3]
 | Brute Force | O(n × k) | O(1) |
 | Optimized | O(n) | O(1) |
 
+
+#### Code Story
+- This problem is about shifting everything to the right by k steps.
+- First, we could shift one by one (slow!), but the smart way is to reverse parts of the array.
+- Then, we flip the whole list, then flip the first k items, then flip the rest.
+- Finally, the array ends up perfectly rotated.
+- This works because the mathematical property of reversing sections allows us to move blocks of data efficiently with zero extra space.
+
 ---
 
 ### Question 2: Move All Zeros to End
@@ -274,6 +290,14 @@ console.log(moveZerosOptimized([0, 0, 1]));          // [1, 0, 0]
 | Brute Force | O(n) | O(n) |
 | Optimized | O(n) | O(1) |
 
+
+#### Code Story
+- This problem is about pushing all zeros to the back while keeping the other numbers in their original order.
+- First, we use a marker to point to the 'next good spot' for a non-zero number.
+- Then, as we find a non-zero number, we place it at the marker and move the marker forward.
+- Finally, any remaining spots at the end are filled with zeros.
+- This works because it slides the 'real' data to the front, naturally leaving empty space at the back.
+
 ---
 
 ### Question 3: Find Missing Number
@@ -338,6 +362,14 @@ console.log(missingNumberOptimized([9,6,4,2,3,5,7,0,1])); // 8
 | Brute Force | O(n²) | O(1) |
 | Optimized | O(n) | O(1) |
 
+
+#### Code Story
+- This problem is about finding which number is missing from a sequence of 0 to n.
+- First, we calculate what the total sum *should* be using a math formula.
+- Then, we add up all the numbers we actually have.
+- Finally, we subtract our actual sum from the expected sum—the difference is the missing number!
+- This works because every number has a specific value, so any missing value will create a predictable 'gap' in the total.
+
 ---
 
 ### Question 4: Best Time to Buy and Sell Stock
@@ -399,6 +431,14 @@ console.log(maxProfitOptimized([7, 6, 4, 3, 1]));     // 0 (prices only go down)
 | Brute Force | O(n²) | O(1) |
 | Optimized | O(n) | O(1) |
 
+
+#### Code Story
+- This problem is about finding the biggest possible profit from buying low and selling high.
+- First, we travel through time (the array) and always remember the cheapest price we've seen so far.
+- Then, for every new day, we check: 'If I sold today, how much profit would I make?'
+- Finally, we keep track of the best profit we ever found.
+- This works because you can't sell before you buy, so tracking the 'minimum so far' is the best way to evaluate future deals.
+
 ---
 
 ## 🧩 Practice Problems (WITH SOLUTIONS)
@@ -434,6 +474,14 @@ console.log(twoSum([3, 2, 4], 6));        // [1, 2] → 2 + 4 = 6
 
 **Complexity:** Time: O(n), Space: O(n)
 
+
+#### Code Story
+- This problem is about finding two numbers that add up to a specific target.
+- First, for every number, we calculate its 'complement' (the number we need to reach the target).
+- Then, we use a map to check if we've already seen that complement earlier.
+- Finally, if we find it, we return the two indices.
+- This works because a map remembers everything we've passed, allowing us to find 'matching pairs' instantly.
+
 ---
 
 ### Problem 2: Remove Duplicates from Sorted Array (In-Place)
@@ -468,6 +516,14 @@ console.log(arr.slice(0, len));      // [1, 2, 3, 4, 5]
 
 **Complexity:** Time: O(n), Space: O(1)
 
+
+#### Code Story
+- This problem is about cleaning up a list so every number only appears once.
+- First, since the list is sorted, duplicates are always next to each other.
+- Then, we use a marker to keep track of where the unique numbers should go.
+- Finally, we only move a number to the marker if it's different from the last unique one we found.
+- This works because skipping identical neighbors is a very fast way to filter out duplicates in-place.
+
 ---
 
 ### Problem 3: Maximum Subarray Sum (Kadane's Algorithm)
@@ -500,6 +556,14 @@ console.log(maxSubarraySum([-1, -2, -3]));                       // -1 → least
 **Explanation:** You're walking through a tunnel collecting coins (positive) and paying tolls (negative). If your total goes below zero, it's better to start fresh from the next position. Keep track of the best total you've ever had.
 
 **Complexity:** Time: O(n), Space: O(1)
+
+
+#### Code Story
+- This problem is about finding the 'hot streak'—the section of numbers with the highest total sum.
+- First, we walk through the list and keep a running total.
+- Then, if our total ever drops below zero, we realize it's better to 'start fresh' from the next number.
+- Finally, we remember the highest total we ever reached during the walk.
+- This works because a negative sum only drags down future numbers, so resetting to zero ensures we are always looking for the best possible start.
 
 ---
 
@@ -549,6 +613,14 @@ console.log(mergeSortedArrays([1, 2], [3, 4, 5, 6])); // [1, 2, 3, 4, 5, 6]
 
 **Complexity:** Time: O(n + m), Space: O(n + m)
 
+
+#### Code Story
+- This problem is about combining two already-sorted piles into one big sorted pile.
+- First, we compare the top items of both piles.
+- Then, we pick the smaller one, add it to our new pile, and move to the next item in that pile.
+- Finally, we repeat this until all items are moved.
+- This works because since both piles are already ordered, the overall smallest item *must* be at the top of one of the two piles.
+
 ---
 
 ### Problem 5: Product of Array Except Self
@@ -586,6 +658,14 @@ console.log(productExceptSelf([2, 3, 4, 5]));    // [60, 40, 30, 24]
 **Explanation:** For each position, you need the product of ALL elements except the one at that position. Instead of multiplying everything and dividing (can't divide by zero!), we build the answer in two passes: first collect the product of everything to the LEFT, then multiply by the product of everything to the RIGHT.
 
 **Complexity:** Time: O(n), Space: O(1) — result array doesn't count as extra space
+
+
+#### Code Story
+- This problem is about calculating the product of all numbers except the current one, without using division.
+- First, we calculate the product of everything to the LEFT of each number.
+- Then, we calculate the product of everything to the RIGHT and multiply it in.
+- Finally, each spot has exactly what it needs: (everything before) x (everything after).
+- This works because by splitting the work into 'left' and 'right' passes, we avoid the need for division and keep the math simple.
 
 ---
 

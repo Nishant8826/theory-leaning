@@ -66,6 +66,14 @@ console.log(isValidBrute("([)]"));   // false
 console.log(isValidBrute("{[]}"));   // true
 ```
 
+
+#### Code Story
+- This problem is about checking if brackets like () and {} are closed in the right order.
+- First, as we see an opening bracket, we push it onto our stack.
+- Then, when we see a closing bracket, we check if it matches the 'most recent' opening bracket on top of the stack.
+- Finally, if they match, we pop it; if not, or if the stack is empty, the brackets are invalid.
+- This works because a stack naturally handles 'nesting', where the last thing opened must be the first thing closed.
+
 ### Line-by-Line Explanation
 
 1. Repeatedly find and remove matching pairs `()`, `[]`, `{}`.
@@ -122,6 +130,14 @@ console.log(isValidOptimized("{[]}"));   // true
 **Problem Statement:** Design a stack that supports push, pop, top, and retrieving the minimum element in O(1).
 
 **Thought Process:** Maintain a second stack that tracks the minimum at each level.
+
+
+#### Code Story
+- This problem is about a stack that can tell you its smallest number at any moment in O(1) time.
+- First, every time we push a number, we also push the 'current minimum' onto a second, secret stack.
+- Then, even if the smallest number is removed, the previous minimum is still waiting right underneath it in our second stack.
+- Finally, the top of our secret stack always knows the champion of the current group.
+- This works because by remembering the minimum at every level of the stack, we never lose track of it when items are popped.
 
 #### 🐢 Brute Force
 
@@ -194,6 +210,14 @@ Example: `[4, 5, 2, 25]` → `[5, 25, 25, -1]`
 
 **Thought Process:** Use a stack to track elements waiting for their "next greater." When we find a greater element, pop and assign.
 
+
+#### Code Story
+- This problem is about finding the first number to the right that is bigger than the current one.
+- First, we walk through the list and keep a 'waiting room' (stack) for numbers that haven't found their big brother yet.
+- Then, as soon as we see a number bigger than the one at the top of the stack, we've found their answer.
+- Finally, we pop them from the waiting room and give them the answer.
+- This works because the stack stays sorted ('monotonic'), ensuring we process numbers in the order they find their next big match.
+
 #### 🐢 Brute Force
 
 ```javascript
@@ -256,6 +280,14 @@ console.log(nextGreaterOptimized([13, 7, 6, 12]));   // [-1, 12, 12, -1]
 
 **Thought Process:** Use a stack. Push numbers. When you see an operator, pop two numbers, apply the operator, push the result.
 
+
+#### Code Story
+- This problem is about calculating math like [2, 1, '+', 3, '*'] (which means (2+1)*3).
+- First, when we see a number, we push it onto the stack.
+- Then, when we see an operator (like +), we pop the last two numbers, do the math, and push the result back.
+- Finally, the only number left on the stack at the end is the answer.
+- This works because operators in this format always apply to the most recently seen numbers, which is exactly how a stack functions.
+
 #### 🐢 Brute Force (Stack IS the optimal approach here)
 
 ```javascript
@@ -298,6 +330,14 @@ console.log(evalRPN(["4", "13", "5", "/", "+"])); // 6 → 4 + (13/5)
 **Problem Statement:** Given daily temperatures, for each day find how many days you'd wait for a warmer day.
 
 Example: `[73, 74, 75, 71, 69, 72, 76, 73]` → `[1, 1, 4, 2, 1, 1, 0, 0]`
+
+
+#### Code Story
+- This problem is about counting how many days you have to wait for a warmer temperature.
+- First, we store the indices of 'colder' days in a stack.
+- Then, when a warm day arrives, it 'unblocks' all the colder days in the stack.
+- Finally, for each unblocked day, the wait time is just (Current Day - Colder Day).
+- This works because the stack efficiently remembers who is still waiting, so we only process each day once.
 
 #### 🐢 Brute Force
 

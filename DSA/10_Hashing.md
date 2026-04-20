@@ -35,6 +35,14 @@ Sometimes two keys produce the same index — this is called a **collision**. Tw
 1. **Chaining:** Each bucket holds a linked list of entries
 2. **Open Addressing:** Find the next empty slot
 
+
+#### Code Story
+- This problem is about what happens when two different pieces of data are assigned the same 'address' in memory.
+- First, we realize that no system is perfect, and sometimes addresses overlap.
+- Then, we use 'Chaining' (making a little list at that address) or 'Open Addressing' (looking for the next empty spot).
+- Finally, the data is stored safely despite the overlap.
+- This works because having a 'plan B' for overlapping addresses ensures that no data is ever lost or overwritten.
+
 ### Real-Life Analogy
 
 Think of a **library catalog system**. Instead of searching every shelf, you look up a book's category code, which tells you exactly which shelf and section to go to. The catalog is the hash function, the shelves are the hash table.
@@ -140,6 +148,14 @@ console.log(obj["key1"]); // "value1"
 
 **Thought Process:** For each number, calculate its complement (target - number). Use a hash map to check if the complement has been seen before.
 
+
+#### Code Story
+- This problem is about finding two numbers that add up to a target in a single pass.
+- First, for each number, we calculate exactly what 'complement' we need to finish the target.
+- Then, we check our 'seen' map to see if that complement has already appeared.
+- Finally, if it has, we've found our pair!
+- This works because the map allows us to look into the past and see if the 'missing piece' of our puzzle has already been found.
+
 #### 🐢 Brute Force
 
 ```javascript
@@ -197,6 +213,14 @@ console.log(twoSumOptimized([3, 2, 4], 6));       // [1, 2]
 Example: `["eat","tea","tan","ate","nat","bat"]` → `[["eat","tea","ate"], ["tan","nat"], ["bat"]]`
 
 **Thought Process:** Anagrams have the same characters. Sort each word — anagrams will produce the same sorted string. Use that as a hash map key.
+
+
+#### Code Story
+- This problem is about grouping words that use the same letters.
+- First, we realize that anagrams have the same letter counts, which we can use as a 'fingerprint'.
+- Then, we use this fingerprint as a key in a map and store all matching words in a list under that key.
+- Finally, we return the map values as our groups.
+- This works because identifying words by their 'ingredients' is a universal way to catch all scrambles.
 
 #### 🐢 Brute Force
 
@@ -339,6 +363,14 @@ console.log(longestConsecutiveOptimized([0, 3, 7, 2, 5, 8, 4, 6, 0, 1])); // 9
 Example: `arr = [1, 1, 1], k = 2` → `2`
 
 **Thought Process:** Use prefix sums with a hash map. If prefixSum[j] - prefixSum[i] = k, then the subarray from i+1 to j sums to k.
+
+
+#### Code Story
+- This problem is about finding how many sections of a list add up exactly to k.
+- First, we keep a 'running total' (prefix sum) as we walk through the list.
+- Then, we check if (Current Total - k) has appeared in our map before.
+- Finally, if it has, it means the section between that old total and our current total must add up to k.
+- This works because it uses simple subtraction and a memory of past totals to find hidden patterns in the data.
 
 #### 🐢 Brute Force
 

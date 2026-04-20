@@ -21,6 +21,14 @@ Time complexity measures **how many operations** an algorithm performs as the in
 
 Space complexity measures **how much extra memory** an algorithm uses. If you need to create a new array of size `n`, that's O(n) space.
 
+
+#### Code Story
+- This problem is about flipping an array without using extra memory.
+- First, we could copy the whole array backward (uses extra space), or we can just swap items from both ends.
+- Then, the first item swaps with the last, the second swaps with the second-to-last, and so on.
+- Finally, we meet in the middle and the array is reversed.
+- This works because swapping in-place uses zero extra memory, which is much more efficient for limited devices.
+
 ### Big O Notation — The Universal Language
 
 Big O gives us a way to describe performance:
@@ -70,6 +78,14 @@ const numbers = [5, 3, 8, 1, 9, 2, 7];
 console.log(findNumber(numbers, 9)); // Output: 4
 console.log(findNumber(numbers, 6)); // Output: -1
 ```
+
+
+#### Code Story
+- This problem is about finding a specific item in a pile by checking every single item one by one.
+- First, we start at the beginning of the list and look at each element.
+- Then, we compare the current element with our target. If they match, we stop and say where we found it.
+- Finally, if we reach the end and haven't found it, we return -1.
+- This works because checking every item ensures we won't miss it if it's there, though it can be slow for huge piles.
 
 ### Line-by-Line Explanation
 
@@ -141,6 +157,14 @@ For 1,000,000 elements:
 | Time Complexity | O(log n) — halves search space each time |
 | Space Complexity | O(1) — no extra space used |
 
+
+#### Code Story
+- This problem is about finding items in a sorted list by repeatedly cutting the search area in half.
+- First, we look at the middle item. If it's our target, we are done!
+- Then, if our target is smaller, we throw away the right half; if it's bigger, we throw away the left half.
+- Finally, we repeat this until we find the item or run out of search space.
+- This works because by narrowing down the data so quickly, we can find one item in a million in just 20 steps.
+
 ### How to Calculate Complexity — Simple Rules
 
 1. **Single loop** over `n` items → O(n)
@@ -186,15 +210,15 @@ console.log(hasDuplicatesBrute([1, 2, 3, 2, 5])); // true
 ```javascript
 // O(n) — Use a Set to track seen numbers
 function hasDuplicatesOptimized(arr) {
-  const seen = new Set(); // A Set stores unique values
+  const map = new Set(); // A Set stores unique values
 
   for (let i = 0; i < arr.length; i++) {
     // If we've already seen this number, it's a duplicate
-    if (seen.has(arr[i])) {
+    if (map.has(arr[i])) {
       return true;
     }
     // Otherwise, remember this number
-    seen.add(arr[i]);
+    map.add(arr[i]);
   }
 
   return false; // No duplicates found
@@ -211,6 +235,14 @@ console.log(hasDuplicatesOptimized([1, 2, 3, 2, 5])); // true
 |----------|------|-------|
 | Brute Force | O(n²) | O(1) |
 | Optimized | O(n) | O(n) |
+
+
+#### Code Story
+- This problem is about finding if any number appears twice in an array.
+- First, the slow way compares everyone to everyone else (nested loops), while the fast way uses a checklist (Set) to remember who we have seen.
+- Then, as we walk through the group, we check if the current person is already on our list.
+- Finally, if they are, we found a duplicate; if we finish the walk without finding anyone, there are no duplicates.
+- This works because a checklist allows us to look up 'have I seen this before?' instantly instead of searching the whole group again.
 
 ---
 
@@ -278,6 +310,14 @@ calculateOps(16);  // 80
 **Simple Explanation:** Think of the outer loop as walking through `n` houses. At each house, you climb stairs — but the staircase only has `log n` steps (because you skip more steps each time by doubling). So total work = n houses × log n stairs = O(n log n).
 
 **Complexity:** O(n log n) time, O(1) space.
+
+
+#### Code Story
+- This problem is about analyzing how much work a computer does when one task is repeated inside another.
+- First, the outer loop runs once for every item (n times).
+- Then, the inner loop skips many items by doubling its progress each time (log n times).
+- Finally, we multiply them together to get the total work.
+- This works because 'doubling progress' is the mathematical opposite of 'halving the space', which always leads to logarithmic complexity.
 
 ---
 
@@ -348,6 +388,14 @@ analyzeComplexity([10, 20, 30, 40, 50], 99); // Worst Case: O(n)
 | Best | O(1) |
 | Average | O(n) |
 | Worst | O(n) |
+
+
+#### Code Story
+- This problem is about understanding that the same code can run at different speeds depending on the input.
+- First, we look for our target. If it's the very first item, that's the 'Best Case' (super fast!).
+- Then, if it's in the middle or at the very end, we have to do more work.
+- Finally, the 'Worst Case' tells us the absolute most work the code will ever have to do.
+- This works because knowing the worst-case scenario helps us build reliable software that won't crash when things get difficult.
 
 ---
 
@@ -435,6 +483,14 @@ console.log(sumArray([-1, 0, 1]));        // 0
 
 **Complexity:** Time: O(n), Space: O(1)
 
+
+#### Code Story
+- This problem is about totaling up all the numbers in a list.
+- First, we start with a counter set to zero.
+- Then, we visit every number and add it into our running total.
+- Finally, we return the total.
+- This works because systematically adding every piece ensures we get a complete and accurate sum.
+
 ---
 
 ### Problem 2: Find the Maximum Element
@@ -467,6 +523,14 @@ console.log(findMax([42]));                // 42
 
 **Complexity:** Time: O(n), Space: O(1)
 
+
+#### Code Story
+- This problem is about spotting the biggest number in a group.
+- First, we assume the first person is the tallest we've seen.
+- Then, we look at every other person; if someone is taller, we point at them instead.
+- Finally, the person we are pointing at at the end is the tallest.
+- This works because we only need to remember the 'current best' to find the overall winner.
+
 ---
 
 ### Problem 3: Count Occurrences of a Target
@@ -497,6 +561,14 @@ console.log(countOccurrences([1, 2, 3], 7));              // 0
 
 **Complexity:** Time: O(n), Space: O(1)
 
+
+#### Code Story
+- This problem is about counting how many times a specific value appears.
+- First, we start a tally at zero.
+- Then, every time we see our target value, we increment our tally by one.
+- Finally, we return the total count.
+- This works because it's a simple, reliable way to measure frequency in any collection of data.
+
 ---
 
 ### Problem 4: Check if Array is Sorted
@@ -524,6 +596,14 @@ console.log(isSorted([1]));                // true
 **Explanation:** Imagine a line of students sorted by height. You walk along the line checking: "Is the next person at least as tall as the current one?" If you find someone shorter, the line isn't sorted.
 
 **Complexity:** Time: O(n), Space: O(1)
+
+
+#### Code Story
+- This problem is about verifying if a list is in order (smallest to largest).
+- First, we walk down the line and compare each person to the person right after them.
+- Then, if we ever find someone taller followed by someone shorter, the line is NOT sorted!
+- Finally, if we check everyone and never find a mistake, the line is sorted.
+- This works because one single 'out of order' pair is enough to break the rule for the whole list.
 
 ---
 
@@ -570,6 +650,14 @@ console.log(fibIterative(50)); // 12586269025 (recursive would take forever!)
 |----------|------|-------|
 | Recursive | O(2ⁿ) | O(n) — call stack |
 | Iterative | O(n) | O(1) |
+
+
+#### Code Story
+- This problem is about calculating numbers in a sequence where each is the sum of the two before it.
+- First, recursion can be slow because it asks the same questions over and over again.
+- Then, the iterative way just keeps track of the last two answers and adds them to get the next one.
+- Finally, we return the result.
+- This works because remembering where you just were is much faster than starting over from scratch every time.
 
 ---
 

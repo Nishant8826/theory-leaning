@@ -52,6 +52,14 @@ console.log(climbStairsBrute(10)); // 89
 // climbStairsBrute(45) would take forever!
 ```
 
+
+#### Code Story
+- This problem is about finding how many ways you can reach the top of a staircase if you can take 1 or 2 steps at a time.
+- First, we realize that to reach step 10, you must have come from either step 9 or step 8.
+- Then, the number of ways to reach step 10 is just the sum of the ways to reach those two steps.
+- Finally, we build this up from step 1, 2, 3... until we reach our goal.
+- This works because a big complicated problem can be unraveled into a simple sequence of small, repeating steps.
+
 ### Why is This Slow?
 
 The same values are computed repeatedly. `climbStairs(3)` is calculated multiple times!
@@ -207,6 +215,14 @@ console.log(knapsackDP([1, 3, 4, 5], [1, 4, 5, 7], 7)); // 9
 
 Example: `"abcde"` and `"ace"` → `3` ("ace")
 
+
+#### Code Story
+- This problem is about finding the longest string of characters that appears in the same order in two different words (like 'ace' in 'abcde').
+- First, we make a grid where we compare every character of word A with word B.
+- Then, if letters match, we add 1 to the best result from the 'inner' part of the words; if they don't, we take the better of the two neighbors.
+- Finally, the bottom-right corner of the grid holds the answer.
+- This works because the grid allows the computer to remember and combine small matches into the largest possible overall match.
+
 #### 🐢 Brute Force
 
 ```javascript
@@ -263,6 +279,14 @@ console.log(lcsDP("abc", "def"));     // 0
 ### Question 3: Coin Change (Minimum Coins)
 
 **Problem Statement:** Given coin denominations, find the minimum coins to make the target amount.
+
+
+#### Code Story
+- This problem is about finding the fewest coins needed to reach a specific total.
+- First, we create a table that stores the 'cheapest way' to reach every amount from 0 to our target.
+- Then, for every coin and every amount, we check: 'Is it cheaper to reach this amount using this coin, or using what I found before?'
+- Finally, we return the value stored for our target amount.
+- This works because by solving for small amounts first, we can build the 'perfect' answer for the big amount one coin at a time.
 
 #### 🐢 Brute Force
 
@@ -322,6 +346,14 @@ console.log(coinChangeDP([1, 2, 5], 11));        // 3
 **Problem Statement:** Find the length of the longest strictly increasing subsequence.
 
 Example: `[10, 9, 2, 5, 3, 7, 101, 18]` → `4` ([2, 3, 7, 101])
+
+
+#### Code Story
+- This problem is about finding the longest string of numbers in a list that keeps going UP.
+- First, we create a 'memo' where we store the longest streak ending at every specific number.
+- Then, for a new number, we look back at all previous numbers that are smaller than it and add 1 to their best streaks.
+- Finally, we return the highest streak we found anywhere in our memo.
+- This works because it builds a memory of 'winning streaks' that future numbers can latch onto and continue.
 
 #### 🐢 Brute Force — DP O(n²)
 

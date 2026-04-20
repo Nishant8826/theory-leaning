@@ -55,6 +55,14 @@ console.log(subsetsBrute([1, 2, 3]));
 // [[], [1], [2], [1,2], [3], [1,3], [2,3], [1,2,3]]
 ```
 
+
+#### Code Story
+- This problem is about finding every possible smaller group you can make from a larger set of items.
+- First, for every item, we have a choice: 'include it' or 'leave it out'.
+- Then, we branch out for each item, making two versions—one with and one without.
+- Finally, at the end of the chain, we have every possible combination.
+- This works because every subset is essentially a series of 'Yes' or 'No' decisions for every item in the set.
+
 ### Line-by-Line Explanation
 
 1. Start with just the empty subset `[[]]`.
@@ -111,6 +119,14 @@ The backtracking template follows the **choose → explore → un-choose** patte
 **Problem Statement:** Place `n` queens on an `n×n` chessboard so that no two queens attack each other. Return all solutions.
 
 **Thought Process:** Place queens row by row. For each row, try each column. Check if placement is valid (no conflicts). Backtrack if not.
+
+
+#### Code Story
+- This problem is about placing n queens on a chessboard so that none can attack each other.
+- First, we try placing a queen in the first row.
+- Then, we move to the next row and look for a safe spot; if we find one, we place a queen and keep going.
+- Finally, if we get stuck, we 'backtrack' (remove the last queen) and try a different spot in the previous row.
+- This works because it systematically explores only the paths that haven't been disqualified yet.
 
 #### 🐢 Brute Force
 
@@ -226,6 +242,14 @@ solutions.forEach(sol => {
 Example: `candidates = [2,3,6,7], target = 7` → `[[2,2,3], [7]]`
 
 **Thought Process:** For each number, decide how many times to include it (0, 1, 2, ...). Backtrack when sum exceeds target.
+
+
+#### Code Story
+- This problem is about finding all groups of numbers that add up to a specific target.
+- First, we try adding a number to our total.
+- Then, if the total is still too small, we recursively try adding another number (even the same one!).
+- Finally, if we hit the target, we save the group; if we exceed it, we step back and try a different number.
+- This works by exploring every path of additions and quickly pruning paths that have already gone 'over budget'.
 
 #### 🐢 Brute Force
 
@@ -543,6 +567,14 @@ function solveSudoku(board) {
   return board;
 }
 ```
+
+
+#### Code Story
+- This problem is about filling a 9x9 grid with numbers following specific rules.
+- First, we find an empty cell and try a number from 1 to 9.
+- Then, if that number is valid, we move to the next cell and try again.
+- Finally, if we hit an impossible situation, we undo our choice and try the next number.
+- This works because it uses 'trial and error' with smart rules to find the one correct configuration for the grid.
 
 **Explanation:** For each empty cell, try numbers 1-9. If a number doesn't conflict with existing numbers in the same row, column, or box, place it and move on. If no number works, backtrack and change the previous cell.
 

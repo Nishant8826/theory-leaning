@@ -56,6 +56,14 @@ console.log(activitySelectionBrute([[1,4],[3,5],[0,6],[5,7],[3,9],[5,9],[6,10],[
 // 4
 ```
 
+
+#### Code Story
+- This problem is about fitting as many tasks as possible into a single day without any overlap.
+- First, we sort all the tasks by their Finish Times.
+- Then, we always pick the task that finishes first, then jump to the next task that starts after it.
+- Finally, we count how many tasks we managed to fit in.
+- This works because by choosing the task that ends early, we leave the maximum possible amount of time for future tasks.
+
 ---
 
 ## ⚡ Optimized Approach
@@ -104,6 +112,14 @@ By always choosing the activity that **ends earliest**, we leave the most room f
 ### Question 1: Jump Game
 
 **Problem Statement:** Given an array where each element is the maximum jump length, determine if you can reach the last index.
+
+
+#### Code Story
+- This problem is about seeing if you can jump from the start of a list to the very end.
+- First, we keep track of the 'farthest spot' we can possibly reach based on where we are right now.
+- Then, as we move forward, we update our 'farthest reach' with any bigger jumps we find.
+- Finally, if our farthest reach ever gets us to (or past) the end of the list, we return true.
+- This works because as long as you can always reach a spot that can reach even further, you will eventually reach the finish line.
 
 #### 🐢 Brute Force — Recursive
 
@@ -333,6 +349,14 @@ function canCompleteCircuit(gas, cost) {
 console.log(canCompleteCircuit([1,2,3,4,5], [3,4,5,1,2])); // 3
 console.log(canCompleteCircuit([2,3,4], [3,4,3]));           // -1
 ```
+
+
+#### Code Story
+- This problem is about finding a starting point where you can drive around a circular road without running out of gas.
+- First, we check if the total gas available is at least as much as the total gas needed (if not, it's impossible).
+- Then, we try starting at index 0 and keep track of our current tank; if it hits zero, we realize we must start after the spot where we failed.
+- Finally, we return the starting index that successfully makes it all the way around.
+- This works because a failure at any point means every spot before that failure would also have failed at that same point.
 
 **Explanation:** If total gas ≥ total cost, a solution exists. Track the running tank. If it goes negative, the start must be after this point. The first valid start we find works.
 

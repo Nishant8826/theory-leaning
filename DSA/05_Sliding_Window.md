@@ -192,6 +192,14 @@ Example: `s = "eceba", k = 2` → `3` ("ece")
 
 **Thought Process:** Use a sliding window with a hash map to track character frequencies. Shrink from left when distinct characters exceed `k`.
 
+
+#### Code Story
+- This problem is about finding the longest stretch of text that uses only k different types of letters.
+- First, we expand our window and count how many different letters are inside using a map.
+- Then, if we exceed k types, we shrink the window from the left until we are back down to k.
+- Finally, we keep track of the largest window size that stayed within the rules.
+- This works because the window acts like an accordion—expanding as long as it's allowed and contracting only when it breaks the rule.
+
 #### 🐢 Brute Force
 
 ```javascript

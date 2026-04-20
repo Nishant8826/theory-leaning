@@ -100,6 +100,14 @@ const weightedGraph = {
 console.log(dijkstra(weightedGraph, 0, 5)); // [0, 3, 1, 4, 7]
 ```
 
+
+#### Code Story
+- This problem is about finding the absolute shortest path from a start node to everywhere else in a network.
+- First, we start at the beginning and set all distances to infinity, except our own.
+- Then, we use a Min-Heap to always explore the 'unvisited' node that has the current smallest distance from us.
+- Finally, as we visit each node, we check if going through it is a faster way to reach its neighbors.
+- This works because always picking the closest node ensures you'll never find a shorter way to get to it later.
+
 ### Bellman-Ford Algorithm
 
 ```javascript
@@ -129,6 +137,14 @@ function bellmanFord(n, edges, source) {
 const edges = [[0,1,4], [0,2,1], [2,1,2], [1,3,1], [2,3,5], [3,4,3]];
 console.log(bellmanFord(5, edges, 0)); // [0, 3, 1, 4, 7]
 ```
+
+
+#### Code Story
+- This problem is about finding shortest paths even when some roads give you 'bonus points' (negative weights).
+- First, we assume all distances are infinity.
+- Then, we 'relax' every single edge in the whole graph multiple times—specifically (Total Nodes - 1) times.
+- Finally, we check one more time: if a distance still decreases, we've found a 'free energy' loop (negative cycle).
+- This works because after enough passes, the shortest path to every node must have been stabilized unless a negative cycle exists.
 
 ---
 
@@ -218,6 +234,14 @@ console.log(networkDelayDijkstra([[2,1,1],[2,3,1],[3,4,1]], 4, 2)); // 2
 ### Question 2: Cheapest Flights Within K Stops
 
 **Problem Statement:** Find the cheapest price from source to destination with at most k stops.
+
+
+#### Code Story
+- This problem is about finding the cheapest trip that doesn't involve too many layovers.
+- First, we use a modified version of BFS or Bellman-Ford that tracks both the 'cost' and the 'number of stops'.
+- Then, we look for the cheapest way to reach each city while staying under the stop limit.
+- Finally, we return the minimum price to reach our destination.
+- This works because layering the search by 'stops' ensures we find the best deal that actually follows our travel rules.
 
 #### ⚡ Optimized — Modified Bellman-Ford
 
@@ -368,6 +392,14 @@ function floydWarshall(n, edges) {
 const result = floydWarshall(4, [[0,1,3],[0,3,7],[1,2,2],[2,3,1]]);
 console.log(result[0][3]); // 6 (0→1→2→3)
 ```
+
+
+#### Code Story
+- This problem is about finding the shortest path between Every Single Pair of nodes in a map.
+- First, we build a grid (matrix) showing the direct distance between every pair.
+- Then, we ask: 'For every pair A and B, is it faster to go through node K?' for every possible intermediate node K.
+- Finally, we update the grid with the new best shortcuts until every possible path is considered.
+- This works because checking every possible 'middle-man' effectively reveals all hidden shortcuts in the network.
 
 **Explanation:** Try every node as a "middle point." For each pair (i, j), check if going through k is shorter. Like asking for every pair of cities: "Is it faster to go through city k?"
 

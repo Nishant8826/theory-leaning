@@ -320,6 +320,14 @@ console.log(toArray(mergeOptimized(l1, l2))); // [1, 1, 2, 3, 4, 4]
 
 **Thought Process:** Use two pointers with n nodes gap between them. When the leading pointer reaches the end, the trailing pointer is at the node before the one to remove.
 
+
+#### Code Story
+- This problem is about deleting a node without knowing the total length of the list first.
+- First, we send a 'scout' pointer n steps ahead.
+- Then, we start a second pointer at the beginning and move both pointers together until the scout hits the end.
+- Finally, our second pointer will be exactly at the spot right before the node we need to delete.
+- This works because maintainig a gap of n ensures that when the leader finishes, the follower is exactly at the target distance from the finish line.
+
 #### 🐢 Brute Force
 
 ```javascript
@@ -420,6 +428,14 @@ function isPalindrome(head) {
 console.log(isPalindrome(createList([1, 2, 2, 1]))); // true
 console.log(isPalindrome(createList([1, 2, 3]))); // false
 ```
+
+
+#### Code Story
+- This problem is about checking if the values in a chain read the same way forward and backward.
+- First, we find the middle of the list and reverse the entire second half.
+- Then, we compare the first half of the list with the now-reversed second half.
+- Finally, if all values match, it's a palindrome.
+- This works because reversing the back half allows us to 'walk toward the middle' from both ends, even though connected nodes usually only point one way.
 
 **Explanation:** Find the middle, reverse the second half, then compare both halves node by node.
 

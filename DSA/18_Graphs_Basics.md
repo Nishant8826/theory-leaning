@@ -185,6 +185,14 @@ g.print();
 
 **Problem Statement:** Given n nodes and edges, check if there's a path between source and destination.
 
+
+#### Code Story
+- This problem is about finding if there is any way to travel from node A to node B.
+- First, we pick a traversal strategy like BFS (layer by layer) or DFS (as far as possible).
+- Then, we explore outward from A, marking nodes as 'visited' so we don't wander in circles.
+- Finally, if our exploration ever hits node B, a path exists.
+- This works because systematically checking reachable nodes will eventually reveal if the destination is part of the same network.
+
 #### 🐢 Brute Force — DFS
 
 ```javascript

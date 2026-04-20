@@ -88,6 +88,14 @@ console.log(binarySearch([1, 2, 3, 4, 7, 9], 7)); // 4
 console.log(binarySearch([1, 2, 3, 4, 7, 9], 5)); // -1
 ```
 
+
+#### Code Story
+- This problem is about finding an item in a sorted list by repeatedly cutting the search area in half.
+- First, we look at the middle item.
+- Then, if the target is smaller, we search the left half; if bigger, we search the right half.
+- Finally, we keep halving until we either find the item or run out of list.
+- This works because in an ordered list, knowing how the middle compares tells you exactly which half to ignore.
+
 ### How Binary Search Works — Step by Step
 
 For array `[1, 3, 5, 7, 9, 11, 13]`, target = `7`:

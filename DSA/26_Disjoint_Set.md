@@ -134,6 +134,14 @@ console.log(uf.connected(0, 2)); // true
 console.log(uf.getCount());       // 2 (groups: {0,1,2,3} and {4})
 ```
 
+
+#### Code Story
+- This problem is about making Union-Find incredibly fast by keeping the trees short and flat.
+- First, 'Path Compression' means whenever we find a leader, we point all nodes directly to that leader, shortening the path for next time.
+- Then, 'Union by Rank' means we always attach the smaller tree to the taller one, preventing the structure from becoming too deep.
+- Finally, these two tricks together make the whole process nearly instantaneous, even for millions of nodes.
+- This works because flatter trees mean fewer 'jumps' to find the leader, which is the most common action we perform.
+
 ---
 
 ## 🔍 Complexity Analysis
@@ -214,6 +222,14 @@ console.log(countComponentsUF(5, [[0,1],[1,2],[2,3],[3,4]])); // 1
 ### Question 2: Redundant Connection
 
 **Problem Statement:** Find the edge that, when removed, makes the graph a tree (no cycles). Return the last such edge.
+
+
+#### Code Story
+- This problem is about finding exactly which edge in a network creates a circular loop.
+- First, we take the edges one by one and try to 'Union' the two nodes they connect.
+- Then, if we find that the two nodes already share the same leader before we even add the edge, we have a cycle!
+- Finally, that edge is the one that created the loop, so we return it.
+- This works because in a simple tree, every edge must connect two different groups; if it connects nodes in the same group, it's a loop.
 
 #### ⚡ Optimized — Union-Find
 

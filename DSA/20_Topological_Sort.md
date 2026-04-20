@@ -75,6 +75,14 @@ console.log(topologicalSortBFS(6, [[5,2],[5,0],[4,0],[4,1],[2,3],[3,1]]));
 // Example output: [4, 5, 2, 0, 3, 1]
 ```
 
+
+#### Code Story
+- This problem is about finding a valid task order by repeatedly doing the tasks that have zero dependencies.
+- First, we count how many prerequisites (in-degree) every task has.
+- Then, we put all tasks with 0 prerequisites into a queue.
+- Finally, as we do a task, we 'unblock' its neighbors; if a neighbor hits 0 prerequisites, it enters the queue.
+- This works because it systematically drains the 'easiest' tasks first until the whole project is finished.
+
 ### Line-by-Line Explanation
 
 1. **In-degree** — count how many edges point INTO each node (dependencies).
@@ -144,6 +152,14 @@ console.log(topologicalSortDFS(6, [[5,2],[5,0],[4,0],[4,1],[2,3],[3,1]]));
 ### Question 1: Course Schedule II (Find Order)
 
 **Problem Statement:** Given n courses and prerequisites, return an order to take all courses (or empty if impossible).
+
+
+#### Code Story
+- This problem is about finding the actual list of steps to finish all tasks.
+- First, we use Topological Sort (either Kahn's or DFS with a stack).
+- Then, we build our list as we process the tasks.
+- Finally, if our list contains all tasks, we return it; if not (due to a cycle), we return an empty list.
+- This works because topological sorting is specifically designed to linearize hierarchical dependencies.
 
 #### 🐢 Brute Force — Kahn's Algorithm
 
@@ -220,6 +236,14 @@ function findOrderDFS(numCourses, prerequisites) {
 ### Question 2: Alien Dictionary
 
 **Problem Statement:** Given a sorted list of words from an alien language, determine the character order.
+
+
+#### Code Story
+- This problem is about deriving the alphabet order of a new language by looking at sorted words.
+- First, we compare adjacent words to see which letter comes before another (like 'apple' and 'apply' tells us 'e' < 'y').
+- Then, we build a directed graph where an arrow means 'comes before'.
+- Finally, we perform a Topological Sort on the letters to get the final alphabet string.
+- This works because the rules from the word list form clear 'prerequisites' for the letters, which is exactly what topological sorting solves.
 
 #### ⚡ Optimized — Build Graph + Topological Sort
 

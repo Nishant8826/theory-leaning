@@ -83,6 +83,14 @@ console.log(result.totalWeight); // 37
 console.log(result.mst);
 ```
 
+
+#### Code Story
+- This problem is about connecting every city with the least amount of road, without making any circular loops.
+- First, we sort every possible road by its cost, from cheapest to most expensive.
+- Then, we pick the cheapest road and add it—but only if it doesn't create a circle with the roads we already have.
+- Finally, we repeat this until all cities are part of the same network.
+- This works because always picking the absolute cheapest road that contributes to a new connection will eventually lead to the overall cheapest total.
+
 ### Line-by-Line Explanation
 
 1. **Sort all edges** by weight (cheapest first).
@@ -141,6 +149,14 @@ const adjList = {
 console.log(primMST(9, adjList).totalWeight); // 37
 ```
 
+
+#### Code Story
+- This problem is about growing a forest of connections from a single starting point.
+- First, we pick a starting city and look at all the roads connecting to its neighbors.
+- Then, we use a Min-Heap to pick the cheapest road available to reach a new city.
+- Finally, we add that city to our 'connected' group and repeat until everyone is in.
+- This works because starting from one spot and always taking the 'closest unvisited neighbor' slowly and correctly builds the cheapest network.
+
 ---
 
 ## 🔍 Complexity Analysis
@@ -158,6 +174,14 @@ console.log(primMST(9, adjList).totalWeight); // 37
 ### Question 1: Min Cost to Connect All Points
 
 **Problem Statement:** Given n points, find the minimum cost to connect all points (cost = Manhattan distance).
+
+
+#### Code Story
+- This problem is about finding the least total distance to connect a set of coordinates on a flat map.
+- First, we calculate the 'Manhattan distance' (street distance) between every pair of points.
+- Then, we treat those distances as roads in a graph and apply Prim's or Kruskal's.
+- Finally, we return the total length of the 'skeleton' that connects every point.
+- This works because it reduces a geometry problem into a graph problem that can be solved with standard Minimum Spanning Tree tools.
 
 #### 🐢 Brute Force — Generate All Edges + Kruskal's
 

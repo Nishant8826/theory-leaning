@@ -40,6 +40,14 @@ A **binary tree** is a tree where each node has **at most 2 children** (left and
 | **Postorder** | Left → Right → Root | Delete tree |
 | **Level Order (BFS)** | Level by level | Print by depth |
 
+
+#### Code Story
+- This problem is about three ways to visit every node in a tree.
+- First, 'Pre' means (Me, Left, Right); 'In' means (Left, Me, Right); and 'Post' means (Left, Right, Me).
+- Then, we use recursion to follow these rules for every single node.
+- Finally, we end up with a list of nodes that follows the specific 'order' we chose.
+- This works because the tree’s structure naturally allows for recursive rules that visit every branch and leaf.
+
 ### Real-Life Analogy
 
 - **File system**: folders contain subfolders and files — a tree!
@@ -172,6 +180,14 @@ console.log(inorderIterative(root)); // [4, 2, 5, 1, 3]
 
 **Problem Statement:** Find the maximum depth (height) of a binary tree.
 
+
+#### Code Story
+- This problem is about finding the tallest point (or longest path) in a tree.
+- First, we realize the height of a node is just 1 plus the height of its tallest child.
+- Then, we recursively ask every branch for its height until we reach the leaves (0).
+- Finally, the answers bubble back up to the Root.
+- This works because it breaks the big 'tree height' problem into tiny 'child height' problems.
+
 #### 🐢 Brute Force — BFS Level Count
 
 ```javascript
@@ -216,6 +232,14 @@ console.log(maxDepthDFS(root)); // 3
 ### Question 2: Invert Binary Tree
 
 **Problem Statement:** Mirror a binary tree — swap every left and right child.
+
+
+#### Code Story
+- This problem is about creating a mirror image of a tree.
+- First, we go to a node and swap its left and right children.
+- Then, we recursively do the same for all the children's children.
+- Finally, the entire tree is flipped horizontally.
+- This works because swapping the top-level branches and then repeating the process for all sub-branches creates a perfect mirror.
 
 #### 🐢 Brute Force — BFS
 
@@ -400,6 +424,14 @@ function hasPathSum(root, target) {
          hasPathSum(root.right, target - root.val);
 }
 ```
+
+
+#### Code Story
+- This problem is about checking if there is a path from the top to a bottom leaf that adds up to a specific number.
+- First, as we go down a path, we subtract the current node's value from our target.
+- Then, we recursively check if the new target can be met by either of the children.
+- Finally, if we reach a leaf and the target is exactly zero, we've found a valid path.
+- This works because subtracting along the way simple tells us: 'Given where I am now, what sum do I still need?'
 
 **Explanation:** Walk from root toward leaves, subtracting each node's value from the target. At a leaf, if the remaining target equals the leaf's value, we found a path.
 

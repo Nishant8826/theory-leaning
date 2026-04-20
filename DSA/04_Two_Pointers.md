@@ -118,6 +118,14 @@ Example: `[-1, 0, 1, 2, -1, -4]` → `[[-1, -1, 2], [-1, 0, 1]]`
 
 **Thought Process:** Sort the array. Fix one number, then use two pointers on the remaining to find pairs that complete the sum. Skip duplicates.
 
+
+#### Code Story
+- This problem is about finding all unique sets of three numbers that add up to zero.
+- First, we sort the array and fix one number as our 'anchor'.
+- Then, we use the 'Two Pointer' trick on the remaining numbers to find pairs that cancel out our anchor.
+- Finally, we skip any duplicate numbers to ensure our results are all unique.
+- This works because turning a 3-number problem into a 2-number problem (by fixing one) makes it much easier to solve.
+
 #### 🐢 Brute Force
 
 ```javascript
@@ -271,6 +279,14 @@ console.log(maxAreaOptimized([1, 8, 6, 2, 5, 4, 8, 3, 7])); // 49
 Example: `[2, 0, 2, 1, 1, 0]` → `[0, 0, 1, 1, 2, 2]`
 
 **Thought Process:** Use three pointers: `low` for placing 0s, `mid` for scanning, `high` for placing 2s.
+
+
+#### Code Story
+- This problem is about sorting a list with only three types of items (like 0s, 1s, and 2s).
+- First, we use three pointers: 'low' for 0s, 'high' for 2s, and 'current' to scan.
+- Then, if we see a 0, we swap it to the front; if a 2, we swap it to the back; if a 1, we just move on.
+- Finally, the 0s are at the left, 2s at the right, and 1s are forced into the middle.
+- This works because by pushing the 'outer' values to the ends, the middle value has nowhere to go but the center.
 
 #### 🐢 Brute Force
 
@@ -449,6 +465,14 @@ const arr = [1, 1, 2, 2, 3, 4, 4, 5];
 console.log(removeDuplicates(arr)); // 5
 console.log(arr.slice(0, 5));       // [1, 2, 3, 4, 5]
 ```
+
+
+#### Code Story
+- This problem is about cleaning up a list so every number only appears once, without using extra space.
+- First, we use one pointer to walk through the list and another to keep track of where the unique items go.
+- Then, every time we see a number that is different from the last one we kept, we move it to the 'unique' spot.
+- Finally, we return the new length of the unique list.
+- This works because it effectively 'slides' all unique items to the front, overwriting the duplicates as it goes.
 
 **Explanation:** `slow` is like a stamp saying "last unique element placed here." `fast` runs ahead looking for new unique elements. When `fast` finds something different from `slow`, we advance `slow` and place it there.
 

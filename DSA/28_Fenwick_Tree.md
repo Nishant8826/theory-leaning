@@ -138,6 +138,14 @@ console.log(bit.rangeSum(2, 5)); // 29 (3+10+7+9)
 console.log(bit.prefixSum(6));   // 46 (1+3+10+7+9+11 = 41... +5 = 46)
 ```
 
+
+#### Code Story
+- This problem is about calculating totals for parts of a list in a way that is very fast and uses almost zero extra memory.
+- First, we use a special array where each index stores a sum of a carefully chosen block of items.
+- Then, we use 'Binary' math tricks (like stripping the last set bit) to instantly jump between the blocks we need.
+- Finally, we can update a number or find a prefix sum in just a few binary jumps.
+- This works because the blocks are designed so that any range can be formed by adding up at most O(log n) pre-calculated sums.
+
 ### How Update Works (Visual)
 
 ```
@@ -223,6 +231,14 @@ console.log(na.sumRange(0, 2)); // 8
 ### Question 2: Count of Smaller Numbers After Self
 
 **Problem Statement:** For each element, count how many elements after it are smaller.
+
+
+#### Code Story
+- This problem is about taking a list and for every number, counting how many smaller numbers appear later on.
+- First, we process the numbers from right to left.
+- Then, for each number, we query our Fenwick Tree to see how many numbers smaller than it we've already seen.
+- Finally, we 'add' the current number into the Fenwick Tree and repeat.
+- This works because it uses the Fenwick Tree as a running 'frequency counter' that can answer range questions in record time.
 
 #### 🐢 Brute Force
 

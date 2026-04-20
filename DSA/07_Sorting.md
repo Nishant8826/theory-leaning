@@ -61,6 +61,14 @@ console.log(bubbleSort([64, 34, 25, 12, 22, 11, 90]));
 // [11, 12, 22, 25, 34, 64, 90]
 ```
 
+
+#### Code Story
+- This problem is about pushing the largest items to the end, one by one, like bubbles rising to the top.
+- First, we compare neighbors and swap them if they are in the wrong order.
+- Then, we repeat this for the whole list until the largest item 'bubbles' all the way to the end.
+- Finally, we repeat the process for the remaining unsorted items.
+- This works because every pass through the list is guaranteed to put at least one more item in its correct final spot.
+
 ### Line-by-Line Explanation
 
 1. **Outer loop** — runs n-1 times (one pass per element).
@@ -98,6 +106,14 @@ console.log(selectionSort([64, 25, 12, 22, 11]));
 // [11, 12, 22, 25, 64]
 ```
 
+
+#### Code Story
+- This problem is about building the sorted list by repeatedly picking the smallest available item.
+- First, we scan the whole 'unsorted' pile to find the absolute smallest number.
+- Then, we swap that smallest number with the first number in the pile.
+- Finally, we move to the next spot and repeat until everything is sorted.
+- This works because it systematically fills the front of the list with the correct items, step by step.
+
 ### Insertion Sort
 
 ```javascript
@@ -122,6 +138,14 @@ function insertionSort(arr) {
 console.log(insertionSort([12, 11, 13, 5, 6]));
 // [5, 6, 11, 12, 13]
 ```
+
+
+#### Code Story
+- This problem is about sorting items like someone arranging a hand of cards.
+- First, we pick up a new item and compare it to the sorted items we already have on our left.
+- Then, we shift the sorted items right until we find the perfect 'gap' for our new item.
+- Finally, we drop the item into the gap and move to the next one.
+- This works because it keeps the left side of the list perfectly sorted at all times.
 
 ---
 
@@ -203,6 +227,14 @@ console.log(quickSort([10, 7, 8, 9, 1, 5]));
 // [1, 5, 7, 8, 9, 10]
 ```
 
+
+#### Code Story
+- This problem is about picking a 'pivot' and putting everyone smaller on its left and everyone bigger on its right.
+- First, we choose a pivot number (like the last item).
+- Then, we rearrange the list so the pivot is in its final spot, with all the 'littles' on one side and 'bigs' on the other.
+- Finally, we repeat this for the two sides until everything is organized.
+- This works because once a pivot is in its correct spot, it never has to move again.
+
 ---
 
 ## 🔍 Complexity Analysis
@@ -277,6 +309,14 @@ console.log(sortColorsOptimized([2, 0, 1, 2, 1, 0])); // [0, 0, 1, 1, 2, 2]
 Example: `[[1,3], [2,6], [8,10], [15,18]]` → `[[1,6], [8,10], [15,18]]`
 
 **Thought Process:** Sort by start time, then merge overlapping intervals.
+
+
+#### Code Story
+- This problem is about sorting by splitting the list into tiny pieces and then merging them back in order.
+- First, we keep cutting the list in half until every piece has only one item (which is naturally sorted!).
+- Then, we carefully zip these pieces back together, comparing items as we go.
+- Finally, we end up with one big, perfectly sorted list.
+- This works because it is much easier to merge two small sorted lists than to sort one messy big one.
 
 #### 🐢 Brute Force
 

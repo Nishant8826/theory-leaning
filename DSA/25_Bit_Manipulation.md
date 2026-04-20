@@ -124,6 +124,14 @@ console.log(singleNumberXOR([4, 1, 2, 1, 2])); // 4
 
 **Problem Statement:** Count the number of 1 bits in the binary representation of a number.
 
+
+#### Code Story
+- This problem is about counting how many '1s' appear in a computer's binary memory.
+- First, we take a bit mask of '1' and move it across the number, checking each spot.
+- Then, we can also use a trick like n & (n-1) which instantly flips the rightmost '1' to a '0'.
+- Finally, we count how many times we can do this until the number hits zero.
+- This works because every time we flip a bit, we are effectively 'tallying' one more '1' from the binary code.
+
 #### 🐢 Brute Force
 
 ```javascript
@@ -174,6 +182,14 @@ console.log(hammingWeightOptimized(128)); // 1
 
 **Problem Statement:** Check if a number is a power of 2.
 
+
+#### Code Story
+- This problem is about checking if a number could be made by multiplying 2 over and over (like 1, 2, 4, 8, 16).
+- First, we realize that in binary, a power of two is always a '1' followed by only '0s' (like 1000).
+- Then, we use the n & (n-1) trick: since n-1 would be all '1s' (0111), XORing them should result in exactly zero.
+- Finally, if the result is zero (and n is positive), it's a power of two.
+- This works because this binary property is unique to powers of two, making it a lightning-fast one-line check.
+
 #### 🐢 Brute Force
 
 ```javascript
@@ -209,6 +225,14 @@ console.log(isPowerOfTwo(0));   // false
 ### Question 3: Missing Number (XOR Approach)
 
 **Problem Statement:** Given array of n numbers from 0 to n, find the missing one.
+
+
+#### Code Story
+- This problem is about finding the one missing number in a range using binary 'XOR' magic.
+- First, we XOR all the numbers from 0 to n together.
+- Then, we XOR that result with all the numbers we actually have in our list.
+- Finally, every matching pair cancels itself out to zero, and the only survivor is the missing number!
+- This works because XORing the same number twice always results in zero, making it a perfect tool for finding the 'odd one out'.
 
 #### 🐢 Brute Force — Sum Formula
 
@@ -294,6 +318,14 @@ function countBits(n) {
 console.log(countBits(5)); // [0, 1, 1, 2, 1, 2]
 console.log(countBits(2)); // [0, 1, 1]
 ```
+
+
+#### Code Story
+- This problem is about counting the '1s' for every single number from 0 up to n.
+- First, we realize that a number always has the same amount of bits as itself shifted right, plus potentially one more if it's odd.
+- Then, we use our past results to compute the new results in a single pass.
+- Finally, we return the array of counts.
+- This works because the binary pattern of numbers is repetitive, allowing us to 'reuse' the bits we've already counted for smaller numbers.
 
 **Explanation:** The number of 1-bits in `i` = bits in `i/2` (shift right) + whether the last bit is 1. Use previously computed values — classic DP!
 

@@ -13,6 +13,14 @@ A **Heap** is a special binary tree where the parent node is always greater (Max
 | **Min Heap** | Parent ≤ Children | Smallest element |
 | **Max Heap** | Parent ≥ Children | Largest element |
 
+
+#### Code Story
+- This problem is about building a structure that always keeps the 'best' item on top.
+- First, we represent the tree as a simple array, where children can be found with math (2i+1, 2i+2).
+- Then, we use 'bubble up' and 'bubble down' to keep the biggest (or smallest) at the top whenever we add or remove items.
+- Finally, we have an extremely fast way to get the top priority item.
+- This works because a heap only maintains partial order, just enough to find the winner without sorting everything.
+
 ### Heap as an Array
 
 Heaps are typically stored in arrays. For node at index `i`:
@@ -58,6 +66,14 @@ function kthLargestBrute(arr, k) {
 
 console.log(kthLargestBrute([3, 2, 1, 5, 6, 4], 2)); // 5
 ```
+
+
+#### Code Story
+- This problem is about finding the 3rd or 4th or k-th biggest number in a huge pile.
+- First, we create a 'Min-Heap' and put the first k numbers in it.
+- Then, for every new number, if it's bigger than our heap's smallest, we swap them.
+- Finally, after looking at all numbers, our heap of size k will contain the k largest items, and its top will be the one we need.
+- This works because a small heap of size k acts like a filter that only keeps the absolute best numbers we've seen.
 
 ---
 
@@ -203,6 +219,14 @@ console.log(topKFrequentOptimized([1,1,1,2,2,3], 2)); // [1, 2]
 
 **Problem Statement:** Merge k sorted linked lists into one sorted list.
 
+
+#### Code Story
+- This problem is about merging many sorted chains into one big sorted chain.
+- First, we put the 'Head' of every list into a Min-Heap.
+- Then, we always take the smallest node from the heap, add it to our new chain, and put the next node from that same list into the heap.
+- Finally, we repeat until all nodes have been merged.
+- This works because the heap always keeps the next potential winner right at our fingertips, no matter how many lists there are.
+
 #### 🐢 Brute Force
 
 ```javascript
@@ -265,6 +289,14 @@ function mergeKListsOptimized(lists) {
 ### Question 3: Find Median from Data Stream
 
 **Problem Statement:** Design a class that can find the median from a stream of numbers.
+
+
+#### Code Story
+- This problem is about finding the middle number in a list that keeps growing.
+- First, we use two heaps: one for the smaller half of numbers (Max-Heap) and one for the larger half (Min-Heap).
+- Then, we keep the heaps balanced so they stay equal in size.
+- Finally, the median is either the top of one heap or the average of both tops.
+- This works because the middle of the data is always where the two halves of our heap structure meet.
 
 #### 🐢 Brute Force
 

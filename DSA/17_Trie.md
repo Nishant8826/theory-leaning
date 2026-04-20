@@ -178,6 +178,14 @@ console.log(trie.autocomplete("app"));  // ["app", "apple", "application"]
 
 **Problem Statement:** Implement a trie with insert, search, and startsWith methods.
 
+
+#### Code Story
+- This problem is about building a 'word tree' for fast typing and searching.
+- First, each node represents one letter. When we insert 'CAT', we go from the root to 'C', then 'A', then 'T'.
+- Then, we mark the ending node of a word as 'complete'.
+- Finally, we can search for full words or just prefixes by following the letter trail.
+- This works because sharing paths for words like 'CAT', 'CAR', and 'CAB' saves space and makes searching incredibly direct.
+
 #### 🐢 Brute Force — Using Array of Words
 
 ```javascript
@@ -204,6 +212,14 @@ class TrieBrute {
 **Problem Statement:** Given a 2D board and a list of words, find all words that exist in the board.
 
 **Thought Process:** Build a Trie from the word list, then DFS on the board using the Trie to prune paths.
+
+
+#### Code Story
+- This problem is about finding many words from a dictionary hidden in a grid of letters.
+- First, we throw all the dictionary words into a Trie for fast lookups.
+- Then, we start at every square on the grid and use backtracking (DFS) to follow paths that match the Trie.
+- Finally, if we reach the end of a word in the Trie, we've found it on the board!
+- This works because using a Trie allows us to stop searching early as soon as the grid path doesn't form the start of any valid word.
 
 #### 🐢 Brute Force
 
@@ -303,6 +319,14 @@ console.log(findWordsOptimized(board, ["oath","pea","eat","rain"]));
 ### Question 3: Design Add and Search Words (with wildcards)
 
 **Problem Statement:** Design a data structure supporting addWord and search (where `.` matches any character).
+
+
+#### Code Story
+- This problem is about searching for words even when some letters are unknown (like 'c.t').
+- First, we search the Trie just like normal for exact matches.
+- Then, if we hit a '.', we recursively try every possible branch at that level to find a match.
+- Finally, if any branch finds the rest of the word, we return true.
+- This works because treating a '.' as a 'choose any path' allows us to explore all possibilities in a single search.
 
 #### ⚡ Optimized — Trie with DFS for Wildcards
 
@@ -436,6 +460,14 @@ function replaceWords(dictionary, sentence) {
 console.log(replaceWords(["cat","bat","rat"], "the cattle was rattled by the battery"));
 // "the cat was rat by the bat"
 ```
+
+
+#### Code Story
+- This problem is about shortening words in a sentence if they start with a known 'root' (e.g., 'cattle' becomes 'cat').
+- First, we store all roots in a Trie.
+- Then, for every word in the sentence, we follow its letters down the Trie.
+- Finally, the first 'root' we find in the Trie is the shortest one, which we use as the replacement.
+- This works because a Trie finds prefixes in the exact order of their letters, ensuring we pick the shortest root possible.
 
 **Explanation:** Build a Trie from root words. For each word in the sentence, walk the trie until we find an end-of-word marker (root found) or run out of trie path (no root, keep original).
 

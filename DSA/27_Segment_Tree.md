@@ -79,6 +79,22 @@ rsb.update(2, 10);
 console.log(rsb.query(1, 4)); // 29 (3+10+7+9)
 ```
 
+
+
+#### Code Story
+- This problem is about updating an entire range (like 'add 5 to index 2 through 100') without slowing down.
+- First, instead of updating all 98 numbers at once, we just leave a 'note' at the top branch saying: 'everyone below this needs +5'.
+- Then, we only actually perform the update when we need to visit those specific nodes later.
+- Finally, this 'lazy' approach keeps our updates incredibly fast while still giving correct answers.
+- This works because avoiding unnecessary work until the very last second is a classic way to make computer algorithms efficient.
+
+#### Code Story
+- This problem is about answering 'What is the sum from A to B?' quickly, even while values are changing.
+- First, we build a tree where the root covers the whole list and branches cover smaller and smaller halves.
+- Then, to update a single number, we only follow one path from the leaf up to the root, updating sums along the way.
+- Finally, to get a range sum, we add up the values of the few 'branches' that perfectly fit our target range.
+- This works because it replaces a slow O(n) scan with a very fast O(log n) tree traversal.
+
 ---
 
 ## ⚡ Optimized Approach

@@ -115,6 +115,14 @@ Example: `"A man, a plan, a canal: Panama"` → `true`
 
 **Thought Process:** Clean the string (remove non-alphanumeric, lowercase), then compare from both ends.
 
+
+#### Code Story
+- This problem is about checking if a phrase reads the same way forward and backward.
+- First, we clean up the text by removing spaces and punctuation and making everything lowercase.
+- Then, we use two pointers—one at the start and one at the end—to compare each character.
+- Finally, if all characters match, it's a palindrome; if even one pair differs, it isn't.
+- This works because a palindrome is perfectly symmetrical, so the front and back must be identical mirror images.
+
 #### 🐢 Brute Force
 
 ```javascript
@@ -262,6 +270,14 @@ console.log(firstUniqueOptimized("aabb"));           // null
 Example: `"listen"` and `"silent"` → `true`
 
 **Thought Process:** Count characters in both strings and compare.
+
+
+#### Code Story
+- This problem is about checking if two words contain exactly the same letters in a different order.
+- First, we count how many times each letter appears in the first word.
+- Then, we go through the second word and subtract the counts for each letter we find.
+- Finally, if all our counts end up back at zero, the words are anagrams.
+- This works because words with the same 'ingredient list' of letters will always cancel each other out in a tally.
 
 #### 🐢 Brute Force — Sort and Compare
 
@@ -457,6 +473,14 @@ console.log(compressString("aabcccccaaa")); // "a2b1c5a3"
 console.log(compressString("abc"));          // "abc" (compressed is longer)
 ```
 
+
+#### Code Story
+- This problem is about shortening a string like 'aaabb' into 'a3b2'.
+- First, we look at the first character and start counting its 'streak'.
+- Then, as soon as the character changes, we write the old character and its count into our result.
+- Finally, if the 'compressed' version is actually shorter than the original, we keep it.
+- This works because it replaces repeated patterns with a simple tally, saving space whenever many same letters are in a row.
+
 **Explanation:** Like describing a crowd: "2 red shirts, 1 blue, 5 green, 3 red" instead of listing each person. You walk through the string counting same-character streaks.
 
 **Complexity:** Time: O(n), Space: O(n)
@@ -557,6 +581,14 @@ console.log(longestCommonPrefix(["flower", "flow", "flight"])); // "fl"
 console.log(longestCommonPrefix(["dog", "racecar", "car"]));     // ""
 console.log(longestCommonPrefix(["interstellar", "internet", "internal"])); // "inter"
 ```
+
+
+#### Code Story
+- This problem is about finding the longest starting string shared by a group of words.
+- First, we take the first word and assume it's the whole prefix.
+- Then, we compare it to the next word and 'shrink' it until it matches the start of that word.
+- Finally, we repeat this for every word until our prefix is either correct for everyone or empty.
+- This works because a shared prefix can only get smaller as you add more words to the rule.
 
 **Explanation:** Line up all the words vertically. Read column by column (first letter of each, then second, etc.). The moment any word doesn't match, stop. Everything you've read so far is the common prefix.
 

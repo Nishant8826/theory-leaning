@@ -62,6 +62,14 @@ console.log(factorialIterative(5)); // 120
 console.log(factorialIterative(0)); // 1
 ```
 
+
+#### Code Story
+- This problem is about multiplying a number by every positive number smaller than it (like 5! = 5x4x3x2x1).
+- First, we realize that 5! is just 5 times 4!.
+- Then, we keep asking the function for smaller factorials until we reach 1 (the 'stop signal').
+- Finally, the answers multiply together on their way back up.
+- This works because factorial has a perfect recursive structure where the big answer depends directly on a smaller version of itself.
+
 ### Line-by-Line Explanation
 
 1. Start with `result = 1`.
@@ -128,6 +136,14 @@ function fibMemo(n, memo = {}) {
 console.log(fibMemo(50)); // 12586269025 (instant!)
 ```
 
+
+#### Code Story
+- This problem is about calculating a sequence where each number is the sum of the two before it.
+- First, we ask 'what is the sum of the last two?'
+- Then, each of those asks for the sum of *their* last two, creating a huge tree of questions.
+- Finally, once we hit the base cases (0 and 1), the numbers start adding up.
+- This works but can be slow because the computer ends up answering the same questions many, many times.
+
 ---
 
 ## 🔍 Complexity Analysis
@@ -151,6 +167,14 @@ Recursion uses **stack space** for each call. Deep recursion on large inputs can
 **Problem Statement:** Calculate x raised to the power n. Handle negative exponents.
 
 **Thought Process:** Brute force multiplies x, n times. Optimized uses the property: x^n = (x^(n/2))² for even n.
+
+
+#### Code Story
+- This problem is about multiplying a number a, b times.
+- First, we realize a^b is just a times a^(b-1).
+- Then, we keep reducing the exponent until it reaches 0 (anything to the power of 0 is 1).
+- Finally, the multiplication happens step-by-step.
+- This works because exponents are naturally defined as repeated multiplication, which is exactly what recursion does.
 
 #### 🐢 Brute Force
 
@@ -388,6 +412,14 @@ console.log(sumOfDigits(999));   // 27
 console.log(sumOfDigits(0));     // 0
 ```
 
+
+#### Code Story
+- This problem is about taking a number like 123 and finding the sum 1+2+3.
+- First, we take the last digit (3) and add it to the 'sum of the rest' (12).
+- Then, we keep stripping off the last digit until the number is zero.
+- Finally, all the stripped digits add together.
+- This works because breaking a big number into 'last digit' + 'remaining digits' is a repeating pattern that eventually reaches zero.
+
 **Explanation:** Peel off the last digit (n % 10), add it to the sum of the remaining number (n / 10). Like counting money by removing one coin at a time.
 
 **Complexity:** Time: O(d) where d = number of digits, Space: O(d)
@@ -515,6 +547,14 @@ function permutations(str) {
 console.log(permutations("abc"));
 // ["abc", "acb", "bac", "bca", "cab", "cba"]
 ```
+
+
+#### Code Story
+- This problem is about finding every possible way to scramble a word.
+- First, we pick a character to be at the front.
+- Then, we recursively find all ways to scramble the remaining characters.
+- Finally, we swap the front character and repeat the process for every other character.
+- This works because it systematically tries every character in every position, ensuring no combination is missed.
 
 **Explanation:** Put each character in the first position (by swapping), then find all arrangements of the remaining characters. Like arranging 3 friends in a photo: pick who stands first, then arrange the other two.
 

@@ -64,6 +64,14 @@ function searchBrute(root, target) {
 }
 ```
 
+
+#### Code Story
+- This problem is about finding a specific value in a sorted Binary Search Tree.
+- First, if the value is bigger than the Root, we go right; if smaller, we go left.
+- Then, we repeat this at every node we land on.
+- Finally, we either find the node or hit a dead end (null).
+- This works because the BST's sorted nature allows us to skip half the tree at every single step, making searches incredibly fast.
+
 ---
 
 ## ⚡ Optimized Approach
@@ -254,6 +262,14 @@ function lcaOptimized(root, p, q) {
 ### Question 3: Kth Smallest Element in BST
 
 **Problem Statement:** Find the kth smallest element in a BST.
+
+
+#### Code Story
+- This problem is about finding the k-th item if you were to list all numbers in order.
+- First, we remember that an 'Inorder' traversal (Left, Me, Right) visits nodes in perfectly sorted order.
+- Then, we perform that traversal and count how many items we've seen.
+- Finally, when our count hits k, we stop and return the current node.
+- This works because it leverages the natural sorted structure of the tree to find the answer without actually having to sort anything.
 
 #### 🐢 Brute Force — Inorder to Array
 
