@@ -512,4 +512,4 @@ You can have many local commits that aren't pushed yet. `git push` is what actua
 *Notes created from class session: April 20, 2026*  
 *Topic: Git & GitHub Fundamentals — DevOps Series*
 
-> ← Previous: [`23_aws_lambda_&_serverless_architecture`](23_aws_lambda_&_serverless_architecture.md) | Next: [`25_git_branching_and_pull_requests`](25_git_branching_and_pull_requests.md) →
+> ← Previous: [`23_aws_lambda_&_serverless_architecture`](23_aws_lambda_&_serverless_architecture.md) | Next: [`25_Git_&_GitHub_Deep_Dive_Branching_PRs_&_Collaboration`](25_Git_&_GitHub_Deep_Dive_Branching_PRs_&_Collaboration.md) →

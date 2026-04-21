@@ -75,13 +75,6 @@ console.log(secondLargestBrute([5, 8]));                   // 5
 ```
 
 
-#### Code Story
-- This problem is about finding the 'runner-up' in a group of numbers.
-- First, we keep two markers: one for the leader and one for the second place.
-- Then, as we look at each number, if it's bigger than our leader, the current leader moves to second place and the new number takes the lead.
-- Finally, we return the value held in second place.
-- This works because by tracking the top two contenders at all times, we only need to pass through the list once.
-
 ### Line-by-Line Explanation
 
 1. **`[...arr].sort((a, b) => a - b)`** — Create a copy and sort it smallest to largest.
@@ -121,6 +114,13 @@ console.log(secondLargestOptimized([12, 35, 1, 10, 34, 1])); // 34
 console.log(secondLargestOptimized([10, 10, 10]));             // -1
 console.log(secondLargestOptimized([5, 8]));                   // 5
 ```
+
+#### Code Story
+- This problem is about finding the 'runner-up' in a group of numbers.
+- First, we keep two markers: one for the leader and one for the second place.
+- Then, as we look at each number, if it's bigger than our leader, the current leader moves to second place and the new number takes the lead.
+- Finally, we return the value held in second place.
+- This works because by tracking the top two contenders at all times, we only need to pass through the list once.
 
 ### Why is this better?
 
