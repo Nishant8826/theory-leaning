@@ -163,6 +163,26 @@ This is the **exact workflow** practiced in class — the same one used by profe
 [Install Git] → [Create GitHub Account] → [Configure Identity]
 ```
 
+Before you can start tracking code, you need to prepare your environment. These steps are typically done **only once** per machine.
+
+1. **Install Git**
+   - **Action:** Download the installer from [git-scm.com](https://git-scm.com/).
+   - **Tip:** For Windows users, the installation includes **Git Bash**, a terminal that allows you to use Linux-like commands on Windows.
+
+2. **Create GitHub Account**
+   - **Action:** Sign up for a free account at [github.com](https://github.com/).
+   - **Role:** While Git tracks changes locally, GitHub acts as your "Cloud Garage" where you store and share your work.
+
+3. **Configure Identity (Critical Step)**
+   - **Action:** Tell Git your name and email. This information is "signed" onto every commit you make.
+   - **Commands:**
+     ```bash
+     git config --global user.name "John Doe"
+     git config --global user.email "john@example.com"
+     ```
+   - **Why:** Without this, Git won't let you commit because it doesn't know who to attribute the work to.
+
+
 ### Daily Development Workflow
 ```
 [Edit Files] → [git add] → [git commit] → [git push] → [GitHub]
@@ -195,6 +215,43 @@ Untracked (Red)
       ▼
   Remote (GitHub)
 ```
+
+### Deep Dive: Understanding the 4 Main States
+
+To Git, every file in your directory exists in one of four primary states. Understanding these is the "Aha!" moment for mastering the Git workflow.
+
+#### 1. Untracked 🔴
+- **What:** A brand new file you just created that Git hasn't seen before.
+- **Git's View:** "I see this file, but I'm not tracking its changes."
+- **Action:** Run `git add <file>` to move it to **Staged**.
+
+#### 2. Unmodified ⚪
+- **What:** A file that was already committed and hasn't been changed since. It is "safe" in the repository's history.
+- **Git's View:** "This file matches the last snapshot exactly."
+- **Action:** Simply **edit** the file, and it automatically moves to **Modified**.
+
+#### 3. Modified 🔴
+- **What:** An existing file that you have changed, but haven't told Git to save (stage) yet.
+- **Git's View:** "I know this file, but the version on your disk is different from what I have saved."
+- **Action:** Run `git add <file>` to move it to **Staged**.
+
+#### 4. Staged 🟢
+- **What:** A modified file that you have marked to be included in your next snapshot (commit).
+- **Git's View:** "I've prepared these changes; tell me when to take the photo (commit)."
+- **Action:** Run `git commit` to save the snapshot and move the file back to **Unmodified**.
+
+---
+
+### The "Traffic Light" System of `git status`
+Professional developers use `git status` constantly to see where their files are in this cycle:
+
+| Color | State | Meaning |
+| :--- | :--- | :--- |
+| 🔴 **Red** | **Untracked / Modified** | "Stop! I have changes that aren't saved yet." |
+| 🟢 **Green** | **Staged** | "Go! I'm ready to be committed." |
+| ⚪ **Clean** | **Unmodified** | "Everything is clean and safely backed up." |
+
+> 💡 **Pro Tip:** Think of `git add` as putting items in a **shopping cart** and `git commit` as **checking out**. You can't checkout an empty cart, and you can't save changes without "bagging" them first!
 
 ---
 

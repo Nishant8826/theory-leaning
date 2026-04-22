@@ -268,13 +268,42 @@ java -version
 
 #### Step 4: Add Jenkins Repository Key & Source
 ```bash
-curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee \
-  /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+sudo wget -O /etc/apt/keyrings/jenkins-keyring.asc \
+  https://pkg.jenkins.io/debian-stable/jenkins.io-2026.key
 
-echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc]" \
   https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
   /etc/apt/sources.list.d/jenkins.list > /dev/null
 ```
+
+### Why is this step necessary?
+Ubuntu's default software repositories do not include the Jenkins package. To install Jenkins, we must perform these two actions to prepare our system.
+
+#### 1. The GPG Key (The "Digital Signature")
+The first command (`sudo wget -O ...`) downloads and saves the Jenkins GPG key.
+- **Why?** This is for **security**. It acts as a digital signature.
+- **How it works:** When you run `apt install`, Ubuntu uses this key to verify that the Jenkins software hasn't been modified or tampered with by hackers. If the signature doesn't match, your system will block the installation.
+- **Modern Standard:** We use `/etc/apt/keyrings/` to store the key, which is the current recommended practice for Debian-based systems like Ubuntu.
+
+#### 2. The Repository Source (The "Download Address")
+The second command (`echo "deb ..." | sudo tee ...`) adds Jenkins to your system's list of software sources.
+- **Why?** It tells Ubuntu exactly **where to look** for Jenkins on the internet.
+- **What happens:** It creates a file named `jenkins.list` inside the `/etc/apt/sources.list.d/` directory. This acts like adding a new "store" to your computer's shopping list, allowing `apt` to find and download the latest Jenkins package.
+
+### 🔍 Deep Dive: What is a GPG Key?
+
+**GPG (GNU Privacy Guard)** is a security tool used to verify the authenticity of files. In DevOps, it's the standard way to ensure the software you're installing is safe.
+
+1. **The Analogy:** Think of a GPG key like a **wax seal** on a royal letter. If the seal is broken or looks different, you know the letter has been tampered with.
+2. **The Signature:** The Jenkins developers "sign" their code with a secret private key. They then give you a **Public Key** (the file we downloaded).
+3. **The Verification:** When you run `apt install jenkins`, your computer uses that Public Key to check the "seal" on the package.
+   - **If it matches:** The installation proceeds (it's safe).
+   - **If it doesn't match:** Ubuntu throws a massive error and stops the install (it could be a virus).
+
+> 💡 **Why this matters:** Without GPG keys, a hacker could trick your computer into downloading a fake version of Jenkins that could steal your passwords or destroy your server.
+
+
+
 
 #### Step 5: Install Jenkins
 ```bash
