@@ -790,4 +790,4 @@ Rebase produces cleaner history but should **never be used on shared/pushed bran
 
 ---
 
-> ← Previous: [`24_Git_&_GitHub_Fundamentals`](24_Git_&_GitHub_Fundamentals.md) | Next: [`26_Git_&_GitHub_Advanced_Topics`](26_Git_&_GitHub_Advanced_Topics.md) →
+> ← Previous: [`24_Git_&_GitHub_Fundamentals`](24_Git_&_GitHub_Fundamentals.md) | Next: [`26_Introduction_to_CICD_and_Jenkins.md`](26_Introduction_to_CICD_and_Jenkins.md) →
