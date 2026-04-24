@@ -1,4 +1,25 @@
-# Linux Practical Session (Hands-on DevOps Basics)
+# 🐧 Linux Practical Session (Hands-on DevOps Basics)
+
+> **File:** `15_Linux_Practical_Session.md`
+> **Topic:** System Monitoring, File Management, Log Rotation, Process Control, AWS + Linux Integration
+> **Level:** 🟡 Intermediate
+> **Prerequisites:** [10_linux_commands_4.md](./10_linux_commands_4.md)
+
+---
+
+## 📚 Table of Contents
+
+1. [System Monitoring](#a-system-monitoring-prince)
+2. [Basic Linux Commands](#b-basic-linux-commands-rishabh)
+3. [File Management](#c-file-management-sarang)
+4. [Advanced & AWS Concepts](#d-advanced--aws-concepts-mohit)
+5. [File Transfer & Process Management](#e-file-transfer--process-management-harsh)
+6. [Log Management](#f-log-management-shiv)
+7. [Real-World DevOps Use Cases](#real-world-devops-use-cases)
+8. [Interview Questions](#interview-preparation-section)
+9. [Best Practices / Tips](#best-practices--tips)
+
+---
 
 ## Introduction
 This session provides a hands-on, practical deep-dive into the essential Linux commands and concepts every DevOps engineer needs to know. Mastering these commands is crucial because real-world DevOps isn't just about writing code; it's about keeping servers healthy, troubleshooting deployment failures, monitoring resources, and automating workflows. Knowing these topics inside out will significantly boost your confidence during interviews, where practical scenarios are frequently discussed, and more importantly, in production environments where quick thinking saves the day.
@@ -288,8 +309,4 @@ Here are some common, beginner-friendly interview questions related to this sess
 
 ---
 
-### Navigation
-
----
-Prev : [14_AWS_EC2_AMI_EBS_LoadBalancer.md](14_AWS_EC2_AMI_EBS_LoadBalancer.md) | Next : [16_aws-s3-static-website-hosting.md](16_aws-s3-static-website-hosting.md)
----
+← Previous: [14_AWS_EC2_AMI_EBS_LoadBalancer.md](14_AWS_EC2_AMI_EBS_LoadBalancer.md) | Next: [16_aws-s3-static-website-hosting.md](16_aws-s3-static-website-hosting.md) →

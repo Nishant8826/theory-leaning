@@ -1,3 +1,24 @@
+# ⚖️ Scaling, EC2, AMI & Load Balancers — Essentials
+
+> **File:** `13_ELB_and_EC2.md`
+> **Topic:** Scaling & Elasticity, EC2, AMI, Load Balancers (ELB), Health Checks
+> **Level:** 🟡 Intermediate
+> **Prerequisites:** [12_aws_iam_ec2_basics.md](./12_aws_iam_ec2_basics.md)
+
+---
+
+## 📚 Table of Contents
+
+1. [Scaling & Elasticity](#1-scaling--elasticity)
+2. [EC2 (Elastic Compute Cloud)](#2-ec2-elastic-compute-cloud)
+3. [AMI (Amazon Machine Image)](#3-ami-amazon-machine-image)
+4. [Load Balancer (ELB)](#4-load-balancer-elb)
+5. [Practical Implementation Outline](#5-practical-implementation-outline)
+6. [Scenario-Based Q&A](#6-scenario-based-problems)
+7. [Interview Q&A](#7-interview-questions--answers)
+
+---
+
 ## 1. Scaling & Elasticity
 
 **What is it?**
@@ -168,5 +189,5 @@ Using an Application Load Balancer to route traffic depending on the URL path: `
 **Answer:** A health check is an automated ping or request sent by the Load Balancer to an instance (like asking for an HTTP 200 OK from an `/index.html` page). If the instance doesn't respond correctly, the ELB marks it "Unhealthy" and stops sending traffic there.
 
 ---
-Prev : [12_aws_iam_ec2_basics.md](12_aws_iam_ec2_basics.md) | Next : [14_AWS_EC2_AMI_EBS_LoadBalancer.md](14_AWS_EC2_AMI_EBS_LoadBalancer.md)
----
+
+← Previous: [12_aws_iam_ec2_basics.md](12_aws_iam_ec2_basics.md) | Next: [14_AWS_EC2_AMI_EBS_LoadBalancer.md](14_AWS_EC2_AMI_EBS_LoadBalancer.md) →

@@ -1,4 +1,29 @@
-# AWS S3: Complete Guide and Static Website Hosting
+# ☁️ AWS S3: Complete Guide and Static Website Hosting
+
+> **File:** `16_aws-s3-static-website-hosting.md`
+> **Topic:** S3 Fundamentals, Buckets, Objects, Versioning, Static Website Hosting
+> **Level:** 🟢 Beginner Friendly
+> **Prerequisites:** [14_AWS_EC2_AMI_EBS_LoadBalancer.md](./14_AWS_EC2_AMI_EBS_LoadBalancer.md)
+
+---
+
+## 📚 Table of Contents
+
+1. [Introduction to AWS S3](#1-introduction-to-aws-s3)
+2. [Key Concepts: Buckets and Objects](#2-key-concepts-buckets-and-objects)
+3. [Understanding Data Sizes](#3-understanding-data-sizes-kb-mb-gb-tb)
+4. [Object Storage vs Traditional Storage](#4-object-storage-vs-traditional-storage)
+5. [Durability and Availability](#5-durability-and-availability)
+6. [Pricing and Management](#6-pricing-and-management)
+7. [Advanced Features](#7-advanced-features)
+8. [Hands-on: Static Website Hosting](#8-hands-on-static-website-hosting)
+9. [Real-World Examples](#9-real-world-examples)
+10. [Practical Scenarios / Tasks](#10-practical-scenarios--tasks)
+11. [Common Mistakes](#11-common-mistakes-beginners-make)
+12. [DevOps Best Practices](#12-devops-best-practices)
+13. [Interview Questions](#13-interview-questions)
+
+---
 
 AWS **S3 (Simple Storage Service)** is one of the most fundamental services in the AWS cloud. It is an object storage service that offers industry-leading scalability, data availability, security, and performance.
 
@@ -256,5 +281,5 @@ my-portfolio-bucket/
 *A: No. S3 only hosts **Static** content (HTML, CSS, JS). For PHP/Python, you need a server like EC2 or a service like Lambda.*
 
 ---
-Prev : [15_Linux_Practical_Session.md](15_Linux_Practical_Session.md) | Next : [17_S3_Storage_Classes_Lifecycle_RDS.md](17_S3_Storage_Classes_Lifecycle_RDS.md)
----
+
+← Previous: [15_Linux_Practical_Session.md](15_Linux_Practical_Session.md) | Next: [17_S3_Storage_Classes_Lifecycle_RDS.md](17_S3_Storage_Classes_Lifecycle_RDS.md) →

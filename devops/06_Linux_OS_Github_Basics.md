@@ -455,7 +455,7 @@ grep "12:05" error.log
 ## ⚠️ Common Mistakes
 - **Deleting the wrong thing**: `rm -rf /` will delete your entire system. Never run it!
 - **Wrong Case**: `cd Document` won't work if the folder is named `Documents`.
-- **Spaces**: Avoid spaces in filenames (User `my_file.txt` instead of `my file.txt`).
+- **Spaces**: Avoid spaces in filenames (Use `my_file.txt` instead of `my file.txt`).
 
 ## ✍️ Final Task
 1. Run `df -h` to see how much space is left on your machine.
@@ -463,6 +463,79 @@ grep "12:05" error.log
 
 ---
 
+# 🔍 Scenario-Based Q&A
+
+### 🔍 Scenario 1: Choosing the Right OS for a Web Server
+Your company needs to host a high-traffic e-commerce website. The CTO asks whether to use Windows Server or Linux. The budget is tight.
+
+✅ **Answer:** Use **Linux (Ubuntu Server or CentOS)**. It's free (no licensing costs), lightweight (runs on cheaper hardware with less RAM), more stable (can run for years without rebooting), and most DevOps tools (Docker, Kubernetes, Nginx) are built for Linux. The company saves thousands annually on licensing alone.
+
 ---
-Prev : [05_DevOps_Basics_Tools_and_Roles.md](05_DevOps_Basics_Tools_and_Roles.md) | Next : [07_linux_commands_1.md](07_linux_commands_1.md)
+
+### 🔍 Scenario 2: The Case-Sensitivity Trap
+A developer deploys their app to a Linux server. The code references `Config.json`, but the actual file on the server is `config.json`. The app crashes with "File Not Found."
+
+✅ **Answer:** Linux is **case-sensitive** — `Config.json` and `config.json` are two completely different files. Windows treats them as the same. The fix is to ensure consistent naming conventions. Best practice: use all lowercase with underscores for file names on Linux (e.g., `app_config.json`).
+
 ---
+
+### 🔍 Scenario 3: Lost Code Recovery
+A junior developer accidentally deletes a critical configuration file from the production server. There's no backup on the server.
+
+✅ **Answer:** Since the team uses **Git and GitHub**, the file's entire history is preserved. The developer runs `git checkout HEAD -- config/production.yml` to restore the exact version. If they need an older version, `git log` shows every previous version. This is why **version control is non-negotiable** in DevOps.
+
+---
+
+### 🔍 Scenario 4: Quick Linux Environment Needed
+An intern needs to learn Linux commands, but their laptop runs Windows and they can't install VirtualBox because it's too slow on their machine.
+
+✅ **Answer:** Three fast options: (1) **WSL (Windows Subsystem for Linux)** — runs Linux natively inside Windows 10/11 with near-zero overhead. (2) **Docker** — run `docker run -it ubuntu` to get a Linux terminal in 3 seconds. (3) **GCP Free Tier** — create a free cloud VM and SSH into it from the browser. No installations needed.
+
+---
+
+# 🎤 Interview Q&A
+
+### Q1: What is an Operating System and why is it needed?
+> **Answer:** An Operating System (OS) is software that manages hardware resources (CPU, RAM, disk) and provides an interface for users and applications. Without an OS, you'd have to write low-level code to interact directly with hardware. The OS handles resource management, file systems, process scheduling, security, and provides a user interface (GUI or CLI).
+
+### Q2: Why is Linux preferred over Windows for servers?
+> **Answer:** Linux is preferred because it's (1) **free** — no licensing costs, (2) **lightweight** — can run without a GUI using minimal RAM, (3) **stable** — can run for years without rebooting, (4) **secure** — strict permission model and fewer virus targets, (5) **automation-friendly** — everything can be done via CLI and scripted. 90% of the world's servers, including AWS, Google, and Facebook, run Linux.
+
+### Q3: What is the difference between the Linux Kernel and a Linux Distribution?
+> **Answer:** The **Kernel** is the core "brain" of Linux — it manages hardware interactions (CPU, memory, devices). A **Distribution (Distro)** is the kernel bundled with additional tools like a package manager, desktop environment, and pre-installed software. Examples: Ubuntu (beginner-friendly), CentOS (enterprise), Debian (stability-focused). Same kernel, different packaging.
+
+### Q4: What is the difference between Git and GitHub?
+> **Answer:** **Git** is a version control tool that runs locally on your machine. It tracks changes to files and allows branching, merging, and history. **GitHub** is a cloud platform that hosts Git repositories online, enabling collaboration, code review (Pull Requests), and CI/CD integration. Git is the engine; GitHub is the garage where everyone parks and shares their work.
+
+### Q5: What does "Everything is a file" mean in Linux?
+> **Answer:** In Linux, almost everything is represented as a file — regular files, directories, devices (your keyboard, mouse, hard drive), and even running processes. For example, `/dev/sda` represents your hard drive, and `/proc/cpuinfo` is a "file" that shows CPU information. This unified approach simplifies system administration because you can use the same tools (cat, grep, ls) to inspect anything.
+
+### Q6: Explain the Linux file system hierarchy. Where are logs stored?
+> **Answer:** Linux uses a hierarchical tree starting from `/` (root). Key directories: `/etc` (configuration files), `/home` (user directories), `/var` (variable data like logs), `/tmp` (temporary files), `/bin` (essential commands), `/usr` (user programs). Logs are stored in `/var/log/` — for example, `/var/log/syslog` for system logs, `/var/log/nginx/error.log` for web server errors.
+
+### Q7: What is the difference between a Virtual Machine, a Docker Container, and a Cloud VM?
+> **Answer:** A **Virtual Machine** runs a complete OS with its own kernel on your local hardware — it's heavy and slow to start. A **Docker Container** shares the host's kernel and only includes the app and its dependencies — it's lightweight and starts in seconds. A **Cloud VM** is a virtual machine running in a remote data center (AWS/GCP) — it's accessible via the internet and runs 24/7 without using your local resources.
+
+### Q8: What is Open Source? Why is it important for DevOps?
+> **Answer:** Open Source means the source code is publicly available for anyone to view, modify, and distribute. It's critical for DevOps because: (1) Most DevOps tools are open source (Docker, Kubernetes, Jenkins, Terraform), (2) No vendor lock-in — you can switch or customize freely, (3) Community-driven bug fixes happen in hours, not weeks, (4) Cost savings — no licensing fees for tools or OS.
+
+---
+
+# 📝 Summary
+
+| Concept | Key Takeaway |
+|---|---|
+| **Operating System** | The middleman between you and hardware — manages resources, files, and security |
+| **Linux** | Free, open-source, stable — the OS that runs 90% of the world's servers |
+| **Kernel vs Distro** | Kernel = engine; Distro = full car (Ubuntu, CentOS, Debian) |
+| **Open Source** | Free to use, modify, share — powers the entire DevOps ecosystem |
+| **Git** | Tracks every code change locally — your "time machine" for code |
+| **GitHub** | Cloud platform for sharing and collaborating on Git repositories |
+| **Linux vs Windows** | Linux = server king (CLI, free, lightweight). Windows = desktop king (GUI, user-friendly) |
+| **File System** | Everything starts from `/` — no C: or D: drives. Everything is a file |
+| **Ways to Run Linux** | VM (heavy), Docker (lightweight), Cloud (production), WSL (Windows integration) |
+| **Key Directories** | `/etc` (config), `/var/log` (logs), `/home` (users), `/tmp` (temporary) |
+
+---
+
+← Previous: [05_DevOps_Basics_Tools_and_Roles.md](05_DevOps_Basics_Tools_and_Roles.md) | Next: [07_linux_commands_1.md](07_linux_commands_1.md) →
