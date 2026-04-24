@@ -754,4 +754,4 @@ Continuous Delivery suits teams that need a human sign-off before production (re
 
 ---
 
-> ← Previous: [`25_Git_&_GitHub_Deep_Dive_Branching_PRs_&_Collaboration.md`](25_Git_&_GitHub_Deep_Dive_Branching_PRs_&_Collaboration.md) | Next: [`27_Introduction_to_Docker_and_Containerization.md`](27_Introduction_to_Docker_and_Containerization.md) →
+> ← Previous: [`25_Git_&_GitHub_Deep_Dive_Branching_PRs_&_Collaboration.md`](25_Git_&_GitHub_Deep_Dive_Branching_PRs_&_Collaboration.md) | Next: [`27_Jenkins_Deep_Dive_Users_RBAC_CI_Pipelines_&_Local_Setup.md`](27_Jenkins_Deep_Dive_Users_RBAC_CI_Pipelines_&_Local_Setup.md) →
