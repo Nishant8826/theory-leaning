@@ -61,11 +61,21 @@ Status codes tell you *whose* fault it is:
 To fix a server that won't start, you must understand how it wakes up.
 
 ### The 6 Stages of Booting
-1.  **BIOS/UEFI:** Performs a Power-On Self-Test (POST). It’s like a person waking up and checking if their hands and legs work.
-2.  **Bootloader (GRUB):** Finds the OS and asks, "Which version do you want to load?"
-3.  **Kernel:** The heart of Linux. It initializes hardware (CPU, RAM, Disk).
-4.  **Init (systemd):** The first process (PID 1). It starts all other services (Nginx, Database, etc.).
-5.  **Runlevel / Target:** Decides if you get a GUI (Desktop) or just a Terminal.
+1.  **BIOS/UEFI (Basic Input/Output System):** Performs a Power-On Self-Test (POST) to ensure the hardware components (RAM, CPU, Hard Drive) are functioning correctly. It’s like a person waking up and checking if their hands and legs work. After the POST, it looks for the bootable drive.
+2.  **MBR/GPT (Master Boot Record / GUID Partition Table):** This is the very first sector of the bootable drive. It contains information about how the disk is partitioned and holds the primary bootloader execution code. It points the system to where the GRUB bootloader is located.
+3.  **Bootloader (GRUB - Grand Unified Bootloader):** The boot menu you sometimes see when starting a computer. It finds the Operating System and asks, "Which OS or Linux kernel version do you want to load?" It then loads the selected kernel into RAM.
+4.  **Kernel:** The absolute heart of Linux. It takes over from GRUB, initializes the hardware (CPU, RAM, Disk), mounts the root file system as read-only initially, and wakes up the first system process (`init` or `systemd`).
+5.  **Init (systemd):** The very first process to run in Linux, which means it always gets PID 1 (Process ID 1). It is responsible for starting up all other background services, managing daemons (Nginx, Database, SSH), and mounting the file systems as read-write.
+6.  **Runlevel / Target:** This final stage determines the state the system will boot into. It decides if you get a graphical user interface (GUI / Desktop) or just a command-line Terminal (CLI). For servers, this is typically set to multi-user, text-only mode to save resources.
+
+### 🪟 Windows Boot Process (For Comparison)
+Understanding the Windows boot process is also helpful, especially in mixed environments. Here is how Windows wakes up:
+1.  **BIOS/UEFI & POST:** Just like Linux, it starts with a Power-On Self-Test (POST) to check hardware components.
+2.  **Bootmgr (Windows Boot Manager):** The BIOS/UEFI reads the boot sector (MBR/GPT) which launches `Bootmgr`. `Bootmgr` reads the **BCD** (Boot Configuration Data) to find the OS.
+3.  **Winload:** `Bootmgr` executes `winload.exe` (or `winload.efi`), which acts like the later stages of GRUB. It loads the Windows Kernel and core drivers into memory.
+4.  **NTOSKRNL (Windows Kernel):** The Windows Kernel (`ntoskrnl.exe`) takes over, initializes hardware, and starts the system processes.
+5.  **SMSS (Session Manager):** The kernel starts `smss.exe` (Session Manager Subsystem), which sets up the environment and starts core subsystems like `csrss.exe` and `wininit.exe`.
+6.  **Winlogon & GUI:** Finally, `winlogon.exe` and `lsass.exe` (security) are started. This presents the Windows login screen and loads the user desktop (GUI).
 
 ### 📜 The `dmesg` Command
 `dmesg` (Display Message) shows the kernel's log buffer. Use it to see hardware errors or boot issues.

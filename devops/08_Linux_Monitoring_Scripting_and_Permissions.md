@@ -67,14 +67,39 @@ Tasks: 198 total,   1 running, 197 sleeping,   0 stopped,   0 zombie
 MiB Mem :   7951.2 total,   1234.5 free,   4200.1 used,   2516.6 buff/cache
 ```
 
+**Line 1: System Time, Uptime, Users, and Load**
 | Field | Meaning |
 |-------|---------|
-| `up 3 days` | Server has been running for 3 days without restart |
-| `load average` | How busy the CPU is (1m, 5m, 15m average) |
-| `us` | CPU used by user programs |
-| `id` | CPU that is idle (free) |
-| `wa` | CPU waiting for disk/network (high = disk issue) |
-| `MiB Mem` | Total, free, and used RAM |
+| `10:30:01` | Current system time |
+| `up 3 days, 2:15` | Uptime (how long the server has been running without a restart) |
+| `2 users` | Number of users currently logged in |
+| `load average: 0.25, 0.40, 0.38` | Average system load over the last 1 minute, 5 minutes, and 15 minutes. (A load of 1.0 means 1 CPU is fully utilized) |
+
+**Line 2: Tasks (Processes)**
+| Field | Meaning |
+|-------|---------|
+| `198 total` | Total number of processes currently active in the system |
+| `1 running` | Processes actively using or waiting to use the CPU |
+| `197 sleeping` | Processes waiting for an event (like user input or disk I/O) |
+| `0 stopped` | Processes that have been stopped (paused) |
+| `0 zombie` | Terminated processes that are still in the process table |
+
+**Line 3: CPU Usage (`%Cpu(s)`)**
+| Field | Meaning |
+|-------|---------|
+| `5.5 us` | **User:** % of CPU used by normal user processes |
+| `2.1 sy` | **System:** % of CPU used by the kernel/OS |
+| `0.0 ni` | **Nice:** % of CPU used by low-priority (niced) processes |
+| `91.8 id` | **Idle:** % of CPU that is completely free |
+| `0.4 wa` | **I/O Wait:** % of CPU waiting for disk or network operations to finish (high means disk bottleneck) |
+
+**Line 4: Memory Usage (`MiB Mem`)**
+| Field | Meaning |
+|-------|---------|
+| `7951.2 total` | Total amount of physical RAM (in MiB) |
+| `1234.5 free` | RAM that is completely unused |
+| `4200.1 used` | RAM currently being used by running applications |
+| `2516.6 buff/cache` | RAM used by Linux to cache files for faster access (can be freed automatically if apps need more memory) |
 
 **How to use it:**
 - Press `q` to quit
@@ -559,7 +584,7 @@ Think of it as saying: *"Hey Linux, use the Bash program to interpret this file.
 
 **Step 1: Create the file**
 ```bash
-nano server_check.sh
+vi server_check.sh
 ```
 
 **Step 2: Write your script**
@@ -593,7 +618,7 @@ echo "============================="
 ```
 
 **Step 3: Save and exit**
-- In nano: `Ctrl+O` (save), `Ctrl+X` (exit)
+- In vi: Press `Esc`, type `:wq`, and press `Enter`
 
 **Step 4: Give execute permission**
 ```bash
