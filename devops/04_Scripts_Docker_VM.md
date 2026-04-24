@@ -111,14 +111,14 @@ In DevOps, we automate infrastructure creation using CLI commands or IaC tools r
 
 ```bash
 gcloud compute instances create linuxfirst \
-  --project=nishant-learn \
+  --project=YOUR_PROJECT_ID \
   --zone=us-central1-c \
   --machine-type=e2-medium \
   --network-interface=network-tier=PREMIUM,stack-type=IPV4_ONLY,subnet=default \
   --metadata=enable-osconfig=TRUE \
   --maintenance-policy=MIGRATE \
   --provisioning-model=STANDARD \
-  --service-account=370978152656-compute@developer.gserviceaccount.com \
+  --service-account=YOUR_SERVICE_ACCOUNT_EMAIL \
   --scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write \
   --tags=http-server,https-server \
   --create-disk=auto-delete=yes,boot=yes,device-name=linuxfirst,image=projects/ubuntu-os-cloud/global/images/ubuntu-2404-noble-amd64-v20260316,mode=rw,size=10,type=pd-balanced \
@@ -131,7 +131,7 @@ gcloud compute instances create linuxfirst \
 
 | Parameter | Value | What It Does |
 |-----------|-------|-------------|
-| `--project` | `nishant-learn` | Which GCP project to create the VM in |
+| `--project` | `YOUR_PROJECT_ID` | Which GCP project to create the VM in |
 | `--zone` | `us-central1-c` | Physical location of the VM |
 | `--machine-type` | `e2-medium` | 2 vCPUs, 4 GB RAM (cost-effective general purpose) |
 | `--tags` | `http-server,https-server` | Enables firewall rules for web traffic (ports 80 & 443) |
