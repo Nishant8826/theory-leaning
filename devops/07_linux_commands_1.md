@@ -770,5 +770,5 @@ Here's a quick recap of everything covered:
 > - Never run `rm -rf` without double-checking the path first.
 
 ---
-
-← Previous: [06_linux/01_what_is_operating_system.md](06_linux/01_what_is_operating_system.md) | Next: [08_linux_commands_2](08_linux_commands_2.md)
+Prev : [06_Linux_OS_Github_Basics.md](06_Linux_OS_Github_Basics.md) | Next : [08_linux_commands_2.md](08_linux_commands_2.md)
+---

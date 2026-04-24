@@ -145,5 +145,5 @@ If you are starting from scratch, follow this step-by-step path:
 DevOps is the "glue" that connects software development with professional-grade infrastructure. It emphasizes **automation** to reduce errors, **collaboration** to improve speed, and **infrastructure** that is treated exactly like code. By mastering these principles and tools, you enable your team to build, ship, and run high-quality software faster than ever before.
 
 ---
-Next: [01_cloud_platforms.md](01_cloud_platforms.md)
+Next : [01_cloud_platforms.md](01_cloud_platforms.md)
 ---

@@ -200,5 +200,5 @@ How do you actually use this every day?
 *Created with ❤️ for beginners. Welcome to the future!*
 
 ---
-Previous: [01_cloud_platforms.md](01_cloud_platforms.md) Next: [03_Cloud_Computing/01_Data_center](03_Cloud_Computing/01_Data_center.md)
+Prev : [01_cloud_platforms.md](01_cloud_platforms.md) | Next : [03_Cloud_Computing_And_Data_Centers.md](03_Cloud_Computing_And_Data_Centers.md)
 ---

@@ -789,5 +789,5 @@ Without them, any developer (or an accidental command) could push broken code di
 Rebase produces cleaner history but should **never be used on shared/pushed branches** because it rewrites commit hashes, causing problems for anyone else who has pulled those commits.
 
 ---
-
-> ← Previous: [`24_Git_&_GitHub_Fundamentals`](24_Git_&_GitHub_Fundamentals.md) | Next: [`26_Introduction_to_CICD_and_Jenkins.md`](26_Introduction_to_CICD_and_Jenkins.md) →
+Prev : [24_Git_&_GitHub_Fundamentals.md](24_Git_&_GitHub_Fundamentals.md) | Next : [26_Introduction_to_CICD_and_Jenkins.md](26_Introduction_to_CICD_and_Jenkins.md)
+---

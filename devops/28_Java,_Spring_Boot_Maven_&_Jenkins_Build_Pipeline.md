@@ -829,5 +829,5 @@ This JAR is then either:
 Skipping tests (`mvn package -DskipTests`) is possible but should only be done in specific, documented circumstances — for example, a hotfix where the test issue is known and being tracked separately, with explicit approval. It should **never** be the default in a CI pipeline. The whole point of CI is that every build is validated — bypassing tests defeats the purpose entirely.
 
 ---
-
-Previous: [`27_Jenkins_Deep_Dive_Users_RBAC_CI_Pipelines_&_Local_Setup.md`](./27_Jenkins_Deep_Dive_Users_RBAC_CI_Pipelines_&_Local_Setup.md) | Next: `29_Docker_and_Kubernetes_Basics.md` →
+Prev : [27_Jenkins_Deep_Dive_Users_RBAC_CI_Pipelines_&_Local_Setup.md](27_Jenkins_Deep_Dive_Users_RBAC_CI_Pipelines_&_Local_Setup.md) | Next : 
+---

@@ -985,5 +985,5 @@ If you forget to delete practice resources:
 - Always clean up: **Delete RDS instances**, **terminate EC2 instances**, and **remove snapshots** you don't need.
 
 ---
-
-← Previous: [`18_AWS_RDS_Database_Fundamentals.md`](18_AWS_RDS_Database_Fundamentals.md) | Next: [`20_VPC_&_Networking.md`](20_VPC_&_Networking.md) →
+Prev : [18_AWS_RDS_Database_Fundamentals.md](18_AWS_RDS_Database_Fundamentals.md) | Next : [20_VPC_&_Networking.md](20_VPC_&_Networking.md)
+---

@@ -747,5 +747,5 @@ Running `java -jar jenkins.war` works because Java's built-in web server (Winsto
 This limits the blast radius of mistakes or malicious actions. If a developer account is compromised, the attacker can only trigger builds — not delete pipelines or access credentials. RBAC in Jenkins is the technical implementation of this principle.
 
 ---
-
-← Previous: [`26_Introduction_to_CICD_and_Jenkins.md`](26_Introduction_to_CICD_and_Jenkins.md) | Next: [`28_Java,_Spring_Boot_Maven_&_Jenkins_Build_Pipeline.md`](28_Java,_Spring_Boot_Maven_&_Jenkins_Build_Pipeline.md) →
+Prev : [26_Introduction_to_CICD_and_Jenkins.md](26_Introduction_to_CICD_and_Jenkins.md) | Next : [28_Java,_Spring_Boot_Maven_&_Jenkins_Build_Pipeline.md](28_Java,_Spring_Boot_Maven_&_Jenkins_Build_Pipeline.md)
+---

@@ -30,3 +30,4 @@ I will share a class summary. From that summary, generate detailed study notes.
 
 **Class Summary:** [paste your summary here]  
 **Note Number:** [give the number, e.g. 01, 02, 03...]
+

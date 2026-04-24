@@ -1281,5 +1281,5 @@ Default is **DENY** — access is only granted if explicitly allowed AND not exp
 Use **both** together for complete visibility.
 
 ---
-
-← Previous: [`16_aws-s3-static-website-hosting.md`](16_aws-s3-static-website-hosting.md) | Next: [`18_AWS_RDS_Database_Fundamentals.md`](18_AWS_RDS_Database_Fundamentals.md) →
+Prev : [16_aws-s3-static-website-hosting.md](16_aws-s3-static-website-hosting.md) | Next : [18_AWS_RDS_Database_Fundamentals.md](18_AWS_RDS_Database_Fundamentals.md)
+---

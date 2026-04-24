@@ -258,8 +258,6 @@ Here is your quick revision cheat sheet! 🔥
 | **Key Pair (.pem)**| Your super-secret server key | Never share it. Never lose it. Used to decrypt passwords. |
 | **RDP** | Remote Desktop Protocol | The tool used to see the screen and control a Windows EC2 server. |
 
-
-
 ---
-
-← Previous: [11_aws_1.md](11_aws_1.md) | Next: [13_ELB_and_EC2.md](13_ELB_and_EC2.md)
+Prev : [11_aws_1.md](11_aws_1.md) | Next : [13_ELB_and_EC2.md](13_ELB_and_EC2.md)
+---

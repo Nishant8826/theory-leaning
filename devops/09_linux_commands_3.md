@@ -259,7 +259,6 @@ sudo yum install httpd
 | `apt install` | Install new software/tools |
 | `sudo` | Run commands with Admin (root) privileges |
 
-
 ---
-
-← Previous: [08_linux_commands_2.md](08_linux_commands_2.md) | Next: [10_linux_commands_4.md](10_linux_commands_4.md)
+Prev : [08_linux_commands_2.md](08_linux_commands_2.md) | Next : [10_linux_commands_4.md](10_linux_commands_4.md)
+---

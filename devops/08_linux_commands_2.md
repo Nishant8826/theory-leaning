@@ -1535,5 +1535,5 @@ sudo chage -l contractor_username
 > Practice these commands on a test server or local VM. The goal is to build **muscle memory** — you should be able to run these commands without thinking about them when a production issue strikes at 2am!
 
 ---
-
-← Previous: [07_linux_commands_1.md](07_linux_commands_1.md) | Next: [09_linux_commands_3.md](09_linux_commands_3.md)
+Prev : [07_linux_commands_1.md](07_linux_commands_1.md) | Next : [09_linux_commands_3.md](09_linux_commands_3.md)
+---

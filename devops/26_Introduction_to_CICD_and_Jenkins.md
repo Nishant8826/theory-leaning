@@ -753,5 +753,5 @@ In production, Pipelines (especially Declarative Pipelines) are preferred becaus
 Continuous Delivery suits teams that need a human sign-off before production (regulated industries, large releases). Continuous Deployment suits teams with high test confidence and fast release cycles (SaaS products, startups).
 
 ---
-
-> ← Previous: [`25_Git_&_GitHub_Deep_Dive_Branching_PRs_&_Collaboration.md`](25_Git_&_GitHub_Deep_Dive_Branching_PRs_&_Collaboration.md) | Next: [`27_Jenkins_Deep_Dive_Users_RBAC_CI_Pipelines_&_Local_Setup.md`](27_Jenkins_Deep_Dive_Users_RBAC_CI_Pipelines_&_Local_Setup.md) →
+Prev : [25_Git_&_GitHub_Deep_Dive_Branching_PRs_&_Collaboration.md](25_Git_&_GitHub_Deep_Dive_Branching_PRs_&_Collaboration.md) | Next : [27_Jenkins_Deep_Dive_Users_RBAC_CI_Pipelines_&_Local_Setup.md](27_Jenkins_Deep_Dive_Users_RBAC_CI_Pipelines_&_Local_Setup.md)
+---

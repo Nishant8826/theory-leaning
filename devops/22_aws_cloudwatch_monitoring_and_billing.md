@@ -510,6 +510,6 @@ Detailed monitoring is useful for applications that need faster detection of sho
 
 > 📌 **Key Reminder:** Always delete unused AWS resources after labs. Set up a budget alarm before every practice session. Monitor proactively — don't wait for users to report problems.
 
-
 ---
-> ← Previous: [`21_NACL_CIDR_VPC_Peering_&_Transit_Gateway.md`](21_NACL_CIDR_VPC_Peering_&_Transit_Gateway.md) | Next: [`23_AWS_Lambda_&_Serverless_Architecture.md`](23_AWS_Lambda_&_Serverless_Architecture.md) →
+Prev : [21_NACL_CIDR_VPC_Peering_&_Transit_Gateway.md](21_NACL_CIDR_VPC_Peering_&_Transit_Gateway.md) | Next : [23_AWS_Lambda_&_Serverless_Architecture.md](23_AWS_Lambda_&_Serverless_Architecture.md)
+---

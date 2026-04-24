@@ -668,5 +668,5 @@ RDS fits PaaS because AWS handles the database engine, OS, patching, backups, an
 **Used in**: MongoDB (Replica Sets), MySQL (Master-Slave), Cassandra (peer-to-peer variation).
 
 ---
-
-← Previous: [`17_S3_Storage_Classes_Lifecycle_RDS.md`](17_S3_Storage_Classes_Lifecycle_RDS.md) | Next: [`19_AWS_RDS_MySQL_Setup_and_Management.md`](19_AWS_RDS_MySQL_Setup_and_Management.md) →
+Prev : [17_S3_Storage_Classes_Lifecycle_RDS.md](17_S3_Storage_Classes_Lifecycle_RDS.md) | Next : [19_AWS_RDS_MySQL_Setup_and_Management.md](19_AWS_RDS_MySQL_Setup_and_Management.md)
+---

@@ -1399,4 +1399,5 @@ The result is a secure, highly-available network where web servers in public sub
 *📌 Remember: Networking is best learned by doing. Recreate this VPC from scratch multiple times until each step becomes intuitive.*
 
 ---
-> ← Previous: [`19_AWS_RDS_MySQL_Setup_and_Management.md`](19_AWS_RDS_MySQL_Setup_and_Management.md) | Next: [`21_NACL_CIDR_VPC_Peering_&_Transit_Gateway.md`](21_NACL_CIDR_VPC_Peering_&_Transit_Gateway.md) →
+Prev : [19_AWS_RDS_MySQL_Setup_and_Management.md](19_AWS_RDS_MySQL_Setup_and_Management.md) | Next : [21_NACL_CIDR_VPC_Peering_&_Transit_Gateway.md](21_NACL_CIDR_VPC_Peering_&_Transit_Gateway.md)
+---

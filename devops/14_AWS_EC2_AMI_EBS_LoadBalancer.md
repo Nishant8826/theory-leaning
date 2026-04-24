@@ -781,5 +781,5 @@ An **Elastic IP** is a static, permanent public IP address. Here's the tricky pa
 | **FileZilla** | File transfer tool (SFTP) | Drag-and-drop files to/from EC2 instances. |
 
 ---
-
-← Prev: [13_ELB_and_EC2.md](13_ELB_and_EC2.md) | Next: [15_Linux_Practical_Session.md](15_Linux_Practical_Session.md) →
+Prev : [13_ELB_and_EC2.md](13_ELB_and_EC2.md) | Next : [15_Linux_Practical_Session.md](15_Linux_Practical_Session.md)
+---

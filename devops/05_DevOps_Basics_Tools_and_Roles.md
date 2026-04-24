@@ -128,5 +128,5 @@ DevOps isn't just about learning fancy tools; it's about a **mindset** of workin
 Don't worry if it sounds like a lot right now! Start by learning **Git** and **GitHub**, and build your knowledge one tool at a time. Happy coding!
 
 ---
-Previous: [02_VM_creation_gcp.txt](./04_scripts/02_VM_creation_gcp.txt) Next: [06/01_what_is_operating_system.md](./06_linux/01_what_is_operating_system.md)
+Prev : [04_Scripts_Docker_VM.md](04_Scripts_Docker_VM.md) | Next : [06_Linux_OS_Github_Basics.md](06_Linux_OS_Github_Basics.md)
 ---

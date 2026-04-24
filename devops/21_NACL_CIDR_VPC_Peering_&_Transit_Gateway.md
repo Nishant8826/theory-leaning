@@ -1627,4 +1627,5 @@ Use this to track your practical completion:
 > 💡 **Tip:** Start with Practicals 1-3 (NACL), then 5-6 (CIDR), then 8 & 10 (VPC Peering), and finally 11-12 (Transit Gateway). Practical 13 is the capstone — do it last.
 
 ---
-> ← Previous: [`20_VPC_&_Networking.md`](20_VPC_&_Networking.md) | Next: [`22_aws_cloudwatch_monitoring_and_billing.md`](22_aws_cloudwatch_monitoring_and_billing.md) →
+Prev : [20_VPC_&_Networking.md](20_VPC_&_Networking.md) | Next : [22_aws_cloudwatch_monitoring_and_billing.md](22_aws_cloudwatch_monitoring_and_billing.md)
+---
