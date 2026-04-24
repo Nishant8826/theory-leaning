@@ -61,7 +61,12 @@ SSH uses a **pair of keys**: one public and one private.
 
 ---
 
-### 🛠️ How to Generate SSH Keys
+### 🛠️ How and Where to Generate SSH Keys
+
+> 📍 **WHERE to run this:**  
+> You must run these commands on **YOUR LOCAL MACHINE** (your own laptop/desktop: Windows, Mac, or Linux), **NOT** on the remote server. You generate the keys locally, and then you put the public key onto the remote server later.
+
+Open your local terminal (Command Prompt/PowerShell/Git Bash on Windows, or Terminal on Mac/Linux) and run:
 
 ```bash
 ssh-keygen
@@ -192,10 +197,13 @@ touch notes.txt config.json
 
 **What it does:** Copies a file or folder from one location to another.
 
+> **Syntax:** `cp [source_what_to_copy] [destination_where_to_copy]`
+
 ```bash
-cp file.txt backup.txt                    # Copy file
-cp -r my_folder/ backup_folder/           # Copy entire folder (-r = recursive)
-cp notes.txt /home/nishant/Documents/     # Copy to another location
+# cp [source]     [destination]
+cp file.txt       backup.txt                  # Copies 'file.txt' (source) to a new file named 'backup.txt' (destination)
+cp -r my_folder/  backup_folder/              # Copies entire 'my_folder' (source) into 'backup_folder' (destination)
+cp notes.txt      /home/nishant/Documents/    # Copies 'notes.txt' (source) into the 'Documents' folder (destination)
 ```
 
 > 🌍 **Real-life Example:** Like Ctrl+C and Ctrl+V — the original file stays, and a copy is made.
@@ -206,10 +214,13 @@ cp notes.txt /home/nishant/Documents/     # Copy to another location
 
 **What it does:** Moves a file to another location, OR renames it.
 
+> **Syntax:** `mv [source_what_to_move] [destination_where_to_move]`
+
 ```bash
-mv old_name.txt new_name.txt             # Rename a file
-mv report.txt /home/nishant/Documents/   # Move to another folder
-mv my_folder/ /var/www/                  # Move entire directory
+# mv [source]        [destination]
+mv old_name.txt      new_name.txt             # Renames 'old_name.txt' (source) to 'new_name.txt' (destination)
+mv report.txt        /home/nishant/Documents/ # Moves 'report.txt' (source) into the 'Documents' folder (destination)
+mv my_folder/        /var/www/                # Moves entire 'my_folder' (source) into the '/var/www/' directory (destination)
 ```
 
 > 🌍 **Real-life Example:** Like Ctrl+X and Ctrl+V — the original is removed and placed at the new location.
