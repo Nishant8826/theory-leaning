@@ -1,6 +1,6 @@
 # 🐧 Linux Commands & Concepts
 
-> **File:** `07_linux_commands_1.md`  
+> **File:** `07_Linux_SSH_and_Basic_Commands.md`  
 > **Topic:** SSH Key Generation, Basic Linux Commands, System Info Commands & Important Concepts  
 > **Level:** 🟢 Beginner Friendly
 
@@ -770,5 +770,5 @@ Here's a quick recap of everything covered:
 > - Never run `rm -rf` without double-checking the path first.
 
 ---
-Prev : [06_Linux_OS_Github_Basics.md](06_Linux_OS_Github_Basics.md) | Next : [08_linux_commands_2.md](08_linux_commands_2.md)
+Prev : [06_Linux_OS_Github_Basics.md](06_Linux_OS_Github_Basics.md) | Next : [08_Linux_Monitoring_Scripting_and_Permissions.md](08_Linux_Monitoring_Scripting_and_Permissions.md)
 ---

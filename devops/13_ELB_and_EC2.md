@@ -3,7 +3,7 @@
 > **File:** `13_ELB_and_EC2.md`
 > **Topic:** Scaling & Elasticity, EC2, AMI, Load Balancers (ELB), Health Checks
 > **Level:** 🟡 Intermediate
-> **Prerequisites:** [12_aws_iam_ec2_basics.md](./12_aws_iam_ec2_basics.md)
+> **Prerequisites:** [12_AWS_IAM_and_EC2_Basics.md](./12_AWS_IAM_and_EC2_Basics.md)
 
 ---
 
@@ -190,4 +190,4 @@ Using an Application Load Balancer to route traffic depending on the URL path: `
 
 ---
 
-← Previous: [12_aws_iam_ec2_basics.md](12_aws_iam_ec2_basics.md) | Next: [14_AWS_EC2_AMI_EBS_LoadBalancer.md](14_AWS_EC2_AMI_EBS_LoadBalancer.md) →
+← Previous: [12_AWS_IAM_and_EC2_Basics.md](12_AWS_IAM_and_EC2_Basics.md) | Next: [14_AWS_EC2_AMI_EBS_LoadBalancer.md](14_AWS_EC2_AMI_EBS_LoadBalancer.md) →

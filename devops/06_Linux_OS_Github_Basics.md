@@ -469,4 +469,4 @@ Intern's Windows laptop can't handle VirtualBox.
 
 ---
 
-← Previous: [05_DevOps_Basics_Tools_and_Roles.md](05_DevOps_Basics_Tools_and_Roles.md) | Next: [07_linux_commands_1.md](07_linux_commands_1.md) →
+← Previous: [05_DevOps_Basics_Tools_and_Roles.md](05_DevOps_Basics_Tools_and_Roles.md) | Next: [07_Linux_SSH_and_Basic_Commands.md](07_Linux_SSH_and_Basic_Commands.md) →

@@ -1,9 +1,9 @@
 # 🐧 Linux Commands & Concepts (Intermediate - Part 3)
 
-> **File:** `09_linux_commands_3.md`  
+> **File:** `09_Linux_VI_Editor_and_Package_Management.md`  
 > **Topic:** Linux Revision, Bandit Practice, SSH Connectivity, VI Editor Deep Dive, File Viewing Commands, Package Management  
 > **Level:** 🟡 Intermediate  
-> **Prerequisites:** [08_linux_commands_2.md](./08_linux_commands_2.md)  
+> **Prerequisites:** [08_Linux_Monitoring_Scripting_and_Permissions.md](./08_Linux_Monitoring_Scripting_and_Permissions.md)  
 
 ---
 ## 📌 Introduction
@@ -260,5 +260,5 @@ sudo yum install httpd
 | `sudo` | Run commands with Admin (root) privileges |
 
 ---
-Prev : [08_linux_commands_2.md](08_linux_commands_2.md) | Next : [10_linux_commands_4.md](10_linux_commands_4.md)
+Prev : [08_Linux_Monitoring_Scripting_and_Permissions.md](08_Linux_Monitoring_Scripting_and_Permissions.md) | Next : [10_Linux_Troubleshooting_Logs_and_Services.md](10_Linux_Troubleshooting_Logs_and_Services.md)
 ---

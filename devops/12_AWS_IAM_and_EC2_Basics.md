@@ -259,5 +259,5 @@ Here is your quick revision cheat sheet! 🔥
 | **RDP** | Remote Desktop Protocol | The tool used to see the screen and control a Windows EC2 server. |
 
 ---
-Prev : [11_aws_1.md](11_aws_1.md) | Next : [13_ELB_and_EC2.md](13_ELB_and_EC2.md)
+Prev : [11_AWS_Basics_and_Cloud_Introduction.md](11_AWS_Basics_and_Cloud_Introduction.md) | Next : [13_ELB_and_EC2.md](13_ELB_and_EC2.md)
 ---

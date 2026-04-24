@@ -1,9 +1,9 @@
 # 🐧 Linux Commands & Concepts (Intermediate - Part 4)
 
-> **File:** `10_linux_commands_4.md`  
+> **File:** `10_Linux_Troubleshooting_Logs_and_Services.md`  
 > **Topic:** Troubleshooting, Boot Process, Logs, Services, Disk & System Debugging  
 > **Level:** 🟡 Intermediate  
-> **Prerequisites:** [09_linux_commands_3.md](./09_linux_commands_3.md)
+> **Prerequisites:** [09_Linux_VI_Editor_and_Package_Management.md](./09_Linux_VI_Editor_and_Package_Management.md)
 
 ---
 
@@ -226,5 +226,5 @@ Perform these steps to become comfortable with troubleshooting:
 **Congratulations!** You now have a solid foundation in Linux troubleshooting. Keep practicing! 🚀
 
 ---
-Prev : [09_linux_commands_3.md](09_linux_commands_3.md) | Next : [11_aws_1.md](11_aws_1.md)
+Prev : [09_Linux_VI_Editor_and_Package_Management.md](09_Linux_VI_Editor_and_Package_Management.md) | Next : [11_AWS_Basics_and_Cloud_Introduction.md](11_AWS_Basics_and_Cloud_Introduction.md)
 ---

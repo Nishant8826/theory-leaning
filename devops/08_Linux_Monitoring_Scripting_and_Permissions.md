@@ -1,7 +1,7 @@
 # 🐧 Linux Commands & Concepts (Intermediate - Part 2)
 
 > **Level:** 🟡 Intermediate  
-> **Prerequisites:** [07_linux_commands_1.md](./07_linux_commands_1.md)  
+> **Prerequisites:** [07_Linux_SSH_and_Basic_Commands.md](./07_Linux_SSH_and_Basic_Commands.md)  
 > **Topics:** System Monitoring · Process Management · TAR · Shell Scripting · Permissions · User & Group Management
 
 ---
@@ -1535,5 +1535,5 @@ sudo chage -l contractor_username
 > Practice these commands on a test server or local VM. The goal is to build **muscle memory** — you should be able to run these commands without thinking about them when a production issue strikes at 2am!
 
 ---
-Prev : [07_linux_commands_1.md](07_linux_commands_1.md) | Next : [09_linux_commands_3.md](09_linux_commands_3.md)
+Prev : [07_Linux_SSH_and_Basic_Commands.md](07_Linux_SSH_and_Basic_Commands.md) | Next : [09_Linux_VI_Editor_and_Package_Management.md](09_Linux_VI_Editor_and_Package_Management.md)
 ---

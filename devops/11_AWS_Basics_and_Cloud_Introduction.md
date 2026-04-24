@@ -1,6 +1,6 @@
 # ☁️ AWS Fundamentals (Part 1)
 
-> **File:** `11_aws_1.md`  
+> **File:** `11_AWS_Basics_and_Cloud_Introduction.md`  
 > **Topic:** Introduction to AWS, Cloud Basics, Traditional vs Cloud Infrastructure  
 > **Level:** 🟢 Beginner Friendly  
 
@@ -201,5 +201,5 @@ Large banks use AWS because it meets global security standards (PCI-DSS, HIPAA).
 | **Scaling** | Grow or shrink your setup in seconds. |
 
 ---
-Prev : [10_linux_commands_4.md](10_linux_commands_4.md) | Next : [12_aws_iam_ec2_basics.md](12_aws_iam_ec2_basics.md)
+Prev : [10_Linux_Troubleshooting_Logs_and_Services.md](10_Linux_Troubleshooting_Logs_and_Services.md) | Next : [12_AWS_IAM_and_EC2_Basics.md](12_AWS_IAM_and_EC2_Basics.md)
 ---
