@@ -307,12 +307,12 @@ In the generator:
 
 ```
 Step: git: Git
-Repository URL: https://github.com/yourname/shopping-cart.git
+Repository URL: https://github.com/Nishant8826/javaspringboot-ecommerce.git
 Branch: main
 Credentials: (select your GitHub credentials)
 
 Generated output:
-git branch: 'main', credentialsId: 'github-token', url: 'https://github.com/yourname/shopping-cart.git'
+git branch: 'main', credentialsId: 'github-token', url: 'https://github.com/Nishant8826/javaspringboot-ecommerce.git'
 ```
 
 Paste this directly into your `stage('Clone') { steps { ... } }` block.
@@ -435,29 +435,27 @@ pipeline {
 
     stages {
 
-        stage('Clone') {
+        stage('Clone Code') {
             steps {
-                git branch: 'main',
-                    url: 'https://github.com/yourname/shopping-cart.git'
+                git url: 'https://github.com/Nishant8826/javaspringboot-ecommerce.git', branch: 'main'
             }
         }
 
         stage('Build') {
             steps {
                 sh 'mvn clean package'
-                // Produces: target/shopping-cart.jar
             }
         }
 
         stage('Run') {
             steps {
-                sh 'java -jar /var/lib/jenkins/workspace/spring-application-job/target/Shopping_Cart-0.0.1-SNAPSHOT.jar --server.port=3000 '
+                sh 'java -jar /var/lib/jenkins/workspace/pipeline/target/Shopping_Cart-0.0.1-SNAPSHOT.jar --server.port=4000 '
             }
         }
 
         stage('Deploy') {
             steps {
-                sh 'nohup java -jar target/shopping-cart.jar &'
+                sh 'nohup java -jar target/Shopping_Cart-0.0.1-SNAPSHOT.jar &'
                 // Runs in background so Jenkins job can complete
             }
         }
@@ -477,25 +475,25 @@ pipeline {
 
 ### Stage-by-Stage Walkthrough
 
-#### Stage 1: Clone
+#### Stage 1: Clone Code
 - Jenkins pulls the latest code from GitHub
-- Code lands in: `/var/lib/jenkins/workspace/shopping-cart/`
+- Code lands in: `/var/lib/jenkins/workspace/pipeline/`
 - If branch doesn't exist or URL is wrong → stage fails immediately
 
 #### Stage 2: Build (`mvn clean package`)
 - `clean`: Deletes old `target/` folder
 - `package`: Compiles → runs tests → creates JAR
-- Output: `target/shopping-cart.jar`
+- Output: `target/Shopping_Cart-0.0.1-SNAPSHOT.jar`
 - If tests fail → stage fails, Deploy stage never runs (this is the safety gate)
 
 #### Stage 3: Run
 - Executes the built Spring Boot JAR file directly in the **foreground** using its absolute workspace path.
-- Explicitly binds the application to port 3000 (`--server.port=3000`).
+- Explicitly binds the application to port 4000 (`--server.port=4000`).
 - ⚠️ **Warning:** Because this command runs in the foreground without `nohup` or `&`, it will cause Jenkins to hang indefinitely waiting for the process to finish (which leads perfectly into the explanation in Section 8).
 
 #### Stage 4: Deploy
 - Runs the JAR as a background process (`nohup ... &`)
-- App starts on configured port (3000 or 8080)
+- App starts on configured port (4000 or 8080)
 - Jenkins job completes successfully
 
 > 💡 **Key Concept: Are `Run` and `Deploy` doing the same thing?**
@@ -514,7 +512,7 @@ When you run `java -jar app.jar` in a Jenkins step, the application starts and *
 
 ```
 Stage: Deploy
-  → sh 'java -jar target/shopping-cart.jar'
+  → sh 'java -jar target/Shopping_Cart-0.0.1-SNAPSHOT.jar'
   → App starts...
   → Jenkins waits...
   → Jenkins waits...
@@ -528,7 +526,7 @@ Shell commands in Jenkins pipeline `sh` steps run in the **foreground** — Jenk
 The `&` at the end of a command tells the shell to run it in the **background** — the shell moves on immediately without waiting.
 
 ```groovy
-sh 'java -jar target/shopping-cart.jar &'
+sh 'java -jar target/Shopping_Cart-0.0.1-SNAPSHOT.jar &'
 // The & detaches the process → Jenkins step completes immediately
 // App continues running in the background
 ```
@@ -536,7 +534,7 @@ sh 'java -jar target/shopping-cart.jar &'
 ### Solution 2: `nohup` + `&` (More Robust) ✅
 
 ```groovy
-sh 'nohup java -jar target/shopping-cart.jar &'
+sh 'nohup java -jar target/Shopping_Cart-0.0.1-SNAPSHOT.jar &'
 ```
 
 - **`nohup`** = "No Hang Up" — tells the process to keep running even if the terminal/Jenkins session that started it closes
@@ -546,7 +544,7 @@ sh 'nohup java -jar target/shopping-cart.jar &'
 ### Solution 3: Port Override with nohup
 
 ```groovy
-sh 'nohup java -jar -Dserver.port=3000 target/shopping-cart.jar &'
+sh 'nohup java -jar -Dserver.port=4000 target/Shopping_Cart-0.0.1-SNAPSHOT.jar &'
 ```
 
 ### When to Use What
@@ -556,7 +554,7 @@ sh 'nohup java -jar -Dserver.port=3000 target/shopping-cart.jar &'
 | App should run briefly then stop | `sh 'java -jar app.jar'` (no `&`) |
 | App should keep running, simple | `sh 'java -jar app.jar &'` |
 | App should keep running even after Jenkins finishes | `sh 'nohup java -jar app.jar &'` ✅ |
-| App needs a specific port | `sh 'nohup java -jar -Dserver.port=3000 app.jar &'` |
+| App needs a specific port | `sh 'nohup java -jar -Dserver.port=4000 app.jar &'` |
 
 ### Impact
 
@@ -999,4 +997,4 @@ In production, **webhooks are preferred** because they're real-time and efficien
 
 ---
 
-← Previous: [28_Java_SpringBoot_Maven_Jenkins_Build_Pipeline.md](28_Java_SpringBoot_Maven_Jenkins_Build_Pipeline.md) | Next: [30_Jenkins_Job_Types_Pipeline_Freestyle_Matrix.md](30_Jenkins_Job_Types_Pipeline_Freestyle_Matrix.md) →
+← Previous: [28_Java,_Spring_Boot_Maven_&_Jenkins_Build_Pipeline.md](28_Java,_Spring_Boot_Maven_&_Jenkins_Build_Pipeline.md) | Next: [30_Jenkins_Job_Types_Pipeline_Freestyle_Matrix.md](30_Jenkins_Job_Types_Pipeline_Freestyle_Matrix.md) →

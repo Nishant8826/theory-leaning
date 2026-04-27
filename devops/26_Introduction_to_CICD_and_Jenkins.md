@@ -268,12 +268,9 @@ java -version
 
 #### Step 4: Add Jenkins Repository Key & Source
 ```bash
-sudo wget -O /etc/apt/keyrings/jenkins-keyring.asc \
-  https://pkg.jenkins.io/debian-stable/jenkins.io-2026.key
+sudo wget -O /etc/apt/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian-stable/jenkins.io-2026.key
 
-echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc]" \
-  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
-  /etc/apt/sources.list.d/jenkins.list > /dev/null
+echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc]" https://pkg.jenkins.io/debian-stable binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
 ```
 
 ### Why is this step necessary?
@@ -753,5 +750,17 @@ In production, Pipelines (especially Declarative Pipelines) are preferred becaus
 Continuous Delivery suits teams that need a human sign-off before production (regulated industries, large releases). Continuous Deployment suits teams with high test confidence and fast release cycles (SaaS products, startups).
 
 ---
+
+**Q10. What are the basics of Regression Testing in a CI/CD pipeline?**
+
+**A:** **Regression Testing** is the practice of re-running previously passed tests to ensure that new code changes (like a new feature or bug fix) haven't accidentally broken existing, working functionality (causing a "regression").
+
+In the context of CI/CD:
+- **Automated Safety Net:** Instead of humans manually checking old features, Jenkins automatically runs the entire regression test suite (unit tests, integration tests) every time a developer pushes code.
+- **Immediate Feedback:** If the new code breaks an old feature, the pipeline fails immediately, and the developer is notified before the bad code reaches production.
+- **Confidence:** It allows teams to move fast and make changes with the confidence that they aren't destroying core functionality.
+
+---
+
 Prev : [25_Git_&_GitHub_Deep_Dive_Branching_PRs_&_Collaboration.md](25_Git_&_GitHub_Deep_Dive_Branching_PRs_&_Collaboration.md) | Next : [27_Jenkins_Deep_Dive_Users_RBAC_CI_Pipelines_&_Local_Setup.md](27_Jenkins_Deep_Dive_Users_RBAC_CI_Pipelines_&_Local_Setup.md)
 ---
