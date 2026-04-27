@@ -183,6 +183,8 @@ g.print();
 
 ### Question 1: Find if Path Exists (Graph Connectivity)
 
+**Practice Links:** [LeetCode #1971](https://leetcode.com/problems/find-if-path-exists-in-graph/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/find-if-path-exists-in-graph/1)
+
 **Problem Statement:** Given n nodes and edges, check if there's a path between source and destination.
 
 
@@ -264,6 +266,8 @@ function hasPathBFS(n, edges, source, destination) {
 
 ### Question 2: Number of Connected Components
 
+**Practice Links:** [LeetCode #323](https://leetcode.com/problems/number-of-connected-components-in-an-undirected-graph/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/number-of-provinces/1)
+
 **Problem Statement:** Count the number of connected components in an undirected graph.
 
 #### 🐢 Brute Force — DFS from Every Unvisited Node
@@ -310,6 +314,8 @@ console.log(countComponents(5, [[0,1],[1,2],[2,3],[3,4]])); // 1
 
 ### Question 3: Clone a Graph
 
+**Practice Links:** [LeetCode #133](https://leetcode.com/problems/clone-graph/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/clone-graph/1)
+
 **Problem Statement:** Given a reference to a node in a connected undirected graph, return a deep copy.
 
 #### ⚡ Optimized — BFS with Hash Map
@@ -352,6 +358,8 @@ function cloneGraph(node) {
 
 ### Problem 1: Find the Town Judge
 
+**Practice Links:** [LeetCode #997](https://leetcode.com/problems/find-the-town-judge/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/town-judge/1)
+
 **Problem Statement:** In a town of n people, the judge trusts nobody but everyone trusts the judge. Find the judge.
 
 ```javascript
@@ -381,6 +389,8 @@ console.log(findJudge(3, [[1,3],[2,3],[3,1]])); // -1
 ---
 
 ### Problem 2: Check if Graph is Bipartite
+
+**Practice Links:** [LeetCode #785](https://leetcode.com/problems/is-graph-bipartite/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/bipartite-graph/1)
 
 ```javascript
 function isBipartite(graph) {
@@ -421,6 +431,10 @@ console.log(isBipartite([[1,2,3],[0,2],[0,1,3],[0,2]])); // false
 ---
 
 ### Problem 3: Find All Paths from Source to Target (DAG)
+
+**Practice Links:** [LeetCode #797](https://leetcode.com/problems/all-paths-from-source-to-target/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/all-paths-from-source-to-target/1)
+
+**Problem Statement:** Find all possible paths from node 0 to node n-1.
 
 ```javascript
 function allPaths(graph) {

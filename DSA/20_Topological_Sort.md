@@ -151,6 +151,8 @@ console.log(topologicalSortDFS(6, [[5,2],[5,0],[4,0],[4,1],[2,3],[3,1]]));
 
 ### Question 1: Course Schedule II (Find Order)
 
+**Practice Links:** [LeetCode #210](https://leetcode.com/problems/course-schedule-ii/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/course-schedule/1)
+
 **Problem Statement:** Given n courses and prerequisites, return an order to take all courses (or empty if impossible).
 
 
@@ -235,6 +237,8 @@ function findOrderDFS(numCourses, prerequisites) {
 
 ### Question 2: Alien Dictionary
 
+**Practice Links:** [LeetCode #269](https://leetcode.com/problems/alien-dictionary/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/alien-dictionary/1)
+
 **Problem Statement:** Given a sorted list of words from an alien language, determine the character order.
 
 
@@ -309,6 +313,8 @@ console.log(alienOrder(["wrt","wrf","er","ett","rftt"])); // "wertf"
 
 ### Problem 1: Minimum Height Trees
 
+**Practice Links:** [LeetCode #310](https://leetcode.com/problems/minimum-height-trees/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/minimum-height-trees/1)
+
 ```javascript
 function findMinHeightTrees(n, edges) {
   if (n === 1) return [0];
@@ -359,6 +365,8 @@ console.log(findMinHeightTrees(6, [[3,0],[3,1],[3,2],[3,4],[5,4]])); // [3, 4]
 
 ### Problem 2: Parallel Courses
 
+**Practice Links:** [LeetCode #1136](https://leetcode.com/problems/parallel-courses/)
+
 ```javascript
 function minimumSemesters(n, relations) {
   const graph = {};
@@ -406,6 +414,8 @@ console.log(minimumSemesters(3, [[1,3],[2,3]])); // 2
 ---
 
 ### Problem 3: Sequence Reconstruction
+
+**Practice Links:** [LeetCode #444](https://leetcode.com/problems/sequence-reconstruction/)
 
 ```javascript
 function sequenceReconstruction(original, sequences) {

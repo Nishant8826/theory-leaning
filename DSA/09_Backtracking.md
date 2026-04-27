@@ -35,6 +35,8 @@ Think of **trying on outfits**. You pick a shirt, then pants, then shoes. If the
 
 ### Problem: Generate All Subsets
 
+**Practice Links:** [LeetCode #78](https://leetcode.com/problems/subsets/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/subsets-1613027340/1)
+
 ```javascript
 // Brute Force: Iterative — build subsets by including/excluding each element
 function subsetsBrute(nums) {
@@ -115,6 +117,8 @@ The backtracking template follows the **choose → explore → un-choose** patte
 ## 💼 LinkedIn / Interview Questions (WITH FULL SOLUTIONS)
 
 ### Question 1: N-Queens Problem
+
+**Practice Links:** [LeetCode #51](https://leetcode.com/problems/n-queens/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/n-queen-problem0315/1)
 
 **Problem Statement:** Place `n` queens on an `n×n` chessboard so that no two queens attack each other. Return all solutions.
 
@@ -237,6 +241,8 @@ solutions.forEach(sol => {
 
 ### Question 2: Combination Sum
 
+**Practice Links:** [LeetCode #39](https://leetcode.com/problems/combination-sum/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/combination-sum-1587115620/1)
+
 **Problem Statement:** Find all unique combinations of candidates that sum to the target. Each number can be used unlimited times.
 
 Example: `candidates = [2,3,6,7], target = 7` → `[[2,2,3], [7]]`
@@ -320,6 +326,8 @@ console.log(combinationSumOptimized([2, 3, 6, 7], 7));
 ---
 
 ### Question 3: Word Search
+
+**Practice Links:** [LeetCode #79](https://leetcode.com/problems/word-search/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/word-search/1)
 
 **Problem Statement:** Given a 2D grid of characters and a word, find if the word exists in the grid by moving up, down, left, or right (each cell used once).
 
@@ -434,6 +442,8 @@ console.log(wordSearchOptimized([['A','B'],['C','D']], "ABDC")); // true
 
 ### Problem 1: Generate All Permutations
 
+**Practice Links:** [LeetCode #46](https://leetcode.com/problems/permutations/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/permutations-of-a-given-string2041/1)
+
 **Problem Statement:** Given a list of distinct integers, return all possible permutations.
 
 ```javascript
@@ -468,6 +478,8 @@ console.log(permute([1, 2, 3]));
 ---
 
 ### Problem 2: Palindrome Partitioning
+
+**Practice Links:** [LeetCode #131](https://leetcode.com/problems/palindrome-partitioning/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/find-all-possible-palindromic-partitions-of-a-string/1)
 
 **Problem Statement:** Partition a string such that every substring is a palindrome. Return all possible partitions.
 
@@ -514,6 +526,8 @@ console.log(palindromePartition("aab"));
 ---
 
 ### Problem 3: Sudoku Solver
+
+**Practice Links:** [LeetCode #37](https://leetcode.com/problems/sudoku-solver/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/solve-the-sudoku-1587115621/1)
 
 **Problem Statement:** Fill a 9×9 Sudoku board so each row, column, and 3×3 box contains digits 1-9.
 

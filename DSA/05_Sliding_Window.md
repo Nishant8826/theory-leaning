@@ -32,6 +32,8 @@ Think of calculating a **7-day moving average** of temperatures. Instead of addi
 
 ### Problem: Maximum Sum of K Consecutive Elements
 
+**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/max-sum-subarray-of-size-k5313/1)
+
 Given an array of integers and a number `k`, find the maximum sum of `k` consecutive elements.
 
 ```javascript
@@ -119,6 +121,8 @@ console.log(maxSumOptimized([2, 3, 4, 1, 5], 2));     // 7
 
 ### Question 1: Minimum Size Subarray Sum
 
+**Practice Links:** [LeetCode #209](https://leetcode.com/problems/minimum-size-subarray-sum/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/smallest-subarray-with-sum-greater-than-x5649/1)
+
 **Problem Statement:** Find the smallest contiguous subarray whose sum is ≥ target. Return its length, or 0 if no such subarray.
 
 Example: `target = 7, arr = [2, 3, 1, 2, 4, 3]` → `2` (subarray `[4, 3]`)
@@ -185,6 +189,8 @@ console.log(minSubArrayLenOptimized(15, [1, 2, 3, 4, 5]));    // 5
 ---
 
 ### Question 2: Longest Substring with At Most K Distinct Characters
+
+**Practice Links:** [LeetCode #340](https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/longest-k-unique-characters-substring0853/1)
 
 **Problem Statement:** Find the length of the longest substring with at most `k` distinct characters.
 
@@ -265,6 +271,8 @@ console.log(longestWithKDistinctOptimized("aabacbebebe", 3)); // 7
 
 ### Question 3: Maximum of All Subarrays of Size K
 
+**Practice Links:** [LeetCode #239](https://leetcode.com/problems/sliding-window-maximum/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/maximum-of-all-subarrays-of-size-k3101/1)
+
 **Problem Statement:** Given an array and integer `k`, find the maximum element in every contiguous subarray of size `k`.
 
 Example: `arr = [1, 3, -1, -3, 5, 3, 6, 7], k = 3` → `[3, 3, 5, 5, 6, 7]`
@@ -336,6 +344,8 @@ console.log(maxOfSubarraysOptimized([1, 3, -1, -3, 5, 3, 6, 7], 3));
 ---
 
 ### Question 4: Count Number of Nice Subarrays
+
+**Practice Links:** [LeetCode #1248](https://leetcode.com/problems/count-number-of-nice-subarrays/)
 
 **Problem Statement:** Given an array and integer `k`, find the count of subarrays with exactly `k` odd numbers.
 
@@ -410,6 +420,8 @@ console.log(countNiceSubarraysOptimized([2, 4, 6], 1));         // 0
 
 ### Problem 1: Average of All Subarrays of Size K
 
+**Practice Links:** [LeetCode #643](https://leetcode.com/problems/maximum-average-subarray-i/)
+
 **Problem Statement:** Find the average of all contiguous subarrays of size `k`.
 
 **Approach:** Fixed-size sliding window. Maintain a running sum.
@@ -442,6 +454,8 @@ console.log(averageOfSubarrays([1, 3, 2, 6, -1, 4, 1, 8, 2], 5));
 ---
 
 ### Problem 2: Maximum Consecutive Ones After Flipping K Zeros
+
+**Practice Links:** [LeetCode #1004](https://leetcode.com/problems/max-consecutive-ones-iii/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/maximize-number-of-1s0642/1)
 
 **Problem Statement:** Given a binary array and `k`, find the longest stretch of 1s if you can flip at most `k` zeros to 1s.
 
@@ -479,6 +493,8 @@ console.log(longestOnes([0, 0, 1, 1, 0, 0, 1, 1, 1, 0], 3)); // 9
 ---
 
 ### Problem 3: Fruit Into Baskets
+
+**Practice Links:** [LeetCode #904](https://leetcode.com/problems/fruit-into-baskets/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/fruit-into-baskets-1663137462/1)
 
 **Problem Statement:** You have a row of fruit trees. Each tree has a type. You carry 2 baskets, each can hold one type. Find the maximum number of fruits you can collect in a contiguous section using only 2 baskets.
 
@@ -519,6 +535,8 @@ console.log(totalFruit([1, 2, 3, 2, 2])); // 4
 ---
 
 ### Problem 4: Find All Anagrams in a String
+
+**Practice Links:** [LeetCode #438](https://leetcode.com/problems/find-all-anagrams-in-a-string/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/count-occurences-of-anagrams6222/1)
 
 **Problem Statement:** Find all start indices in string `s` where an anagram of string `p` begins.
 

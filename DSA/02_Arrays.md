@@ -44,6 +44,8 @@ Think of a **train with numbered coaches**. Want coach 5? Walk straight to it. Y
 
 ### Problem: Find the Second Largest Element
 
+**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/second-largest3735/1)
+
 Given an array, find the second largest element.
 
 **Brute Force Idea:** Sort the array, then pick the second element from the end.
@@ -144,6 +146,8 @@ We keep two variables (`first` and `second`) and update them as we scan. Like ha
 
 ### Question 1: Rotate Array by K Positions
 
+**Practice Links:** [LeetCode #189](https://leetcode.com/problems/rotate-array/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/rotate-array-by-n-elements-1587115621/1)
+
 **Problem Statement:** Given an array and a number `k`, rotate the array to the right by `k` positions.
 
 Example: `[1, 2, 3, 4, 5]` rotated by 2 → `[4, 5, 1, 2, 3]`
@@ -178,29 +182,30 @@ console.log(rotateBrute([1, 2, 3, 4, 5], 2)); // [4, 5, 1, 2, 3]
 #### ⚡ Optimized Solution — Reversal Algorithm
 
 ```javascript
-function rotateOptimized(arr, k) {
-  const n = arr.length;
-  k = k % n; // Handle k > n
+function rotateOptimized(nums, k) {
+  k = k % nums.length // Handle k > n
 
   // Helper function to reverse a portion of the array
-  function reverse(start, end) {
-    while (start < end) {
-      [arr[start], arr[end]] = [arr[end], arr[start]];
-      start++;
-      end--;
-    }
+  function revser(arr, i, j) {
+      while (i < j) {
+          let temp = arr[i];
+          arr[i] = arr[j];
+          arr[j] = temp;
+          i++;
+          j--;
+      }
   }
 
   // Step 1: Reverse the entire array
-  reverse(0, n - 1);       // [5, 4, 3, 2, 1]
+  revser(nums, 0, nums.length - 1);      // [5, 4, 3, 2, 1]
 
   // Step 2: Reverse the first k elements
-  reverse(0, k - 1);       // [4, 5, 3, 2, 1]
+  revser(nums, 0, k - 1);       // [4, 5, 3, 2, 1]
 
   // Step 3: Reverse the remaining elements
-  reverse(k, n - 1);       // [4, 5, 1, 2, 3]
+  revser(nums, k, nums.length - 1);      // [4, 5, 1, 2, 3]
 
-  return arr;
+  return nums;
 }
 
 console.log(rotateOptimized([1, 2, 3, 4, 5], 2)); // [4, 5, 1, 2, 3]
@@ -225,6 +230,8 @@ console.log(rotateOptimized([1, 2, 3, 4, 5], 2)); // [4, 5, 1, 2, 3]
 ---
 
 ### Question 2: Move All Zeros to End
+
+**Practice Links:** [LeetCode #283](https://leetcode.com/problems/move-zeroes/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/move-all-zeroes-to-end-of-array0751/1)
 
 **Problem Statement:** Given an array, move all zeros to the end while keeping the order of non-zero elements.
 
@@ -302,6 +309,8 @@ console.log(moveZerosOptimized([0, 0, 1]));          // [1, 0, 0]
 
 ### Question 3: Find Missing Number
 
+**Practice Links:** [LeetCode #268](https://leetcode.com/problems/missing-number/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/missing-number-in-array1416/1)
+
 **Problem Statement:** Given an array containing `n` distinct numbers from 0 to n, find the one missing. 
 
 Example: `[3, 0, 1]` → Missing: `2`
@@ -374,6 +383,8 @@ console.log(missingNumberOptimized([9,6,4,2,3,5,7,0,1])); // 8
 
 ### Question 4: Best Time to Buy and Sell Stock
 
+**Practice Links:** [LeetCode #121](https://leetcode.com/problems/best-time-to-buy-and-sell-stock/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/buy-maximum-stocks-if-i-stocks-can-be-bought-on-i-th-day/1)
+
 **Problem Statement:** Given an array where `prices[i]` is the price of a stock on day `i`, find the maximum profit from one buy and one sell. You must buy before you sell.
 
 Example: `[7, 1, 5, 3, 6, 4]` → Buy at 1, sell at 6 → Profit = 5
@@ -445,6 +456,8 @@ console.log(maxProfitOptimized([7, 6, 4, 3, 1]));     // 0 (prices only go down)
 
 ### Problem 1: Find Two Numbers That Add Up to Target (Two Sum)
 
+**Practice Links:** [LeetCode #1](https://leetcode.com/problems/two-sum/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/key-pair5616/1)
+
 **Problem Statement:** Given an array and a target, find two numbers that add up to the target. Return their indices.
 
 **Approach:** Use a hash map to store numbers we've seen and check if the complement exists.
@@ -485,6 +498,8 @@ console.log(twoSum([3, 2, 4], 6));        // [1, 2] → 2 + 4 = 6
 ---
 
 ### Problem 2: Remove Duplicates from Sorted Array (In-Place)
+
+**Practice Links:** [LeetCode #26](https://leetcode.com/problems/remove-duplicates-from-sorted-array/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/remove-duplicate-elements-from-sorted-array/1)
 
 **Problem Statement:** Given a sorted array, remove duplicates in-place and return the new length.
 
@@ -528,6 +543,8 @@ console.log(arr.slice(0, len));      // [1, 2, 3, 4, 5]
 
 ### Problem 3: Maximum Subarray Sum (Kadane's Algorithm)
 
+**Practice Links:** [LeetCode #53](https://leetcode.com/problems/maximum-subarray/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/kadanes-algorithm-1587115620/1)
+
 **Problem Statement:** Find the contiguous subarray with the largest sum.
 
 **Approach:** Track current sum; if it goes negative, reset it to 0 (start fresh).
@@ -568,6 +585,8 @@ console.log(maxSubarraySum([-1, -2, -3]));                       // -1 → least
 ---
 
 ### Problem 4: Merge Two Sorted Arrays
+
+**Practice Links:** [LeetCode #88](https://leetcode.com/problems/merge-sorted-array/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/merge-two-sorted-arrays-1587115620/1)
 
 **Problem Statement:** Given two sorted arrays, merge them into one sorted array.
 
@@ -624,6 +643,8 @@ console.log(mergeSortedArrays([1, 2], [3, 4, 5, 6])); // [1, 2, 3, 4, 5, 6]
 ---
 
 ### Problem 5: Product of Array Except Self
+
+**Practice Links:** [LeetCode #238](https://leetcode.com/problems/product-of-array-except-self/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/product-array-puzzle4525/1)
 
 **Problem Statement:** Given an array, return an array where each element is the product of all others except itself. Do NOT use division.
 

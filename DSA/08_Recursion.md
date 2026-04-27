@@ -44,6 +44,8 @@ Think of **Russian nesting dolls (Matryoshka)**. To find the smallest doll, you 
 
 ### Problem: Calculate Factorial
 
+**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/factorial5739/1)
+
 Factorial of n: `n! = n × (n-1) × (n-2) × ... × 1`
 
 ```javascript
@@ -111,6 +113,8 @@ factorial(5)
 
 ### Another Classic: Fibonacci
 
+**Practice Links:** [LeetCode #509](https://leetcode.com/problems/fibonacci-number/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/nth-fibonacci-number1335/1)
+
 ```javascript
 // Recursive Fibonacci
 function fibonacci(n) {
@@ -163,6 +167,8 @@ Recursion uses **stack space** for each call. Deep recursion on large inputs can
 ## 💼 LinkedIn / Interview Questions (WITH FULL SOLUTIONS)
 
 ### Question 1: Power Function (x^n)
+
+**Practice Links:** [LeetCode #50](https://leetcode.com/problems/powx-n/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/power-of-numbers-1587115620/1)
 
 **Problem Statement:** Calculate x raised to the power n. Handle negative exponents.
 
@@ -231,6 +237,8 @@ console.log(powerOptimized(3, 5));   // 243
 
 ### Question 2: Generate All Subsets (Power Set)
 
+**Practice Links:** [LeetCode #78](https://leetcode.com/problems/subsets/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/subsets-1613027340/1)
+
 **Problem Statement:** Given a set of unique integers, return all possible subsets.
 
 Example: `[1, 2, 3]` → `[[], [1], [2], [3], [1,2], [1,3], [2,3], [1,2,3]]`
@@ -296,6 +304,8 @@ console.log(subsetsRecursive([1, 2, 3]));
 
 ### Question 3: Tower of Hanoi
 
+**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/tower-of-hanoi-1587115621/1)
+
 **Problem Statement:** Move `n` disks from source peg to destination peg using an auxiliary peg. Rules: move one disk at a time, never place a larger disk on a smaller one.
 
 **Thought Process:** To move n disks from A to C: move top n-1 disks to B, move the largest disk to C, then move n-1 disks from B to C.
@@ -346,6 +356,8 @@ console.log(hanoiCount(10)); // 1023
 
 ### Question 4: Check if a String is a Palindrome (Recursive)
 
+**Practice Links:** [LeetCode #125](https://leetcode.com/problems/valid-palindrome/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/palindrome-string0817/1)
+
 **Problem Statement:** Use recursion to check if a string is a palindrome.
 
 **Thought Process:** Compare the first and last characters. If they match, recursively check the substring between them.
@@ -395,6 +407,8 @@ console.log(isPalindromeRecursive("abba"));    // true
 
 ### Problem 1: Sum of Digits
 
+**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/sum-of-digits1723/1)
+
 **Problem Statement:** Find the sum of digits of a number using recursion.
 
 **Approach:** Extract the last digit, add it to the sum of remaining digits.
@@ -428,6 +442,8 @@ console.log(sumOfDigits(0));     // 0
 
 ### Problem 2: Reverse a String Recursively
 
+**Practice Links:** [LeetCode #344](https://leetcode.com/problems/reverse-string/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/reverse-a-string/1)
+
 **Problem Statement:** Reverse a string using recursion.
 
 **Approach:** Take the first character, put it at the end of the reversed rest.
@@ -452,6 +468,8 @@ console.log(reverseString("recursion")); // "noisrucer"
 ---
 
 ### Problem 3: Count Paths in a Grid
+
+**Practice Links:** [LeetCode #62](https://leetcode.com/problems/unique-paths/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/number-of-paths0911/1)
 
 **Problem Statement:** Count the number of ways to go from the top-left to the bottom-right of an m×n grid (can only move right or down).
 
@@ -481,6 +499,8 @@ console.log(countPaths(7, 3)); // 28
 ---
 
 ### Problem 4: Flatten a Nested Array
+
+**Practice Links:** [LeetCode #341](https://leetcode.com/problems/flatten-nested-list-iterator/)
 
 **Problem Statement:** Given a deeply nested array, flatten it into a single-level array.
 
@@ -513,6 +533,8 @@ console.log(flattenArray([[1, 2], [3, [4, [5]]]])); // [1, 2, 3, 4, 5]
 ---
 
 ### Problem 5: Print All Permutations of a String
+
+**Practice Links:** [LeetCode #46](https://leetcode.com/problems/permutations/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/permutations-of-a-given-string2041/1)
 
 **Problem Statement:** Generate all permutations of a string.
 

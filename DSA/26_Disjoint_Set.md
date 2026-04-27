@@ -158,6 +158,8 @@ console.log(uf.getCount());       // 2 (groups: {0,1,2,3} and {4})
 
 ### Question 1: Number of Connected Components
 
+**Practice Links:** [LeetCode #323](https://leetcode.com/problems/number-of-connected-components-in-an-undirected-graph/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/number-of-provinces/1)
+
 **Problem Statement:** Given n nodes and edges, find the number of connected components.
 
 #### 🐢 Brute Force — DFS
@@ -221,6 +223,8 @@ console.log(countComponentsUF(5, [[0,1],[1,2],[2,3],[3,4]])); // 1
 
 ### Question 2: Redundant Connection
 
+**Practice Links:** [LeetCode #684](https://leetcode.com/problems/redundant-connection/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/redundant-connection/1)
+
 **Problem Statement:** Find the edge that, when removed, makes the graph a tree (no cycles). Return the last such edge.
 
 
@@ -258,6 +262,8 @@ console.log(findRedundantConnection([[1,2],[2,3],[3,4],[1,4],[1,5]])); // [1, 4]
 ---
 
 ### Question 3: Accounts Merge
+
+**Practice Links:** [LeetCode #721](https://leetcode.com/problems/accounts-merge/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/accounts-merge/1)
 
 **Problem Statement:** Given accounts (name + emails), merge accounts belonging to the same person. Two accounts are the same person if they share at least one email.
 
@@ -317,6 +323,8 @@ console.log(accountsMerge([
 
 ### Problem 1: Number of Islands (Union-Find Approach)
 
+**Practice Links:** [LeetCode #200](https://leetcode.com/problems/number-of-islands/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/find-the-number-of-islands/1)
+
 ```javascript
 function numIslandsUF(grid) {
   const rows = grid.length, cols = grid[0].length;
@@ -353,6 +361,8 @@ function numIslandsUF(grid) {
 
 ### Problem 2: Earliest Moment When Everyone Becomes Friends
 
+**Practice Links:** [LeetCode #1101](https://leetcode.com/problems/the-earliest-moment-when-everyone-become-friends/)
+
 ```javascript
 function earliestFriends(logs, n) {
   logs.sort((a, b) => a[0] - b[0]); // Sort by timestamp
@@ -379,6 +389,8 @@ console.log(earliestFriends(
 ---
 
 ### Problem 3: Satisfiability of Equality Equations
+
+**Practice Links:** [LeetCode #990](https://leetcode.com/problems/satisfiability-of-equality-equations/)
 
 ```javascript
 function equationsPossible(equations) {

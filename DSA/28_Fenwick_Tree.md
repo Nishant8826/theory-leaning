@@ -188,6 +188,8 @@ Jump pattern: 7 → 6 → 4 → 0 (remove lowest set bit each time)
 
 ### Question 1: Range Sum Query — Mutable (Fenwick Approach)
 
+**Practice Links:** [LeetCode #307](https://leetcode.com/problems/range-sum-query-mutable/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/range-sum-query-mutable/1)
+
 **Problem Statement:** Support update(index, val) and sumRange(left, right) operations efficiently.
 
 #### ⚡ Optimized — Fenwick Tree
@@ -229,6 +231,8 @@ console.log(na.sumRange(0, 2)); // 8
 ---
 
 ### Question 2: Count of Smaller Numbers After Self
+
+**Practice Links:** [LeetCode #315](https://leetcode.com/problems/count-of-smaller-numbers-after-self/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/count-smaller-elements3741/1)
 
 **Problem Statement:** For each element, count how many elements after it are smaller.
 
@@ -297,6 +301,8 @@ console.log(countSmaller([5, 2, 6, 1])); // [2, 1, 1, 0]
 
 ### Question 3: Reverse Pairs
 
+**Practice Links:** [LeetCode #493](https://leetcode.com/problems/reverse-pairs/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/reverse-pairs/1)
+
 **Problem Statement:** Count pairs (i, j) where i < j and nums[i] > 2 × nums[j].
 
 #### ⚡ Optimized — Modified Merge Sort
@@ -348,6 +354,8 @@ console.log(reversePairs([2, 4, 3, 5, 1])); // 3
 
 ### Problem 1: 2D Fenwick Tree (Matrix Range Sum)
 
+**Practice Links:** [LeetCode #308](https://leetcode.com/problems/range-sum-query-2d-mutable/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/range-sum-query-2d-mutable/1)
+
 ```javascript
 class FenwickTree2D {
   constructor(rows, cols) {
@@ -395,6 +403,8 @@ console.log(bit2d.rangeSum(1, 1, 2, 2)); // 10
 ---
 
 ### Problem 2: Range Frequency Query
+
+**Practice Links:** [LeetCode #2080](https://leetcode.com/problems/range-frequency-queries/)
 
 ```javascript
 class RangeFreqQuery {
@@ -450,6 +460,8 @@ console.log(rfq.query(0, 11, 12)); // 2
 ---
 
 ### Problem 3: Fenwick Tree for Prefix XOR
+
+**Practice Links:** [LeetCode #1310](https://leetcode.com/problems/xor-queries-of-a-subarray/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/xor-queries-of-a-subarray/1)
 
 ```javascript
 class FenwickXOR {

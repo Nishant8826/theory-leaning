@@ -31,6 +31,8 @@ A stable sort preserves the relative order of equal elements. If two students ha
 
 ### Bubble Sort — The Simplest Sort
 
+**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/bubble-sort/1)
+
 **Idea:** Repeatedly compare adjacent elements and swap them if they're in the wrong order. Like bubbles rising to the surface.
 
 ```javascript
@@ -78,6 +80,8 @@ console.log(bubbleSort([64, 34, 25, 12, 22, 11, 90]));
 
 ### Selection Sort
 
+**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/selection-sort/1)
+
 ```javascript
 // Selection Sort — O(n²)
 function selectionSort(arr) {
@@ -116,6 +120,8 @@ console.log(selectionSort([64, 25, 12, 22, 11]));
 
 ### Insertion Sort
 
+**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/insertion-sort/1)
+
 ```javascript
 // Insertion Sort — O(n²) worst, O(n) best (nearly sorted)
 function insertionSort(arr) {
@@ -152,6 +158,8 @@ console.log(insertionSort([12, 11, 13, 5, 6]));
 ## ⚡ Optimized Approach
 
 ### Merge Sort — Divide and Conquer — O(n log n) guaranteed
+
+**Practice Links:** [LeetCode #912](https://leetcode.com/problems/sort-an-array/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/merge-sort/1)
 
 ```javascript
 // Merge Sort — O(n log n) always
@@ -195,6 +203,8 @@ console.log(mergeSort([38, 27, 43, 3, 9, 82, 10]));
 ```
 
 ### Quick Sort — Average O(n log n), In-Place
+
+**Practice Links:** [LeetCode #912](https://leetcode.com/problems/sort-an-array/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/quick-sort/1)
 
 ```javascript
 // Quick Sort — O(n log n) average
@@ -253,6 +263,8 @@ console.log(quickSort([10, 7, 8, 9, 1, 5]));
 
 ### Question 1: Sort an Array of 0s, 1s, and 2s (Dutch National Flag)
 
+**Practice Links:** [LeetCode #75](https://leetcode.com/problems/sort-colors/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/sort-an-array-of-0s-1s-and-2s4231/1)
+
 **Problem Statement:** Sort an array containing only 0, 1, and 2 in one pass without using a sorting algorithm.
 
 **Thought Process:** Use three pointers (low, mid, high) to partition the array into three sections.
@@ -303,6 +315,8 @@ console.log(sortColorsOptimized([2, 0, 1, 2, 1, 0])); // [0, 0, 1, 1, 2, 2]
 ---
 
 ### Question 2: Merge Intervals
+
+**Practice Links:** [LeetCode #56](https://leetcode.com/problems/merge-intervals/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/overlapping-intervals--170633/1)
 
 **Problem Statement:** Given a collection of intervals, merge all overlapping intervals.
 
@@ -388,6 +402,8 @@ console.log(mergeIntervalsOptimized([[1,3],[2,6],[8,10],[15,18]]));
 
 ### Question 3: Kth Largest Element
 
+**Practice Links:** [LeetCode #215](https://leetcode.com/problems/kth-largest-element-in-an-array/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/k-largest-elements3736/1)
+
 **Problem Statement:** Find the kth largest element in an unsorted array.
 
 Example: `[3, 2, 1, 5, 6, 4], k = 2` → `5`
@@ -453,6 +469,8 @@ console.log(findKthLargestOptimized([3, 2, 1, 5, 6, 4], 2)); // 5
 
 ### Problem 1: Sort Characters by Frequency
 
+**Practice Links:** [LeetCode #451](https://leetcode.com/problems/sort-characters-by-frequency/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/sorting-elements-of-an-array-by-frequency/1)
+
 **Problem Statement:** Sort characters in a string by how frequently they appear.
 
 **Approach:** Count frequencies, sort by count, build result.
@@ -490,6 +508,8 @@ console.log(frequencySort("cccaaa")); // "cccaaa" or "aaaccc"
 
 ### Problem 2: Largest Number
 
+**Practice Links:** [LeetCode #179](https://leetcode.com/problems/largest-number/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/largest-number-formed-from-an-array1117/1)
+
 **Problem Statement:** Given a list of non-negative integers, arrange them to form the largest number.
 
 **Approach:** Custom sort — compare by string concatenation.
@@ -520,6 +540,8 @@ console.log(largestNumber([0, 0]));       // "0"
 ---
 
 ### Problem 3: Relative Sort Array
+
+**Practice Links:** [LeetCode #1122](https://leetcode.com/problems/relative-sort-array/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/relative-sorting4330/1)
 
 **Problem Statement:** Sort `arr1` so that elements in `arr2` come first (in `arr2`'s order), followed by remaining elements in ascending order.
 
@@ -553,6 +575,8 @@ console.log(relativeSortArray([2,3,1,3,2,4,6,7,9,2,19], [2,1,4,3,9,6]));
 ---
 
 ### Problem 4: Intersection of Two Arrays
+
+**Practice Links:** [LeetCode #350](https://leetcode.com/problems/intersection-of-two-arrays-ii/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/intersection-of-two-sorted-arrays-1587115620/1)
 
 **Problem Statement:** Find the intersection of two arrays (each element appears as many times as it shows in both).
 

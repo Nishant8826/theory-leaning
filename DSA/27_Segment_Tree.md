@@ -175,6 +175,8 @@ console.log(st.query(0, 5)); // 41 (1+3+10+7+9+11)
 
 ### Question 1: Range Sum Query — Mutable
 
+**Practice Links:** [LeetCode #307](https://leetcode.com/problems/range-sum-query-mutable/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/range-sum-query-mutable/1)
+
 **Problem Statement:** Handle multiple update and range sum queries efficiently.
 
 #### 🐢 Brute Force — Prefix Sum (fast query, slow update)
@@ -227,6 +229,8 @@ console.log(na.sumRange(0, 2)); // 8
 ---
 
 ### Question 2: Range Minimum Query
+
+**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/range-minimum-query/1)
 
 **Problem Statement:** Find the minimum element in a range [l, r] with point updates.
 
@@ -281,6 +285,8 @@ console.log(mst.query(1, 4)); // 4
 ---
 
 ### Question 3: Count of Range Sum
+
+**Practice Links:** [LeetCode #327](https://leetcode.com/problems/count-of-range-sum/)
 
 **Problem Statement:** Count the number of range sums that lie in [lower, upper].
 
@@ -338,6 +344,8 @@ console.log(countRangeSum([-2, 5, -1], -2, 2)); // 3
 
 ### Problem 1: Range XOR Query
 
+**Practice Links:** [LeetCode #1310](https://leetcode.com/problems/xor-queries-of-a-subarray/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/xor-queries-of-a-subarray/1)
+
 ```javascript
 class XORSegmentTree {
   constructor(nums) {
@@ -375,6 +383,8 @@ console.log(xst.query(1, 2)); // 3^5 = 6
 ---
 
 ### Problem 2: Count Inversions Using Segment Tree
+
+**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/inversion-of-array-1587115620/1)
 
 ```javascript
 function countInversions(arr) {

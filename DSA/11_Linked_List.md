@@ -48,6 +48,8 @@ Think of a **train**: each car (node) carries passengers (data) and is connected
 
 ### Problem: Traverse and Print a Linked List
 
+**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/linked-list-insertion-1587115620/1)
+
 ```javascript
 class ListNode {
   constructor(val) {
@@ -100,6 +102,8 @@ printList(list); // 1 → 2 → 3 → 4 → 5
 
 ### Reverse a Linked List (Most Classic Problem)
 
+**Practice Links:** [LeetCode #206](https://leetcode.com/problems/reverse-linked-list/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/reverse-a-linked-list/1)
+
 ```javascript
 // Iterative reversal — O(n) time, O(1) space
 function reverseList(head) {
@@ -149,6 +153,8 @@ Result:   3 → 2 → 1 → null
 ## 💼 LinkedIn / Interview Questions (WITH FULL SOLUTIONS)
 
 ### Question 1: Detect a Cycle in a Linked List
+
+**Practice Links:** [LeetCode #141](https://leetcode.com/problems/linked-list-cycle/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/detect-loop-in-linked-list/1)
 
 **Problem Statement:** Determine if a linked list has a cycle.
 
@@ -200,6 +206,8 @@ function hasCycleOptimized(head) {
 ---
 
 ### Question 2: Find the Middle of a Linked List
+
+**Practice Links:** [LeetCode #876](https://leetcode.com/problems/middle-of-the-linked-list/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/finding-middle-element-in-a-linked-list/1)
 
 **Problem Statement:** Find the middle node of a linked list.
 
@@ -258,6 +266,8 @@ console.log(middleOptimized(list).val); // 3
 
 ### Question 3: Merge Two Sorted Linked Lists
 
+**Practice Links:** [LeetCode #21](https://leetcode.com/problems/merge-two-sorted-lists/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/merge-two-sorted-linked-lists/1)
+
 **Problem Statement:** Merge two sorted linked lists into one sorted list.
 
 #### 🐢 Brute Force
@@ -315,6 +325,8 @@ console.log(toArray(mergeOptimized(l1, l2))); // [1, 1, 2, 3, 4, 4]
 ---
 
 ### Question 4: Remove Nth Node from End
+
+**Practice Links:** [LeetCode #19](https://leetcode.com/problems/remove-nth-node-from-end-of-list/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/remove-nth-node-from-end-of-linked-list/1)
 
 **Problem Statement:** Remove the nth node from the end of a linked list.
 
@@ -396,6 +408,8 @@ console.log(toArray(removeNthFromEndOptimized(list, 2))); // [1, 2, 3, 5]
 
 ### Problem 1: Check if Linked List is a Palindrome
 
+**Practice Links:** [LeetCode #234](https://leetcode.com/problems/palindrome-linked-list/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/check-if-linked-list-is-pallindrome/1)
+
 ```javascript
 function isPalindrome(head) {
   // Find middle
@@ -445,6 +459,8 @@ console.log(isPalindrome(createList([1, 2, 3]))); // false
 
 ### Problem 2: Intersection of Two Linked Lists
 
+**Practice Links:** [LeetCode #160](https://leetcode.com/problems/intersection-of-two-linked-lists/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/intersection-point-in-y-shapped-linked-lists/1)
+
 ```javascript
 function getIntersection(headA, headB) {
   let pA = headA;
@@ -467,6 +483,8 @@ function getIntersection(headA, headB) {
 ---
 
 ### Problem 3: Add Two Numbers (Linked List)
+
+**Practice Links:** [LeetCode #2](https://leetcode.com/problems/add-two-numbers/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/add-two-numbers-represented-by-linked-lists/1)
 
 **Problem Statement:** Two linked lists represent numbers in reverse. Add them and return the sum as a linked list.
 

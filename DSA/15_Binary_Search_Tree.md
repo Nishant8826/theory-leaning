@@ -43,6 +43,8 @@ Think of a **phone book** organized as a tree. Each page says: "names before me 
 
 ### Problem: Search in BST
 
+**Practice Links:** [LeetCode #700](https://leetcode.com/problems/search-in-a-binary-search-tree/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/search-a-node-in-bst/1)
+
 ```javascript
 class TreeNode {
   constructor(val) {
@@ -78,6 +80,8 @@ function searchBrute(root, target) {
 
 ### BST Search — Use the BST Property
 
+**Practice Links:** [LeetCode #700](https://leetcode.com/problems/search-in-a-binary-search-tree/)
+
 ```javascript
 // Optimized: Use BST property — O(log n) for balanced tree
 function searchBST(root, target) {
@@ -94,6 +98,8 @@ function searchBST(root, target) {
 ```
 
 ### BST Insert
+
+**Practice Links:** [LeetCode #701](https://leetcode.com/problems/insert-into-a-binary-search-tree/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/insert-a-node-in-bst/1)
 
 ```javascript
 function insertBST(root, val) {
@@ -116,6 +122,8 @@ let root = null;
 ```
 
 ### BST Delete
+
+**Practice Links:** [LeetCode #450](https://leetcode.com/problems/delete-node-in-a-bst/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/delete-a-node-from-bst/1)
 
 ```javascript
 function deleteBST(root, key) {
@@ -159,6 +167,8 @@ function deleteBST(root, key) {
 
 ### Question 1: Validate Binary Search Tree
 
+**Practice Links:** [LeetCode #98](https://leetcode.com/problems/validate-binary-search-tree/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/check-for-bst/1)
+
 **Problem Statement:** Check if a binary tree is a valid BST.
 
 #### 🐢 Brute Force — Inorder and Check Sorted
@@ -200,6 +210,8 @@ function isValidBST(root, min = -Infinity, max = Infinity) {
 ---
 
 ### Question 2: Lowest Common Ancestor in BST
+
+**Practice Links:** [LeetCode #235](https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/lowest-common-ancestor-in-a-bst/1)
 
 **Problem Statement:** Find the lowest common ancestor (LCA) of two nodes in a BST.
 
@@ -260,6 +272,8 @@ function lcaOptimized(root, p, q) {
 ---
 
 ### Question 3: Kth Smallest Element in BST
+
+**Practice Links:** [LeetCode #230](https://leetcode.com/problems/kth-smallest-element-in-a-bst/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/find-k-th-smallest-element-in-bst/1)
 
 **Problem Statement:** Find the kth smallest element in a BST.
 
@@ -327,6 +341,8 @@ function kthSmallestOptimized(root, k) {
 
 ### Problem 1: Convert Sorted Array to Balanced BST
 
+**Practice Links:** [LeetCode #108](https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/array-to-bst4443/1)
+
 ```javascript
 function sortedArrayToBST(nums) {
   if (nums.length === 0) return null;
@@ -351,6 +367,8 @@ const bst = sortedArrayToBST([1, 2, 3, 4, 5, 6, 7]);
 ---
 
 ### Problem 2: BST Iterator
+
+**Practice Links:** [LeetCode #173](https://leetcode.com/problems/binary-search-tree-iterator/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/bst-iterator/1)
 
 ```javascript
 class BSTIterator {
@@ -385,6 +403,8 @@ class BSTIterator {
 ---
 
 ### Problem 3: Two Sum in BST
+
+**Practice Links:** [LeetCode #653](https://leetcode.com/problems/two-sum-iv-input-is-a-bst/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/find-a-pair-with-given-target-in-bst/1)
 
 ```javascript
 function findTarget(root, k) {

@@ -45,6 +45,8 @@ Besides the plate analogy, think of **Pringles chips** — you can only take the
 
 ### Problem: Valid Parentheses
 
+**Practice Links:** [LeetCode #20](https://leetcode.com/problems/valid-parentheses/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/parenthesis-checker2744/1)
+
 Given a string containing `(){}[]`, determine if it's valid. Every opening bracket must have a matching closing bracket in the correct order.
 
 ```javascript
@@ -127,6 +129,8 @@ console.log(isValidOptimized("{[]}"));   // true
 
 ### Question 1: Min Stack
 
+**Practice Links:** [LeetCode #155](https://leetcode.com/problems/min-stack/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/special-stack/1)
+
 **Problem Statement:** Design a stack that supports push, pop, top, and retrieving the minimum element in O(1).
 
 **Thought Process:** Maintain a second stack that tracks the minimum at each level.
@@ -204,6 +208,8 @@ console.log(ms.getMin()); // 2
 
 ### Question 2: Next Greater Element
 
+**Practice Links:** [LeetCode #496](https://leetcode.com/problems/next-greater-element-i/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/next-larger-element-1587115620/1)
+
 **Problem Statement:** For each element, find the next element that is greater than it (-1 if no such element).
 
 Example: `[4, 5, 2, 25]` → `[5, 25, 25, -1]`
@@ -276,6 +282,8 @@ console.log(nextGreaterOptimized([13, 7, 6, 12]));   // [-1, 12, 12, -1]
 
 ### Question 3: Evaluate Reverse Polish Notation (Postfix)
 
+**Practice Links:** [LeetCode #150](https://leetcode.com/problems/evaluate-reverse-polish-notation/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/evaluation-of-postfix-expression1735/1)
+
 **Problem Statement:** Evaluate a postfix expression like `["2", "1", "+", "3", "*"]` → `9`.
 
 **Thought Process:** Use a stack. Push numbers. When you see an operator, pop two numbers, apply the operator, push the result.
@@ -326,6 +334,8 @@ console.log(evalRPN(["4", "13", "5", "/", "+"])); // 6 → 4 + (13/5)
 ---
 
 ### Question 4: Daily Temperatures
+
+**Practice Links:** [LeetCode #739](https://leetcode.com/problems/daily-temperatures/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/daily-temperatures/1)
 
 **Problem Statement:** Given daily temperatures, for each day find how many days you'd wait for a warmer day.
 
@@ -397,6 +407,8 @@ console.log(dailyTempsOptimized([73, 74, 75, 71, 69, 72, 76, 73]));
 
 ### Problem 1: Implement a Queue using Two Stacks
 
+**Practice Links:** [LeetCode #232](https://leetcode.com/problems/implement-queue-using-stacks/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/queue-using-two-stacks/1)
+
 ```javascript
 class QueueUsingStacks {
   constructor() {
@@ -432,6 +444,8 @@ console.log(q.dequeue()); // 2
 
 ### Problem 2: Largest Rectangle in Histogram
 
+**Practice Links:** [LeetCode #84](https://leetcode.com/problems/largest-rectangle-in-histogram/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/maximum-rectangular-area-in-a-histogram-1587115620/1)
+
 ```javascript
 function largestRectangle(heights) {
   const stack = [];
@@ -463,6 +477,8 @@ console.log(largestRectangle([2, 1, 5, 6, 2, 3])); // 10
 ---
 
 ### Problem 3: Decode String
+
+**Practice Links:** [LeetCode #394](https://leetcode.com/problems/decode-string/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/decode-the-string2444/1)
 
 **Problem Statement:** Decode strings like `"3[a2[c]]"` → `"accaccacc"`.
 

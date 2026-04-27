@@ -155,6 +155,8 @@ Both visit every vertex and edge exactly once.
 
 ### Question 1: Number of Islands
 
+**Practice Links:** [LeetCode #200](https://leetcode.com/problems/number-of-islands/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/find-the-number-of-islands/1)
+
 **Problem Statement:** Given a 2D grid of `'1'` (land) and `'0'` (water), count the number of islands.
 
 **Thought Process:** Each island is a connected component of `'1'`s. Use DFS/BFS from each unvisited `'1'` to mark the entire island.
@@ -243,6 +245,8 @@ function numIslandsBFS(grid) {
 
 ### Question 2: Shortest Path in Unweighted Graph (BFS)
 
+**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/shortest-path-in-undirected-graph-having-unit-distance/1)
+
 **Problem Statement:** Find the shortest path from source to destination in an unweighted graph.
 
 #### 🐢 Brute Force — DFS (finds a path, not necessarily shortest)
@@ -308,6 +312,8 @@ console.log(shortestPathBFS(g, 'A', 'E')); // ['A', 'C', 'E']
 ---
 
 ### Question 3: Detect Cycle in an Undirected Graph
+
+**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/detect-cycle-in-an-undirected-graph/1)
 
 **Problem Statement:** Check if an undirected graph contains a cycle.
 
@@ -396,6 +402,8 @@ function hasCycleBFS(n, edges) {
 
 ### Question 4: Detect Cycle in a Directed Graph
 
+**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/detect-cycle-in-a-directed-graph/1)
+
 ```javascript
 function hasCycleDirected(n, edges) {
   const graph = {};
@@ -438,6 +446,8 @@ console.log(hasCycleDirected(4, [[0,1],[1,2],[2,0]]));       // true
 
 ### Problem 1: Flood Fill
 
+**Practice Links:** [LeetCode #733](https://leetcode.com/problems/flood-fill/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/flood-fill-algorithm1856/1)
+
 ```javascript
 function floodFill(image, sr, sc, color) {
   const original = image[sr][sc];
@@ -466,6 +476,8 @@ console.log(floodFill([[1,1,1],[1,1,0],[1,0,1]], 1, 1, 2));
 ---
 
 ### Problem 2: Course Schedule (Can Finish?)
+
+**Practice Links:** [LeetCode #207](https://leetcode.com/problems/course-schedule/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/course-schedule/1)
 
 ```javascript
 function canFinish(numCourses, prerequisites) {
@@ -505,6 +517,8 @@ console.log(canFinish(2, [[1,0],[0,1]])); // false (cycle!)
 ---
 
 ### Problem 3: Surrounded Regions
+
+**Practice Links:** [LeetCode #130](https://leetcode.com/problems/surrounded-regions/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/surrounded-regions-1616126287/1)
 
 ```javascript
 function solve(board) {

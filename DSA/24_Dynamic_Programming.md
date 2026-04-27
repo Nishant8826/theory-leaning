@@ -38,6 +38,8 @@ Or think of **learning multiplication tables**. Instead of counting 7×8 every t
 
 ### Problem: Climbing Stairs
 
+**Practice Links:** [LeetCode #70](https://leetcode.com/problems/climbing-stairs/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/count-ways-to-reach-the-nth-stair-1587115620/1)
+
 How many distinct ways to climb n stairs (1 or 2 steps at a time)?
 
 ```javascript
@@ -149,6 +151,8 @@ console.log(climbStairsOptimal(45)); // 1836311903
 
 ### Question 1: 0/1 Knapsack
 
+**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/0-1-knapsack-problem0945/1)
+
 **Problem Statement:** Given items with weights and values, maximize value in a knapsack of capacity W. Each item can be taken at most once.
 
 #### 🐢 Brute Force
@@ -210,6 +214,8 @@ console.log(knapsackDP([1, 3, 4, 5], [1, 4, 5, 7], 7)); // 9
 ---
 
 ### Question 2: Longest Common Subsequence (LCS)
+
+**Practice Links:** [LeetCode #1143](https://leetcode.com/problems/longest-common-subsequence/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/longest-common-subsequence-1587115620/1)
 
 **Problem Statement:** Find the length of the longest subsequence common to two strings.
 
@@ -278,6 +284,8 @@ console.log(lcsDP("abc", "def"));     // 0
 
 ### Question 3: Coin Change (Minimum Coins)
 
+**Practice Links:** [LeetCode #322](https://leetcode.com/problems/coin-change/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/number-of-coins1824/1)
+
 **Problem Statement:** Given coin denominations, find the minimum coins to make the target amount.
 
 
@@ -342,6 +350,8 @@ console.log(coinChangeDP([1, 2, 5], 11));        // 3
 ---
 
 ### Question 4: Longest Increasing Subsequence (LIS)
+
+**Practice Links:** [LeetCode #300](https://leetcode.com/problems/longest-increasing-subsequence/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/longest-increasing-subsequence-1587115620/1)
 
 **Problem Statement:** Find the length of the longest strictly increasing subsequence.
 
@@ -414,6 +424,8 @@ console.log(lisOptimized([10, 9, 2, 5, 3, 7, 101, 18])); // 4
 
 ### Problem 1: House Robber
 
+**Practice Links:** [LeetCode #198](https://leetcode.com/problems/house-robber/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/stickler-theif-1587115620/1)
+
 **Problem Statement:** Rob houses along a street. Can't rob adjacent houses. Maximize total loot.
 
 ```javascript
@@ -445,6 +457,8 @@ console.log(rob([2, 7, 9, 3, 1]));  // 12 (rob house 1, 3, 5)
 
 ### Problem 2: Unique Paths
 
+**Practice Links:** [LeetCode #62](https://leetcode.com/problems/unique-paths/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/number-of-paths0911/1)
+
 ```javascript
 function uniquePaths(m, n) {
   const dp = Array.from({length: m}, () => new Array(n).fill(1));
@@ -469,6 +483,8 @@ console.log(uniquePaths(3, 3)); // 6
 ---
 
 ### Problem 3: Edit Distance
+
+**Practice Links:** [LeetCode #72](https://leetcode.com/problems/edit-distance/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/edit-distance3702/1)
 
 ```javascript
 function minDistance(word1, word2) {
@@ -505,6 +521,8 @@ console.log(minDistance("intention", "execution")); // 5
 ---
 
 ### Problem 4: Longest Palindromic Substring
+
+**Practice Links:** [LeetCode #5](https://leetcode.com/problems/longest-palindromic-substring/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/longest-palindromic-substring0806/1)
 
 ```javascript
 function longestPalindrome(s) {

@@ -32,6 +32,8 @@ Greedy works when the problem has:
 
 ### Problem: Activity Selection (Maximum Non-Overlapping Intervals)
 
+**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/activity-selection-1587115620/1)
+
 ```javascript
 // Brute Force: Try all subsets, find the largest non-overlapping set
 function activitySelectionBrute(activities) {
@@ -111,6 +113,8 @@ By always choosing the activity that **ends earliest**, we leave the most room f
 
 ### Question 1: Jump Game
 
+**Practice Links:** [LeetCode #55](https://leetcode.com/problems/jump-game/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/jump-game/1)
+
 **Problem Statement:** Given an array where each element is the maximum jump length, determine if you can reach the last index.
 
 
@@ -171,6 +175,8 @@ console.log(canJumpGreedy([3, 2, 1, 0, 4])); // false
 
 ### Question 2: Minimum Number of Coins
 
+**Practice Links:** [LeetCode #322](https://leetcode.com/problems/coin-change/) (DP version) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/number-of-coins1824/1)
+
 **Problem Statement:** Given coin denominations and a target amount, find the minimum coins needed.
 
 #### 🐢 Brute Force — Recursive
@@ -220,6 +226,8 @@ console.log(minCoinsGreedy([1, 5, 10, 25], 63)); // 6 (25+25+10+1+1+1)
 
 ### Question 3: Fractional Knapsack
 
+**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/fractional-knapsack-1587115620/1)
+
 **Problem Statement:** Given items with weights and values, maximize value in a knapsack of capacity W. You can take fractions of items.
 
 #### ⚡ Optimized — Greedy (Sort by Value/Weight Ratio)
@@ -264,6 +272,8 @@ console.log(fractionalKnapsack(items, 50)); // 240
 
 ### Question 4: Non-Overlapping Intervals (Minimum Removals)
 
+**Practice Links:** [LeetCode #435](https://leetcode.com/problems/non-overlapping-intervals/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/non-overlapping-intervals/1)
+
 **Problem Statement:** Find the minimum number of intervals to remove to make the rest non-overlapping.
 
 ```javascript
@@ -298,6 +308,8 @@ console.log(eraseOverlapIntervals([[1,2],[1,2],[1,2]]));       // 2
 
 ### Problem 1: Assign Cookies
 
+**Practice Links:** [LeetCode #455](https://leetcode.com/problems/assign-cookies/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/assign-cookies/1)
+
 ```javascript
 function findContentChildren(children, cookies) {
   children.sort((a, b) => a - b);
@@ -326,6 +338,8 @@ console.log(findContentChildren([1, 2], [1, 2, 3]));    // 2
 ---
 
 ### Problem 2: Gas Station
+
+**Practice Links:** [LeetCode #134](https://leetcode.com/problems/gas-station/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/gas-station/1)
 
 ```javascript
 function canCompleteCircuit(gas, cost) {
@@ -365,6 +379,8 @@ console.log(canCompleteCircuit([2,3,4], [3,4,3]));           // -1
 ---
 
 ### Problem 3: Task Scheduler
+
+**Practice Links:** [LeetCode #621](https://leetcode.com/problems/task-scheduler/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/task-scheduler/1)
 
 ```javascript
 function leastInterval(tasks, n) {

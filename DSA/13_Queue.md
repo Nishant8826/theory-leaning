@@ -39,6 +39,8 @@ A queue is like a **drive-through**. Cars line up, the first car gets served fir
 
 ### Queue Implementation Using Array
 
+**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/implement-queue-using-array/1)
+
 ```javascript
 // Simple Queue using array (brute force — shift is O(n))
 class QueueBrute {
@@ -83,6 +85,8 @@ console.log(q.front());   // 2
 ## ⚡ Optimized Approach
 
 ### Queue Using Object (O(1) Dequeue)
+
+**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/implement-queue-using-array/1) (using object instead of array)
 
 ```javascript
 class Queue {
@@ -141,6 +145,8 @@ console.log(q.size());    // 1
 ## 💼 LinkedIn / Interview Questions (WITH FULL SOLUTIONS)
 
 ### Question 1: Implement Stack Using Queues
+
+**Practice Links:** [LeetCode #225](https://leetcode.com/problems/implement-stack-using-queues/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/stack-using-two-queues/1)
 
 **Problem Statement:** Implement a stack using only queue operations.
 
@@ -202,6 +208,8 @@ class StackUsingQueues {
 ---
 
 ### Question 2: First Non-Repeating Character in a Stream
+
+**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/first-non-repeating-character-in-a-stream1216/1)
 
 **Problem Statement:** Given a stream of characters, find the first non-repeating character at each step.
 
@@ -270,6 +278,8 @@ console.log(firstNonRepeatingOptimized("aabcbcd"));
 ---
 
 ### Question 3: Rotting Oranges (BFS)
+
+**Practice Links:** [LeetCode #994](https://leetcode.com/problems/rotting-oranges/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/rotten-oranges2536/1)
 
 **Problem Statement:** In a grid, fresh oranges (1) rot if adjacent to rotten ones (2). Find the minimum time for all oranges to rot, or -1 if impossible.
 
@@ -375,6 +385,8 @@ console.log(rottingOrangesOptimized([[2,1,1],[1,1,0],[0,1,1]])); // 4
 
 ### Problem 1: Circular Queue Implementation
 
+**Practice Links:** [LeetCode #622](https://leetcode.com/problems/design-circular-queue/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/circular-queue-implementation/1)
+
 ```javascript
 class CircularQueue {
   constructor(k) {
@@ -424,6 +436,8 @@ console.log(cq.front());    // 2
 
 ### Problem 2: Number of Recent Calls
 
+**Practice Links:** [LeetCode #933](https://leetcode.com/problems/number-of-recent-calls/)
+
 ```javascript
 class RecentCounter {
   constructor() {
@@ -454,6 +468,8 @@ console.log(rc.ping(3002)); // 3
 ---
 
 ### Problem 3: Generate Binary Numbers from 1 to N
+
+**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/generate-binary-numbers-1587115620/1)
 
 ```javascript
 function generateBinary(n) {

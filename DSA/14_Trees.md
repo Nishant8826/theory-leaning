@@ -60,6 +60,8 @@ A **binary tree** is a tree where each node has **at most 2 children** (left and
 
 ### Tree Node and Traversals
 
+**Practice Links:** [LeetCode #94](https://leetcode.com/problems/binary-tree-inorder-traversal/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/inorder-traversal/1)
+
 ```javascript
 class TreeNode {
   constructor(val) {
@@ -110,6 +112,8 @@ console.log(postorder(root)); // [4, 5, 2, 3, 1]
 
 ### Level Order Traversal (BFS) — Using Queue
 
+**Practice Links:** [LeetCode #102](https://leetcode.com/problems/binary-tree-level-order-traversal/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/level-order-traversal/1)
+
 ```javascript
 function levelOrder(root) {
   if (!root) return [];
@@ -139,6 +143,8 @@ console.log(levelOrder(root)); // [[1], [2, 3], [4, 5]]
 ```
 
 ### Iterative Inorder Traversal (Using Stack)
+
+**Practice Links:** [LeetCode #94](https://leetcode.com/problems/binary-tree-inorder-traversal/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/inorder-traversal/1) (Iterative)
 
 ```javascript
 function inorderIterative(root) {
@@ -177,6 +183,8 @@ console.log(inorderIterative(root)); // [4, 2, 5, 1, 3]
 ## 💼 LinkedIn / Interview Questions (WITH FULL SOLUTIONS)
 
 ### Question 1: Maximum Depth of Binary Tree
+
+**Practice Links:** [LeetCode #104](https://leetcode.com/problems/maximum-depth-of-binary-tree/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/height-of-binary-tree/1)
 
 **Problem Statement:** Find the maximum depth (height) of a binary tree.
 
@@ -230,6 +238,8 @@ console.log(maxDepthDFS(root)); // 3
 ---
 
 ### Question 2: Invert Binary Tree
+
+**Practice Links:** [LeetCode #226](https://leetcode.com/problems/invert-binary-tree/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/mirror-tree/1)
 
 **Problem Statement:** Mirror a binary tree — swap every left and right child.
 
@@ -285,6 +295,8 @@ function invertDFS(root) {
 
 ### Question 3: Check if Two Trees are Identical
 
+**Practice Links:** [LeetCode #100](https://leetcode.com/problems/same-tree/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/determine-if-two-trees-are-identical/1)
+
 **Problem Statement:** Check if two binary trees are structurally identical with the same values.
 
 #### 🐢 Brute Force — Convert to Arrays and Compare
@@ -318,6 +330,8 @@ function isSameTree(p, q) {
 ---
 
 ### Question 4: Diameter of Binary Tree
+
+**Practice Links:** [LeetCode #543](https://leetcode.com/problems/diameter-of-binary-tree/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/diameter-of-binary-tree/1)
 
 **Problem Statement:** Find the diameter — the longest path between any two nodes (not necessarily through the root).
 
@@ -384,6 +398,8 @@ console.log(diameterOptimized(root)); // 3
 
 ### Problem 1: Check if Tree is Symmetric
 
+**Practice Links:** [LeetCode #101](https://leetcode.com/problems/symmetric-tree/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/symmetric-tree/1)
+
 ```javascript
 function isSymmetric(root) {
   if (!root) return true;
@@ -407,6 +423,8 @@ function isSymmetric(root) {
 ---
 
 ### Problem 2: Path Sum
+
+**Practice Links:** [LeetCode #112](https://leetcode.com/problems/path-sum/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/path-sum/1)
 
 **Problem Statement:** Check if any root-to-leaf path sums to a target.
 
@@ -440,6 +458,8 @@ function hasPathSum(root, target) {
 ---
 
 ### Problem 3: Count Good Nodes
+
+**Practice Links:** [LeetCode #1448](https://leetcode.com/problems/count-good-nodes-in-binary-tree/)
 
 **Problem Statement:** A node is "good" if no node on the path from root to it has a greater value.
 

@@ -163,6 +163,8 @@ console.log(bellmanFord(5, edges, 0)); // [0, 3, 1, 4, 7]
 
 ### Question 1: Network Delay Time
 
+**Practice Links:** [LeetCode #743](https://leetcode.com/problems/network-delay-time/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/network-delay-time/1)
+
 **Problem Statement:** N nodes, given times as [u, v, w]. Find the time for all nodes to receive a signal from source.
 
 #### 🐢 Brute Force — Bellman-Ford
@@ -233,6 +235,8 @@ console.log(networkDelayDijkstra([[2,1,1],[2,3,1],[3,4,1]], 4, 2)); // 2
 
 ### Question 2: Cheapest Flights Within K Stops
 
+**Practice Links:** [LeetCode #787](https://leetcode.com/problems/cheapest-flights-within-k-stops/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/cheapest-flights-within-k-stops/1)
+
 **Problem Statement:** Find the cheapest price from source to destination with at most k stops.
 
 
@@ -277,6 +281,8 @@ console.log(findCheapestPrice(4, [[0,1,100],[1,2,100],[2,0,100],[1,3,600],[2,3,2
 ---
 
 ### Question 3: Path With Minimum Effort
+
+**Practice Links:** [LeetCode #1631](https://leetcode.com/problems/path-with-minimum-effort/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/path-with-minimum-effort/1)
 
 **Problem Statement:** In a grid, find a path from top-left to bottom-right minimizing the maximum height difference between consecutive cells.
 
@@ -326,6 +332,8 @@ console.log(minimumEffortPath([[1,2,2],[3,8,2],[5,3,5]])); // 2
 
 ### Problem 1: Shortest Path in Binary Matrix
 
+**Practice Links:** [LeetCode #1091](https://leetcode.com/problems/shortest-path-in-binary-matrix/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/shortest-path-in-a-binary-maze-1655453161/1)
+
 ```javascript
 function shortestPathBinaryMatrix(grid) {
   const n = grid.length;
@@ -362,6 +370,8 @@ console.log(shortestPathBinaryMatrix([[0,0,0],[1,1,0],[1,1,0]])); // 4
 ---
 
 ### Problem 2: Floyd-Warshall (All Pairs Shortest Path)
+
+**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/floyd-warshall4825/1)
 
 ```javascript
 function floydWarshall(n, edges) {

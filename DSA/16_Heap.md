@@ -57,6 +57,8 @@ Think of a **company hierarchy**. The CEO (root) is always the most important pe
 
 ### Problem: Find Kth Largest Element
 
+**Practice Links:** [LeetCode #215](https://leetcode.com/problems/kth-largest-element-in-an-array/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/k-largest-elements3736/1)
+
 ```javascript
 // Brute Force: Sort and pick
 function kthLargestBrute(arr, k) {
@@ -164,6 +166,8 @@ console.log(kthLargestHeap([3, 2, 1, 5, 6, 4], 2)); // 5
 
 ### Question 1: Top K Frequent Elements
 
+**Practice Links:** [LeetCode #347](https://leetcode.com/problems/top-k-frequent-elements/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/top-k-frequent-elements-in-array--170637/1)
+
 **Problem Statement:** Find the k most frequent elements in an array.
 
 #### 🐢 Brute Force
@@ -216,6 +220,8 @@ console.log(topKFrequentOptimized([1,1,1,2,2,3], 2)); // [1, 2]
 ---
 
 ### Question 2: Merge K Sorted Lists
+
+**Practice Links:** [LeetCode #23](https://leetcode.com/problems/merge-k-sorted-lists/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/merge-k-sorted-linked-lists/1)
 
 **Problem Statement:** Merge k sorted linked lists into one sorted list.
 
@@ -287,6 +293,8 @@ function mergeKListsOptimized(lists) {
 ---
 
 ### Question 3: Find Median from Data Stream
+
+**Practice Links:** [LeetCode #295](https://leetcode.com/problems/find-median-from-data-stream/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/median-in-a-stream-1587115620/1)
 
 **Problem Statement:** Design a class that can find the median from a stream of numbers.
 
@@ -360,6 +368,8 @@ class MedianFinderOptimized {
 
 ### Problem 1: Sort a Nearly Sorted Array
 
+**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/nearly-sorted-1587115620/1)
+
 ```javascript
 function sortNearlySorted(arr, k) {
   const heap = new MinHeap();
@@ -386,6 +396,8 @@ console.log(sortNearlySorted([6, 5, 3, 2, 8, 10, 9], 3)); // [2, 3, 5, 6, 8, 9, 
 ---
 
 ### Problem 2: Last Stone Weight
+
+**Practice Links:** [LeetCode #1046](https://leetcode.com/problems/last-stone-weight/)
 
 ```javascript
 function lastStoneWeight(stones) {
@@ -418,6 +430,10 @@ console.log(lastStoneWeight([2, 7, 4, 1, 8, 1])); // 1
 ---
 
 ### Problem 3: K Closest Points to Origin
+
+**Practice Links:** [LeetCode #973](https://leetcode.com/problems/k-closest-points-to-origin/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/k-closest-points-to-origin--170637/1)
+
+**Problem Statement:** Find the k points closest to the origin (0, 0).
 
 ```javascript
 function kClosest(points, k) {

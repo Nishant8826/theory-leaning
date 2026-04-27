@@ -61,6 +61,8 @@ Think of a **library catalog system**. Instead of searching every shelf, you loo
 
 ### Problem: Check if Two Arrays Have Common Elements
 
+**Practice Links:** [LeetCode #349](https://leetcode.com/problems/intersection-of-two-arrays/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/intersection-of-two-arrays2404/1)
+
 ```javascript
 // Brute Force: Compare every pair
 function hasCommonBrute(arr1, arr2) {
@@ -144,6 +146,8 @@ console.log(obj["key1"]); // "value1"
 
 ### Question 1: Two Sum
 
+**Practice Links:** [LeetCode #1](https://leetcode.com/problems/two-sum/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/key-pair5616/1)
+
 **Problem Statement:** Given an array and a target, find two numbers that add up to the target. Return their indices.
 
 **Thought Process:** For each number, calculate its complement (target - number). Use a hash map to check if the complement has been seen before.
@@ -207,6 +211,8 @@ console.log(twoSumOptimized([3, 2, 4], 6));       // [1, 2]
 ---
 
 ### Question 2: Group Anagrams
+
+**Practice Links:** [LeetCode #49](https://leetcode.com/problems/group-anagrams/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/print-anagrams-together/1)
 
 **Problem Statement:** Given an array of strings, group anagrams together.
 
@@ -284,6 +290,8 @@ console.log(groupAnagramsOptimized(["eat","tea","tan","ate","nat","bat"]));
 
 ### Question 3: Longest Consecutive Sequence
 
+**Practice Links:** [LeetCode #128](https://leetcode.com/problems/longest-consecutive-sequence/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/longest-consecutive-subsequence2449/1)
+
 **Problem Statement:** Find the length of the longest consecutive sequence in an unsorted array.
 
 Example: `[100, 4, 200, 1, 3, 2]` → `4` (sequence: 1, 2, 3, 4)
@@ -357,6 +365,8 @@ console.log(longestConsecutiveOptimized([0, 3, 7, 2, 5, 8, 4, 6, 0, 1])); // 9
 ---
 
 ### Question 4: Subarray Sum Equals K
+
+**Practice Links:** [LeetCode #560](https://leetcode.com/problems/subarray-sum-equals-k/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/subarrays-with-sum-k/1)
 
 **Problem Statement:** Find the total number of contiguous subarrays whose sum equals `k`.
 
@@ -435,6 +445,8 @@ console.log(subarraySumOptimized([1, 2, 3, -3, 1, 1, 1, 4, 2, -3], 3)); // 8
 
 ### Problem 1: Valid Sudoku
 
+**Practice Links:** [LeetCode #36](https://leetcode.com/problems/valid-sudoku/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/is-sudoku-valid4820/1)
+
 **Problem Statement:** Determine if a 9×9 Sudoku board is valid (partially filled). Check each row, column, and 3×3 box for duplicates.
 
 ```javascript
@@ -472,6 +484,8 @@ function isValidSudoku(board) {
 
 ### Problem 2: Intersection of Two Arrays
 
+**Practice Links:** [LeetCode #349](https://leetcode.com/problems/intersection-of-two-arrays/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/intersection-of-two-arrays2404/1)
+
 **Problem Statement:** Find the common elements between two arrays (each element appears only once in result).
 
 ```javascript
@@ -499,6 +513,8 @@ console.log(intersection([4, 9, 5], [9, 4, 9, 8, 4])); // [9, 4]
 ---
 
 ### Problem 3: First Unique Character in a String
+
+**Practice Links:** [LeetCode #387](https://leetcode.com/problems/first-unique-character-in-a-string/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/non-repeating-character-1587115620/1)
 
 **Problem Statement:** Find the index of the first non-repeating character.
 
@@ -531,6 +547,8 @@ console.log(firstUniqChar("aabb"));         // -1
 ---
 
 ### Problem 4: Contains Duplicate Within K Distance
+
+**Practice Links:** [LeetCode #219](https://leetcode.com/problems/contains-duplicate-ii/)
 
 **Problem Statement:** Check if the array has two equal elements within distance `k` of each other.
 
