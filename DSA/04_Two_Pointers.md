@@ -34,7 +34,7 @@ Think of **squeezing toothpaste from both ends** of the tube — your hands star
 
 ### Problem: Find Pair with Given Sum in Sorted Array
 
-**Practice Links:** [LeetCode #167](https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/pair-with-given-sum-in-a-sorted-array4940/1)
+**Practice Links:** [LeetCode #167](https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/pair-with-given-sum-in-a-sorted-array4940/1) | [InterviewBit](https://www.interviewbit.com/problems/2-sum/)
 
 Given a **sorted** array and a target sum, find a pair of numbers that add up to the target.
 
@@ -114,7 +114,7 @@ console.log(findPairOptimized([2, 5, 9, 11], 11));    // [2, 9]
 
 ### Question 1: Three Sum (Find Triplets that Sum to Zero)
 
-**Practice Links:** [LeetCode #15](https://leetcode.com/problems/3sum/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/find-triplets-with-zero-sum/1)
+**Practice Links:** [LeetCode #15](https://leetcode.com/problems/3sum/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/find-triplets-with-zero-sum/1) | [InterviewBit](https://www.interviewbit.com/problems/3-sum/)
 
 **Problem Statement:** Given an array, find all unique triplets that sum to zero.
 
@@ -212,7 +212,7 @@ console.log(threeSumOptimized([-1, 0, 1, 2, -1, -4])); // [[-1, -1, 2], [-1, 0, 
 
 ### Question 2: Container With Most Water
 
-**Practice Links:** [LeetCode #11](https://leetcode.com/problems/container-with-most-water/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/container-with-most-water4658/1)
+**Practice Links:** [LeetCode #11](https://leetcode.com/problems/container-with-most-water/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/container-with-most-water4658/1) | [InterviewBit](https://www.interviewbit.com/problems/container-with-most-water/)
 
 **Problem Statement:** Given heights of lines at each position, find two lines that form the container holding the most water.
 
@@ -280,7 +280,7 @@ console.log(maxAreaOptimized([1, 8, 6, 2, 5, 4, 8, 3, 7])); // 49
 
 ### Question 3: Sort Colors (Dutch National Flag)
 
-**Practice Links:** [LeetCode #75](https://leetcode.com/problems/sort-colors/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/sort-an-array-of-0s-1s-and-2s4231/1)
+**Practice Links:** [LeetCode #75](https://leetcode.com/problems/sort-colors/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/sort-an-array-of-0s-1s-and-2s4231/1) | [InterviewBit](https://www.interviewbit.com/problems/sort-by-color/)
 
 **Problem Statement:** Given an array with only 0s, 1s, and 2s, sort it in-place in one pass.
 
@@ -364,7 +364,7 @@ console.log(sortColorsOptimized([2, 0, 2, 1, 1, 0])); // [0, 0, 1, 1, 2, 2]
 
 ### Question 4: Trapping Rain Water
 
-**Practice Links:** [LeetCode #42](https://leetcode.com/problems/trapping-rain-water/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/trapping-rain-water-1587115621/1)
+**Practice Links:** [LeetCode #42](https://leetcode.com/problems/trapping-rain-water/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/trapping-rain-water-1587115621/1) | [InterviewBit](https://www.interviewbit.com/problems/trapping-rain-water/)
 
 **Problem Statement:** Given elevation map heights, find how much rain water can be trapped.
 
@@ -451,7 +451,7 @@ console.log(trapOptimized([0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1])); // 6
 
 ### Problem 1: Remove Duplicates from Sorted Array
 
-**Practice Links:** [LeetCode #26](https://leetcode.com/problems/remove-duplicates-from-sorted-array/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/remove-duplicate-elements-from-sorted-array/1)
+**Practice Links:** [LeetCode #26](https://leetcode.com/problems/remove-duplicates-from-sorted-array/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/remove-duplicate-elements-from-sorted-array/1) | [InterviewBit](https://www.interviewbit.com/problems/remove-duplicates-from-sorted-array/)
 
 **Problem Statement:** Remove duplicates in-place from a sorted array and return the new length.
 
@@ -494,7 +494,7 @@ console.log(arr.slice(0, 5));       // [1, 2, 3, 4, 5]
 
 ### Problem 2: Squares of a Sorted Array
 
-**Practice Links:** [LeetCode #977](https://leetcode.com/problems/squares-of-a-sorted-array/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/squares-of-a-sorted-array/1)
+**Practice Links:** [LeetCode #977](https://leetcode.com/problems/squares-of-a-sorted-array/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/squares-of-a-sorted-array/1) | [CodeChef](https://www.codechef.com/problems/SQAL)
 
 **Problem Statement:** Given a sorted array (may contain negatives), return an array of squares sorted in non-decreasing order.
 
@@ -575,7 +575,7 @@ console.log(isSubsequence("", "anything"));  // true
 
 ### Problem 4: Merge Sorted Array In-Place
 
-**Practice Links:** [LeetCode #88](https://leetcode.com/problems/merge-sorted-array/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/merge-two-sorted-arrays-1587115620/1)
+**Practice Links:** [LeetCode #88](https://leetcode.com/problems/merge-sorted-array/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/merge-two-sorted-arrays-1587115620/1) | [InterviewBit](https://www.interviewbit.com/problems/merge-two-sorted-lists/)
 
 **Problem Statement:** Merge `nums2` into `nums1` where `nums1` has enough space. Both are sorted.
 

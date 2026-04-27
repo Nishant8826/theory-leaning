@@ -31,7 +31,7 @@ A stable sort preserves the relative order of equal elements. If two students ha
 
 ### Bubble Sort — The Simplest Sort
 
-**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/bubble-sort/1)
+**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/bubble-sort/1) | [HackerRank](https://www.hackerrank.com/challenges/ctci-bubble-sort/problem)
 
 **Idea:** Repeatedly compare adjacent elements and swap them if they're in the wrong order. Like bubbles rising to the surface.
 
@@ -120,7 +120,7 @@ console.log(selectionSort([64, 25, 12, 22, 11]));
 
 ### Insertion Sort
 
-**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/insertion-sort/1)
+**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/insertion-sort/1) | [HackerRank](https://www.hackerrank.com/challenges/insertionsort1/problem)
 
 ```javascript
 // Insertion Sort — O(n²) worst, O(n) best (nearly sorted)
@@ -263,7 +263,7 @@ console.log(quickSort([10, 7, 8, 9, 1, 5]));
 
 ### Question 1: Sort an Array of 0s, 1s, and 2s (Dutch National Flag)
 
-**Practice Links:** [LeetCode #75](https://leetcode.com/problems/sort-colors/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/sort-an-array-of-0s-1s-and-2s4231/1)
+**Practice Links:** [LeetCode #75](https://leetcode.com/problems/sort-colors/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/sort-an-array-of-0s-1s-and-2s4231/1) | [InterviewBit](https://www.interviewbit.com/problems/sort-by-color/)
 
 **Problem Statement:** Sort an array containing only 0, 1, and 2 in one pass without using a sorting algorithm.
 
@@ -316,7 +316,7 @@ console.log(sortColorsOptimized([2, 0, 1, 2, 1, 0])); // [0, 0, 1, 1, 2, 2]
 
 ### Question 2: Merge Intervals
 
-**Practice Links:** [LeetCode #56](https://leetcode.com/problems/merge-intervals/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/overlapping-intervals--170633/1)
+**Practice Links:** [LeetCode #56](https://leetcode.com/problems/merge-intervals/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/overlapping-intervals--170633/1) | [InterviewBit](https://www.interviewbit.com/problems/merge-overlapping-intervals/)
 
 **Problem Statement:** Given a collection of intervals, merge all overlapping intervals.
 
@@ -402,7 +402,7 @@ console.log(mergeIntervalsOptimized([[1,3],[2,6],[8,10],[15,18]]));
 
 ### Question 3: Kth Largest Element
 
-**Practice Links:** [LeetCode #215](https://leetcode.com/problems/kth-largest-element-in-an-array/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/k-largest-elements3736/1)
+**Practice Links:** [LeetCode #215](https://leetcode.com/problems/kth-largest-element-in-an-array/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/k-largest-elements3736/1) | [InterviewBit](https://www.interviewbit.com/problems/kth-smallest-element-in-the-array/)
 
 **Problem Statement:** Find the kth largest element in an unsorted array.
 
@@ -508,7 +508,7 @@ console.log(frequencySort("cccaaa")); // "cccaaa" or "aaaccc"
 
 ### Problem 2: Largest Number
 
-**Practice Links:** [LeetCode #179](https://leetcode.com/problems/largest-number/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/largest-number-formed-from-an-array1117/1)
+**Practice Links:** [LeetCode #179](https://leetcode.com/problems/largest-number/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/largest-number-formed-from-an-array1117/1) | [InterviewBit](https://www.interviewbit.com/problems/largest-number/)
 
 **Problem Statement:** Given a list of non-negative integers, arrange them to form the largest number.
 
@@ -576,7 +576,7 @@ console.log(relativeSortArray([2,3,1,3,2,4,6,7,9,2,19], [2,1,4,3,9,6]));
 
 ### Problem 4: Intersection of Two Arrays
 
-**Practice Links:** [LeetCode #350](https://leetcode.com/problems/intersection-of-two-arrays-ii/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/intersection-of-two-sorted-arrays-1587115620/1)
+**Practice Links:** [LeetCode #350](https://leetcode.com/problems/intersection-of-two-arrays-ii/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/intersection-of-two-sorted-arrays-1587115620/1) | [InterviewBit](https://www.interviewbit.com/problems/intersection-of-sorted-arrays/)
 
 **Problem Statement:** Find the intersection of two arrays (each element appears as many times as it shows in both).
 

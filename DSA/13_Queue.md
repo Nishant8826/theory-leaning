@@ -209,7 +209,7 @@ class StackUsingQueues {
 
 ### Question 2: First Non-Repeating Character in a Stream
 
-**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/first-non-repeating-character-in-a-stream1216/1)
+**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/first-non-repeating-character-in-a-stream1216/1) | [InterviewBit](https://www.interviewbit.com/problems/first-non-repeating-character-in-a-stream/)
 
 **Problem Statement:** Given a stream of characters, find the first non-repeating character at each step.
 

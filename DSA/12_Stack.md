@@ -45,7 +45,7 @@ Besides the plate analogy, think of **Pringles chips** — you can only take the
 
 ### Problem: Valid Parentheses
 
-**Practice Links:** [LeetCode #20](https://leetcode.com/problems/valid-parentheses/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/parenthesis-checker2744/1)
+**Practice Links:** [LeetCode #20](https://leetcode.com/problems/valid-parentheses/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/parenthesis-checker2744/1) | [InterviewBit](https://www.interviewbit.com/problems/balanced-parantheses/)
 
 Given a string containing `(){}[]`, determine if it's valid. Every opening bracket must have a matching closing bracket in the correct order.
 
@@ -129,7 +129,7 @@ console.log(isValidOptimized("{[]}"));   // true
 
 ### Question 1: Min Stack
 
-**Practice Links:** [LeetCode #155](https://leetcode.com/problems/min-stack/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/special-stack/1)
+**Practice Links:** [LeetCode #155](https://leetcode.com/problems/min-stack/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/special-stack/1) | [InterviewBit](https://www.interviewbit.com/problems/min-stack/)
 
 **Problem Statement:** Design a stack that supports push, pop, top, and retrieving the minimum element in O(1).
 
@@ -282,7 +282,7 @@ console.log(nextGreaterOptimized([13, 7, 6, 12]));   // [-1, 12, 12, -1]
 
 ### Question 3: Evaluate Reverse Polish Notation (Postfix)
 
-**Practice Links:** [LeetCode #150](https://leetcode.com/problems/evaluate-reverse-polish-notation/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/evaluation-of-postfix-expression1735/1)
+**Practice Links:** [LeetCode #150](https://leetcode.com/problems/evaluate-reverse-polish-notation/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/evaluation-of-postfix-expression1735/1) | [InterviewBit](https://www.interviewbit.com/problems/evaluate-expression/)
 
 **Problem Statement:** Evaluate a postfix expression like `["2", "1", "+", "3", "*"]` → `9`.
 
@@ -444,7 +444,7 @@ console.log(q.dequeue()); // 2
 
 ### Problem 2: Largest Rectangle in Histogram
 
-**Practice Links:** [LeetCode #84](https://leetcode.com/problems/largest-rectangle-in-histogram/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/maximum-rectangular-area-in-a-histogram-1587115620/1)
+**Practice Links:** [LeetCode #84](https://leetcode.com/problems/largest-rectangle-in-histogram/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/maximum-rectangular-area-in-a-histogram-1587115620/1) | [InterviewBit](https://www.interviewbit.com/problems/largest-rectangle-in-histogram/)
 
 ```javascript
 function largestRectangle(heights) {

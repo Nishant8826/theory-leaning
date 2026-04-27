@@ -113,7 +113,7 @@ By always choosing the activity that **ends earliest**, we leave the most room f
 
 ### Question 1: Jump Game
 
-**Practice Links:** [LeetCode #55](https://leetcode.com/problems/jump-game/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/jump-game/1)
+**Practice Links:** [LeetCode #55](https://leetcode.com/problems/jump-game/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/jump-game/1) | [InterviewBit](https://www.interviewbit.com/problems/jump-game-array/)
 
 **Problem Statement:** Given an array where each element is the maximum jump length, determine if you can reach the last index.
 
@@ -339,7 +339,7 @@ console.log(findContentChildren([1, 2], [1, 2, 3]));    // 2
 
 ### Problem 2: Gas Station
 
-**Practice Links:** [LeetCode #134](https://leetcode.com/problems/gas-station/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/gas-station/1)
+**Practice Links:** [LeetCode #134](https://leetcode.com/problems/gas-station/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/gas-station/1) | [InterviewBit](https://www.interviewbit.com/problems/gas-station/)
 
 ```javascript
 function canCompleteCircuit(gas, cost) {

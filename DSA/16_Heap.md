@@ -221,7 +221,7 @@ console.log(topKFrequentOptimized([1,1,1,2,2,3], 2)); // [1, 2]
 
 ### Question 2: Merge K Sorted Lists
 
-**Practice Links:** [LeetCode #23](https://leetcode.com/problems/merge-k-sorted-lists/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/merge-k-sorted-linked-lists/1)
+**Practice Links:** [LeetCode #23](https://leetcode.com/problems/merge-k-sorted-lists/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/merge-k-sorted-linked-lists/1) | [InterviewBit](https://www.interviewbit.com/problems/merge-k-sorted-lists/)
 
 **Problem Statement:** Merge k sorted linked lists into one sorted list.
 

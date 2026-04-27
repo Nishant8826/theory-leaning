@@ -371,7 +371,7 @@ console.log(shortestPathBinaryMatrix([[0,0,0],[1,1,0],[1,1,0]])); // 4
 
 ### Problem 2: Floyd-Warshall (All Pairs Shortest Path)
 
-**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/floyd-warshall4825/1)
+**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/floyd-warshall4825/1) | [InterviewBit](https://www.interviewbit.com/problems/all-pair-shortest-path/)
 
 ```javascript
 function floydWarshall(n, edges) {

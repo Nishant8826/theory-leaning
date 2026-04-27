@@ -102,7 +102,7 @@ printList(list); // 1 → 2 → 3 → 4 → 5
 
 ### Reverse a Linked List (Most Classic Problem)
 
-**Practice Links:** [LeetCode #206](https://leetcode.com/problems/reverse-linked-list/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/reverse-a-linked-list/1)
+**Practice Links:** [LeetCode #206](https://leetcode.com/problems/reverse-linked-list/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/reverse-a-linked-list/1) | [InterviewBit](https://www.interviewbit.com/problems/reverse-linked-list/)
 
 ```javascript
 // Iterative reversal — O(n) time, O(1) space
@@ -154,7 +154,7 @@ Result:   3 → 2 → 1 → null
 
 ### Question 1: Detect a Cycle in a Linked List
 
-**Practice Links:** [LeetCode #141](https://leetcode.com/problems/linked-list-cycle/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/detect-loop-in-linked-list/1)
+**Practice Links:** [LeetCode #141](https://leetcode.com/problems/linked-list-cycle/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/detect-loop-in-linked-list/1) | [InterviewBit](https://www.interviewbit.com/problems/list-cycle/)
 
 **Problem Statement:** Determine if a linked list has a cycle.
 
@@ -266,7 +266,7 @@ console.log(middleOptimized(list).val); // 3
 
 ### Question 3: Merge Two Sorted Linked Lists
 
-**Practice Links:** [LeetCode #21](https://leetcode.com/problems/merge-two-sorted-lists/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/merge-two-sorted-linked-lists/1)
+**Practice Links:** [LeetCode #21](https://leetcode.com/problems/merge-two-sorted-lists/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/merge-two-sorted-linked-lists/1) | [InterviewBit](https://www.interviewbit.com/problems/merge-two-sorted-lists/)
 
 **Problem Statement:** Merge two sorted linked lists into one sorted list.
 
@@ -326,7 +326,7 @@ console.log(toArray(mergeOptimized(l1, l2))); // [1, 1, 2, 3, 4, 4]
 
 ### Question 4: Remove Nth Node from End
 
-**Practice Links:** [LeetCode #19](https://leetcode.com/problems/remove-nth-node-from-end-of-list/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/remove-nth-node-from-end-of-linked-list/1)
+**Practice Links:** [LeetCode #19](https://leetcode.com/problems/remove-nth-node-from-end-of-list/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/remove-nth-node-from-end-of-linked-list/1) | [InterviewBit](https://www.interviewbit.com/problems/remove-nth-node-from-list-end/)
 
 **Problem Statement:** Remove the nth node from the end of a linked list.
 
@@ -408,7 +408,7 @@ console.log(toArray(removeNthFromEndOptimized(list, 2))); // [1, 2, 3, 5]
 
 ### Problem 1: Check if Linked List is a Palindrome
 
-**Practice Links:** [LeetCode #234](https://leetcode.com/problems/palindrome-linked-list/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/check-if-linked-list-is-pallindrome/1)
+**Practice Links:** [LeetCode #234](https://leetcode.com/problems/palindrome-linked-list/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/check-if-linked-list-is-pallindrome/1) | [InterviewBit](https://www.interviewbit.com/problems/palindrome-list/)
 
 ```javascript
 function isPalindrome(head) {
@@ -459,7 +459,7 @@ console.log(isPalindrome(createList([1, 2, 3]))); // false
 
 ### Problem 2: Intersection of Two Linked Lists
 
-**Practice Links:** [LeetCode #160](https://leetcode.com/problems/intersection-of-two-linked-lists/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/intersection-point-in-y-shapped-linked-lists/1)
+**Practice Links:** [LeetCode #160](https://leetcode.com/problems/intersection-of-two-linked-lists/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/intersection-point-in-y-shapped-linked-lists/1) | [InterviewBit](https://www.interviewbit.com/problems/intersection-of-linked-lists/)
 
 ```javascript
 function getIntersection(headA, headB) {
@@ -484,7 +484,7 @@ function getIntersection(headA, headB) {
 
 ### Problem 3: Add Two Numbers (Linked List)
 
-**Practice Links:** [LeetCode #2](https://leetcode.com/problems/add-two-numbers/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/add-two-numbers-represented-by-linked-lists/1)
+**Practice Links:** [LeetCode #2](https://leetcode.com/problems/add-two-numbers/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/add-two-numbers-represented-by-linked-lists/1) | [InterviewBit](https://www.interviewbit.com/problems/add-two-numbers-as-lists/)
 
 **Problem Statement:** Two linked lists represent numbers in reverse. Add them and return the sum as a linked list.
 

@@ -61,7 +61,7 @@ Think of a **library catalog system**. Instead of searching every shelf, you loo
 
 ### Problem: Check if Two Arrays Have Common Elements
 
-**Practice Links:** [LeetCode #349](https://leetcode.com/problems/intersection-of-two-arrays/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/intersection-of-two-arrays2404/1)
+**Practice Links:** [LeetCode #349](https://leetcode.com/problems/intersection-of-two-arrays/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/intersection-of-two-arrays2404/1) | [InterviewBit](https://www.interviewbit.com/problems/intersection-of-sorted-arrays/)
 
 ```javascript
 // Brute Force: Compare every pair
@@ -146,7 +146,7 @@ console.log(obj["key1"]); // "value1"
 
 ### Question 1: Two Sum
 
-**Practice Links:** [LeetCode #1](https://leetcode.com/problems/two-sum/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/key-pair5616/1)
+**Practice Links:** [LeetCode #1](https://leetcode.com/problems/two-sum/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/key-pair5616/1) | [InterviewBit](https://www.interviewbit.com/problems/2-sum/)
 
 **Problem Statement:** Given an array and a target, find two numbers that add up to the target. Return their indices.
 
@@ -212,7 +212,7 @@ console.log(twoSumOptimized([3, 2, 4], 6));       // [1, 2]
 
 ### Question 2: Group Anagrams
 
-**Practice Links:** [LeetCode #49](https://leetcode.com/problems/group-anagrams/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/print-anagrams-together/1)
+**Practice Links:** [LeetCode #49](https://leetcode.com/problems/group-anagrams/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/print-anagrams-together/1) | [InterviewBit](https://www.interviewbit.com/problems/anagrams/)
 
 **Problem Statement:** Given an array of strings, group anagrams together.
 
@@ -290,7 +290,7 @@ console.log(groupAnagramsOptimized(["eat","tea","tan","ate","nat","bat"]));
 
 ### Question 3: Longest Consecutive Sequence
 
-**Practice Links:** [LeetCode #128](https://leetcode.com/problems/longest-consecutive-sequence/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/longest-consecutive-subsequence2449/1)
+**Practice Links:** [LeetCode #128](https://leetcode.com/problems/longest-consecutive-sequence/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/longest-consecutive-subsequence2449/1) | [InterviewBit](https://www.interviewbit.com/problems/longest-consecutive-sequence/)
 
 **Problem Statement:** Find the length of the longest consecutive sequence in an unsorted array.
 
@@ -366,7 +366,7 @@ console.log(longestConsecutiveOptimized([0, 3, 7, 2, 5, 8, 4, 6, 0, 1])); // 9
 
 ### Question 4: Subarray Sum Equals K
 
-**Practice Links:** [LeetCode #560](https://leetcode.com/problems/subarray-sum-equals-k/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/subarrays-with-sum-k/1)
+**Practice Links:** [LeetCode #560](https://leetcode.com/problems/subarray-sum-equals-k/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/subarrays-with-sum-k/1) | [InterviewBit](https://www.interviewbit.com/problems/subarray-with-given-sum/)
 
 **Problem Statement:** Find the total number of contiguous subarrays whose sum equals `k`.
 
@@ -445,7 +445,7 @@ console.log(subarraySumOptimized([1, 2, 3, -3, 1, 1, 1, 4, 2, -3], 3)); // 8
 
 ### Problem 1: Valid Sudoku
 
-**Practice Links:** [LeetCode #36](https://leetcode.com/problems/valid-sudoku/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/is-sudoku-valid4820/1)
+**Practice Links:** [LeetCode #36](https://leetcode.com/problems/valid-sudoku/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/is-sudoku-valid4820/1) | [InterviewBit](https://www.interviewbit.com/problems/valid-sudoku/)
 
 **Problem Statement:** Determine if a 9×9 Sudoku board is valid (partially filled). Check each row, column, and 3×3 box for duplicates.
 

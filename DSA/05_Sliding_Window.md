@@ -32,7 +32,7 @@ Think of calculating a **7-day moving average** of temperatures. Instead of addi
 
 ### Problem: Maximum Sum of K Consecutive Elements
 
-**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/max-sum-subarray-of-size-k5313/1)
+**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/max-sum-subarray-of-size-k5313/1) | [InterviewBit](https://www.interviewbit.com/problems/subarray-with-given-sum/)
 
 Given an array of integers and a number `k`, find the maximum sum of `k` consecutive elements.
 
@@ -121,7 +121,7 @@ console.log(maxSumOptimized([2, 3, 4, 1, 5], 2));     // 7
 
 ### Question 1: Minimum Size Subarray Sum
 
-**Practice Links:** [LeetCode #209](https://leetcode.com/problems/minimum-size-subarray-sum/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/smallest-subarray-with-sum-greater-than-x5649/1)
+**Practice Links:** [LeetCode #209](https://leetcode.com/problems/minimum-size-subarray-sum/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/smallest-subarray-with-sum-greater-than-x5649/1) | [InterviewBit](https://www.interviewbit.com/problems/subarray-with-given-sum/)
 
 **Problem Statement:** Find the smallest contiguous subarray whose sum is ≥ target. Return its length, or 0 if no such subarray.
 
@@ -271,7 +271,7 @@ console.log(longestWithKDistinctOptimized("aabacbebebe", 3)); // 7
 
 ### Question 3: Maximum of All Subarrays of Size K
 
-**Practice Links:** [LeetCode #239](https://leetcode.com/problems/sliding-window-maximum/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/maximum-of-all-subarrays-of-size-k3101/1)
+**Practice Links:** [LeetCode #239](https://leetcode.com/problems/sliding-window-maximum/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/maximum-of-all-subarrays-of-size-k3101/1) | [InterviewBit](https://www.interviewbit.com/problems/sliding-window-maximum/)
 
 **Problem Statement:** Given an array and integer `k`, find the maximum element in every contiguous subarray of size `k`.
 
@@ -345,7 +345,7 @@ console.log(maxOfSubarraysOptimized([1, 3, -1, -3, 5, 3, 6, 7], 3));
 
 ### Question 4: Count Number of Nice Subarrays
 
-**Practice Links:** [LeetCode #1248](https://leetcode.com/problems/count-number-of-nice-subarrays/)
+**Practice Links:** [LeetCode #1248](https://leetcode.com/problems/count-number-of-nice-subarrays/) | [CodeChef](https://www.codechef.com/problems/SUBARRAY)
 
 **Problem Statement:** Given an array and integer `k`, find the count of subarrays with exactly `k` odd numbers.
 
@@ -455,7 +455,7 @@ console.log(averageOfSubarrays([1, 3, 2, 6, -1, 4, 1, 8, 2], 5));
 
 ### Problem 2: Maximum Consecutive Ones After Flipping K Zeros
 
-**Practice Links:** [LeetCode #1004](https://leetcode.com/problems/max-consecutive-ones-iii/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/maximize-number-of-1s0642/1)
+**Practice Links:** [LeetCode #1004](https://leetcode.com/problems/max-consecutive-ones-iii/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/maximize-number-of-1s0642/1) | [InterviewBit](https://www.interviewbit.com/problems/max-continuous-series-of-1s/)
 
 **Problem Statement:** Given a binary array and `k`, find the longest stretch of 1s if you can flip at most `k` zeros to 1s.
 
@@ -536,7 +536,7 @@ console.log(totalFruit([1, 2, 3, 2, 2])); // 4
 
 ### Problem 4: Find All Anagrams in a String
 
-**Practice Links:** [LeetCode #438](https://leetcode.com/problems/find-all-anagrams-in-a-string/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/count-occurences-of-anagrams6222/1)
+**Practice Links:** [LeetCode #438](https://leetcode.com/problems/find-all-anagrams-in-a-string/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/count-occurences-of-anagrams6222/1) | [InterviewBit](https://www.interviewbit.com/problems/anagrams/)
 
 **Problem Statement:** Find all start indices in string `s` where an anagram of string `p` begins.
 

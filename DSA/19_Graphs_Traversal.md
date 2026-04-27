@@ -477,7 +477,7 @@ console.log(floodFill([[1,1,1],[1,1,0],[1,0,1]], 1, 1, 2));
 
 ### Problem 2: Course Schedule (Can Finish?)
 
-**Practice Links:** [LeetCode #207](https://leetcode.com/problems/course-schedule/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/course-schedule/1)
+**Practice Links:** [LeetCode #207](https://leetcode.com/problems/course-schedule/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/course-schedule/1) | [InterviewBit](https://www.interviewbit.com/problems/possibility-of-finishing-all-courses-given-prerequisites/)
 
 ```javascript
 function canFinish(numCourses, prerequisites) {

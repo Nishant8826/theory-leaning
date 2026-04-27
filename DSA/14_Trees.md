@@ -60,7 +60,7 @@ A **binary tree** is a tree where each node has **at most 2 children** (left and
 
 ### Tree Node and Traversals
 
-**Practice Links:** [LeetCode #94](https://leetcode.com/problems/binary-tree-inorder-traversal/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/inorder-traversal/1)
+**Practice Links:** [LeetCode #94](https://leetcode.com/problems/binary-tree-inorder-traversal/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/inorder-traversal/1) | [InterviewBit](https://www.interviewbit.com/problems/inorder-traversal/)
 
 ```javascript
 class TreeNode {
@@ -112,7 +112,7 @@ console.log(postorder(root)); // [4, 5, 2, 3, 1]
 
 ### Level Order Traversal (BFS) — Using Queue
 
-**Practice Links:** [LeetCode #102](https://leetcode.com/problems/binary-tree-level-order-traversal/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/level-order-traversal/1)
+**Practice Links:** [LeetCode #102](https://leetcode.com/problems/binary-tree-level-order-traversal/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/level-order-traversal/1) | [InterviewBit](https://www.interviewbit.com/problems/level-order-traversal/)
 
 ```javascript
 function levelOrder(root) {
@@ -184,7 +184,7 @@ console.log(inorderIterative(root)); // [4, 2, 5, 1, 3]
 
 ### Question 1: Maximum Depth of Binary Tree
 
-**Practice Links:** [LeetCode #104](https://leetcode.com/problems/maximum-depth-of-binary-tree/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/height-of-binary-tree/1)
+**Practice Links:** [LeetCode #104](https://leetcode.com/problems/maximum-depth-of-binary-tree/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/height-of-binary-tree/1) | [InterviewBit](https://www.interviewbit.com/problems/max-depth-of-binary-tree/)
 
 **Problem Statement:** Find the maximum depth (height) of a binary tree.
 
@@ -239,7 +239,7 @@ console.log(maxDepthDFS(root)); // 3
 
 ### Question 2: Invert Binary Tree
 
-**Practice Links:** [LeetCode #226](https://leetcode.com/problems/invert-binary-tree/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/mirror-tree/1)
+**Practice Links:** [LeetCode #226](https://leetcode.com/problems/invert-binary-tree/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/mirror-tree/1) | [InterviewBit](https://www.interviewbit.com/problems/invert-the-binary-tree/)
 
 **Problem Statement:** Mirror a binary tree — swap every left and right child.
 
@@ -295,7 +295,7 @@ function invertDFS(root) {
 
 ### Question 3: Check if Two Trees are Identical
 
-**Practice Links:** [LeetCode #100](https://leetcode.com/problems/same-tree/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/determine-if-two-trees-are-identical/1)
+**Practice Links:** [LeetCode #100](https://leetcode.com/problems/same-tree/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/determine-if-two-trees-are-identical/1) | [InterviewBit](https://www.interviewbit.com/problems/identical-binary-trees/)
 
 **Problem Statement:** Check if two binary trees are structurally identical with the same values.
 
@@ -398,7 +398,7 @@ console.log(diameterOptimized(root)); // 3
 
 ### Problem 1: Check if Tree is Symmetric
 
-**Practice Links:** [LeetCode #101](https://leetcode.com/problems/symmetric-tree/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/symmetric-tree/1)
+**Practice Links:** [LeetCode #101](https://leetcode.com/problems/symmetric-tree/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/symmetric-tree/1) | [InterviewBit](https://www.interviewbit.com/problems/symmetric-binary-tree/)
 
 ```javascript
 function isSymmetric(root) {
@@ -424,7 +424,7 @@ function isSymmetric(root) {
 
 ### Problem 2: Path Sum
 
-**Practice Links:** [LeetCode #112](https://leetcode.com/problems/path-sum/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/path-sum/1)
+**Practice Links:** [LeetCode #112](https://leetcode.com/problems/path-sum/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/path-sum/1) | [InterviewBit](https://www.interviewbit.com/problems/path-sum/)
 
 **Problem Statement:** Check if any root-to-leaf path sums to a target.
 

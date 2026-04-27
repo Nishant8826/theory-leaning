@@ -183,7 +183,7 @@ g.print();
 
 ### Question 1: Find if Path Exists (Graph Connectivity)
 
-**Practice Links:** [LeetCode #1971](https://leetcode.com/problems/find-if-path-exists-in-graph/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/find-if-path-exists-in-graph/1)
+**Practice Links:** [LeetCode #1971](https://leetcode.com/problems/find-if-path-exists-in-graph/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/find-if-path-exists-in-graph/1) | [InterviewBit](https://www.interviewbit.com/problems/path-in-directed-graph/)
 
 **Problem Statement:** Given n nodes and edges, check if there's a path between source and destination.
 
@@ -314,7 +314,7 @@ console.log(countComponents(5, [[0,1],[1,2],[2,3],[3,4]])); // 1
 
 ### Question 3: Clone a Graph
 
-**Practice Links:** [LeetCode #133](https://leetcode.com/problems/clone-graph/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/clone-graph/1)
+**Practice Links:** [LeetCode #133](https://leetcode.com/problems/clone-graph/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/clone-graph/1) | [InterviewBit](https://www.interviewbit.com/problems/clone-graph/)
 
 **Problem Statement:** Given a reference to a node in a connected undirected graph, return a deep copy.
 

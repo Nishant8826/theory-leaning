@@ -397,7 +397,7 @@ console.log(dict.search("b.."));  // true
 
 ### Problem 1: Longest Common Prefix Using Trie
 
-**Practice Links:** [LeetCode #14](https://leetcode.com/problems/longest-common-prefix/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/longest-common-prefix-in-an-array5129/1)
+**Practice Links:** [LeetCode #14](https://leetcode.com/problems/longest-common-prefix/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/longest-common-prefix-in-an-array5129/1) | [InterviewBit](https://www.interviewbit.com/problems/longest-common-prefix/)
 
 ```javascript
 function longestCommonPrefix(words) {

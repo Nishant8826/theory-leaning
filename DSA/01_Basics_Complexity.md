@@ -57,7 +57,7 @@ Think of it like **searching for a friend's house**:
 
 ### Problem: Find if a number exists in an array
 
-**Practice Links:** [LeetCode #704](https://leetcode.com/problems/binary-search/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/binary-search-1587115620/1)
+**Practice Links:** [LeetCode #704](https://leetcode.com/problems/binary-search/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/binary-search-1587115620/1) | [InterviewBit](https://www.interviewbit.com/problems/binary-search/)
 
 The simplest approach — check every single element.
 
@@ -619,7 +619,7 @@ console.log(isSorted([1]));                // true
 
 ### Problem 5: Fibonacci — Understand Exponential vs Linear Complexity
 
-**Practice Links:** [LeetCode #509](https://leetcode.com/problems/fibonacci-number/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/nth-fibonacci-number1335/1)
+**Practice Links:** [LeetCode #509](https://leetcode.com/problems/fibonacci-number/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/nth-fibonacci-number1335/1) | [InterviewBit](https://www.interviewbit.com/problems/fibonacci-number/)
 
 **Problem Statement:** Calculate the nth Fibonacci number using both recursive (exponential) and iterative (linear) approaches.
 

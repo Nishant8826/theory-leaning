@@ -167,7 +167,7 @@ function deleteBST(root, key) {
 
 ### Question 1: Validate Binary Search Tree
 
-**Practice Links:** [LeetCode #98](https://leetcode.com/problems/validate-binary-search-tree/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/check-for-bst/1)
+**Practice Links:** [LeetCode #98](https://leetcode.com/problems/validate-binary-search-tree/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/check-for-bst/1) | [InterviewBit](https://www.interviewbit.com/problems/valid-binary-search-tree/)
 
 **Problem Statement:** Check if a binary tree is a valid BST.
 
@@ -211,7 +211,7 @@ function isValidBST(root, min = -Infinity, max = Infinity) {
 
 ### Question 2: Lowest Common Ancestor in BST
 
-**Practice Links:** [LeetCode #235](https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/lowest-common-ancestor-in-a-bst/1)
+**Practice Links:** [LeetCode #235](https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/lowest-common-ancestor-in-a-bst/1) | [InterviewBit](https://www.interviewbit.com/problems/least-common-ancestor/)
 
 **Problem Statement:** Find the lowest common ancestor (LCA) of two nodes in a BST.
 
@@ -273,7 +273,7 @@ function lcaOptimized(root, p, q) {
 
 ### Question 3: Kth Smallest Element in BST
 
-**Practice Links:** [LeetCode #230](https://leetcode.com/problems/kth-smallest-element-in-a-bst/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/find-k-th-smallest-element-in-bst/1)
+**Practice Links:** [LeetCode #230](https://leetcode.com/problems/kth-smallest-element-in-a-bst/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/find-k-th-smallest-element-in-bst/1) | [InterviewBit](https://www.interviewbit.com/problems/kth-smallest-element-in-tree/)
 
 **Problem Statement:** Find the kth smallest element in a BST.
 
@@ -341,7 +341,7 @@ function kthSmallestOptimized(root, k) {
 
 ### Problem 1: Convert Sorted Array to Balanced BST
 
-**Practice Links:** [LeetCode #108](https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/array-to-bst4443/1)
+**Practice Links:** [LeetCode #108](https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/array-to-bst4443/1) | [InterviewBit](https://www.interviewbit.com/problems/sorted-array-to-balanced-bst/)
 
 ```javascript
 function sortedArrayToBST(nums) {
@@ -368,7 +368,7 @@ const bst = sortedArrayToBST([1, 2, 3, 4, 5, 6, 7]);
 
 ### Problem 2: BST Iterator
 
-**Practice Links:** [LeetCode #173](https://leetcode.com/problems/binary-search-tree-iterator/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/bst-iterator/1)
+**Practice Links:** [LeetCode #173](https://leetcode.com/problems/binary-search-tree-iterator/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/bst-iterator/1) | [InterviewBit](https://www.interviewbit.com/problems/bst-iterator/)
 
 ```javascript
 class BSTIterator {
@@ -404,7 +404,7 @@ class BSTIterator {
 
 ### Problem 3: Two Sum in BST
 
-**Practice Links:** [LeetCode #653](https://leetcode.com/problems/two-sum-iv-input-is-a-bst/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/find-a-pair-with-given-target-in-bst/1)
+**Practice Links:** [LeetCode #653](https://leetcode.com/problems/two-sum-iv-input-is-a-bst/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/find-a-pair-with-given-target-in-bst/1) | [InterviewBit](https://www.interviewbit.com/problems/2sum-binary-tree/)
 
 ```javascript
 function findTarget(root, k) {

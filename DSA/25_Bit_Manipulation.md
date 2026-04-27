@@ -60,7 +60,7 @@ Think of a row of **10 switches** controlling lights. Bitwise AND is like checki
 
 ### Problem: Find the Single Number (all others appear twice)
 
-**Practice Links:** [LeetCode #136](https://leetcode.com/problems/single-number/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/single-number1014/1)
+**Practice Links:** [LeetCode #136](https://leetcode.com/problems/single-number/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/single-number1014/1) | [InterviewBit](https://www.interviewbit.com/problems/single-number/)
 
 ```javascript
 // Brute Force: Use a hash map to count occurrences
@@ -124,7 +124,7 @@ console.log(singleNumberXOR([4, 1, 2, 1, 2])); // 4
 
 ### Question 1: Count Number of 1-Bits (Hamming Weight)
 
-**Practice Links:** [LeetCode #191](https://leetcode.com/problems/number-of-1-bits/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/set-bits0143/1)
+**Practice Links:** [LeetCode #191](https://leetcode.com/problems/number-of-1-bits/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/set-bits0143/1) | [InterviewBit](https://www.interviewbit.com/problems/number-of-1-bits/)
 
 **Problem Statement:** Count the number of 1 bits in the binary representation of a number.
 
@@ -278,7 +278,7 @@ console.log(missingNumberXOR([9,6,4,2,3,5,7,0,1])); // 8
 
 ### Question 4: Reverse Bits
 
-**Practice Links:** [LeetCode #190](https://leetcode.com/problems/reverse-bits/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/reverse-bits3556/1)
+**Practice Links:** [LeetCode #190](https://leetcode.com/problems/reverse-bits/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/reverse-bits3556/1) | [InterviewBit](https://www.interviewbit.com/problems/reverse-bits/)
 
 **Problem Statement:** Reverse all 32 bits of a given unsigned integer.
 
