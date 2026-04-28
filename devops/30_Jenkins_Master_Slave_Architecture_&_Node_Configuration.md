@@ -965,4 +965,346 @@ Additionally backup: `plugins/` (to restore installed plugins without re-downloa
 
 ---
 
+## 🔧 How This Applies to My Tech Stack
+
+> This section maps Jenkins Master-Slave architecture and node configuration to a **full-stack JavaScript + Python + AWS** team setup.
+
+---
+
+### Agent Labels for My Stack
+
+Instead of generic labels like "java-21" or "windows", here's how I'd label agents for my tech stack:
+
+| Agent Label | What's Installed | Used For |
+|---|---|---|
+| `node-20` | Node.js 20, npm, Docker | Building React, Next.js, Node.js apps |
+| `python-ml` | Python 3.11, pip, CUDA drivers, Docker | Building AI/ML services, LLM inference |
+| `frontend-build` | Node.js 20, Chrome (for testing) | React/Next.js builds + E2E tests with Puppeteer |
+| `docker-build` | Docker, Docker Compose | Building and pushing Docker images to ECR |
+| `aws-deploy` | AWS CLI, Docker, SSH keys | Deploying to EC2, S3, Lambda |
+| `mobile-build` | Node.js, Android SDK, Gradle | React Native / Ionic builds |
+| `mongo-test` | Docker (for ephemeral MongoDB) | Integration tests with MongoDB |
+| `gpu-agent` | Python, CUDA, PyTorch, Docker | Training and serving AI/ML models |
+
+---
+
+### Real-World Node Organization for My Team
+
+```
+Jenkins Master (EC2 t3.medium — GCP or AWS)
+├── UI, scheduling, config, credentials
+├── No builds run here
+│
+├── Agent 1: "frontend-agent" (EC2 t3.medium)
+│   ├── Labels: node-20, frontend-build
+│   ├── Executors: 3
+│   ├── Tools: Node.js 20, npm, Chrome
+│   └── Runs: React builds, Next.js builds, Jest tests
+│
+├── Agent 2: "backend-agent" (EC2 t3.large)
+│   ├── Labels: node-20, docker-build, aws-deploy
+│   ├── Executors: 4
+│   ├── Tools: Node.js 20, Docker, AWS CLI, MongoDB (for tests)
+│   └── Runs: Node.js API builds, Docker image creation, EC2 deploys
+│
+├── Agent 3: "ml-agent" (EC2 g4dn.xlarge — GPU)
+│   ├── Labels: python-ml, gpu-agent
+│   ├── Executors: 2
+│   ├── Tools: Python 3.11, PyTorch, CUDA, Docker
+│   └── Runs: AI/ML model training, LLM service deployment
+│
+└── Agent 4: "mobile-agent" (Mac Mini or EC2 Mac)
+    ├── Labels: mobile-build
+    ├── Executors: 2
+    ├── Tools: Node.js, React Native CLI, Xcode, Android SDK
+    └── Runs: React Native builds, Ionic builds
+```
+
+---
+
+### Multi-Stage Pipeline Across Agents — Full-Stack Example
+
+```groovy
+pipeline {
+    agent none   // No global agent — each stage picks its own
+
+    stages {
+
+        stage('Build Frontend') {
+            agent { label 'frontend-build' }
+            steps {
+                dir('client') {
+                    sh 'npm ci && npm test -- --watchAll=false && npm run build'
+                }
+                stash name: 'frontend-build', includes: 'client/build/**'
+            }
+        }
+
+        stage('Build Backend') {
+            agent { label 'docker-build' }
+            steps {
+                dir('server') {
+                    sh 'npm ci && npm test -- --forceExit'
+                    sh "docker build -t node-api:${BUILD_NUMBER} ."
+                    sh '''
+                        aws ecr get-login-password --region ap-south-1 | \
+                        docker login --username AWS --password-stdin ECR_REPO
+                        docker push ECR_REPO:${BUILD_NUMBER}
+                    '''
+                }
+            }
+        }
+
+        stage('Build ML Service') {
+            agent { label 'python-ml' }
+            steps {
+                dir('ml-service') {
+                    sh '''
+                        python3 -m venv venv
+                        . venv/bin/activate
+                        pip install -r requirements.txt
+                        pytest tests/ -v
+                        docker build -t ai-service:${BUILD_NUMBER} .
+                    '''
+                }
+            }
+        }
+
+        stage('Deploy Frontend') {
+            agent { label 'aws-deploy' }
+            steps {
+                unstash 'frontend-build'
+                sh '''
+                    aws s3 sync client/build/ s3://my-react-app --delete
+                    aws cloudfront create-invalidation --distribution-id EXXXXX --paths '/*'
+                '''
+            }
+        }
+
+        stage('Deploy Backend') {
+            agent { label 'aws-deploy' }
+            steps {
+                sh '''
+                    ssh -i ~/.ssh/ec2-key.pem ubuntu@API_EC2_IP \
+                    "docker pull ECR_REPO:${BUILD_NUMBER} && \
+                     docker stop node-api || true && docker rm node-api || true && \
+                     docker run -d --name node-api -p 3000:3000 \
+                       --restart unless-stopped \
+                       -e MONGO_URI=\$MONGO_URI \
+                       -e REDIS_URL=\$REDIS_URL \
+                       ECR_REPO:${BUILD_NUMBER}"
+                '''
+            }
+        }
+
+        stage('Deploy ML Service') {
+            agent { label 'aws-deploy' }
+            steps {
+                sh '''
+                    ssh -i ~/.ssh/ec2-key.pem ubuntu@ML_EC2_IP \
+                    "docker pull ai-service:${BUILD_NUMBER} && \
+                     docker stop ai-service || true && docker rm ai-service || true && \
+                     docker run -d --name ai-service -p 8000:8000 --gpus all \
+                       ai-service:${BUILD_NUMBER}"
+                '''
+            }
+        }
+    }
+
+    post {
+        success { echo '✅ Full-stack deployment complete: React + Node.js + Python AI' }
+        failure { echo '❌ Deployment failed — check stage logs.' }
+    }
+}
+```
+
+> 💡 **Key takeaway:** 5 stages, 4 different agents, one pipeline. The frontend builds on a Node.js agent, the backend builds on a Docker agent, the ML service builds on a GPU agent, and all deployments happen on an AWS-configured agent. This is exactly how enterprises organize large CI/CD systems.
+
+---
+
+### Setting Up an AWS EC2 Agent for My Stack
+
+#### Step 1: Launch an EC2 Instance for the Agent
+
+```bash
+# EC2 Instance for a Node.js + Docker build agent
+Instance Type: t3.medium (2 vCPU, 4 GB RAM)
+AMI: Ubuntu 24.04 LTS
+Storage: 30 GB (Docker images + node_modules can be large)
+Security Group: Allow outbound to Jenkins master (port 8080 or 443 for WebSocket)
+```
+
+#### Step 2: Install Tools on the Agent
+
+```bash
+# Update system
+sudo apt update && sudo apt upgrade -y
+
+# Install Java (required for agent.jar)
+sudo apt install openjdk-21-jre -y
+
+# Install Node.js 20
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt install -y nodejs
+
+# Install Docker
+sudo apt install -y docker.io
+sudo usermod -aG docker ubuntu
+sudo systemctl enable docker
+
+# Install AWS CLI
+sudo apt install -y awscli
+
+# Install Python (for ML services)
+sudo apt install -y python3 python3-pip python3-venv
+
+# Verify installations
+java -version && node --version && docker --version && python3 --version && aws --version
+```
+
+#### Step 3: Connect to Jenkins Master
+
+```bash
+# Create workspace directory
+mkdir -p /home/ubuntu/jenkins-agent
+
+# Download agent.jar from Jenkins master
+curl -sO http://JENKINS_MASTER_IP:8080/jnlpJars/agent.jar
+
+# Connect to master
+java -jar agent.jar \
+  -url http://JENKINS_MASTER_IP:8080/ \
+  -secret YOUR_SECRET_KEY \
+  -name "node-docker-agent" \
+  -webSocket \
+  -workDir "/home/ubuntu/jenkins-agent"
+```
+
+#### Step 4: Run as a Systemd Service (Auto-start on Reboot)
+
+```bash
+# Create systemd service file
+sudo tee /etc/systemd/system/jenkins-agent.service > /dev/null << 'EOF'
+[Unit]
+Description=Jenkins Agent
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/jenkins-agent
+ExecStart=/usr/bin/java -jar /home/ubuntu/jenkins-agent/agent.jar \
+  -url http://JENKINS_MASTER_IP:8080/ \
+  -secret YOUR_SECRET_KEY \
+  -name "node-docker-agent" \
+  -webSocket \
+  -workDir "/home/ubuntu/jenkins-agent"
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Enable and start
+sudo systemctl daemon-reload
+sudo systemctl enable jenkins-agent
+sudo systemctl start jenkins-agent
+sudo systemctl status jenkins-agent
+```
+
+> 💡 **This solves the "agent goes offline on reboot" problem** — systemd automatically restarts the agent process, so the node reconnects to Jenkins master without manual intervention.
+
+---
+
+### Docker-Based Ephemeral Agents
+
+For my stack, Docker-based agents are powerful — each build gets a **fresh, clean environment**:
+
+```groovy
+pipeline {
+    agent {
+        docker {
+            image 'node:20-alpine'
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
+        }
+    }
+
+    stages {
+        stage('Install & Test') {
+            steps {
+                sh 'npm ci && npm test'
+            }
+        }
+    }
+}
+```
+
+**Benefits:**
+- No need to install Node.js on the Jenkins agent permanently
+- Every build starts with a clean `node:20-alpine` container
+- Different projects can use different Node.js versions without conflict
+- The container is destroyed after the build — zero leftover state
+
+---
+
+### WebSocket (Socket.IO) Deployment with ALB — Agent Consideration
+
+When deploying a **Socket.IO application** that needs to scale across multiple EC2 instances:
+
+```groovy
+stage('Deploy Socket.IO Server') {
+    agent { label 'aws-deploy' }
+    steps {
+        sh '''
+            # Deploy to multiple EC2 instances behind ALB
+            for IP in EC2_IP_1 EC2_IP_2 EC2_IP_3; do
+                ssh -i ~/.ssh/ec2-key.pem ubuntu@$IP \
+                "docker pull ECR_REPO/socket-server:latest && \
+                 docker stop socket-server || true && \
+                 docker rm socket-server || true && \
+                 docker run -d --name socket-server \
+                   -p 3001:3001 \
+                   -e REDIS_URL=redis://elasticache-endpoint:6379 \
+                   ECR_REPO/socket-server:latest"
+            done
+
+            # ALB Configuration (done once via Terraform/AWS CLI):
+            # - Target Group: all 3 EC2 instances on port 3001
+            # - Sticky Sessions: ENABLED (required for Socket.IO)
+            # - Health Check: /health endpoint
+        '''
+    }
+}
+```
+
+> 💡 **Socket.IO + ALB:** Socket.IO requires **sticky sessions** because a WebSocket connection must stay on the same server. ALB supports this via target group stickiness. Use **Redis as the Socket.IO adapter** (`@socket.io/redis-adapter`) so messages are shared across all instances.
+
+---
+
+### Node Configuration Backup — My Stack
+
+```
+Critical files to back up:
+
+Jenkins Master:
+├── config.xml                    ← Master settings + node list
+├── jobs/
+│   ├── frontend-react/config.xml ← React pipeline config
+│   ├── backend-node/config.xml   ← Node.js API pipeline
+│   ├── ml-service/config.xml     ← Python AI pipeline
+│   └── mobile-app/config.xml     ← React Native pipeline
+├── secrets/                      ← AWS keys, MongoDB URI, FCM tokens
+├── nodes/
+│   ├── frontend-agent/config.xml
+│   ├── backend-agent/config.xml
+│   ├── ml-agent/config.xml
+│   └── mobile-agent/config.xml
+└── plugins/                      ← NodeJS, Docker, AWS Steps, etc.
+```
+
+> 💡 **Best practice:** Store all Jenkinsfiles in Git. If Jenkins master crashes, you only need to restore credentials and recreate the Pipeline jobs pointing to your repos — the pipeline definitions are safe in GitHub.
+
+---
+
 ← Previous: [`29_Jenkins_Pipelines_Declarative_Scripted_&_CI_Integration.md`](29_Jenkins_Pipelines_Declarative_Scripted_&_CI_Integration.md) | Next: [`31_Next_Topic.md`](Next_Topic.md) →
