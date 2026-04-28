@@ -997,4 +997,4 @@ In production, **webhooks are preferred** because they're real-time and efficien
 
 ---
 
-← Previous: [28_Java,_Spring_Boot_Maven_&_Jenkins_Build_Pipeline.md](28_Java,_Spring_Boot_Maven_&_Jenkins_Build_Pipeline.md) | Next: [30_Jenkins_Job_Types_Pipeline_Freestyle_Matrix.md](30_Jenkins_Job_Types_Pipeline_Freestyle_Matrix.md) →
+← Previous: [28_Java,_Spring_Boot_Maven_&_Jenkins_Build_Pipeline.md](28_Java,_Spring_Boot_Maven_&_Jenkins_Build_Pipeline.md) | Next: [`30_Jenkins_Master_Slave_Architecture_&_Node_Configuration.md](30_Jenkins_Master_Slave_Architecture_&_Node_Configuration.md) →
