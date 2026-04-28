@@ -23,8 +23,15 @@ I will share a class summary. From that summary, generate detailed study notes.
 
 5. **Interview Q&A** – At least 5–8 interview questions with answers covering this topic.
 
-6. **Navigation Footer** – Single line at the bottom with links to Previous and Next notes:
-   ← Previous: `[file]` | Next: `[file]` →
+6. **Tech Stack Mapping (VERY IMPORTANT)**
+   **Tools Used:** [Node.js APIs, React / Next.js apps, MongoDB / PostgreSQL / Redis, AWS services (EC2, S3, Lambda, etc.), Jenkins pipelines, WebSockets (Socket.IO)]
+   **Include:** Real examples, Deployment flows, DevOps usage
+
+7. **Code / Practical Examples**
+   **Include:** Dockerfile (Node.js / Next.js / Python), Jenkins pipeline (basic), Deployment steps, API/service flow
+
+8. **Navigation Footer** – Single line at the bottom with links to Previous and Next notes:
+   **Previous:** `00_[Previous_Topic_Name].md` (00_Previous_Topic_Name) | **Next:** `0[number]_[Next_Topic_Name].md` (0[number]_Next_Topic_Name)
 
 ---
 

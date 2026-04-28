@@ -571,66 +571,210 @@ Production Deploy → Prod Agent (locked down, audited)
 
 ## 10. Assignment Configurations Reference
 
-Three setups were assigned for practice. Here's how each differs:
+**Assignment: Multi-Node Setup (Ubuntu Master & Mixed Slaves)**
 
-### Assignment 1: Ubuntu Master → Ubuntu Slave
+### 🎯 Objective
+Understand how to configure Jenkins Master-Slave architecture using Ubuntu and CentOS across different environments and cloud providers.
 
-```
-Master: GCP Ubuntu VM (Jenkins installed via apt)
-Slave:  Another GCP Ubuntu VM
+---
 
-On Slave:
-  sudo apt install default-jre -y   ← Java required on slave
-  mkdir -p /home/ubuntu/jenkins-slave
-  curl -sO http://MASTER_IP:8080/jnlpJars/agent.jar
-  java -jar agent.jar \
-    -url http://MASTER_IP:8080/ \
-    -secret SECRET_KEY \
-    -name "ubuntu-slave" \
-    -webSocket \
-    -workDir "/home/ubuntu/jenkins-slave"
-```
+### 🧪 Scenario 1: Ubuntu Master & Ubuntu Slave (Same Environment)
 
-### Assignment 2: Ubuntu Master → CentOS Slave
+**Infrastructure Setup:**
+- **Status:** 2 Ubuntu VMs created in GCP (e.g., `jenkins-master` and `jenkins-slave`).
+- **Goal:** Orchestrate builds from the Master VM onto the Slave VM.
 
-```
-Master: Ubuntu VM (Jenkins)
-Slave:  CentOS VM
+**Step-by-Step Implementation Guide:**
 
-Key difference on CentOS:
-  sudo yum install java-21-openjdk -y   ← Different package manager
-  mkdir -p /opt/jenkins-slave
-  # Rest of agent.jar connection is identical
-  java -jar agent.jar -url ... -secret ... -name ... -webSocket -workDir /opt/jenkins-slave
+#### Phase 1: Prepare Both Machines
+Run these commands on **both** the Master and Slave VMs:
+```bash
+sudo apt update && sudo apt upgrade -y
+sudo apt install openjdk-21-jre-headless -y
+java -version  # Verify Java is installed
 ```
 
-### Assignment 3: GCP Ubuntu Master → AWS Ubuntu Slave (Multi-Cloud)
+#### Phase 2: Install Jenkins on Master VM
+Only on the **Master VM**:
+```bash
+sudo wget -O /etc/apt/keyrings/jenkins-keyring.asc https://pkg.jenkins.io/debian-stable/jenkins.io-2026.key
 
+echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc]" https://pkg.jenkins.io/debian-stable binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+sudo apt update
+sudo apt install jenkins -y
+sudo systemctl start jenkins
+sudo systemctl enable jenkins
+
+# Get initial password to unlock:
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 ```
-Master: GCP VM (Jenkins)
-Slave:  AWS EC2 instance
+*Access Master UI at: `http://<MASTER_PUBLIC_IP>:8080`*
 
-Key considerations:
-  1. AWS Security Group must allow inbound on port 8080 from GCP IP
-     (or use WebSocket which typically uses 443/80)
-  2. Slave needs internet access to reach master's public IP
-  3. Use public IP of GCP master in the -url flag:
-     -url http://GCP_EXTERNAL_IP:8080/
-  4. Java must be installed on the AWS instance
-  
-On AWS EC2 (Ubuntu):
-  sudo apt update
-  sudo apt install openjdk-21-jre -y
-  curl -sO http://GCP_EXTERNAL_IP:8080/jnlpJars/agent.jar
-  java -jar agent.jar \
-    -url http://GCP_EXTERNAL_IP:8080/ \
-    -secret SECRET_KEY \
-    -name "aws-slave" \
-    -webSocket \
-    -workDir "/home/ubuntu/jenkins-slave"
+#### Phase 3: Configure the Slave VM
+Only on the **Slave VM**:
+```bash
+sudo mkdir -p /home/ubuntu/jenkins-agent
+sudo chown ubuntu:ubuntu /home/ubuntu/jenkins-agent
+```
+
+#### Phase 4: Register the Slave in Jenkins UI
+On the **Master UI**:
+1.  Go to **Manage Jenkins** → **Nodes** → **New Node**.
+2.  Name: `ubuntu-agent-1` | Type: **Permanent Agent** → **Create**.
+3.  **Remote Root Directory:** `/home/ubuntu/jenkins-agent`.
+4.  **Labels:** `linux-slave`.
+5.  **Launch Method:** Select "Launch agent by connecting it to the controller".
+6.  **WebSocket:** Check the box for "Use WebSocket" (Recommended for GCP firewalls).
+7.  Click **Save**.
+
+#### Phase 5: Connect the Slave to Master
+Click on the newly created `ubuntu-agent-1` node in Jenkins to see the connection command.
+On the **Slave VM terminal**, run:
+```bash
+cd /home/ubuntu/jenkins-agent
+# Download the agent jar from your master
+curl -sO http://<MASTER_PUBLIC_IP>:8080/jnlpJars/agent.jar
+
+# Run the connection command (Copy exact command from Jenkins UI)
+java -jar agent.jar -url http://<MASTER_PUBLIC_IP>:8080/ -secret <YOUR_SECRET> -name "ubuntu-agent-1" -webSocket -workDir "/home/ubuntu/jenkins-agent"
+```
+
+#### Phase 6: Verify the Setup
+1.  In Jenkins UI, check **Nodes**. `ubuntu-agent-1` should now be **Online** ✅.
+2.  Create a **Freestyle Job** → **General** → Check **"Restrict where this project can be run"**.
+3.  Label Expression: `linux-slave`.
+4.  Add Build Step: **Execute Shell** → Command: `hostname && uptime`.
+5.  **Build Now** → Check Console Output. It should say: `Building remotely on ubuntu-agent-1`.
+
+---
+
+
+### 🧪 Scenario 2: Ubuntu Master & CentOS Slave
+
+**Infrastructure Setup:**
+- **Launch:** 1 Ubuntu VM (Master) and 1 CentOS VM (Slave).
+- **Key Difference:** Handling different package managers and OS hierarchies.
+
+**Execution Steps:**
+1.  **Install Java:**
+    - **Ubuntu Master:** `sudo apt install openjdk-21-jre -y`
+    - **CentOS Slave:** `sudo yum install java-21-openjdk -y`
+2.  **Passwordless SSH:** Setup SSH key exchange from Master → CentOS Slave.
+3.  **Add CentOS Node:**
+    - Register as `centos-slave`.
+    - Set Remote Root Directory (e.g., `/opt/jenkins-slave`).
+4.  **Execute Pipeline:** Run a Jenkins Pipeline job targeting the `centos-slave` label.
+5.  **Key Learnings:**
+    - Handling `apt` vs `yum/dnf`.
+    - Troubleshooting agent connection issues (Firewalls/SELinux on CentOS).
+
+```bash
+# On Slave (CentOS):
+sudo mkdir -p /opt/jenkins-slave
+sudo chown centos:centos /opt/jenkins-slave
+# Run agent.jar (identical connection logic)
 ```
 
 ---
+
+### 🌍 Scenario 3: Multi-Cloud (GCP Master + AWS Slave)
+
+**Infrastructure Setup:**
+- **Launch:** Ubuntu Master in **GCP** and Slave (Ubuntu or CentOS) in **AWS EC2**.
+- **Objective:** Establish cross-cloud CI/CD orchestration.
+
+**Execution Steps:**
+1.  **Network Configuration:**
+    - **AWS Security Groups:** Open Port **22** (SSH) and **8080** (or custom WebSocket port) for GCP Master IP.
+    - **GCP Firewall:** Allow outbound to AWS if restricted.
+2.  **SSH Key Exchange:** Setup secure communication between GCP → AWS.
+3.  **Add AWS Node:**
+    - Register the AWS instance as a Jenkins Slave.
+    - Use the AWS Public DNS/IP for connection details.
+4.  **Run Cross-Cloud Job:**
+    - Trigger a build from the GCP Master UI.
+    - **Verification:** Job runs on AWS EC2, logs appear in GCP Master.
+
+**Impact:**
+- Successful orchestration across disparate cloud providers.
+- Proves cloud-agnostic nature of Jenkins Master-Slave architecture.
+
+---
+
+### 🖥️ Scenario 4: Ubuntu Master & Windows Slave
+
+**Infrastructure Setup:**
+- **Launch:** 1 Ubuntu VM (Master) and 1 Windows Machine/VM (Slave).
+- **Objective:** Integrate a Windows environment for .NET, C++, or specialized Windows testing.
+
+**Execution Steps:**
+1.  **Install Java on Windows:** Download and install JDK 21+ and verify with `java -version`.
+2.  **Add Windows Node:**
+    - Name: `windows-slave-1`.
+    - Remote Root: `C:\jenkins-slave`.
+    - Launch Method: "Launch agent by connecting it to the controller".
+3.  **Connect Agent:**
+    - Open PowerShell on Windows.
+    - Download `agent.jar` from Jenkins Master.
+    - Run the `java -jar agent.jar...` command with the secret key provided.
+4.  **Verification:**
+    - Create a Freestyle job.
+    - Restrict to `windows-slave-1`.
+    - Add a build step: "Execute Windows batch command".
+    - Command: `echo "Hello from Windows" && systeminfo | findstr /B /C:"OS Name"`.
+
+**Key Learnings:**
+- **Path Syntax:** Transitioning from Linux paths (`/`) to Windows paths (`\`).
+- **Scripting:** Using Batch/PowerShell instead of Shell.
+- **Persistence:** Setting up the agent as a Windows Service (using `nssm`) so it persists after logout.
+
+```powershell
+# On Windows Slave (PowerShell):
+New-Item -ItemType Directory -Force -Path "C:\jenkins-slave"
+Set-Location "C:\jenkins-slave"
+Invoke-WebRequest -Uri "http://MASTER_IP:8080/jnlpJars/agent.jar" -OutFile "agent.jar"
+
+# Connect (Run this in a persistent terminal or as a service)
+java -jar agent.jar -url http://MASTER_IP:8080/ -secret <KEY> -name "windows-slave-1" -webSocket -workDir "C:\jenkins-slave"
+```
+
+---
+
+### 🖥️ Scenario 5: Windows Master & Windows Slave (Full Windows Stack)
+
+**Infrastructure Setup:**
+- **Launch:** 2 Windows Machines/VMs (1 Master, 1 Slave).
+- **Objective:** Establish a completely Windows-native CI/CD environment, common in .NET and Game Development (C++) environments.
+
+**Execution Steps:**
+1.  **Install Jenkins on Master:** Use the `.msi` installer to set up the Jenkins controller on Machine A.
+2.  **Firewall Configuration:** On the Master machine, open **Inbound Port 8080** and the JNLP port (found in Global Security settings) to allow the slave to connect.
+3.  **Add Slave Node:**
+    - Name: `windows-build-node`.
+    - Remote Root: `E:\jenkins-work`.
+4.  **Connect Agent:**
+    - On Machine B (Slave), download `agent.jar` from the Master's URL.
+    - Run the connection command via PowerShell.
+5.  **Verification:**
+    - Create a job that executes `Get-ComputerInfo` via PowerShell to confirm it's running on the correct machine.
+
+**Key Learnings:**
+- **Windows Firewall:** The critical step of allowing inbound traffic on the Master.
+- **Domain/Workgroup Auth:** Handling permissions if machines are on different domains.
+- **UNC Paths:** Using `\\Server\Share` paths for artifacts instead of Linux-style mounts.
+
+```powershell
+# On Windows Slave (PowerShell):
+Invoke-WebRequest -Uri "http://WINDOWS_MASTER_IP:8080/jnlpJars/agent.jar" -OutFile "agent.jar"
+
+# Run Agent
+java -jar agent.jar -url http://WINDOWS_MASTER_IP:8080/ -secret <KEY> -name "windows-build-node" -webSocket -workDir "E:\jenkins-work"
+```
+
+---
+
+
+
 
 ## 11. Visual Diagrams
 
