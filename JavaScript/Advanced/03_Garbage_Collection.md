@@ -10,11 +10,51 @@ In JavaScript, you don't have to manually "delete" objects. Instead, the engine 
 
 ## 🏗️ The Core Concept: Reachability
 
-How does the janitor know what is trash? It uses a concept called **Reachability**.
+How does the janitor know what is trash? It uses a concept called **Reachability**. An object is "reachable" if it is accessible or usable in some way.
 
-1.  **Roots:** The starting points. These are always reachable (e.g., Global variables, current function local variables).
-2.  **Reachable:** If an object can be found by starting from a Root and following references, it is "Live."
-3.  **Unreachable:** If an object cannot be reached from any Root, it is "Garbage" and will be deleted.
+### 🌳 1. The Roots (The Starting Points)
+Roots are objects that are considered inherently reachable by the engine. The Garbage Collector starts its search from these:
+-   **Global Variables:** Any variable defined in the global scope (e.g., `window` in browsers, `global` in Node.js).
+-   **Call Stack:** Local variables and parameters of the currently executing functions.
+-   **Active Closures:** Variables in the scope of functions that are still "alive" or can be called.
+
+### 🔗 2. The Reference Chain
+An object is reachable if:
+-   It is a **Root**.
+-   It is referenced by a **Root**.
+-   It is referenced by another **Reachable** object (creating a chain).
+
+### 🏝️ 3. The "Island of Isolation" (Circular References)
+A common misconception is that if an object has *any* reference to it, it won't be deleted. This was true for old **Reference Counting** algorithms, but NOT for modern **Reachability**.
+
+If two objects reference each other but are **not** reachable from any Root, they form an "Island of Isolation." The engine will delete the entire island.
+
+```javascript
+function marry(man, woman) {
+  woman.husband = man;
+  man.wife = woman;
+  return { father: man, mother: woman };
+}
+
+let family = marry({ name: "John" }, { name: "Ann" });
+
+// If we cut the reference from the root:
+family = null; 
+
+// Now, John and Ann still point to each other, but the ROOT (family) 
+// can no longer reach them. They are now an Island of Isolation 
+// and will be Garbage Collected.
+```
+
+#### 🖼️ Island Visualization:
+```text
+[ Root ] 
+   │
+   X  <-- (Connection severed)
+   │
+[ John ] <────▶ [ Ann ]   <-- (Still linked to each other, but Root can't see them!)
+```
+
 
 ---
 

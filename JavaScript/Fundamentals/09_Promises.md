@@ -2,7 +2,7 @@
 
 ## 🌟 Introduction
 
-A **Promise** is an object representing the eventual completion (or failure) of an asynchronous operation and its resulting value.
+A **Promise** is an object that will return some value in the future with either **fulfilled** or **rejected** result.
 
 Think of it like a **"Receipt"** at a fast-food restaurant.
 1.  You order a burger (start an async task).

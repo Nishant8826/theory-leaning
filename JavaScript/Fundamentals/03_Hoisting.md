@@ -4,7 +4,7 @@
 
 **Hoisting** is one of the most misunderstood concepts in JavaScript. Many people think JavaScript "moves" code to the top, but that's not true.
 
-Hoisting is a behavior where you can access variables and functions **before** they are initialized in the code. It is a direct result of how the **Execution Context** is created.
+Hoisting is a **default behavior of JavaScript** where all variables and function declarations are moved to the top of their scope during the **compilation phase**. It is a direct result of how the **Execution Context** is created.
 
 ---
 
@@ -72,7 +72,7 @@ The JS engine doesn't move code; it just populates a "Memory Record" before exec
 
 ## ⚡ The Temporal Dead Zone (TDZ)
 
-The **TDZ** is the period between the start of the block and the line where the variable is declared.
+The **TDZ** is the period between the **start of the block** and the **line where the variable is declared**.
 
 > [!IMPORTANT]
 > TDZ was introduced in ES6 to help developers catch bugs early. Using a variable before defining it is usually a mistake!
