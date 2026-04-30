@@ -1377,4 +1377,4 @@ df -h /
 
 ---
 
-← Previous: [`30_Jenkins_Master_Slave_Architecture_&_Node_Configuration.md`](30_Jenkins_Master_Slave_Architecture_&_Node_Configuration.md) | Next: [`32_Jenkins_Advanced_Concepts_&_Security.md`](32_Jenkins_Advanced_Concepts_&_Security.md) →
+← Previous: [`30_Jenkins_Master_Slave_Architecture_&_Node_Configuration.md`](30_Jenkins_Master_Slave_Architecture_&_Node_Configuration.md) | Next: [`32_Introduction_to_Docker_Containers_Images_&_Architecture.md`](32_Introduction_to_Docker_Containers_Images_&_Architecture.md) →
