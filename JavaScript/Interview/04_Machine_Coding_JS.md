@@ -134,4 +134,4 @@ Don't code in silence for 40 minutes.
 
 ## 🔗 Navigation
 
-**Prev:** [03_Coding_Problems.md](03_Coding_Problems.md) | **Index:** [../00_Index.md](../00_Index.md) | **Next:** [../Projects/01_Build_Event_Emitter.md](../Projects/01_Build_Event_Emitter.md)
+**Prev:** [03_Coding_Problems.md](03_Coding_Problems.md) | **Index:** [../00_Index.md](../00_Index.md) | **Next:** [05_Most_Asked_50_Questions.md](05_Most_Asked_50_Questions.md)

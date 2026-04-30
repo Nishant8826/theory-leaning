@@ -137,19 +137,12 @@ Runtime Fundamentals → Memory & GC → Async Model → Browser Engine
 | 02 | [Tricky Questions](Interview/02_Tricky_Questions.md) | Output prediction, async traps, coercion |
 | 03 | [Coding Problems](Interview/03_Coding_Problems.md) | DSA in JS with V8 performance awareness |
 | 04 | [Machine Coding](Interview/04_Machine_Coding_JS.md) | System design at code level, production patterns |
-
----
-
-### 📂 Projects — Production-Grade Implementations
-
-| # | File | Key Internals Covered |
-|---|------|-----------------------|
-| 01 | [Build Event Emitter](Projects/01_Build_Event_Emitter.md) | Memory management, once/off, wildcard |
-| 02 | [Build Promise](Projects/02_Build_Promise.md) | State machine, microtask scheduling, chaining |
-| 03 | [Build LRU Cache](Projects/03_Build_LRU_Cache.md) | Doubly linked list + Map, O(1) ops |
-| 04 | [Build React-Like State](Projects/04_Build_React_Like_State.md) | Fiber-like scheduling, batching, hooks |
-| 05 | [Build Rate Limiter](Projects/05_Build_Rate_Limiter.md) | Token bucket, sliding window, Redis pattern |
-| 06 | [Real-Time Chat](Projects/06_Real_Time_Chat.md) | WebSocket, backpressure, reconnection |
+| 05 | [Top 50 Most Asked Questions](Interview/05_Most_Asked_50_Questions.md) | Core JS, async, ES6+, DOM — 50 Q&A with code |
+| 06 | [Async Interview Mastery](Interview/06_Async_Interview_Mastery.md) | Promise internals, execution order, polyfills, retry patterns |
+| 07 | [Real-time Scenario Problems](Interview/07_Realtime_Scenario_Problems.md) | Infinite scroll, search, rate limiting, offline support |
+| 08 | [Output Prediction](Interview/08_JS_Output_Prediction.md) | 20 "What is the output?" problems with explanations |
+| 09 | [ES6+ Interview](Interview/09_ES6_Plus_Interview.md) | Modern JS features, Proxy, generators, modules |
+| 10 | [DSA in JavaScript](Interview/10_DSA_In_JavaScript.md) | Strings, arrays, trees, sorting — 20 problems with complexity |
 
 ---
 
