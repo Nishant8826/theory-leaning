@@ -92,3 +92,7 @@ Resources:
 ## 🧩 Practice Problems
 1.  Write a Terraform script to create a VPC and two subnets.
 2.  Import an existing S3 bucket (created manually) into a CloudFormation stack.
+
+---
+Prev: [01_CI_CD_Pipelines.md](../DevOps/01_CI_CD_Pipelines.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [03_Infrastructure_as_Code.md](../DevOps/03_Infrastructure_as_Code.md)
+---

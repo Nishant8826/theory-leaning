@@ -101,3 +101,7 @@ resource "aws_ecs_service" "fargate_service" {
 ## 🧩 Practice Problems
 1.  Calculate the monthly cost of a Fargate task with 0.5 vCPU and 1GB RAM running 24/7.
 2.  Enable ECS Exec on a Fargate service and demonstrate accessing the container shell.
+
+---
+Prev: [04_ECS_vs_EKS.md](../Compute/04_ECS_vs_EKS.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [06_Bootstrapping_and_UserData.md](../Compute/06_Bootstrapping_and_UserData.md)
+---

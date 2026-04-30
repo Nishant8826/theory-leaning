@@ -103,3 +103,7 @@ pipeline {
 ## 🧩 Practice Problems
 1.  Configure a GitHub Webhook for a test repository. Push code and look at the "Recent Deliveries" tab in GitHub to inspect the raw JSON payload and HTTP headers sent to Jenkins.
 2.  Configure a job with `pollSCM('* * * * *')`. Look at the Jenkins "Polling Log" on the job page to see the exact git commands being executed every minute.
+
+---
+Prev: [01_Git_Integration.md](../SCM/01_Git_Integration.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [03_Multibranch_Pipelines.md](../SCM/03_Multibranch_Pipelines.md)
+---

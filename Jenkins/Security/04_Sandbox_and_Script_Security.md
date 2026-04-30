@@ -103,3 +103,7 @@ pipeline {
 ## 🧩 Practice Problems
 1.  Navigate to `https://<your-jenkins>/script` (The Script Console). Run `println System.getenv()`. Understand why giving someone access to this page is giving them root access.
 2.  Review the "Agent-to-Controller Security" settings in the Global Security configuration page to understand how Jenkins protects itself from compromised worker nodes.
+
+---
+Prev: [03_Secrets_Handling.md](../Security/03_Secrets_Handling.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [05_Supply_Chain_Security.md](../Security/05_Supply_Chain_Security.md)
+---

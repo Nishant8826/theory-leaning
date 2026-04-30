@@ -98,3 +98,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 ## 🧩 Practice Problems
 1.  Find the `AZ-ID` for your account's `us-east-1a` and compare it with another account.
 2.  Design a system that uses CloudFront for TLS termination at the edge to reduce the "Time to First Byte" (TTFB) for users in India hitting a server in the US.
+
+---
+Prev: [01_AWS_Global_Infrastructure.md](../Core/01_AWS_Global_Infrastructure.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [03_VPC_Deep_Dive.md](../Core/03_VPC_Deep_Dive.md)
+---

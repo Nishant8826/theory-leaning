@@ -97,3 +97,7 @@ pipeline {
 ## 🧩 Practice Problems
 1.  Use `jstack` on a running Jenkins instance to identify the HTTP listener threads.
 2.  Inspect the `$JENKINS_HOME/jobs/<job-name>/builds/` directory to see how build state and logs are persisted to XML/log files.
+
+---
+Prev: None | Index: [Docker/00_Index.md](../00_Index.md) | Next: [02_Controller_Internals.md](../Core/02_Controller_Internals.md)
+---

@@ -86,3 +86,7 @@ curl --unix-socket /tmp/firecracker.socket -X PUT 'http://localhost/boot-source'
 ## 🧩 Practice Problems
 1.  Download the Firecracker binary and boot a minimalist Linux kernel on your local machine.
 2.  Compare the "Cold Start" time of a Lambda function written in Node.js vs. one written in Java.
+
+---
+Prev: [01_The_Nitro_System.md](../Internals/01_The_Nitro_System.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [03_S3_Bit_Rot_and_Durability.md](../Internals/03_S3_Bit_Rot_and_Durability.md)
+---

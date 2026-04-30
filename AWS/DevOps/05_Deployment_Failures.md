@@ -98,3 +98,7 @@ resource "aws_ecs_service" "app" {
 ## 🧩 Practice Problems
 1.  Purposely break a Lambda function (syntax error) and observe how CodeDeploy handles the failed deployment and rollback.
 2.  Debug an ECS service that is "stuck" in a cycle of launching and terminating tasks.
+
+---
+Prev: [04_Blue_Green_and_Canary.md](../DevOps/04_Blue_Green_and_Canary.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [01_Vertical_vs_Horizontal.md](../Scaling/01_Vertical_vs_Horizontal.md)
+---

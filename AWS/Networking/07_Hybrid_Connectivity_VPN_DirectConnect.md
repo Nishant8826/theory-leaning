@@ -88,3 +88,7 @@ resource "aws_vpn_connection" "main" {
 ## 🧩 Practice Problems
 1.  Diagram the packet flow from an on-premise server to an S3 bucket using a Private VIF.
 2.  Explain the purpose of "AS Path Prepending" in a multi-region hybrid network.
+
+---
+Prev: [06_NAT_Gateway_and_Internet.md](../Networking/06_NAT_Gateway_and_Internet.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [08_Connection_Lifecycle.md](../Networking/08_Connection_Lifecycle.md)
+---

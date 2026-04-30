@@ -110,3 +110,7 @@ standardPipeline(appName: 'frontend-ui')
 ## 🧩 Practice Problems
 1.  Create a Shared Library with a `vars/sayHello.groovy` file that takes a `name` parameter and prints "Hello, [name]". Use it in a pipeline.
 2.  Configure the "Retriever" method for a Shared Library to use "Modern SCM" and explore the caching options.
+
+---
+Prev: [03_Groovy_Sandbox.md](../Pipelines/03_Groovy_Sandbox.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [05_Stage_Execution_and_Parallelism.md](../Pipelines/05_Stage_Execution_and_Parallelism.md)
+---

@@ -108,3 +108,7 @@ spec:
 ## 🧩 Practice Problems
 1.  Research the Kubernetes `PriorityClass` resource and how it interacts with the Jenkins PodTemplate `yaml` configuration.
 2.  Configure a Jenkins EC2 Cloud template. Find the `idleTerminationMinutes` setting and explain why setting it to `0` vs `30` drastically impacts the AWS bill and the pipeline duration.
+
+---
+Prev: [03_Kubernetes_Plugin.md](../Distributed/03_Kubernetes_Plugin.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [05_Network_Latency_Impact.md](../Distributed/05_Network_Latency_Impact.md)
+---

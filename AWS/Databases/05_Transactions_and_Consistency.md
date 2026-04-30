@@ -117,3 +117,7 @@ except Exception as e:
 ## 🧩 Practice Problems
 1.  Implement a "Retry with Jitter" logic for a DynamoDB transaction that fails due to a `TransactionConflict`.
 2.  Compare the latency of a standard `PutItem` vs a `TransactWriteItem` in a test environment.
+
+---
+Prev: [04_Partitioning_and_Hot_Keys.md](../Databases/04_Partitioning_and_Hot_Keys.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [06_Read_Replicas_and_Failover.md](../Databases/06_Read_Replicas_and_Failover.md)
+---

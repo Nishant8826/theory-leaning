@@ -91,3 +91,7 @@ resource "aws_vpc_endpoint" "s3_interface" {
 ## 🧩 Practice Problems
 1.  Peer two VPCs and verify that an instance in VPC A can ping an instance in VPC B.
 2.  Create a PrivateLink service (using an NLB) and consume it from a different VPC.
+
+---
+Prev: [04_API_Gateway_Internals.md](../Networking/04_API_Gateway_Internals.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [06_NAT_Gateway_and_Internet.md](../Networking/06_NAT_Gateway_and_Internet.md)
+---

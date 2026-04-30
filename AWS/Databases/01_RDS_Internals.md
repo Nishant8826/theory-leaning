@@ -94,3 +94,7 @@ resource "aws_db_instance" "prod_db" {
 ## 🧩 Practice Problems
 1.  Enable "Performance Insights" and identify the "Top SQL" by load in a test RDS instance.
 2.  Perform a manual failover (Reboot with Failover) and measure how long it takes for your application to reconnect.
+
+---
+Prev: [06_Storage_Performance.md](../Storage/06_Storage_Performance.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [02_Aurora_Architecture.md](../Databases/02_Aurora_Architecture.md)
+---

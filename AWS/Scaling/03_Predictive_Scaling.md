@@ -97,3 +97,7 @@ resource "aws_autoscaling_policy" "predictive" {
 ## 🧩 Practice Problems
 1.  Enable "Forecast Only" on an existing ASG and observe the graph after 24 hours.
 2.  Compare the "Predefined Metric Pairs" available for predictive scaling (CPU vs. Load Balancer requests).
+
+---
+Prev: [02_Auto_Scaling_Groups_Deep_Dive.md](../Scaling/02_Auto_Scaling_Groups_Deep_Dive.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [04_Caching_Strategies.md](../Scaling/04_Caching_Strategies.md)
+---

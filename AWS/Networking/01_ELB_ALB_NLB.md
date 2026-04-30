@@ -112,3 +112,7 @@ resource "aws_lb_listener_rule" "api" {
 ## 🧩 Practice Problems
 1.  Configure an ALB to perform a "Fixed Response" (e.g., 503 Maintenance) for a specific header.
 2.  Set up an NLB with an Elastic IP and verify that the IP stays consistent even after a mock failure.
+
+---
+Prev: [06_Read_Replicas_and_Failover.md](../Databases/06_Read_Replicas_and_Failover.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [02_DNS_Route53.md](../Networking/02_DNS_Route53.md)
+---

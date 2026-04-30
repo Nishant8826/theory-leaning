@@ -123,3 +123,7 @@ resource "aws_wafv2_web_acl" "main" {
 ## 🧩 Practice Problems
 1.  Identify the top 10 IP addresses hitting your web server by analyzing VPC Flow Logs in Athena.
 2.  Configure a WAF rule that only allows traffic from a specific country.
+
+---
+Prev: [03_Secrets_Manager_vs_SSM.md](../Security/03_Secrets_Manager_vs_SSM.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [05_Zero_Trust_on_AWS.md](../Security/05_Zero_Trust_on_AWS.md)
+---

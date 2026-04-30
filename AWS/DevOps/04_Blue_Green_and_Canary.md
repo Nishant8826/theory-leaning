@@ -98,3 +98,7 @@ Hooks:
 ## 🧩 Practice Problems
 1.  Configure a Lambda function with "Provisioned Concurrency" and a Canary deployment strategy.
 2.  Perform a Blue-Green swap of two S3-hosted websites using Route 53 weighted records.
+
+---
+Prev: [03_Infrastructure_as_Code.md](../DevOps/03_Infrastructure_as_Code.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [05_Deployment_Failures.md](../DevOps/05_Deployment_Failures.md)
+---

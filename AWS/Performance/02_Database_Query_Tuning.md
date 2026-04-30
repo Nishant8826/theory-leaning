@@ -96,3 +96,7 @@ EXPLAIN ANALYZE SELECT * FROM orders WHERE user_id = 500;
 ## 🧩 Practice Problems
 1.  Run `EXPLAIN` on a complex join query and identify which table is being scanned sequentially.
 2.  Research the difference between a "Clustered" and "Non-Clustered" index.
+
+---
+Prev: [01_Compute_Performance_Optimization.md](../Performance/01_Compute_Performance_Optimization.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [03_Networking_Latency_Reduction.md](../Performance/03_Networking_Latency_Reduction.md)
+---

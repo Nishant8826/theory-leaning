@@ -101,3 +101,7 @@ resource "aws_autoscaling_group" "ha_app" {
 ## 🧩 Practice Problems
 1.  Configure an RDS instance for Multi-AZ and perform a manual failover. Observe the DNS change.
 2.  Calculate the monthly downtime allowed for a "99.999%" SLA.
+
+---
+Prev: [04_Cost_vs_Performance_Tradeoffs.md](../Performance/04_Cost_vs_Performance_Tradeoffs.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [02_Disaster_Recovery_Strategies.md](../Reliability/02_Disaster_Recovery_Strategies.md)
+---

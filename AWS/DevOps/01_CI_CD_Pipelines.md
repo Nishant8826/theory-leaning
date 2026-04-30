@@ -96,3 +96,7 @@ artifacts:
 ## 🧩 Practice Problems
 1.  Create a CodePipeline that triggers on every push to a GitHub repository and runs a simple build in CodeBuild.
 2.  Write an `appspec.yml` file for an EC2 deployment that runs a "Smoke Test" script after the deployment is finished.
+
+---
+Prev: [04_Alerting_and_SLOs.md](../Observability/04_Alerting_and_SLOs.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [02_CloudFormation_vs_Terraform.md](../DevOps/02_CloudFormation_vs_Terraform.md)
+---

@@ -112,3 +112,7 @@ pipeline {
 ## 🧩 Practice Problems
 1.  Write a pipeline that uses `agent { docker 'alpine' }` *without* passing the `-u` argument. Create a file via `sh 'touch test.txt'`. Attempt to `sh 'rm test.txt'` outside the docker block. Observe the permission denied error.
 2.  Refactor a `docker.build()` step to use Kaniko via a Kubernetes pod template.
+
+---
+Prev: [04_Caching_Strategies.md](../Builds/04_Caching_Strategies.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [01_Distributed_Builds.md](../Distributed/01_Distributed_Builds.md)
+---

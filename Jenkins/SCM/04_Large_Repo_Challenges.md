@@ -111,3 +111,7 @@ pipeline {
 ## 🧩 Practice Problems
 1.  Configure a Jenkins job to checkout a public GitHub repository using Sparse Checkout to only pull the `docs/` directory.
 2.  Write a Declarative Pipeline with two stages. Use the `when { changeset "path/**" }` directive so Stage 1 only runs if `frontend/` changes, and Stage 2 only runs if `backend/` changes.
+
+---
+Prev: [03_Multibranch_Pipelines.md](../SCM/03_Multibranch_Pipelines.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [01_Build_Execution_Lifecycle.md](../Builds/01_Build_Execution_Lifecycle.md)
+---

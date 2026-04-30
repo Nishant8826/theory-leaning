@@ -105,3 +105,7 @@ resource "aws_autoscaling_group" "mixed_asg" {
 ## 🧩 Practice Problems
 1.  Use the AWS CLI to find the current Spot price for `t3.large` in `us-east-1a`.
 2.  Write a simple shell script that runs on an instance and logs a message to CloudWatch when a Spot interruption warning is detected.
+
+---
+Prev: [07_Instance_Types_and_Performance.md](../Compute/07_Instance_Types_and_Performance.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [01_S3_Internals.md](../Storage/01_S3_Internals.md)
+---

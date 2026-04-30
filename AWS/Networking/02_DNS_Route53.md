@@ -110,3 +110,7 @@ resource "aws_route53_record" "api_us" {
 ## 🧩 Practice Problems
 1.  Set up a health check for an external website and configure an email notification for when it goes down.
 2.  Create a "Multi-Value Answer" record set with 3 IPs and verify that DNS queries return a random subset of those IPs.
+
+---
+Prev: [01_ELB_ALB_NLB.md](../Networking/01_ELB_ALB_NLB.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [03_CDN_CloudFront.md](../Networking/03_CDN_CloudFront.md)
+---

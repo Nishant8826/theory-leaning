@@ -110,3 +110,7 @@ pipeline {
 ## 🧩 Practice Problems
 1.  Configure a Jenkins Agent via SSH, then manually kill the SSH connection on the OS level and observe how the Controller reacts.
 2.  Write a Pipeline that utilizes a specific `label` to run on one agent, and use the `stash`/`unstash` commands to move a file to a different agent.
+
+---
+Prev: [02_Controller_Internals.md](../Core/02_Controller_Internals.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [04_Queue_and_Scheduler.md](../Core/04_Queue_and_Scheduler.md)
+---

@@ -95,3 +95,7 @@ resource "aws_instance" "db_server" {
 ## 🧩 Practice Problems
 1.  Calculate the required throughput for an EBS volume that needs to perform 5,000 IOPS with a 64KB block size.
 2.  Use `fio` to benchmark the random read performance of an EC2 instance's root volume.
+
+---
+Prev: [05_Data_Lifecycle_Policies.md](../Storage/05_Data_Lifecycle_Policies.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [01_RDS_Internals.md](../Databases/01_RDS_Internals.md)
+---

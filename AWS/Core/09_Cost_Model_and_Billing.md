@@ -103,3 +103,7 @@ resource "aws_budgets_budget" "monthly_limit" {
 ## 🧩 Practice Problems
 1.  Analyze a sample AWS bill (CUR) and identify the top 3 cost drivers.
 2.  Calculate the cost difference between running 10 instances on On-Demand vs. 1-year Savings Plan vs. Spot.
+
+---
+Prev: [08_Service_Quotas_and_Limits.md](../Core/08_Service_Quotas_and_Limits.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [01_EC2_Internals.md](../Compute/01_EC2_Internals.md)
+---

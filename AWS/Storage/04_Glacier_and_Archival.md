@@ -102,3 +102,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "archive_rule" {
 ## 🧩 Practice Problems
 1.  Calculate the cost of storing 1PB of data in Deep Archive for 5 years vs. S3 Standard.
 2.  Initiate a restore of a test file from Glacier and monitor its status via the AWS CLI.
+
+---
+Prev: [03_EBS_vs_EFS.md](../Storage/03_EBS_vs_EFS.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [05_Data_Lifecycle_Policies.md](../Storage/05_Data_Lifecycle_Policies.md)
+---

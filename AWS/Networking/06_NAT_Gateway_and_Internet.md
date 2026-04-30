@@ -88,3 +88,7 @@ resource "aws_route" "private_outbound" {
 ## 🧩 Practice Problems
 1.  Calculate the monthly cost of a VPC with 3 NAT Gateways (one per AZ) processing 500GB of data each.
 2.  Configure a NAT Gateway and verify that a private EC2 instance can `curl google.com`.
+
+---
+Prev: [05_VPC_Peering_and_PrivateLink.md](../Networking/05_VPC_Peering_and_PrivateLink.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [07_Hybrid_Connectivity_VPN_DirectConnect.md](../Networking/07_Hybrid_Connectivity_VPN_DirectConnect.md)
+---

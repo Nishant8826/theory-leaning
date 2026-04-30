@@ -96,3 +96,7 @@ resource "aws_autoscaling_group" "worker_asg" {
 ## 🧩 Practice Problems
 1.  Calculate the cost difference between running a 1TB database on `gp3` vs. `io2` with 50,000 IOPS.
 2.  Research the "AWS Well-Architected Framework" Cost Optimization pillar.
+
+---
+Prev: [03_Networking_Latency_Reduction.md](../Performance/03_Networking_Latency_Reduction.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [01_High_Availability_Principles.md](../Reliability/01_High_Availability_Principles.md)
+---

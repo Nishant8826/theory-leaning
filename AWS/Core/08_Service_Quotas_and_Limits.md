@@ -83,3 +83,7 @@ resource "aws_servicequotas_service_quota" "vpc_limit" {
 ## 🧩 Practice Problems
 1.  Identify the quota code for "Running On-Demand Standard instances" in your region.
 2.  Calculate how many IP addresses you will need for an EKS cluster with 50 nodes, given the VPC CNI limits and your subnet size.
+
+---
+Prev: [07_Resource_Tagging_Strategy.md](../Core/07_Resource_Tagging_Strategy.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [09_Cost_Model_and_Billing.md](../Core/09_Cost_Model_and_Billing.md)
+---

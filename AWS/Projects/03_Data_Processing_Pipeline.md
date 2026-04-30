@@ -55,3 +55,7 @@ resource "aws_glue_crawler" "clean_data" {
 ## 🧩 Practice Problems
 1.  Add an **SNS Topic** at the end of the pipeline to notify an administrator if a file fails to process after 3 retries.
 2.  Convert the CSV data to **Parquet** format in the Lambda function and compare the Athena query cost.
+
+---
+Prev: [02_Highly_Available_SQL_Cluster.md](../Projects/02_Highly_Available_SQL_Cluster.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [04_Multi_Region_DR_Setup.md](../Projects/04_Multi_Region_DR_Setup.md)
+---

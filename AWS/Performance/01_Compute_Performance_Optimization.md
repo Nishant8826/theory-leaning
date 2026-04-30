@@ -94,3 +94,7 @@ resource "aws_launch_template" "optimized" {
 ## 🧩 Practice Problems
 1.  Use `lscpu` on a large EC2 instance to view the NUMA nodes and vCPU mapping.
 2.  Benchmark the performance of a simple loop in Python on an `m6i.large` (Intel) vs. an `m6g.large` (Graviton).
+
+---
+Prev: [06_Event_Driven_Architecture.md](../Scaling/06_Event_Driven_Architecture.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [02_Database_Query_Tuning.md](../Performance/02_Database_Query_Tuning.md)
+---

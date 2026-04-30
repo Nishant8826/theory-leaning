@@ -101,3 +101,7 @@ pipeline {
 ## 🧩 Practice Problems
 1.  Create a Multibranch Pipeline pointing to a personal GitHub repo. Create a `dev` branch with a `Jenkinsfile`. Watch Jenkins automatically discover and build it.
 2.  Delete the `dev` branch in GitHub. Observe the Jenkins UI and see how the job gets marked with a strike-through (Orphaned).
+
+---
+Prev: [02_Webhooks_vs_Polling.md](../SCM/02_Webhooks_vs_Polling.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [04_Large_Repo_Challenges.md](../SCM/04_Large_Repo_Challenges.md)
+---

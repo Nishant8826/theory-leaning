@@ -1,18 +1,18 @@
 # ⚙️ Jenkins Staff-Level Engineering Curriculum
 
-Welcome to the definitive guide for Jenkins CI/CD engineering at scale. This curriculum is designed for engineers with 10+ years of experience who want to master Jenkins internals, distributed builds, and high-performance CI/CD architecture.
+## 📚 Module Overview
+This curriculum is a deep, production-grade dive into **Jenkins CI/CD** and the principles of **Enterprise Build Orchestration**. It moves beyond simple job creation to explore Jenkins internals (Stapler, Remoting), distributed scaling (Dynamic Agents, Kubernetes), and high-reliability architecture (Fault Tolerance, DR).
 
-## 📌 Top-10 Mandatory Focus Concepts
-1. **Controller (Master) Internals**: Stapler framework, Java heap management, and JVM threading.
-2. **Agents (Static + Dynamic)**: JNLP vs SSH, Remoting protocol, and workspace management.
-3. **Executors & Queue System**: Backpressure, scheduling algorithms, and queue limits.
-4. **Pipelines (Declarative vs Scripted)**: CPS (Continuation Passing Style), syntax, and execution engines.
-5. **Jenkinsfile Execution Model**: Node blocks, stages, steps, and parallel execution.
-6. **Plugin System Architecture**: Classloaders, dependencies, and dynamic injection.
-7. **Credentials & Secrets Management**: The Credentials plugin, encryption, and vault integration.
-8. **SCM Integration**: Git, Webhooks, Polling, and multibranch scanning.
-9. **Distributed Builds & Scaling**: Horizontal scaling strategies and bottleneck mitigation.
-10. **Jenkins on Kubernetes**: Ephemeral pods, pod templates, and cloud-native integration.
+This module covers 11 distinct domains:
+1.  **Core Architecture**: Controller/Agent internals, JVM heap management, and the Remoting protocol.
+2.  **Pipelines**: CPS-based execution, Groovy sandbox security, and Shared Library patterns.
+3.  **SCM & Networking**: Git multibranch strategies, webhook lifecycle, and reverse proxy optimization.
+4.  **Distributed Scaling**: Kubernetes-native agents, ephemeral build pods, and queue backpressure.
+5.  **Security**: Identity-based access (RBAC), Secrets Management, and Supply Chain security.
+6.  **Observability**: Build tracing, metrics monitoring, and production-grade debugging.
+7.  **Reliability**: Fault-tolerant controller design and disaster recovery for Jenkins state.
+8.  **Internals Deep Dive**: RPC mechanics, threading models, and I/O behavior.
+9.  **Projects**: Building scalable, event-driven CI systems from the ground up.
 
 ---
 
@@ -104,3 +104,6 @@ Welcome to the definitive guide for Jenkins CI/CD engineering at scale. This cur
 - [03 Event Driven Pipeline System](./Projects/03_Event_Driven_Pipeline_System.md)
 - [04 Monorepo CI Optimization](./Projects/04_Monorepo_CI_Optimization.md)
 - [05 Observability for CI](./Projects/05_Observability_for_CI.md)
+
+---
+**Prev: None | Index: [00_Index.md](./00_Index.md) | Next: [01_Jenkins_Architecture.md](./Core/01_Jenkins_Architecture.md)**

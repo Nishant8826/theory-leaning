@@ -94,3 +94,7 @@ resource "aws_instance" "graviton_app" {
 ## 🧩 Practice Problems
 1.  Compare the price-per-vCPU of an `m6i.large` vs an `m6g.large` in your region.
 2.  Find an instance type that provides at least 100 Gbps of network bandwidth.
+
+---
+Prev: [06_Bootstrapping_and_UserData.md](../Compute/06_Bootstrapping_and_UserData.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [08_Spot_Instances.md](../Compute/08_Spot_Instances.md)
+---

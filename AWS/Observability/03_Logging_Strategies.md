@@ -93,3 +93,7 @@ resource "aws_cloudwatch_log_group" "app_logs" {
 ## 🧩 Practice Problems
 1.  Configure a "Metric Filter" that counts the number of times the word "Exception" appears in a log group and creates a CloudWatch metric.
 2.  Set up an S3 bucket with a lifecycle policy to move logs to Glacier after 90 days.
+
+---
+Prev: [02_Distributed_Tracing_XRay.md](../Observability/02_Distributed_Tracing_XRay.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [04_Alerting_and_SLOs.md](../Observability/04_Alerting_and_SLOs.md)
+---

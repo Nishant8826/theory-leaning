@@ -109,3 +109,7 @@ resource "aws_iam_policy" "user_home" {
 ## 🧩 Practice Problems
 1.  Write a policy that allows a developer to launch EC2 instances ONLY if they attach a specific IAM Role to the instance.
 2.  Debug a cross-account S3 access issue where the user can see the objects but cannot download them.
+
+---
+Prev: [08_Connection_Lifecycle.md](../Networking/08_Connection_Lifecycle.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [02_KMS_Internals.md](../Security/02_KMS_Internals.md)
+---

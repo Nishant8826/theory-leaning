@@ -97,3 +97,7 @@ resource "aws_db_instance" "mysql_replica" {
 ## 🧩 Practice Problems
 1.  Simulate a high-load scenario on an RDS instance and measure the replication lag on its replica.
 2.  Configure an Aurora cluster with two replicas and perform a "manual failover." Observe which replica is promoted based on tiers.
+
+---
+Prev: [05_Transactions_and_Consistency.md](../Databases/05_Transactions_and_Consistency.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [01_ELB_ALB_NLB.md](../Networking/01_ELB_ALB_NLB.md)
+---

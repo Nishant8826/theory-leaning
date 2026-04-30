@@ -126,3 +126,7 @@ pipeline {
 ## 🧩 Practice Problems
 1.  Write a PodTemplate containing three containers: `jnlp`, `golang`, and `node`. Write a pipeline that switches between them using `container('...')`.
 2.  Inspect the logs of a running `jnlp` container using `kubectl logs <pod-name> -c jnlp` to see the actual Jenkins Remoting handshake.
+
+---
+Prev: [02_Dynamic_Agents.md](../Distributed/02_Dynamic_Agents.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [04_Autoscaling_Strategies.md](../Distributed/04_Autoscaling_Strategies.md)
+---

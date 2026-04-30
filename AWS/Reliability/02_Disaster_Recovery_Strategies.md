@@ -97,3 +97,7 @@ resource "aws_s3_bucket_replication_configuration" "replication" {
 ## 🧩 Practice Problems
 1.  Enable "Cross-Region Replication" for an S3 bucket and verify that a file uploaded to Region A appears in Region B.
 2.  Calculate the annual cost of a "Warm Standby" architecture that uses 10% of the primary region's compute capacity.
+
+---
+Prev: [01_High_Availability_Principles.md](../Reliability/01_High_Availability_Principles.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [03_Fault_Tolerance_Patterns.md](../Reliability/03_Fault_Tolerance_Patterns.md)
+---

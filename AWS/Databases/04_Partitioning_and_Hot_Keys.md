@@ -94,3 +94,7 @@ resource "aws_dynamodb_table" "proper_partitioning" {
 ## 🧩 Practice Problems
 1.  Write a script to generate 10,000 requests to a single PK and observe the "ProvisionedThroughputExceededException."
 2.  Design a sharding strategy for a leaderboard system where millions of players update their scores.
+
+---
+Prev: [03_DynamoDB_Internals.md](../Databases/03_DynamoDB_Internals.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [05_Transactions_and_Consistency.md](../Databases/05_Transactions_and_Consistency.md)
+---

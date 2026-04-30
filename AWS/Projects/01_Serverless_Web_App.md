@@ -71,3 +71,7 @@ exports.handler = async (event) => {
 ## 🧩 Practice Problems
 1.  Implement a "Dead Letter Queue" for the order processing Lambda.
 2.  Add a Global Secondary Index (GSI) to the DynamoDB table to allow searching for orders by `Status`.
+
+---
+Prev: [05_Eventual_Consistency.md](../Internals/05_Eventual_Consistency.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [02_Highly_Available_SQL_Cluster.md](../Projects/02_Highly_Available_SQL_Cluster.md)
+---

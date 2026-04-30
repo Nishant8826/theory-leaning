@@ -114,3 +114,7 @@ pipeline {
 ## 🧩 Practice Problems
 1.  Create a "Secret text" credential in a specific Folder. Try to access it from a job outside that folder and observe the failure.
 2.  Write a pipeline that uses `withCredentials`, assigns the secret to a variable, modifies the string (e.g., `def leaked = secret + "123"`), and prints it. Observe how Jenkins fails to mask the modified string.
+
+---
+Prev: [01_Authentication_and_Authorization.md](../Security/01_Authentication_and_Authorization.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [03_Secrets_Handling.md](../Security/03_Secrets_Handling.md)
+---

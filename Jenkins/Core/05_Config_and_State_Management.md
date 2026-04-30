@@ -94,3 +94,7 @@ unclassified:
 ## 🧩 Practice Problems
 1.  Write a bash script to use `find` and `grep` to locate a specific string inside all `config.xml` files in the `jobs/` directory.
 2.  Install the JCasC plugin and export the current Jenkins configuration to a YAML file. Modify a setting in the YAML and apply it without touching the UI.
+
+---
+Prev: [04_Queue_and_Scheduler.md](../Core/04_Queue_and_Scheduler.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [06_Plugin_System.md](../Core/06_Plugin_System.md)
+---

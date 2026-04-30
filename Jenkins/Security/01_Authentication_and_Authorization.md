@@ -103,3 +103,7 @@ jenkins:
 ## 🧩 Practice Problems
 1.  Review the Matrix Authorization configuration in your Jenkins instance. Identify exactly which group has the `Overall/Administer` permission.
 2.  Create a test folder and apply a local matrix authorization strategy that denies `Job/Read` to the `authenticated` group, but grants it to a specific user. Log in as a different user and verify the folder disappears from the dashboard.
+
+---
+Prev: [05_Network_Latency_Impact.md](../Distributed/05_Network_Latency_Impact.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [02_Credentials_Management.md](../Security/02_Credentials_Management.md)
+---

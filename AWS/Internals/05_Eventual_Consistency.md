@@ -98,3 +98,7 @@ const resultStrong = await dynamodb.get(paramsStrong).promise();
 ## 🧩 Practice Problems
 1.  Measure the latency difference between a standard DynamoDB `GetItem` and a `ConsistentRead: true` operation.
 2.  Diagram a "Split Brain" scenario in a 3-node cluster and explain how a Paxos/Raft consensus avoids it.
+
+---
+Prev: [04_DynamoDB_Paxos_and_Partitioning.md](../Internals/04_DynamoDB_Paxos_and_Partitioning.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [01_Serverless_Web_App.md](../Projects/01_Serverless_Web_App.md)
+---

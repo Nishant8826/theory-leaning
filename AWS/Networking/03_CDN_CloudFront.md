@@ -120,3 +120,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 ## 🧩 Practice Problems
 1.  Create a CloudFront distribution for an S3 bucket and verify that the `X-Cache` header says `Hit from cloudfront`.
 2.  Write a CloudFront Function that redirects users to a `/mobile` path if their `User-Agent` header indicates a smartphone.
+
+---
+Prev: [02_DNS_Route53.md](../Networking/02_DNS_Route53.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [04_API_Gateway_Internals.md](../Networking/04_API_Gateway_Internals.md)
+---

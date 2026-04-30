@@ -111,3 +111,7 @@ pipeline {
 ## 🧩 Practice Problems
 1.  Run a ping test between your Jenkins Controller and one of your Agents. If it is >10ms, investigate the network topology.
 2.  Rewrite a Jenkinsfile that uses a Groovy `for` loop to execute 50 `sh` commands into a single `sh` command containing a bash `for` loop.
+
+---
+Prev: [04_Autoscaling_Strategies.md](../Distributed/04_Autoscaling_Strategies.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [01_Authentication_and_Authorization.md](../Security/01_Authentication_and_Authorization.md)
+---

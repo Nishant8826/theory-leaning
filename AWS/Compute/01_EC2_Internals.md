@@ -100,3 +100,7 @@ resource "aws_instance" "web" {
 ## 🧩 Practice Problems
 1.  Compare the disk latency of an Instance Store volume vs. a GP3 EBS volume.
 2.  Configure an instance to automatically recover to a new host if the physical hardware fails.
+
+---
+Prev: [09_Cost_Model_and_Billing.md](../Core/09_Cost_Model_and_Billing.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [02_Auto_Scaling_Groups.md](../Compute/02_Auto_Scaling_Groups.md)
+---

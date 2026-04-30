@@ -101,3 +101,7 @@ resource "aws_globalaccelerator_endpoint_group" "us_east" {
 ## 🧩 Practice Problems
 1.  Use `ping` and `traceroute` to compare the latency of a standard ALB URL vs. a Global Accelerator URL.
 2.  Diagram the "Path of a Packet" from a user in London to a server in Virginia using Global Accelerator.
+
+---
+Prev: [02_Database_Query_Tuning.md](../Performance/02_Database_Query_Tuning.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [04_Cost_vs_Performance_Tradeoffs.md](../Performance/04_Cost_vs_Performance_Tradeoffs.md)
+---

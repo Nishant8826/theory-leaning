@@ -108,3 +108,7 @@ pipeline {
 ## 🧩 Practice Problems
 1.  Write a pipeline with `agent any` at the top. Add an `input` step. Run the job and observe in the Jenkins UI that an executor is actively consumed. Rewrite it with `agent none` to fix it.
 2.  Create a pipeline with two milestones. Start Build 1, let it sleep. Start Build 2, let it pass Milestone 1. Observe Build 1 being automatically aborted.
+
+---
+Prev: [06_Pipeline_State_and_Checkpointing.md](../Pipelines/06_Pipeline_State_and_Checkpointing.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [01_Git_Integration.md](../SCM/01_Git_Integration.md)
+---

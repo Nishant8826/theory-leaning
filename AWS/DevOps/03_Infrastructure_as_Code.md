@@ -98,3 +98,7 @@ module "network" {
 ## 🧩 Practice Problems
 1.  Set up a remote state backend for Terraform using S3 and DynamoDB.
 2.  Write a script that uses the AWS CLI to detect "Drift" in a CloudFormation stack.
+
+---
+Prev: [02_CloudFormation_vs_Terraform.md](../DevOps/02_CloudFormation_vs_Terraform.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [04_Blue_Green_and_Canary.md](../DevOps/04_Blue_Green_and_Canary.md)
+---

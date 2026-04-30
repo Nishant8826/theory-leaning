@@ -84,3 +84,7 @@ aws dynamodb describe-table --table-name MyTable
 ## 🧩 Practice Problems
 1.  Research the "Dynamo" paper (2007) and see how it differs from the current DynamoDB implementation (hint: the original used eventual consistency and "Sloppy Quorum").
 2.  Calculate how many partitions a 100GB table with 5,000 WCU will have.
+
+---
+Prev: [03_S3_Bit_Rot_and_Durability.md](../Internals/03_S3_Bit_Rot_and_Durability.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [05_Eventual_Consistency.md](../Internals/05_Eventual_Consistency.md)
+---

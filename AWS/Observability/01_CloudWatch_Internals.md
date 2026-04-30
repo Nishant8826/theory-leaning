@@ -95,3 +95,7 @@ resource "aws_cloudwatch_metric_alarm" "high_cpu" {
 ## 🧩 Practice Problems
 1.  Write a Logs Insights query to find the top 5 most frequent error messages in your application logs.
 2.  Create a CloudWatch Metric Math expression that calculates the "Request Success Rate" (SuccessCount / TotalCount).
+
+---
+Prev: [06_Compliance_and_Auditing.md](../Security/06_Compliance_and_Auditing.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [02_Distributed_Tracing_XRay.md](../Observability/02_Distributed_Tracing_XRay.md)
+---

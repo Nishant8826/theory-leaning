@@ -101,3 +101,7 @@ node('linux-agent') { // Establishes context on the Agent JVM
 ## 🧩 Practice Problems
 1.  Use `tcpdump` or Wireshark to capture traffic on port 50000 between a Controller and an Agent to see the binary RPC protocol in action.
 2.  Configure a Jenkins agent to connect using WebSockets instead of the dedicated TCP port.
+
+---
+Prev: [06_Plugin_System.md](../Core/06_Plugin_System.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [08_System_Performance_Limits.md](../Core/08_System_Performance_Limits.md)
+---

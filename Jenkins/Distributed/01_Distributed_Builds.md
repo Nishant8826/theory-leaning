@@ -104,3 +104,7 @@ pipeline {
 ## 🧩 Practice Problems
 1.  Navigate to "Manage Jenkins" -> "Nodes". Configure the `Built-In Node` to have 0 executors.
 2.  Inspect the "Node Monitors" configuration page. Identify the thresholds for Disk Space, Temp Space, and Response Time.
+
+---
+Prev: [05_Docker_Builds.md](../Builds/05_Docker_Builds.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [02_Dynamic_Agents.md](../Distributed/02_Dynamic_Agents.md)
+---

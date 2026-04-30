@@ -104,3 +104,7 @@ pipeline {
 ## 🧩 Practice Problems
 1.  Write a Scripted Pipeline that dynamically takes a list of 5 URLs and creates parallel stages to `curl` each one simultaneously.
 2.  Simulate a "Fail Fast" scenario: Create 3 parallel stages. Make one `sleep 5` and then `exit 1`. Make the others `sleep 60`. Observe how the long-running ones are aborted.
+
+---
+Prev: [04_Shared_Libraries.md](../Pipelines/04_Shared_Libraries.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [06_Pipeline_State_and_Checkpointing.md](../Pipelines/06_Pipeline_State_and_Checkpointing.md)
+---

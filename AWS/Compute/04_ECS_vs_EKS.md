@@ -105,3 +105,7 @@ module "eks" {
 ## 🧩 Practice Problems
 1.  Deploy a simple Nginx container to ECS Fargate and EKS and compare the time it takes to go from "Commit" to "Running."
 2.  Design a strategy for zero-downtime version upgrades for an EKS cluster.
+
+---
+Prev: [03_Lambda_Internals.md](../Compute/03_Lambda_Internals.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [05_Fargate_Deep_Dive.md](../Compute/05_Fargate_Deep_Dive.md)
+---

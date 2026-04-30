@@ -108,3 +108,7 @@ resource "aws_rds_cluster_instance" "cluster_instances" {
 ## 🧩 Practice Problems
 1.  Compare the "Commit Latency" of a heavy write workload on RDS MySQL vs. Aurora MySQL.
 2.  Configure an Aurora Global Database and simulate a regional failover.
+
+---
+Prev: [01_RDS_Internals.md](../Databases/01_RDS_Internals.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [03_DynamoDB_Internals.md](../Databases/03_DynamoDB_Internals.md)
+---

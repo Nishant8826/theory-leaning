@@ -97,3 +97,7 @@ resource "aws_lambda_function" "processor" {
 ## 🧩 Practice Problems
 1.  Calculate the cost of 1 million invocations of a 512MB Lambda running for 100ms.
 2.  Design a system that handles 10,000 concurrent requests using Lambda, considering regional quotas and account limits.
+
+---
+Prev: [02_Auto_Scaling_Groups.md](../Compute/02_Auto_Scaling_Groups.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [04_ECS_vs_EKS.md](../Compute/04_ECS_vs_EKS.md)
+---

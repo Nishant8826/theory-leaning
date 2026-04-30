@@ -106,3 +106,7 @@ pipeline {
 ## 🧩 Practice Problems
 1.  Configure a Jenkinsfile using the explicit `checkout scm` syntax with the `CloneOption` extension set to `shallow: true`.
 2.  Run a build on a persistent agent. SSH into the agent and run `git reflog` in the workspace to see exactly what commands Jenkins executed.
+
+---
+Prev: [07_Long_Running_Pipelines.md](../Pipelines/07_Long_Running_Pipelines.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [02_Webhooks_vs_Polling.md](../SCM/02_Webhooks_vs_Polling.md)
+---

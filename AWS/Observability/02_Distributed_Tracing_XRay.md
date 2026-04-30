@@ -96,3 +96,7 @@ exports.handler = async (event) => {
 ## 🧩 Practice Problems
 1.  Enable X-Ray on a Lambda function and a DynamoDB table and view the resulting service map.
 2.  Create a "Sampling Rule" in X-Ray that traces 100% of requests that result in a 5xx error.
+
+---
+Prev: [01_CloudWatch_Internals.md](../Observability/01_CloudWatch_Internals.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [03_Logging_Strategies.md](../Observability/03_Logging_Strategies.md)
+---

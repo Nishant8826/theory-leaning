@@ -95,3 +95,7 @@ Jenkins.instance.getAllItems(Job.class).each { job ->
 ## 🧩 Practice Problems
 1.  Check the Linux inode usage (`df -i`) on a Jenkins controller and compare it to standard disk space (`df -h`).
 2.  Configure a Jenkins cron trigger using the `H` syntax and observe when it actually triggers.
+
+---
+Prev: [07_Jenkins_Remoting_Protocol.md](../Core/07_Jenkins_Remoting_Protocol.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [01_Declarative_vs_Scripted.md](../Pipelines/01_Declarative_vs_Scripted.md)
+---

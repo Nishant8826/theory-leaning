@@ -104,3 +104,7 @@ resource "aws_config_remediation_configuration" "s3_versioning_fix" {
 ## 🧩 Practice Problems
 1.  Use Athena to query your CloudTrail logs and find all `ConsoleLogin` events from the last 7 days.
 2.  Create a custom AWS Config rule that checks if an EC2 instance has a specific mandatory tag.
+
+---
+Prev: [05_Zero_Trust_on_AWS.md](../Security/05_Zero_Trust_on_AWS.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [01_CloudWatch_Internals.md](../Observability/01_CloudWatch_Internals.md)
+---

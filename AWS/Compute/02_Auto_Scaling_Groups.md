@@ -109,3 +109,7 @@ resource "aws_autoscaling_policy" "cpu_scaling" {
 ## 🧩 Practice Problems
 1.  Configure an ASG to use a "Spot-first" strategy, falling back to On-Demand only if Spot capacity is unavailable.
 2.  Create a lifecycle hook that sends a Slack notification whenever an instance is about to be terminated.
+
+---
+Prev: [01_EC2_Internals.md](../Compute/01_EC2_Internals.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [03_Lambda_Internals.md](../Compute/03_Lambda_Internals.md)
+---

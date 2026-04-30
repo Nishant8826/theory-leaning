@@ -107,3 +107,7 @@ pipeline {
 ## 🧩 Practice Problems
 1.  Try to generate a UUID in a Jenkinsfile using `java.util.UUID.randomUUID()`. Observe the failure, find the signature in the UI, and approve it.
 2.  Refactor a Jenkinsfile that uses `java.io.File` to read a file into one that uses the Jenkins-native `readFile()` step to avoid Sandbox violations.
+
+---
+Prev: [02_Jenkinsfile_Execution_Model.md](../Pipelines/02_Jenkinsfile_Execution_Model.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [04_Shared_Libraries.md](../Pipelines/04_Shared_Libraries.md)
+---

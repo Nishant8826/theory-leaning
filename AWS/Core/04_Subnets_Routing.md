@@ -95,3 +95,7 @@ resource "aws_route_table_association" "a" {
 ## 🧩 Practice Problems
 1.  Set up a "DB Subnet" that can only be reached from the "App Subnet" and has no path to the internet.
 2.  Explain how a packet from an instance in a private subnet reaches `google.com`.
+
+---
+Prev: [03_VPC_Deep_Dive.md](../Core/03_VPC_Deep_Dive.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [05_Security_Groups_vs_NACLs.md](../Core/05_Security_Groups_vs_NACLs.md)
+---

@@ -67,3 +67,7 @@ resource "aws_route53_record" "primary" {
 ## 🧩 Practice Problems
 1.  Simulate a "Database Failover" in an Aurora Global cluster and measure the replication lag.
 2.  Diagram the "Return to Primary" (Failback) process after a regional disaster is resolved.
+
+---
+Prev: [03_Data_Processing_Pipeline.md](../Projects/03_Data_Processing_Pipeline.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [05_Build_Observability_Platform.md](../Projects/05_Build_Observability_Platform.md)
+---

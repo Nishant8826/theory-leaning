@@ -114,3 +114,7 @@ resource "aws_iam_role_policy" "s3_access" {
 ## 🧩 Practice Problems
 1.  Write a policy that allows a user to manage their own MFA device but nothing else.
 2.  Debug why an EC2 instance with an S3-full-access role cannot upload a file to a bucket that has an explicit "Deny" for that instance's IP address.
+
+---
+Prev: [05_Security_Groups_vs_NACLs.md](../Core/05_Security_Groups_vs_NACLs.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [07_Resource_Tagging_Strategy.md](../Core/07_Resource_Tagging_Strategy.md)
+---

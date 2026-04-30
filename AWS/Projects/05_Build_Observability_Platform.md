@@ -70,3 +70,7 @@ exports.handler = async (event) => {
 ## 🧩 Practice Problems
 1.  Set up an OpenSearch dashboard that shows the "Top 5 Error Messages" across your entire environment.
 2.  Implement "Log Sampling" in your Firehose Lambda to only send 10% of "Debug" logs to OpenSearch while keeping 100% of "Error" logs.
+
+---
+Prev: [04_Multi_Region_DR_Setup.md](../Projects/04_Multi_Region_DR_Setup.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: None
+---

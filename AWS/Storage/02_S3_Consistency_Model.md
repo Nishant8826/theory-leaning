@@ -90,3 +90,7 @@ Strong consistency is a feature of the S3 service itself; no configuration is re
 ## 🧩 Practice Problems
 1.  Write a script that uploads 100 objects and immediately tries to list them. Verify that the count is always 100.
 2.  Design a system that uses S3 as a "Source of Truth" for configuration, knowing that updates are globally visible immediately.
+
+---
+Prev: [01_S3_Internals.md](../Storage/01_S3_Internals.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [03_EBS_vs_EFS.md](../Storage/03_EBS_vs_EFS.md)
+---

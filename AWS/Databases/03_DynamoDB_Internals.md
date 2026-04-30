@@ -112,3 +112,7 @@ resource "aws_dynamodb_table" "users" {
 ## 🧩 Practice Problems
 1.  Design a DynamoDB schema for a "Twitter-like" feed where users can follow others and see their tweets in chronological order.
 2.  Calculate the cost of writing 10,000 items per second (each 2KB) using On-Demand pricing.
+
+---
+Prev: [02_Aurora_Architecture.md](../Databases/02_Aurora_Architecture.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [04_Partitioning_and_Hot_Keys.md](../Databases/04_Partitioning_and_Hot_Keys.md)
+---

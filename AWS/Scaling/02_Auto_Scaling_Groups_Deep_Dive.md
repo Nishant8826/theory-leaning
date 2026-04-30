@@ -103,3 +103,7 @@ resource "aws_autoscaling_lifecycle_hook" "log_exporter" {
 ## 🧩 Practice Problems
 1.  Configure an ASG that uses a "Mixed Instances Policy" to maintain 50% On-Demand and 50% Spot instances.
 2.  Write a Lambda function that is triggered by a "Lifecycle Hook" to send a Slack notification when an instance is terminated.
+
+---
+Prev: [01_Vertical_vs_Horizontal.md](../Scaling/01_Vertical_vs_Horizontal.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [03_Predictive_Scaling.md](../Scaling/03_Predictive_Scaling.md)
+---

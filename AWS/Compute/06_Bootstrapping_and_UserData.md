@@ -102,3 +102,7 @@ resource "aws_instance" "app" {
 ## 🧩 Practice Problems
 1.  Write a UserData script that mounts an EFS volume and starts a Docker container.
 2.  Use a CloudFormation WaitCondition to ensure an ASG doesn't mark an instance as "InService" until the UserData finishes.
+
+---
+Prev: [05_Fargate_Deep_Dive.md](../Compute/05_Fargate_Deep_Dive.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [07_Instance_Types_and_Performance.md](../Compute/07_Instance_Types_and_Performance.md)
+---

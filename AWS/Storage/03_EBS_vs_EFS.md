@@ -99,3 +99,7 @@ resource "aws_efs_mount_target" "alpha" {
 ## 🧩 Practice Problems
 1.  Benchmark the time it takes to write a 1GB file to EBS vs. EFS.
 2.  Set up an EBS volume with "Multi-Attach" and try to write to it from two different instances.
+
+---
+Prev: [02_S3_Consistency_Model.md](../Storage/02_S3_Consistency_Model.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [04_Glacier_and_Archival.md](../Storage/04_Glacier_and_Archival.md)
+---

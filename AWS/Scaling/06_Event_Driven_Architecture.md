@@ -99,3 +99,7 @@ resource "aws_cloudwatch_event_target" "lambda_target" {
 ## 🧩 Practice Problems
 1.  Create an EventBridge rule that triggers a Lambda function only if an S3 bucket has a specific tag.
 2.  Design an event-driven "User Onboarding" flow that involves Email, Billing, and Analytics.
+
+---
+Prev: [05_SQS_SNS_Deep_Dive.md](../Scaling/05_SQS_SNS_Deep_Dive.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [01_Compute_Performance_Optimization.md](../Performance/01_Compute_Performance_Optimization.md)
+---

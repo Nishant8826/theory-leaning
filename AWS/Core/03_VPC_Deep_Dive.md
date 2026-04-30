@@ -97,3 +97,7 @@ resource "aws_internet_gateway" "gw" {
 ## 🧩 Practice Problems
 1.  Create a VPC with two subnets in different AZs. Ensure one can reach the internet and the other cannot.
 2.  Diagnose why an EC2 instance with a public IP cannot be reached via SSH (assuming the Security Group is correct).
+
+---
+Prev: [02_Regions_AZs_Edge.md](../Core/02_Regions_AZs_Edge.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [04_Subnets_Routing.md](../Core/04_Subnets_Routing.md)
+---

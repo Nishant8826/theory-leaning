@@ -115,3 +115,7 @@ pipeline {
 ## 🧩 Practice Problems
 1.  Write a script that creates a 10MB text file, stashes it, unstashes it in a new stage, and verify the file transfer. Check the Controller's disk at `$JENKINS_HOME/jobs/` to find the stash archive.
 2.  Trigger a long `sh 'sleep 60'` command and manually restart the Jenkins service (`systemctl restart jenkins`). Verify the job resumes successfully.
+
+---
+Prev: [05_Stage_Execution_and_Parallelism.md](../Pipelines/05_Stage_Execution_and_Parallelism.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [07_Long_Running_Pipelines.md](../Pipelines/07_Long_Running_Pipelines.md)
+---

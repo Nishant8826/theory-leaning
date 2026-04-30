@@ -123,3 +123,7 @@ pipeline {
 ## 🧩 Practice Problems
 1.  Write a Pipeline that intentionally fails in the `steps` block (`sh 'exit 1'`). Use the `post` block to print a message to the console verifying that the `post` block still executed.
 2.  Use the `catchError` block around a failing shell step and observe how the stage turns yellow (Unstable) instead of red (Failed) in the Blue Ocean UI.
+
+---
+Prev: [04_Large_Repo_Challenges.md](../SCM/04_Large_Repo_Challenges.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [02_Workspace_Management.md](../Builds/02_Workspace_Management.md)
+---

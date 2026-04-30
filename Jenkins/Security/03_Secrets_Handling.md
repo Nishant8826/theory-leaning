@@ -101,3 +101,7 @@ pipeline {
 ## 🧩 Practice Problems
 1.  If you have an AWS account, configure a Jenkins pipeline to assume an IAM role using OIDC instead of storing an IAM Access Key.
 2.  Write a script that demonstrates how an environment variable can leak. (e.g., inject a secret, start a background process `sleep 60 &`, and `cat /proc/$!/environ`).
+
+---
+Prev: [02_Credentials_Management.md](../Security/02_Credentials_Management.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [04_Sandbox_and_Script_Security.md](../Security/04_Sandbox_and_Script_Security.md)
+---

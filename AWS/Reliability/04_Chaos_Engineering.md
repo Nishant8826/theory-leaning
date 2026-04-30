@@ -115,3 +115,7 @@ resource "aws_fis_experiment_template" "stop_instances" {
 ## 🧩 Practice Problems
 1.  Use AWS FIS to simulate a 500ms network latency to a specific RDS instance and observe the application's response.
 2.  Design a "Game Day" scenario for a team that manages a serverless API.
+
+---
+Prev: [03_Fault_Tolerance_Patterns.md](../Reliability/03_Fault_Tolerance_Patterns.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [05_Incident_Response.md](../Reliability/05_Incident_Response.md)
+---

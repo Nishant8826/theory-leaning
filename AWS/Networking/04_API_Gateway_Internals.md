@@ -103,3 +103,7 @@ resource "aws_apigatewayv2_route" "default_route" {
 ## 🧩 Practice Problems
 1.  Build an API Gateway that talks directly to DynamoDB (no Lambda) to `GetItem` from a table.
 2.  Implement a Lambda Authorizer that checks a JWT token and allows access based on a specific claim.
+
+---
+Prev: [03_CDN_CloudFront.md](../Networking/03_CDN_CloudFront.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [05_VPC_Peering_and_PrivateLink.md](../Networking/05_VPC_Peering_and_PrivateLink.md)
+---

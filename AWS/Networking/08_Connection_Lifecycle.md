@@ -102,3 +102,7 @@ resource "aws_lb" "web" {
 ## 🧩 Practice Problems
 1.  Use `tcpdump` or Wireshark to capture a TLS handshake and identify the version and cipher suite being used.
 2.  Change the ALB idle timeout to 5 seconds and observe how it affects long-running API calls.
+
+---
+Prev: [07_Hybrid_Connectivity_VPN_DirectConnect.md](../Networking/07_Hybrid_Connectivity_VPN_DirectConnect.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [01_IAM_Policies_Deep_Dive.md](../Security/01_IAM_Policies_Deep_Dive.md)
+---

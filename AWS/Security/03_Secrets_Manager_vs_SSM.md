@@ -100,3 +100,7 @@ resource "aws_secretsmanager_secret_version" "pass_val" {
 ## 🧩 Practice Problems
 1.  Set up an SSM Parameter with the path `/dev/app/config` and retrieve it using the AWS CLI.
 2.  Write a simple Lambda function that rotates a simulated password stored in Secrets Manager.
+
+---
+Prev: [02_KMS_Internals.md](../Security/02_KMS_Internals.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [04_Network_Security.md](../Security/04_Network_Security.md)
+---

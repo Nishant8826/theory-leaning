@@ -103,3 +103,7 @@ println "Free Memory: ${Runtime.getRuntime().freeMemory() / 1024 / 1024} MB"
 ## 🧩 Practice Problems
 1.  Write a script in the Jenkins Script Console to find all jobs that do not have a "Build Discarder" configured and apply a 10-build limit.
 2.  Use `jmap -histo:live <pid>` on the Controller process to identify the Java classes taking up the most heap space.
+
+---
+Prev: [01_Jenkins_Architecture.md](../Core/01_Jenkins_Architecture.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [03_Agents_and_Executors.md](../Core/03_Agents_and_Executors.md)
+---

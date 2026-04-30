@@ -106,3 +106,7 @@ node {
 ## 🧩 Practice Problems
 1.  Rewrite a complex Scripted pipeline containing `try/catch/finally` into a Declarative pipeline using `post` conditions.
 2.  Trigger a Declarative pipeline with an intentional syntax error in the very last stage and observe how fast it fails.
+
+---
+Prev: [08_System_Performance_Limits.md](../Core/08_System_Performance_Limits.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [02_Jenkinsfile_Execution_Model.md](../Pipelines/02_Jenkinsfile_Execution_Model.md)
+---

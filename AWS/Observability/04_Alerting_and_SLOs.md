@@ -111,3 +111,7 @@ resource "aws_cloudwatch_metric_alarm" "anomaly_alarm" {
 ## 🧩 Practice Problems
 1.  Define an SLO for a "Checkout" service and create the corresponding CloudWatch Alarms.
 2.  Configure a "Composite Alarm" that only fires if both an ALB 5xx alarm and a Lambda error alarm are active.
+
+---
+Prev: [03_Logging_Strategies.md](../Observability/03_Logging_Strategies.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [01_CI_CD_Pipelines.md](../DevOps/01_CI_CD_Pipelines.md)
+---

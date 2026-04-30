@@ -111,3 +111,7 @@ pipeline {
 ## 🧩 Practice Problems
 1.  Trigger a job twice concurrently (uncheck "Disable Concurrent Builds"). SSH into the agent and verify the existence of `job-name` and `job-name@2` directories.
 2.  Write a script using the `dir('subfolder') { ... }` step to execute shell commands in an isolated subdirectory of the workspace.
+
+---
+Prev: [01_Build_Execution_Lifecycle.md](../Builds/01_Build_Execution_Lifecycle.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [03_Artifacts_and_Storage.md](../Builds/03_Artifacts_and_Storage.md)
+---

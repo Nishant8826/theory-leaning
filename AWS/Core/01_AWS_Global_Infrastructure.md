@@ -99,3 +99,7 @@ resource "aws_subnet" "secondary" {
 ## 🧩 Practice Problems
 1.  Calculate the cost of transferring 10TB of data between two EC2 instances in different AZs in the same region.
 2.  Design a strategy to ensure an application survives a complete regional outage of `us-east-1`.
+
+---
+Prev: None | Index: [Docker/00_Index.md](../00_Index.md) | Next: [02_Regions_AZs_Edge.md](../Core/02_Regions_AZs_Edge.md)
+---

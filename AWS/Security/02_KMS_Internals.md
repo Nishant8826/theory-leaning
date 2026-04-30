@@ -114,3 +114,7 @@ resource "aws_kms_alias" "my_key_alias" {
 ## 🧩 Practice Problems
 1.  Encrypt a string using the AWS CLI and then decrypt it.
 2.  Create a KMS key that can only be used by a specific IAM Role for `kms:Decrypt` if the request comes from a specific VPC.
+
+---
+Prev: [01_IAM_Policies_Deep_Dive.md](../Security/01_IAM_Policies_Deep_Dive.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [03_Secrets_Manager_vs_SSM.md](../Security/03_Secrets_Manager_vs_SSM.md)
+---

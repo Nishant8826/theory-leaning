@@ -107,3 +107,7 @@ jenkins:
 ## 🧩 Practice Problems
 1.  Identify the exact AWS IAM permissions required for the Jenkins EC2 Plugin to function (`ec2:RunInstances`, `ec2:TerminateInstances`, `ec2:DescribeInstances`).
 2.  Calculate the cost difference between running a static `c5.2xlarge` for 730 hours a month vs running it dynamically for only the 100 hours a month builds are actively running.
+
+---
+Prev: [01_Distributed_Builds.md](../Distributed/01_Distributed_Builds.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [03_Kubernetes_Plugin.md](../Distributed/03_Kubernetes_Plugin.md)
+---

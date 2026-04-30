@@ -94,3 +94,7 @@ resource "aws_autoscaling_policy" "cpu_target" {
 ## 🧩 Practice Problems
 1.  Modify an ASG to use "Instance Refresh" and verify that a new AMI is deployed without dropping traffic.
 2.  Compare the cost of 1 `m5.4xlarge` vs. 4 `m5.xlarge` instances.
+
+---
+Prev: [05_Deployment_Failures.md](../DevOps/05_Deployment_Failures.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [02_Auto_Scaling_Groups_Deep_Dive.md](../Scaling/02_Auto_Scaling_Groups_Deep_Dive.md)
+---

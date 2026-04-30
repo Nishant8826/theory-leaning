@@ -108,3 +108,7 @@ resource "aws_network_acl_rule" "outbound_ephemeral" {
 ## 🧩 Practice Problems
 1.  A user reports they can ping a server but cannot SSH into it. Which firewall (SG or NACL) is most likely the culprit?
 2.  Design a NACL rule set that allows a web server to receive traffic on port 443 and communicate with a database on port 5432.
+
+---
+Prev: [04_Subnets_Routing.md](../Core/04_Subnets_Routing.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [06_IAM_Deep_Dive.md](../Core/06_IAM_Deep_Dive.md)
+---

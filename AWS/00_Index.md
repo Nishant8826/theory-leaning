@@ -1,18 +1,17 @@
 # ☁️ Staff-Level AWS & Distributed Systems Curriculum
 
-Welcome to the definitive guide for AWS engineering at scale. This curriculum is designed for engineers with 10+ years of experience who want to move from "using services" to "architecting systems" with a deep understanding of cloud internals.
-
-## 📌 Top-10 Mandatory Focus Services
-1. **EC2**: The foundation of cloud compute and Nitro architecture.
-2. **S3**: Object storage internals and 11-nines durability.
-3. **Lambda**: Serverless compute and Firecracker microVMs.
-4. **RDS**: Managed relational databases and high availability.
-5. **DynamoDB**: Distributed NoSQL, Paxos, and partitioning.
-6. **VPC**: Software Defined Networking (SDN) and global backbone.
-7. **IAM**: Identity-based security perimeter and evaluation logic.
-8. **CloudFront**: Global content delivery and edge performance.
-9. **API Gateway**: Microservice orchestration and request lifecycle.
-10. **SQS/SNS**: Asynchronous decoupling and event-driven patterns.
+## 📚 Module Overview
+This module covers 13 distinct domains:
+1.  **Core Infrastructure**: VPCs, SDN, and Global Backbone.
+2.  **Compute**: Nitro-powered EC2, Firecracker MicroVMs (Lambda), and Container Orchestration.
+3.  **Storage**: S3 durability, EBS IOPS, and EFS consistency.
+4.  **Databases**: Aurora quorum-based storage and DynamoDB partitioning.
+5.  **Networking**: ALB/NLB internals, Route53 DNS, and Global Accelerators.
+6.  **Security**: IAM Evaluation Logic, KMS Envelope Encryption, and Zero Trust.
+7.  **Observability**: Distributed tracing (X-Ray) and high-resolution CloudWatch metrics.
+8.  **DevOps**: IaC best practices and immutable deployment strategies.
+9.  **Scaling & Reliability**: Event-driven architectures and Chaos Engineering.
+10. **Internals Deep Dive**: The engineering secrets of Nitro, S3, and DynamoDB.
 
 ---
 
@@ -122,8 +121,4 @@ Welcome to the definitive guide for AWS engineering at scale. This curriculum is
 - [05 Build an Observability Platform](./Projects/05_Build_Observability_Platform.md)
 
 ---
-**Curriculum Goals:**
-- Understand the *why* behind every AWS service behavior.
-- Master the networking and security underpinnings.
-- Learn to debug production failures before they happen.
-- Think like an AWS internal service team member.
+**Prev: None | Index: [00_Index.md](./00_Index.md) | Next: [01_AWS_Global_Infrastructure.md](./Core/01_AWS_Global_Infrastructure.md)**

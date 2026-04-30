@@ -102,3 +102,7 @@ resource "aws_iam_policy" "abac_policy" {
 ## 🧩 Practice Problems
 1.  Write a Terraform script that applies a set of default tags to every resource it creates.
 2.  Create an IAM policy that allows users to terminate EC2 instances ONLY if the instance has a tag `Owner` that matches their IAM username.
+
+---
+Prev: [06_IAM_Deep_Dive.md](../Core/06_IAM_Deep_Dive.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [08_Service_Quotas_and_Limits.md](../Core/08_Service_Quotas_and_Limits.md)
+---

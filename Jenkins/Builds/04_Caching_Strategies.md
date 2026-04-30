@@ -138,3 +138,7 @@ pipeline {
 ## 🧩 Practice Problems
 1.  Write a bash script that creates an MD5 hash of a `package.json` file.
 2.  Configure a pipeline to use a `Jenkins Pipeline Cache` plugin or a custom S3 bash script to cache a specific folder between runs. Check the S3 bucket to verify the object exists.
+
+---
+Prev: [03_Artifacts_and_Storage.md](../Builds/03_Artifacts_and_Storage.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [05_Docker_Builds.md](../Builds/05_Docker_Builds.md)
+---

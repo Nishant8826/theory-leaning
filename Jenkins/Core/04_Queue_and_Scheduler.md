@@ -105,3 +105,7 @@ q.items.each { item ->
 ## 🧩 Practice Problems
 1.  Write a Groovy script to find and cancel all items in the queue that have been stuck for more than 2 hours.
 2.  Configure a job with a 30-second Quiet Period, trigger it 5 times rapidly, and observe how Jenkins coalesces them into a single build.
+
+---
+Prev: [03_Agents_and_Executors.md](../Core/03_Agents_and_Executors.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [05_Config_and_State_Management.md](../Core/05_Config_and_State_Management.md)
+---

@@ -61,3 +61,7 @@ resource "aws_db_instance" "prod_db" {
 ## 🧩 Practice Problems
 1.  Perform a "Reboot with Failover" on the RDS instance and measure how long the application is disconnected.
 2.  Configure a CloudWatch Alarm to notify you if the "FreeStorageSpace" on the database falls below 10GB.
+
+---
+Prev: [01_Serverless_Web_App.md](../Projects/01_Serverless_Web_App.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [03_Data_Processing_Pipeline.md](../Projects/03_Data_Processing_Pipeline.md)
+---

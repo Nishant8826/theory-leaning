@@ -84,3 +84,7 @@ aws s3api head-object --bucket my-bucket --key myfile.txt
 ## 🧩 Practice Problems
 1.  Enable "Versioning" on an S3 bucket and practice restoring an older version of a file.
 2.  Calculate the cost of storing 1PB of data in S3 Standard vs. S3 Glacier Deep Archive for one year.
+
+---
+Prev: [02_Firecracker_MicroVMs.md](../Internals/02_Firecracker_MicroVMs.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [04_DynamoDB_Paxos_and_Partitioning.md](../Internals/04_DynamoDB_Paxos_and_Partitioning.md)
+---

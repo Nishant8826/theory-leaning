@@ -98,3 +98,7 @@ resource "aws_elasticache_replication_group" "redis" {
 ## 🧩 Practice Problems
 1.  Implement a "Rate Limiter" using Redis `INCR` and `EXPIRE`.
 2.  Compare the latency of a DynamoDB `GetItem` call with and without DAX enabled.
+
+---
+Prev: [03_Predictive_Scaling.md](../Scaling/03_Predictive_Scaling.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [05_SQS_SNS_Deep_Dive.md](../Scaling/05_SQS_SNS_Deep_Dive.md)
+---

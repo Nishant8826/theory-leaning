@@ -88,3 +88,7 @@ systemd-detect-virt
 ## 🧩 Practice Problems
 1.  Research the difference between a Nitro-based "Virtual" instance and a Nitro-based "Metal" instance.
 2.  Compare the "Network Latency" of an older `m4` instance vs. a newer `m5` instance using `iperf`.
+
+---
+Prev: [05_Incident_Response.md](../Reliability/05_Incident_Response.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [02_Firecracker_MicroVMs.md](../Internals/02_Firecracker_MicroVMs.md)
+---

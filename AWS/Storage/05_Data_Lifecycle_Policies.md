@@ -113,3 +113,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "complex_policy" {
 ## 🧩 Practice Problems
 1.  Create a lifecycle rule that only applies to objects with the tag `Type=Temporary` and deletes them after 24 hours.
 2.  Analyze an S3 storage lens report to identify buckets that would benefit from lifecycle policies.
+
+---
+Prev: [04_Glacier_and_Archival.md](../Storage/04_Glacier_and_Archival.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [06_Storage_Performance.md](../Storage/06_Storage_Performance.md)
+---

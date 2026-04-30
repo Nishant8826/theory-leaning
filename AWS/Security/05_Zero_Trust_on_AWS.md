@@ -96,3 +96,7 @@ resource "aws_vpclattice_auth_policy" "example" {
 ## 🧩 Practice Problems
 1.  Configure an S3 bucket to only allow access if the request comes from an IAM role with a specific `SecurityLevel` tag.
 2.  Set up VPC Lattice between two VPCs and enforce IAM authentication for a cross-VPC API call.
+
+---
+Prev: [04_Network_Security.md](../Security/04_Network_Security.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [06_Compliance_and_Auditing.md](../Security/06_Compliance_and_Auditing.md)
+---

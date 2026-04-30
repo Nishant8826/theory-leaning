@@ -106,3 +106,7 @@ pipeline {
 ## 🧩 Practice Problems
 1.  Write a script that intentionally throws a `NotSerializableException` by instantiating a non-serializable Java object right before a `sleep 1` step.
 2.  Compare the execution time of a Groovy `for` loop executing 100 `sh 'true'` steps vs a single `sh` step containing a bash `for` loop.
+
+---
+Prev: [01_Declarative_vs_Scripted.md](../Pipelines/01_Declarative_vs_Scripted.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [03_Groovy_Sandbox.md](../Pipelines/03_Groovy_Sandbox.md)
+---

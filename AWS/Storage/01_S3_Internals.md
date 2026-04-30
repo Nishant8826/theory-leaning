@@ -110,3 +110,7 @@ resource "aws_s3_bucket_policy" "allow_public_read" {
 ## 🧩 Practice Problems
 1.  Set up a lifecycle policy that moves objects to Glacier after 30 days and deletes them after 365 days.
 2.  Simulate S3 Throttling by launching 100 threads that all attempt to write to the same prefix simultaneously.
+
+---
+Prev: [08_Spot_Instances.md](../Compute/08_Spot_Instances.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [02_S3_Consistency_Model.md](../Storage/02_S3_Consistency_Model.md)
+---

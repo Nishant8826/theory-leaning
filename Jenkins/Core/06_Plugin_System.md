@@ -103,3 +103,7 @@ public class MyCustomUIEndpoint implements RootAction {
 ## 🧩 Practice Problems
 1.  Use the `jenkins-plugin-cli` tool to generate a `plugins.txt` file listing all installed plugins and their specific versions.
 2.  Locate the `.hpi` files in the `$JENKINS_HOME/plugins` directory, unzip one of them, and inspect its `META-INF/MANIFEST.MF` to see its dependencies.
+
+---
+Prev: [05_Config_and_State_Management.md](../Core/05_Config_and_State_Management.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [07_Jenkins_Remoting_Protocol.md](../Core/07_Jenkins_Remoting_Protocol.md)
+---

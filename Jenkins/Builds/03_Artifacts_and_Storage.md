@@ -112,3 +112,7 @@ pipeline {
 ## 🧩 Practice Problems
 1.  Use `archiveArtifacts` on a 10MB file. Navigate to `$JENKINS_HOME/jobs/<job>/builds/<build>/archive/` on the Controller filesystem to see where it was physically stored.
 2.  Write a script using `sh` and `curl` to upload a file directly to a remote server (or an S3 bucket via AWS CLI) instead of using Jenkins native archiving.
+
+---
+Prev: [02_Workspace_Management.md](../Builds/02_Workspace_Management.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [04_Caching_Strategies.md](../Builds/04_Caching_Strategies.md)
+---

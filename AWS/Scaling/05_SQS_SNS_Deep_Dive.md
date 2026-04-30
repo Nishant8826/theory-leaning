@@ -108,3 +108,7 @@ resource "aws_sns_topic_subscription" "queue_sub" {
 ## 🧩 Practice Problems
 1.  Set up an SNS Topic that fans out to an SQS Queue and an Email address simultaneously.
 2.  Write a script that sends a message to SQS and then attempts to receive it twice, observing the effect of the Visibility Timeout.
+
+---
+Prev: [04_Caching_Strategies.md](../Scaling/04_Caching_Strategies.md) | Index: [Docker/00_Index.md](../00_Index.md) | Next: [06_Event_Driven_Architecture.md](../Scaling/06_Event_Driven_Architecture.md)
+---
