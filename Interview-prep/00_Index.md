@@ -110,22 +110,24 @@ At the END of the file, add:
 
 ---
 
-## Navigation
+### 🧭 Navigation
 
-Prev: [<Previous Topic>](./<PREV_FILE>.md)  
-Index: [Home](./00_Index.md)  
-Next: [<Next Topic>](./<NEXT_FILE>.md)
+| ⬅️ Previous | 🏠 Index | ➡️ Next |
+| :--- | :---: | ---: |
+| [⬅️ <Previous Topic>](./<PREV_FILE>.md) | [Home](./00_Index.md) | [➡️ <Next Topic>](./<NEXT_FILE>.md) |
 
 Rules:
-- If previous file is unknown, write: `Prev: None`
-- If next file is unknown, write: `Next: None`
+- If previous file is unknown, write: `🚫 *None*` in the Previous column.
+- If next file is unknown, write: `🚫 *None*` in the Next column.
 - Replace placeholders correctly using numbering
 
 Example:
 
-Prev: [Docker](./01_Docker.md)  
-Index: [Home](./00_Index.md)  
-Next: [Kubernetes](./03_Kubernetes.md)
+### 🧭 Navigation
+
+| ⬅️ Previous | 🏠 Index | ➡️ Next |
+| :--- | :---: | ---: |
+| [⬅️ Docker](./01_Docker.md) | [Home](./00_Index.md) | [➡️ Kubernetes](./03_Kubernetes.md) |
 
 --------------------------------------------------
 

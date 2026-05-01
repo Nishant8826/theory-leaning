@@ -8,10 +8,10 @@
 
 ## 🟢 Beginner Level
 
-Q1. **What are the different data types in JavaScript?**
+### ❓ Q1. **What are the different data types in JavaScript?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 **Primitive types (Immutable, stored by value):** 
 - `string`: Textual data.
@@ -25,24 +25,30 @@ Q1. **What are the different data types in JavaScript?**
 **Non-primitive (Stored by reference):** 
 - `object`: Key-value pairs, including arrays, functions, and dates.
 
-**Interviewer Focus:** Ensure mention of `symbol` and `bigint`. Clarify `typeof null` is `"object"` (a legacy bug).
+> 💡 **Interviewer Focus:** Ensure mention of `symbol` and `bigint`. Clarify `typeof null` is `"object"` (a legacy bug).
 
 </details>
-Q2. **What is the difference between `==` and `===`?**
+
+<hr/>
+
+### ❓ Q2. **What is the difference between `==` and `===`?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **`==` (Loose Equality):** Performs **type coercion** before comparing. (e.g., `'5' == 5` is `true`).
 - **`===` (Strict Equality):** Compares both **value and type** without coercion. (e.g., `'5' === 5` is `false`).
 
-**Interviewer Focus:** Coercion rules. Example: `[] == ![]` is `true` (very tricky). Use `===` by default for predictable code.
+> 💡 **Interviewer Focus:** Coercion rules. Example: `[] == ![]` is `true` (very tricky). Use `===` by default for predictable code.
 
 </details>
-Q3. **What is hoisting in JavaScript?**
+
+<hr/>
+
+### ❓ Q3. **What is hoisting in JavaScript?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 Hoisting is the behavior where variable and function declarations are moved to the top of their containing scope during the compilation phase.
 
@@ -51,13 +57,16 @@ Hoisting is the behavior where variable and function declarations are moved to t
 - **Function Declarations**: Fully hoisted (name and body).
 - **Function Expressions**: Only the variable is hoisted (if using `var`), following variable rules.
 
-**Interviewer Focus:** Why TDZ exists (to prevent use-before-declaration bugs).
+> 💡 **Interviewer Focus:** Why TDZ exists (to prevent use-before-declaration bugs).
 
 </details>
-Q4. **What is the difference between `var`, `let`, and `const`?**
+
+<hr/>
+
+### ❓ Q4. **What is the difference between `var`, `let`, and `const`?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 | Feature | `var` | `let` | `const` |
 | :--- | :--- | :--- | :--- |
@@ -66,13 +75,16 @@ Q4. **What is the difference between `var`, `let`, and `const`?**
 | **Re-declaration**| Allowed | Not Allowed | Not Allowed |
 | **Re-assignment** | Allowed | Allowed | Not Allowed |
 
-**Interviewer Focus:** Use `const` by default, `let` if the value changes, and avoid `var`.
+> 💡 **Interviewer Focus:** Use `const` by default, `let` if the value changes, and avoid `var`.
 
 </details>
-Q5. **Explain `null` vs `undefined`.**
+
+<hr/>
+
+### ❓ Q5. **Explain `null` vs `undefined`.**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **`undefined`**: A variable has been declared but has not yet been assigned a value.
 - **`null`**: An assignment value that represents the intentional absence of any object value.
@@ -85,10 +97,13 @@ null === undefined // false (identity)
 ```
 
 </details>
-Q6. **What are template literals?**
+
+<hr/>
+
+### ❓ Q6. **What are template literals?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 Template literals are string literals allowing embedded expressions. They use backticks (`` ` ``) instead of quotes.
 
@@ -102,21 +117,27 @@ console.log(`Hello, ${name}!`);
 ```
 
 </details>
-Q7. **What is the difference between a function declaration and a function expression?**
+
+<hr/>
+
+### ❓ Q7. **What is the difference between a function declaration and a function expression?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **Declaration:** `function x() {}`. Hoisted entirely. Can be called before definition.
 - **Expression:** `const x = function() {}`. Not hoisted (follows variable rules). Available only after the line it's defined.
 
-**Interviewer Focus:** Which one to use? Expressions are often preferred for arrow functions and keeping scope clean.
+> 💡 **Interviewer Focus:** Which one to use? Expressions are often preferred for arrow functions and keeping scope clean.
 
 </details>
-Q8. **What are arrow functions and how do they differ from regular functions?**
+
+<hr/>
+
+### ❓ Q8. **What are arrow functions and how do they differ from regular functions?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 Introduced in ES6, arrow functions (`() => {}`) provide a concise syntax and:
 1. **Lexical `this`**: They don't have their own `this`; they inherit it from the parent scope.
@@ -125,41 +146,52 @@ Introduced in ES6, arrow functions (`() => {}`) provide a concise syntax and:
 4. **No `prototype` property**.
 
 </details>
-Q9. **What is the DOM?**
+
+<hr/>
+
+### ❓ Q9. **What is the DOM?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 The **Document Object Model (DOM)** is a programming interface for web documents. It represents the page so that programs can change the document structure, style, and content. It represents the HTML as a **tree of objects**.
 
 </details>
-Q10. **How does type coercion work in JavaScript?**
+
+<hr/>
+
+### ❓ Q10. **How does type coercion work in JavaScript?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 Type coercion is the automatic or implicit conversion of values from one data type to another (e.g., string to number).
 
 - **Explicit:** `Number("123")`.
 - **Implicit:** `1 + "2" === "12"` (String coercion) or `"10" - 5 === 5` (Numeric coercion).
 
-**Interviewer Focus:** The `+` operator is overloaded for string concatenation, which is a common source of confusion.
+> 💡 **Interviewer Focus:** The `+` operator is overloaded for string concatenation, which is a common source of confusion.
 
 </details>
 
-Q11. **What are truthy and falsy values?**
+<hr/>
+
+### ❓ Q11. **What are truthy and falsy values?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **Falsy values:** `false`, `0`, `-0`, `0n` (BigInt zero), `""` (empty string), `null`, `undefined`, and `NaN`.
 - **Truthy values:** Everything else, including `[]`, `{}`, and `"0"`.
 
 </details>
-Q12. **What is the difference between `for...in` and `for...of`?**
+
+<hr/>
+
+### ❓ Q12. **What is the difference between `for...in` and `for...of`?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **`for...in`**: Iterates over **enumerable property keys** (indices/names) of an object.
 - **`for...of`**: Iterates over **values** of an iterable object (Array, Map, Set, String).
@@ -171,10 +203,13 @@ for (let v of arr) console.log(v); // 10, 20
 ```
 
 </details>
-Q13. **What are default parameters in ES6?**
+
+<hr/>
+
+### ❓ Q13. **What are default parameters in ES6?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 Allow named parameters to be initialized with default values if no value or `undefined` is passed.
 
@@ -185,10 +220,13 @@ function greet(name = "Guest") {
 ```
 
 </details>
-Q14. **Explain the spread (`...`) and rest (`...`) operators.**
+
+<hr/>
+
+### ❓ Q14. **Explain the spread (`...`) and rest (`...`) operators.**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **Spread (`...`)**: Expands an iterable into individual elements. Used in array literals, object literals, or function calls.
 - **Rest (`...`)**: Collects multiple elements into a single array. Used in function parameters or destructuring.
@@ -201,10 +239,13 @@ function sum(...nums) { return nums.reduce((a, b) => a + b); } // Rest
 ```
 
 </details>
-Q15. **What is destructuring assignment?**
+
+<hr/>
+
+### ❓ Q15. **What is destructuring assignment?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 A syntax that allows unpacking values from arrays or properties from objects into distinct variables.
 
@@ -214,10 +255,13 @@ const { name, age } = { name: "Alice", age: 25 };
 ```
 
 </details>
-Q16. **How does `typeof` operator work? What are its quirks?**
+
+<hr/>
+
+### ❓ Q16. **How does `typeof` operator work? What are its quirks?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 Returns a string indicating the type of the operand.
 - `typeof 42` -> `"number"`
@@ -229,10 +273,13 @@ Returns a string indicating the type of the operand.
 - `typeof function(){}` -> `"function"`.
 
 </details>
-Q17. **What is `NaN`? How do you check for it?**
+
+<hr/>
+
+### ❓ Q17. **What is `NaN`? How do you check for it?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 `NaN` stands for **Not-a-Number**. It is a property of the global object.
 - **Quirk:** `typeof NaN` is `"number"`.
@@ -240,30 +287,39 @@ Q17. **What is `NaN`? How do you check for it?**
 - **Check:** `Number.isNaN(value)` (preferred) or `isNaN(value)`.
 
 </details>
-Q18. **What is the difference between `slice()`, `splice()`, and `split()`?**
+
+<hr/>
+
+### ❓ Q18. **What is the difference between `slice()`, `splice()`, and `split()`?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **`slice(start, end)`**: Returns a shallow copy of a portion of an array. **Non-destructive**.
 - **`splice(start, count, items)`**: Changes contents of an array by removing/replacing elements. **Destructive** (mutates original).
 - **`split(separator)`**: A String method that splits a string into an array of substrings.
 
 </details>
-Q19. **What is the difference between `map()`, `filter()`, and `reduce()`?**
+
+<hr/>
+
+### ❓ Q19. **What is the difference between `map()`, `filter()`, and `reduce()`?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **`map`**: Creates a new array with the results of calling a function on every element.
 - **`filter`**: Creates a new array with all elements that pass the test implemented by the provided function.
 - **`reduce`**: Executes a reducer function on each element, resulting in a **single output value**.
 
 </details>
-Q20. **What is `"use strict"` and why would you use it?**
+
+<hr/>
+
+### ❓ Q20. **What is `"use strict"` and why would you use it?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 A literal expression that enables **Strict Mode**.
 - Prevents accidental globals (`x = 10;` throws error).
@@ -272,10 +328,13 @@ A literal expression that enables **Strict Mode**.
 - Prohibits some syntax likely to be defined in future ES versions.
 
 </details>
-Q21. **How does string comparison work in JavaScript?**
+
+<hr/>
+
+### ❓ Q21. **How does string comparison work in JavaScript?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 Strings are compared **lexicographically** (based on Unicode values) using standard operators (`<`, `>`, `<=`, `>=`).
 
@@ -285,10 +344,13 @@ Strings are compared **lexicographically** (based on Unicode values) using stand
 ```
 
 </details>
-Q22. **What are immediately invoked function expressions (IIFE)?**
+
+<hr/>
+
+### ❓ Q22. **What are immediately invoked function expressions (IIFE)?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 A function that runs as soon as it is defined.
 
@@ -298,13 +360,16 @@ A function that runs as soon as it is defined.
 })();
 ```
 
-**Use case:** Avoiding polluting the global namespace and creating private variables before ES6 modules existed.
+> 🎯 **Use case:** Avoiding polluting the global namespace and creating private variables before ES6 modules existed.
 
 </details>
-Q23. **What is scope in JavaScript? Explain the types.**
+
+<hr/>
+
+### ❓ Q23. **What is scope in JavaScript? Explain the types.**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 Scope determines the visibility of variables.
 1. **Global Scope:** Accessible everywhere.
@@ -313,19 +378,25 @@ Scope determines the visibility of variables.
 4. **Lexical Scope:** Inner functions have access to variables defined in their outer scope.
 
 </details>
-Q24. **What is the difference between `push()`/`pop()` and `shift()`/`unshift()`?**
+
+<hr/>
+
+### ❓ Q24. **What is the difference between `push()`/`pop()` and `shift()`/`unshift()`?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **`push` / `pop`**: Add/Remove from the **end** of the array. (Fast: O(1)).
 - **`shift` / `unshift`**: Remove/Add from the **beginning** of the array. (Slower: O(n) because elements must be re-indexed).
 
 </details>
-Q25. **How do you clone an object in JavaScript?**
+
+<hr/>
+
+### ❓ Q25. **How do you clone an object in JavaScript?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 1. **Shallow Copy:** `Object.assign({}, obj)` or `{ ...obj }`.
 2. **Deep Copy:** `JSON.parse(JSON.stringify(obj))` (limitations with functions/dates) or `structuredClone(obj)` (Modern standard).
@@ -335,10 +406,10 @@ Q25. **How do you clone an object in JavaScript?**
 
 ## 🟡 Intermediate Level
 
-Q26. **What are closures? Explain with an example.**
+### ❓ Q26. **What are closures? Explain with an example.**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 A closure is a function that **remembers its outer scope** even after the outer function has returned.
 
@@ -354,17 +425,20 @@ inc(); // 1
 inc(); // 2
 ```
 
-**How it works:** When `counter()` returns, its execution context is destroyed but the inner function still holds a **reference** to the `count` variable via its `[[Environment]]` (closure). The variable is kept alive on the heap.
+> ⚙️ **How it works:** When `counter()` returns, its execution context is destroyed but the inner function still holds a **reference** to the `count` variable via its `[[Environment]]` (closure). The variable is kept alive on the heap.
 
-**Use cases:** Data privacy, function factories, partial application, module pattern.
+> 🎯 **Use cases:** Data privacy, function factories, partial application, module pattern.
 
-**Interviewer Focus:** Ask about memory implications. Closures can cause **memory leaks** if large objects are unintentionally retained.
+> 💡 **Interviewer Focus:** Ask about memory implications. Closures can cause **memory leaks** if large objects are unintentionally retained.
 
 </details>
-Q27. **Explain the `this` keyword in JavaScript.**
+
+<hr/>
+
+### ❓ Q27. **Explain the `this` keyword in JavaScript.**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 `this` depends on **how** a function is called, not where it's defined:
 
@@ -378,13 +452,16 @@ Q27. **Explain the `this` keyword in JavaScript.**
 | Arrow function | Lexical (enclosing scope) |
 | Event handler | The DOM element |
 
-**Interviewer Focus:** Give a code snippet and ask what `this` is. Test arrow functions inside objects.
+> 💡 **Interviewer Focus:** Give a code snippet and ask what `this` is. Test arrow functions inside objects.
 
 </details>
-Q28. **What is the prototype chain?**
+
+<hr/>
+
+### ❓ Q28. **What is the prototype chain?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 Every JS object has an internal `[[Prototype]]` link to another object. When a property is accessed, JS looks up the **prototype chain** until it finds the property or reaches `null`.
 
@@ -396,13 +473,16 @@ myArr → Array.prototype → Object.prototype → null
 `Object.create(proto)` creates an object with `proto` as its prototype.
 `__proto__` is the accessor; `Object.getPrototypeOf()` is the standard way.
 
-**Interviewer Focus:** Difference between `__proto__` and `prototype` property. `prototype` exists only on functions.
+> 💡 **Interviewer Focus:** Difference between `__proto__` and `prototype` property. `prototype` exists only on functions.
 
 </details>
-Q29. **Explain `call()`, `apply()`, and `bind()`.**
+
+<hr/>
+
+### ❓ Q29. **Explain `call()`, `apply()`, and `bind()`.**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 All three explicitly set `this`:
 
@@ -412,13 +492,16 @@ func.apply(thisArg, [arg1, arg2]);  // Calls immediately, args as array
 const bound = func.bind(thisArg);   // Returns NEW function, doesn't call
 ```
 
-**Key difference:** `bind()` returns a new function; `call()`/`apply()` invoke immediately.
+> 🔑 **Key difference:** `bind()` returns a new function; `call()`/`apply()` invoke immediately.
 
 </details>
-Q30. **What is the event loop? Explain the execution model.**
+
+<hr/>
+
+### ❓ Q30. **What is the event loop? Explain the execution model.**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 JavaScript is **single-threaded**. The event loop enables async behavior:
 
@@ -437,13 +520,16 @@ console.log('4');
 // Output: 1, 4, 3, 2
 ```
 
-**Interviewer Focus:** Microtasks always drain before the next macrotask. Ask for output prediction.
+> 💡 **Interviewer Focus:** Microtasks always drain before the next macrotask. Ask for output prediction.
 
 </details>
-Q31. **What are Promises? Explain the states.**
+
+<hr/>
+
+### ❓ Q31. **What are Promises? Explain the states.**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 A Promise represents a **future value**. Three states:
 - **Pending** — Initial state.
@@ -460,20 +546,23 @@ const p = new Promise((resolve, reject) => {
 p.then(onFulfilled).catch(onRejected).finally(onSettled);
 ```
 
-**Interviewer Focus:** Ask about `Promise.all()` vs `Promise.allSettled()` vs `Promise.race()` vs `Promise.any()`.
+> 💡 **Interviewer Focus:** Ask about `Promise.all()` vs `Promise.allSettled()` vs `Promise.race()` vs `Promise.any()`.
 
 </details>
-Q32. **What is `async/await` and how does it work under the hood?**
+
+<hr/>
+
+### ❓ Q32. **What is `async/await` and how does it work under the hood?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 `async/await` is syntactic sugar over Promises.
 
 - `async` function always returns a Promise.
 - `await` pauses execution of the async function, yielding control back to the event loop.
 
-**Under the hood:** The engine transforms `await` into a `.then()` chain. The function is split at each `await` into microtask-scheduled continuations.
+> 🔍 **Under the hood:** The engine transforms `await` into a `.then()` chain. The function is split at each `await` into microtask-scheduled continuations.
 
 ```js
 async function fetchData() {
@@ -487,13 +576,16 @@ async function fetchData() {
 }
 ```
 
-**Interviewer Focus:** Common mistake — `await` in a loop (sequential). Use `Promise.all()` for parallel.
+> 💡 **Interviewer Focus:** Common mistake — `await` in a loop (sequential). Use `Promise.all()` for parallel.
 
 </details>
-Q33. **Explain event delegation and event bubbling.**
+
+<hr/>
+
+### ❓ Q33. **Explain event delegation and event bubbling.**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 **Event Bubbling:** Events propagate from the target element **up** to the root. Phases: Capture → Target → Bubble.
 
@@ -507,13 +599,16 @@ document.getElementById('list').addEventListener('click', (e) => {
 });
 ```
 
-**Benefits:** Memory efficient, handles dynamically added elements.
+> ✨ **Benefits:** Memory efficient, handles dynamically added elements.
 
 </details>
-Q34. **What is debouncing and throttling?**
+
+<hr/>
+
+### ❓ Q34. **What is debouncing and throttling?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 Both limit the rate of function execution:
 
@@ -542,32 +637,41 @@ function throttle(fn, limit) {
 }
 ```
 
-**Use cases:** Debounce → search input. Throttle → scroll/resize handlers.
+> 🎯 **Use cases:** Debounce → search input. Throttle → scroll/resize handlers.
 
 </details>
-Q35. **What is the difference between shallow copy and deep copy?**
+
+<hr/>
+
+### ❓ Q35. **What is the difference between shallow copy and deep copy?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **Shallow Copy:** Copies the object's top-level properties. Nested objects still share the same reference. (`{...obj}`, `Object.assign()`).
 - **Deep Copy:** Copies all levels of the object, creating new instances for nested objects. (`structuredClone()`, `JSON.parse(JSON.stringify(obj))`).
 
 </details>
-Q36. **Explain `Object.freeze()`, `Object.seal()`, and `Object.preventExtensions()`.**
+
+<hr/>
+
+### ❓ Q36. **Explain `Object.freeze()`, `Object.seal()`, and `Object.preventExtensions()`.**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **`Object.preventExtensions(obj)`**: Prevents adding new properties.
 - **`Object.seal(obj)`**: Prevents adding/removing properties. Existing properties can still be modified.
 - **`Object.freeze(obj)`**: Prevents any changes (adding, removing, or modifying properties). **Immutable**.
 
 </details>
-Q37. **What are higher-order functions?**
+
+<hr/>
+
+### ❓ Q37. **What are higher-order functions?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 A function that either:
 1. Takes one or more functions as arguments.
@@ -576,10 +680,13 @@ A function that either:
 Examples: `map`, `filter`, `reduce`, `setTimeout`.
 
 </details>
-Q38. **What is currying in JavaScript?**
+
+<hr/>
+
+### ❓ Q38. **What is currying in JavaScript?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 Currying transforms a function with multiple arguments into a sequence of functions, each taking a single argument.
 
@@ -605,13 +712,16 @@ const curry = (fn) => {
 };
 ```
 
-**Use cases:** Partial application, function composition, configuration.
+> 🎯 **Use cases:** Partial application, function composition, configuration.
 
 </details>
-Q39. **What are `Map` and `Set` in ES6? How do they differ from objects/arrays?**
+
+<hr/>
+
+### ❓ Q39. **What are `Map` and `Set` in ES6? How do they differ from objects/arrays?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **`Map`**: Collection of keyed data items. Keys can be **any type** (including objects). Maintains insertion order.
 - **`Set`**: Collection of **unique** values. No duplicates allowed.
@@ -619,23 +729,29 @@ Q39. **What are `Map` and `Set` in ES6? How do they differ from objects/arrays?*
 **Vs Objects:** Maps have size property, keys can be anything, and they are directly iterable.
 
 </details>
-Q40. **Explain `WeakMap` and `WeakSet`.**
+
+<hr/>
+
+### ❓ Q40. **Explain `WeakMap` and `WeakSet`.**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **WeakMap:** Keys must be **objects**. Keys are held **weakly** — if no other reference exists, they are garbage collected. Not iterable, no `.size`.
 - **WeakSet:** Values must be **objects**. Weakly held. Not iterable.
 
-**Use cases:** Storing metadata about objects without preventing GC. Private data, DOM node tracking, caching.
+> 🎯 **Use cases:** Storing metadata about objects without preventing GC. Private data, DOM node tracking, caching.
 
-**Interviewer Focus:** Why weak references matter for memory management.
+> 💡 **Interviewer Focus:** Why weak references matter for memory management.
 
 </details>
-Q41. **What are generators in JavaScript?**
+
+<hr/>
+
+### ❓ Q41. **What are generators in JavaScript?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 Generators are functions that can be exited and later re-entered. They maintain their context (variable bindings) across re-entrances.
 - Defined with `function*`.
@@ -652,67 +768,88 @@ g.next(); // { value: 1, done: false }
 ```
 
 </details>
-Q42. **Explain the module system — CommonJS vs ES Modules.**
+
+<hr/>
+
+### ❓ Q42. **Explain the module system — CommonJS vs ES Modules.**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **CommonJS (CJS):** Node.js default. `require()` and `module.exports`. Synchronous.
 - **ES Modules (ESM):** Modern standard. `import` and `export`. Asynchronous, supports **Tree Shaking** (removing unused code).
 
 </details>
-Q43. **What is the difference between `Object.keys()`, `Object.values()`, and `Object.entries()`?**
+
+<hr/>
+
+### ❓ Q43. **What is the difference between `Object.keys()`, `Object.values()`, and `Object.entries()`?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **`Object.keys(obj)`**: Returns an array of enumerable **property names**.
 - **`Object.values(obj)`**: Returns an array of enumerable **property values**.
 - **`Object.entries(obj)`**: Returns an array of `[key, value]` pairs.
 
 </details>
-Q44. **How does `JSON.parse()` and `JSON.stringify()` work? What are the limitations?**
+
+<hr/>
+
+### ❓ Q44. **How does `JSON.parse()` and `JSON.stringify()` work? What are the limitations?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **`stringify`**: Converts a JS object/value to a JSON string.
 - **`parse`**: Parses a JSON string, constructing the JS value/object.
 - **Limitations:** Cannot handle circular references, functions, Symbols, or `undefined` (they are omitted or converted to null).
 
 </details>
-Q45. **What are Symbols and what are they used for?**
+
+<hr/>
+
+### ❓ Q45. **What are Symbols and what are they used for?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 A primitive type used to create **unique, anonymous identifiers** for object properties.
 - `const sym = Symbol("description")`.
 - **Use case:** Adding "hidden" properties to objects that don't collide with other keys and aren't visible in normal loops (`for...in`).
 
 </details>
-Q46. **What is optional chaining (`?.`) and nullish coalescing (`??`)?**
+
+<hr/>
+
+### ❓ Q46. **What is optional chaining (`?.`) and nullish coalescing (`??`)?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **`?.`**: Short-circuits and returns `undefined` if the reference is `null` or `undefined`.
 - **`??`**: Returns the right-hand operand only if the left-hand is `null` or `undefined`. (Unlike `||`, it treats `0` or `""` as truthy).
 
 </details>
-Q47. **What is the difference between `setTimeout` and `setInterval`?**
+
+<hr/>
+
+### ❓ Q47. **What is the difference between `setTimeout` and `setInterval`?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **`setTimeout`**: Executes a function **once** after a delay.
 - **`setInterval`**: Executes a function **repeatedly** with a fixed delay between each call.
 
 </details>
-Q48. **What is memoization? Implement a basic memoize function.**
+
+<hr/>
+
+### ❓ Q48. **What is memoization? Implement a basic memoize function.**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 An optimization technique that stores the results of expensive function calls and returns the cached result when the same inputs occur again.
 
@@ -727,24 +864,30 @@ function memoize(fn) {
 ```
 
 </details>
-Q49. **How do you handle errors in Promises vs async/await?**
+
+<hr/>
+
+### ❓ Q49. **How do you handle errors in Promises vs async/await?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **Promises:** Use `.catch()` at the end of the chain.
 - **Async/Await:** Use `try...catch` blocks around the awaited expressions.
 
 </details>
-Q50. **What is the difference between composition and inheritance in JavaScript?**
+
+<hr/>
+
+### ❓ Q50. **What is the difference between composition and inheritance in JavaScript?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **Inheritance:** Designing types based on what they **are** (A Car *is a* Vehicle). Uses `extends`.
 - **Composition:** Designing types based on what they **do** (A Car *has an* Engine). Combining small, focused objects/functions to build complex ones. 
 
-**Pro-tip:** "Favor composition over inheritance" for more flexible and maintainable code.
+> 🚀 **Pro-tip:** "Favor composition over inheritance" for more flexible and maintainable code.
 
 </details>
 
@@ -752,10 +895,10 @@ Q50. **What is the difference between composition and inheritance in JavaScript?
 
 ## 🔴 Advanced Level
 
-Q51. Explain the JavaScript engine pipeline (parsing → execution).
+### ❓ Q51. **Explain the JavaScript engine pipeline (parsing → execution).**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 1. **Tokenizing/Lexing** — Source code → tokens.
 2. **Parsing** — Tokens → Abstract Syntax Tree (AST).
@@ -765,14 +908,16 @@ Q51. Explain the JavaScript engine pipeline (parsing → execution).
 
 V8's pipeline: `Source → Parser → AST → Ignition (bytecode) → TurboFan (optimized code)`
 
-**Interviewer Focus:** Ask about hidden classes, inline caching, and what causes deoptimization (changing object shape, polymorphic call sites).
+> 💡 **Interviewer Focus:** Ask about hidden classes, inline caching, and what causes deoptimization (changing object shape, polymorphic call sites).
 
 </details>
 
-Q52. What are hidden classes and inline caches in V8?
+<hr/>
+
+### ❓ Q52. **What are hidden classes and inline caches in V8?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 **Hidden Classes (Maps in V8):** V8 assigns a hidden class to every object to optimize property access. Objects with the same structure share the same hidden class.
 
@@ -789,14 +934,16 @@ const b = {}; b.y = 1; b.x = 2; // different transition chain
 
 **Inline Caching (IC):** Caches the lookup location of properties. Monomorphic (1 shape) → fast. Polymorphic (2-4) → slower. Megamorphic (5+) → slowest.
 
-**Interviewer Focus:** Always initialize object properties in the same order. Avoid adding/deleting properties dynamically.
+> 💡 **Interviewer Focus:** Always initialize object properties in the same order. Avoid adding/deleting properties dynamically.
 
 </details>
 
-Q53. Explain `Proxy` and `Reflect` in JavaScript.
+<hr/>
+
+### ❓ Q53. **Explain `Proxy` and `Reflect` in JavaScript.**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 **Proxy:** Creates a wrapper around an object that intercepts operations (get, set, delete, etc.).
 
@@ -821,14 +968,16 @@ Reflect.get(target, prop);
 Reflect.set(target, prop, value);
 ```
 
-**Use cases:** Validation, logging, reactive systems (Vue 3), access control, negative array indexing.
+> 🎯 **Use cases:** Validation, logging, reactive systems (Vue 3), access control, negative array indexing.
 
 </details>
 
-Q54. How does garbage collection work in JavaScript?
+<hr/>
+
+### ❓ Q54. **How does garbage collection work in JavaScript?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 V8 uses a **generational garbage collector**:
 
@@ -845,16 +994,18 @@ V8 uses a **generational garbage collector**:
 
 **Roots:** Global object, stack variables, active closures.
 
-**Common leaks:** Forgotten timers, detached DOM nodes, closures retaining large scopes, global variables.
+> 💧 **Common leaks:** Forgotten timers, detached DOM nodes, closures retaining large scopes, global variables.
 
-**Interviewer Focus:** Ask candidate to identify memory leaks in code snippets.
+> 💡 **Interviewer Focus:** Ask candidate to identify memory leaks in code snippets.
 
 </details>
 
-Q55. What is the Temporal Dead Zone (TDZ) in detail?
+<hr/>
+
+### ❓ Q55. **What is the Temporal Dead Zone (TDZ) in detail?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 The TDZ is the region between the **start of the scope** and the **declaration line** for `let`/`const`. Accessing the variable in TDZ throws `ReferenceError`.
 
@@ -868,14 +1019,16 @@ The TDZ is the region between the **start of the scope** and the **declaration l
 
 **Why it exists:** Prevents use-before-declaration bugs. `var` hoisting to `undefined` was a source of subtle bugs.
 
-**Nuance:** TDZ applies per-scope. `typeof` on a TDZ variable also throws (unlike undeclared variables).
+> 🧐 **Nuance:** TDZ applies per-scope. `typeof` on a TDZ variable also throws (unlike undeclared variables).
 
 </details>
 
-Q56. Explain `Object.create()` vs constructor functions vs `class`.
+<hr/>
+
+### ❓ Q56. **Explain `Object.create()` vs constructor functions vs `class`.**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **`Object.create(proto)`**: Creates a new object with the specified prototype. No constructor logic is run.
 - **Constructor Function**: `function Person() {}`. Used with `new`. Sets `this`, returns an object, and links `prototype`.
@@ -883,10 +1036,12 @@ Q56. Explain `Object.create()` vs constructor functions vs `class`.
 
 </details>
 
-Q57. What are tagged template literals?
+<hr/>
+
+### ❓ Q57. **What are tagged template literals?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 A more advanced form of template literals where you can parse template literals with a function.
 
@@ -900,10 +1055,12 @@ highlight`Hello ${name}`; // "Hello <b>JS</b>"
 
 </details>
 
-Q58. Explain `Symbol.iterator` and the iterable protocol.
+<hr/>
+
+### ❓ Q58. **Explain `Symbol.iterator` and the iterable protocol.**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 An object is **iterable** if it implements `[Symbol.iterator]()` returning an **iterator** (object with `next()` method).
 
@@ -929,34 +1086,40 @@ for (const n of range) console.log(n); // 1, 2, 3, 4, 5
 
 **Built-in iterables:** Array, String, Map, Set, TypedArray, `arguments`, NodeList.
 
-**Interviewer Focus:** How `for...of`, spread, and destructuring all use the iterable protocol internally.
+> 💡 **Interviewer Focus:** How `for...of`, spread, and destructuring all use the iterable protocol internally.
 
 </details>
 
-Q59. What is `SharedArrayBuffer` and `Atomics`?
+<hr/>
+
+### ❓ Q59. **What is `SharedArrayBuffer` and `Atomics`?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **`SharedArrayBuffer`**: Allows sharing memory between the main thread and web workers.
 - **`Atomics`**: A global object that provides atomic operations (like `add`, `sub`, `wait`, `notify`) to ensure thread-safe access to shared memory.
 
 </details>
 
-Q60. Explain structured cloning vs `JSON.parse(JSON.stringify())`.
+<hr/>
+
+### ❓ Q60. **Explain structured cloning vs `JSON.parse(JSON.stringify())`.**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **`JSON` method**: Simple but loses types like `Map`, `Set`, `Date`, `RegExp`, and fails on circular references.
 - **Structured Cloning (`structuredClone`)**: Native API that handles circular references and almost all built-in types (`Map`, `Set`, `Date`, `Buffer`, etc.). It still cannot clone functions or DOM nodes.
 
 </details>
 
-Q61. What are `WeakRef` and `FinalizationRegistry`?
+<hr/>
+
+### ❓ Q61. **What are `WeakRef` and `FinalizationRegistry`?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 **`WeakRef`** (ES2021): Holds a weak reference to an object — doesn't prevent GC.
 
@@ -975,14 +1138,16 @@ const registry = new FinalizationRegistry((value) => {
 registry.register(obj, "my object");
 ```
 
-**Use cases:** Caches, large resource management. Use sparingly — GC timing is non-deterministic.
+> 🎯 **Use cases:** Caches, large resource management. Use sparingly — GC timing is non-deterministic.
 
 </details>
 
-Q62. How does `async` iteration (`for await...of`) work?
+<hr/>
+
+### ❓ Q62. **How does `async` iteration (`for await...of`) work?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 Allows iterating over asynchronous data sources (e.g., streams or arrays of promises).
 
@@ -996,20 +1161,24 @@ It waits for each promise to resolve before moving to the next iteration.
 
 </details>
 
-Q63. What are private class fields (`#`) and how do they differ from closures for privacy?
+<hr/>
+
+### ❓ Q63. **What are private class fields (`#`) and how do they differ from closures for privacy?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **`#` Fields**: Hard-coded private properties in a class. They are truly private and inaccessible from outside the class instance.
 - **Closures**: Use scope to hide variables. Closures are more flexible but can lead to higher memory usage if not handled correctly.
 
 </details>
 
-Q64. Explain the `Intl` API and its use cases.
+<hr/>
+
+### ❓ Q64. **Explain the `Intl` API and its use cases.**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 The **Internationalization API** provides language-sensitive string comparison, number formatting, and date/time formatting.
 - `Intl.DateTimeFormat`
@@ -1018,20 +1187,24 @@ The **Internationalization API** provides language-sensitive string comparison, 
 
 </details>
 
-Q65. What is `queueMicrotask()` and when would you use it?
+<hr/>
+
+### ❓ Q65. **What is `queueMicrotask()` and when would you use it?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 Explicitly adds a task to the microtask queue.
 - **Use case:** When you want to ensure a function runs after the current task finishes but before the browser renders or the next macrotask starts. Similar to `Promise.resolve().then()`.
 
 </details>
 
-Q66. How does `structuredClone()` work and what are its limitations?
+<hr/>
+
+### ❓ Q66. **How does `structuredClone()` work and what are its limitations?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 It uses the structured clone algorithm to create a deep copy.
 - **Can clone:** Arrays, Objects, Dates, RegExps, Map, Set, Blobs, etc.
@@ -1039,20 +1212,24 @@ It uses the structured clone algorithm to create a deep copy.
 
 </details>
 
-Q67. What is tail call optimization (TCO)? Does V8 support it?
+<hr/>
+
+### ❓ Q67. **What is tail call optimization (TCO)? Does V8 support it?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **TCO**: An optimization where the stack frame of a function is reused if the last action is a call to another function. Prevents stack overflow in recursion.
 - **Support**: It is part of the ES6 spec but currently only **Safari (JSC)** supports it. V8 (Chrome/Node) does not support it for general use.
 
 </details>
 
-Q68. Explain `ArrayBuffer`, `TypedArray`, and `DataView`.
+<hr/>
+
+### ❓ Q68. **Explain `ArrayBuffer`, `TypedArray`, and `DataView`.**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **`ArrayBuffer`**: A generic, fixed-length raw binary data buffer.
 - **`TypedArray`**: A view (like `Uint8Array`) that interprets the buffer as a specific type.
@@ -1060,20 +1237,24 @@ Q68. Explain `ArrayBuffer`, `TypedArray`, and `DataView`.
 
 </details>
 
-Q69. What is the difference between `Object.assign()` and spread for cloning?
+<hr/>
+
+### ❓ Q69. **What is the difference between `Object.assign()` and spread for cloning?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **`Object.assign`**: Mutates the target object and triggers setters.
 - **Spread (`...`)**: Always creates a new object and doesn't trigger setters (it defines new properties).
 
 </details>
 
-Q70. How do you implement the observer pattern in JavaScript?
+<hr/>
+
+### ❓ Q70. **How do you implement the observer pattern in JavaScript?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 Typically implemented with an object that maintains a list of dependents (observers) and notifies them of state changes.
 
@@ -1087,10 +1268,12 @@ class Subject {
 
 </details>
 
-Q71. What are `AbortController` and `AbortSignal`?
+<hr/>
+
+### ❓ Q71. **What are `AbortController` and `AbortSignal`?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 `AbortController` creates a signal to cancel async operations (fetch, event listeners, streams).
 
@@ -1112,40 +1295,48 @@ setTimeout(() => controller.abort(), 5000);
 
 </details>
 
-Q72. Explain prototype pollution and how to prevent it.
+<hr/>
+
+### ❓ Q72. **Explain prototype pollution and how to prevent it.**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **Problem**: When an attacker injects properties into `Object.prototype`, affecting all objects in the application. Often happens via unsafe merging or cloning.
 - **Prevention**: Use `Object.create(null)` for maps, freeze the prototype, or use Map/Set instead of plain objects.
 
 </details>
 
-Q73. What is the `Temporal` API proposal and what problems does it solve?
+<hr/>
+
+### ❓ Q73. **What is the `Temporal` API proposal and what problems does it solve?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 A modern replacement for the `Date` object.
 - **Fixes**: Mutability, poor timezone support, difficult arithmetic, and the fact that `Date` is based on Java's `java.util.Date` which is widely considered broken.
 
 </details>
 
-Q74. How does `Promise.allSettled()` differ from `Promise.all()`?
+<hr/>
+
+### ❓ Q74. **How does `Promise.allSettled()` differ from `Promise.all()`?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **`Promise.all()`**: Short-circuits and rejects if **any** promise rejects.
 - **`Promise.allSettled()`**: Waits for **all** promises to settle (either fulfilled or rejected) and returns an array of results with their status.
 
 </details>
 
-Q75. What is a service worker and how does its lifecycle work?
+<hr/>
+
+### ❓ Q75. **What is a service worker and how does its lifecycle work?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 A script that the browser runs in the background, separate from a web page, enabling features like push notifications and offline support.
 - **Lifecycle**: Registration -> Installation -> Activation.
@@ -1156,10 +1347,10 @@ A script that the browser runs in the background, separate from a web page, enab
 
 ## 🟣 Expert Level
 
-Q76. Explain V8's Ignition interpreter and TurboFan compiler pipeline in depth.
+### ❓ Q76. **Explain V8's Ignition interpreter and TurboFan compiler pipeline in depth.**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 **Ignition (Interpreter):**
 - Compiles AST → compact **bytecode**.
@@ -1177,14 +1368,16 @@ Q76. Explain V8's Ignition interpreter and TurboFan compiler pipeline in depth.
 
 **Deoptimization:** If speculative assumptions break (type changes, hidden class transitions), TurboFan **deoptimizes** back to Ignition bytecode.
 
-**Anti-patterns:** Polymorphic functions, changing object shapes, `arguments` leaking, `eval()`, `with`, `delete`.
+> 🚫 **Anti-patterns:** Polymorphic functions, changing object shapes, `arguments` leaking, `eval()`, `with`, `delete`.
 
 </details>
 
-Q77. How does the Mark-Compact garbage collector handle large heaps in V8?
+<hr/>
+
+### ❓ Q77. **How does the Mark-Compact garbage collector handle large heaps in V8?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 For large heaps, V8 uses:
 
@@ -1200,14 +1393,16 @@ For large heaps, V8 uses:
 
 **Orinoco** is V8's GC project name — goal is near-zero pause time GC.
 
-**Interviewer Focus:** How incremental/concurrent GC reduces pause times. Write barrier cost vs throughput.
+> 💡 **Interviewer Focus:** How incremental/concurrent GC reduces pause times. Write barrier cost vs throughput.
 
 </details>
 
-Q78. Explain the microtask checkpoint algorithm in detail.
+<hr/>
+
+### ❓ Q78. **Explain the microtask checkpoint algorithm in detail.**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 After each **macrotask** (and other specific checkpoints), the engine runs the microtask checkpoint:
 
@@ -1231,10 +1426,12 @@ Promise.resolve().then(function loop() {
 
 </details>
 
-Q79. What is speculative optimization and how does V8 use type feedback?
+<hr/>
+
+### ❓ Q79. **What is speculative optimization and how does V8 use type feedback?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 Speculative optimization is where the JIT compiler makes assumptions about the types of variables based on previous execution data (**Type Feedback**).
 - V8 collects feedback in Inline Caches (ICs).
@@ -1243,10 +1440,12 @@ Speculative optimization is where the JIT compiler makes assumptions about the t
 
 </details>
 
-Q80. Explain JavaScript's memory layout — stack vs heap, closures, and hidden classes.
+<hr/>
+
+### ❓ Q80. **Explain JavaScript's memory layout — stack vs heap, closures, and hidden classes.**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **Stack**: Stores primitive values and references to objects. Managed by the OS (LIFO).
 - **Heap**: Large, unstructured memory pool for objects and closures. Managed by GC.
@@ -1255,10 +1454,12 @@ Q80. Explain JavaScript's memory layout — stack vs heap, closures, and hidden 
 
 </details>
 
-Q81. What are Realms in JavaScript and how do they affect `instanceof`?
+<hr/>
+
+### ❓ Q81. **What are Realms in JavaScript and how do they affect `instanceof`?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 A **Realm** is an isolated JavaScript execution environment with its own global object and set of built-in objects. Each `<iframe>`, worker, or `vm.createContext()` (Node) creates a new Realm.
 
@@ -1269,14 +1470,16 @@ const arr = iframeWindow.document.createElement('div');
 arr instanceof Array; // false! Different Array constructor
 ```
 
-**Solutions:** `Array.isArray()` works cross-realm. Check `Symbol.toStringTag` or `Object.prototype.toString.call()`.
+> 🛠️ **Solutions:** `Array.isArray()` works cross-realm. Check `Symbol.toStringTag` or `Object.prototype.toString.call()`.
 
 </details>
 
-Q82. How do you implement a custom async iterator?
+<hr/>
+
+### ❓ Q82. **How do you implement a custom async iterator?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 By implementing the `[Symbol.asyncIterator]` method that returns an object with a `next()` method returning a promise of `{ value, done }`.
 
@@ -1296,10 +1499,12 @@ const asyncIterable = {
 
 </details>
 
-Q83. Explain the module evaluation and linking phases of ES Modules.
+<hr/>
+
+### ❓ Q83. **Explain the module evaluation and linking phases of ES Modules.**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 1. **Construction**: Fetching, parsing, and creating Module Records.
 2. **Instantiation**: Linking exports to imports. Finding boxes in memory for all exported values (but not filling them yet).
@@ -1309,10 +1514,12 @@ Q83. Explain the module evaluation and linking phases of ES Modules.
 
 </details>
 
-Q84. What is the cost model of JavaScript closures — when do they cause memory issues?
+<hr/>
+
+### ❓ Q84. **What is the cost model of JavaScript closures — when do they cause memory issues?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 Closures capture the **entire variable environment** of their enclosing scope (in most engines, V8 optimizes this to only captured variables).
 
@@ -1335,24 +1542,28 @@ function outer() {
 }
 ```
 
-**Interviewer Focus:** V8 performs context specialization — only captures used variables. But shared context between multiple closures can retain more than expected.
+> 💡 **Interviewer Focus:** V8 performs context specialization — only captures used variables. But shared context between multiple closures can retain more than expected.
 
 </details>
 
-Q85. How does `Reflect.construct()` differ from `new` and what's its use with Proxy?
+<hr/>
+
+### ❓ Q85. **How does `Reflect.construct()` differ from `new` and what's its use with Proxy?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **`Reflect.construct(target, args, newTarget)`**: Equivalent to `new target(...args)` but allows you to specify a different constructor to be the prototype of the new object.
 - **Use with Proxy**: Essential when implementing `construct` traps to ensure the `new.target` and prototype chain are correctly preserved.
 
 </details>
 
-Q86. Explain the difference between enumerable, configurable, and writable property descriptors.
+<hr/>
+
+### ❓ Q86. **Explain the difference between enumerable, configurable, and writable property descriptors.**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **Enumerable**: If `true`, the property shows up in `for...in` and `Object.keys()`.
 - **Configurable**: If `false`, the property cannot be deleted and its descriptors (except `writable`) cannot be changed.
@@ -1360,20 +1571,24 @@ Q86. Explain the difference between enumerable, configurable, and writable prope
 
 </details>
 
-Q87. What are the security implications of `eval()`, `Function()`, and `innerHTML`?
+<hr/>
+
+### ❓ Q87. **What are the security implications of `eval()`, `Function()`, and `innerHTML`?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **`eval()` / `Function()`**: XSS (Cross-Site Scripting) risk. They execute strings as code, which can be manipulated by attackers.
 - **`innerHTML`**: Also an XSS risk as it parses HTML tags, potentially executing `<script>` or `onerror` handlers. Use `textContent` or `innerText` instead.
 
 </details>
 
-Q88. How do you detect and fix memory leaks in a production JavaScript application?
+<hr/>
+
+### ❓ Q88. **How do you detect and fix memory leaks in a production JavaScript application?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 **Detection:**
 1. **Chrome DevTools Heap Snapshots** — Compare snapshots over time, look for growing retained size.
@@ -1381,25 +1596,25 @@ Q88. How do you detect and fix memory leaks in a production JavaScript applicati
 3. **`performance.measureUserAgentSpecificMemory()`** — API for production monitoring.
 4. **Node.js:** `--inspect` + Chrome DevTools, `process.memoryUsage()`, `v8.getHeapStatistics()`.
 
-**Common leak patterns:**
-- Detached DOM trees (DOM nodes removed from tree but referenced in JS).
+> 💧 **Common leak patterns:** - Detached DOM trees (DOM nodes removed from tree but referenced in JS).
 - Closures retaining large scopes.
 - Forgotten `setInterval`/`addEventListener`.
 - Growing Maps/Sets/arrays that are never pruned.
 - Console references (DevTools holds refs to logged objects).
 
-**Fix approach:**
-1. Nullify references when done.
+> 🔧 **Fix approach:** 1. Nullify references when done.
 2. Use `WeakMap`/`WeakSet` for metadata.
 3. `removeEventListener` / `clearInterval` on cleanup.
 4. Use `AbortController` for event listener cleanup.
 
 </details>
 
-Q89. Explain the difference between the task queue, microtask queue, and requestAnimationFrame.
+<hr/>
+
+### ❓ Q89. **Explain the difference between the task queue, microtask queue, and requestAnimationFrame.**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 1. **Microtask Queue**: Promises, MutationObserver. Runs immediately after the current task and before the next task.
 2. **requestAnimationFrame (rAF)**: Runs before the next paint/render. Ideal for animations.
@@ -1407,20 +1622,24 @@ Q89. Explain the difference between the task queue, microtask queue, and request
 
 </details>
 
-Q90. What is `import()` dynamic import and how does code splitting work?
+<hr/>
+
+### ❓ Q90. **What is `import()` dynamic import and how does code splitting work?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **`import()`**: Returns a promise that resolves to the module object. Allows loading code on-demand.
 - **Code Splitting**: Bundlers (like Webpack/Vite) detect dynamic imports and create separate chunks (files). These are only downloaded when the `import()` is called, reducing initial load time.
 
 </details>
 
-Q91. How does V8's optimizing compiler handle polymorphic vs monomorphic call sites?
+<hr/>
+
+### ❓ Q91. **How does V8's optimizing compiler handle polymorphic vs monomorphic call sites?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **Monomorphic**: Always sees the same hidden class. Very fast, can be **inlined**.
 - **Polymorphic**: Sees 2-4 different hidden classes. Slower, uses a small table lookup.
@@ -1428,49 +1647,59 @@ Q91. How does V8's optimizing compiler handle polymorphic vs monomorphic call si
 
 </details>
 
-Q92. What is zone.js and how does Angular use it to detect changes?
+<hr/>
+
+### ❓ Q92. **What is zone.js and how does Angular use it to detect changes?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **`zone.js`**: Patches all async APIs (setTimeout, fetch, etc.) to track when they start and finish.
 - **Angular**: Uses a Zone to know exactly when an async operation has finished, so it can automatically trigger change detection and update the DOM.
 
 </details>
 
-Q93. Explain the structured clone algorithm — what can and cannot be cloned?
+<hr/>
+
+### ❓ Q93. **Explain the structured clone algorithm — what can and cannot be cloned?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **Can**: Primitive types, Array, Object, Map, Set, Date, RegExp, ArrayBuffer, Blob, ImageBitmap.
 - **Cannot**: Functions, DOM nodes, Error objects (partially), Property getters/setters, `Symbol`s.
 
 </details>
 
-Q94. How does `with` statement work and why is it banned in strict mode?
+<hr/>
+
+### ❓ Q94. **How does `with` statement work and why is it banned in strict mode?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **How**: Extends the scope chain for a statement.
 - **Problem**: Makes code ambiguous and hard to read. Prevents engines from performing static analysis/optimizations because it's unclear where a variable belongs at compile time.
 
 </details>
 
-Q95. What are the implications of `Object.freeze()` on V8's hidden class transitions?
+<hr/>
+
+### ❓ Q95. **What are the implications of `Object.freeze()` on V8's hidden class transitions?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 Freezing an object creates a new hidden class that marks all properties as non-writable and non-configurable. It prevents further transitions but can lead to slightly better performance for property reads since the engine knows they will never change.
 
 </details>
 
-Q96. How do you implement a proper deep equality check in JavaScript?
+<hr/>
+
+### ❓ Q96. **How do you implement a proper deep equality check in JavaScript?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 By recursively comparing keys and values.
 
@@ -1489,10 +1718,12 @@ function isDeepEqual(obj1, obj2) {
 
 </details>
 
-Q97. Explain the observable pattern using Proxy traps (like Vue 3's reactivity system).
+<hr/>
+
+### ❓ Q97. **Explain the observable pattern using Proxy traps (like Vue 3's reactivity system).**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 Vue 3 uses `Proxy` to create reactive objects:
 
@@ -1517,18 +1748,19 @@ function reactive(target) {
 }
 ```
 
-**Key concepts:**
-- **Track:** During rendering, property accesses register the current component as a subscriber.
+> 🔑 **Key concepts:** - **Track:** During rendering, property accesses register the current component as a subscriber.
 - **Trigger:** On set, all subscribers are re-executed.
 - **Deep reactivity:** Nested objects are recursively wrapped (lazy in Vue 3).
 - **Advantage over `Object.defineProperty` (Vue 2):** Handles new properties, array mutations, Map/Set natively.
 
 </details>
 
-Q98. What is the TC39 process and how do JavaScript features get standardized?
+<hr/>
+
+### ❓ Q98. **What is the TC39 process and how do JavaScript features get standardized?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 - **Stage 0 (Strawman)**: Initial idea.
 - **Stage 1 (Proposal)**: Formal document.
@@ -1538,20 +1770,24 @@ Q98. What is the TC39 process and how do JavaScript features get standardized?
 
 </details>
 
-Q99. How do JavaScript engines handle tail calls and what is proper tail position?
+<hr/>
+
+### ❓ Q99. **How do JavaScript engines handle tail calls and what is proper tail position?**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 A call is in **Proper Tail Position** if it's the very last action of a function. The engine *could* reuse the current stack frame.
 - However, as noted before, only Safari's JSC engine currently implements this. V8 chose not to due to debugging complexities and stack trace preservation.
 
 </details>
 
-Q100. Explain how `eval()` affects scope chain optimization and why it prevents many V8 optimizations.
+<hr/>
+
+### ❓ Q100. **Explain how `eval()` affects scope chain optimization and why it prevents many V8 optimizations.**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 `eval()` can introduce new variables into the current scope at runtime, making static analysis impossible.
 
@@ -1579,8 +1815,8 @@ function outer() {
 
 ---
 
-## Navigation
+### 🧭 Navigation
 
-Prev: None  
-Index: [Home](./00_Index.md)  
-Next: None
+| ⬅️ Previous | 🏠 Index | ➡️ Next |
+| :--- | :---: | ---: |
+| 🚫 *None* | [Home](./00_Index.md) | 🚫 *None* |
