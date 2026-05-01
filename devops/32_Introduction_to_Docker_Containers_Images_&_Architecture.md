@@ -1223,4 +1223,4 @@ docker ps -a
 
 ---
 
-← Previous: [`31_Jenkins_Day-to-Day_Operations_Parameterized_Jobs_&_AWS_Core_Services.md`](31_Jenkins_Day-to-Day_Operations_Parameterized_Jobs_&_AWS_Core_Services.md) | Next: [`32_Introduction_to_Docker_Containers_Images_&_Architecture.md`](32_Introduction_to_Docker_Containers_Images_&_Architecture.md) →
+← Previous: [`31_Jenkins_Day-to-Day_Operations_Parameterized_Jobs_&_AWS_Core_Services.md`](31_Jenkins_Day-to-Day_Operations_Parameterized_Jobs_&_AWS_Core_Services.md) | Next: [`33_Container_Operations_Port_Mapping_Volumes_&_Management.md`](33_Container_Operations_Port_Mapping_Volumes_&_Management.md) →
