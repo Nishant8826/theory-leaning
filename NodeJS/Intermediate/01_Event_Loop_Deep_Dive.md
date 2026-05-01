@@ -1,6 +1,7 @@
 # 📌 Topic: Event Loop Deep Dive (Microtasks vs Macrotasks)
 
-## 🧠 Concept Explanation
+## What
+### 🧠 Concept Explanation
 While the basic Event Loop manages the flow of tasks, the "Deep Dive" involves understanding **Priority**. Not all tasks are created equal in the eyes of Node.js.
 
 **The Hospital Triage Analogy (Deep Dive):**
@@ -13,7 +14,7 @@ Imagine a Hospital Emergency Room (The Event Loop).
 
 ---
 
-## 🏗️ Mental Model
+### 🏗️ Mental Model
 The Event Loop is a series of "Phases," but between every single phase—and even after every single callback within those phases—Node.js checks the **Microtask Queue**. 
 
 1.  **Macro-Step:** Finish one callback from a phase (e.g., one Timer).
@@ -24,7 +25,22 @@ This is why Promises often feel "faster" than `setTimeout`—they literally cut 
 
 ---
 
-## ⚡ Actual Behavior
+## Why
+### 🏢 Best Practices
+1.  **Favor `setImmediate` for heavy work:** It allows I/O to be processed in between chunks.
+2.  **Use `process.nextTick` sparingly:** Only for critical cleanup or state synchronization that *must* happen before the next phase.
+3.  **Avoid deep Promise nesting:** Flatten chains to improve readability and predictability.
+
+---
+
+### ⚖️ Trade-offs
+*   **Microtasks:** Faster execution, but high risk of starving I/O.
+*   **Macrotasks:** Fairer to the system, but higher latency for the specific task.
+
+---
+
+## How
+### ⚡ Actual Behavior
 The sequence of execution follows a very strict hierarchy:
 
 1.  **Synchronous Code:** The code you wrote that isn't in a callback. It runs until the stack is empty.
@@ -41,7 +57,7 @@ The sequence of execution follows a very strict hierarchy:
 
 ---
 
-## 🔬 Internal Mechanics (V8 + libuv + OS)
+### 🔬 Internal Mechanics (V8 + libuv + OS)
 *   **V8's Role:** Microtasks (Promises) are actually managed by the **V8 Engine**, not by Libuv. V8 has its own internal queue for these.
 *   **Libuv's Role:** Libuv manages the Macrotask phases (Timers, I/O, etc.) and handles the communication with the OS.
 *   **The "Tick" Boundary:** The transition between "JavaScript execution" and "Event Loop Phase" is where the most Microtask processing happens.
@@ -49,7 +65,7 @@ The sequence of execution follows a very strict hierarchy:
 
 ---
 
-## 🔁 Execution Flow
+### 🔁 Execution Flow
 ```javascript
 import fs from 'node:fs';
 
@@ -79,33 +95,7 @@ Expected Order:
 
 ---
 
-## 🧠 Resource Behavior
-*   **CPU:** Starvation can occur if Microtasks recursively schedule more Microtasks. The loop will never move to the next phase (e.g., Timers will never fire).
-*   **Latency:** High Microtask volume increases "Event Loop Latency," making the server feel sluggish even if CPU % is low.
-
----
-
-## 📐 ASCII Diagrams
-```text
-      +-----------------------------------------+
-      |             CALL STACK                  |
-      +--------------------+--------------------+
-                           | (Empty)
-                           v
-      +--------------------+--------------------+
-      |       MICROTASK QUEUE (Drained)         |
-      |  1. process.nextTick  2. Promises       |
-      +--------------------+--------------------+
-                           |
-      +--------------------+--------------------+
-      |           EVENT LOOP PHASES             |
-      | [Timers] -> [I/O] -> [Poll] -> [Check]  |
-      +-----------------------------------------+
-```
-
----
-
-## 🔍 Code Example (Latest Node.js)
+### 🔍 Code Example (Latest Node.js)
 ```javascript
 // Demonstrating Microtask Starvation
 function starve() {
@@ -122,46 +112,25 @@ setTimeout(() => {
 
 ---
 
-## 💥 Production Failures
+## Impact
+### 💥 Production Failures
 *   **Starvation:** A complex promise chain that never yields back to the event loop, causing health checks (timers) to fail and the orchestrator (Kubernetes) to restart the pod.
 *   **Order Dependency:** Relying on `setTimeout` to run before `setImmediate` (or vice versa) without understanding the phase logic.
 
 ---
 
-## 🧪 Real-time Scenarios
+### 🧪 Real-time Scenarios
 *   **Database Hooks:** Using `process.nextTick` to ensure a "post-save" hook runs immediately after the current function but before the next event loop phase.
 *   **UI Frameworks:** Batching multiple data updates into a single "render" call using Microtasks.
 
 ---
 
-## ⚠️ Edge Cases
+### ⚠️ Edge Cases
 *   **Recursive `setImmediate`:** Unlike `nextTick`, recursive `setImmediate` calls won't starve the loop; they will be processed in the *next* iteration of the Check phase.
 *   **Zero-latency Timers:** `setTimeout(fn, 0)` is actually `setTimeout(fn, 1)` in most environments, meaning it might miss the current tick.
 
 ---
 
-## 🏢 Best Practices
-1.  **Favor `setImmediate` for heavy work:** It allows I/O to be processed in between chunks.
-2.  **Use `process.nextTick` sparingly:** Only for critical cleanup or state synchronization that *must* happen before the next phase.
-3.  **Avoid deep Promise nesting:** Flatten chains to improve readability and predictability.
-
 ---
 
-## ⚖️ Trade-offs
-*   **Microtasks:** Faster execution, but high risk of starving I/O.
-*   **Macrotasks:** Fairer to the system, but higher latency for the specific task.
-
----
-
-## 💼 Interview Q&A
-*   **Q:** What is the difference between `process.nextTick` and `setImmediate`?
-*   **A:** `process.nextTick` fires immediately after the current operation (before the loop continues). `setImmediate` fires in the "Check" phase of the event loop.
-
----
-
-## 🧩 Practice Problems
-1.  Write a script that demonstrates that `setImmediate` runs before `setTimeout(..., 0)` when inside an `fs.readFile` callback.
-2.  Create a "Microtask loop" that prevents a `setInterval` from logging more than once.
-
----
 Prev: [../Basics/05_Basic_HTTP_Server.md](../Basics/05_Basic_HTTP_Server.md) | Index: [NodeJS/00_Index.md](../00_Index.md) | Next: [02_Async_Patterns_Promises_AsyncAwait.md](./02_Async_Patterns_Promises_AsyncAwait.md)

@@ -1,6 +1,7 @@
 # 📌 Topic: Node.js in Jenkins
 
-## 🧠 Concept Explanation
+## What
+### 🧠 Concept Explanation
 Jenkins is an open-source automation server that enables developers to build, test, and deploy their software. In a Node.js context, Jenkins acts as the "Guardian of Quality," ensuring that only verified code reaches your users.
 
 **The Factory Assembly Line Analogy (Deep Dive):**
@@ -15,7 +16,7 @@ Imagine a high-tech car factory (Your CI/CD Pipeline).
 
 ---
 
-## 🏗️ Mental Model
+### 🏗️ Mental Model
 Think of Jenkins as a **Disposable Laboratory**.
 1.  **Isolation:** For every build, Jenkins creates a brand new, empty room (The Workspace).
 2.  **Environment:** It sets up the tools (Node.js, npm, Docker) needed for that specific project.
@@ -24,7 +25,23 @@ Think of Jenkins as a **Disposable Laboratory**.
 
 ---
 
-## ⚡ Actual Behavior
+## Why
+### 🏢 Best Practices
+1.  **Use `npm ci`:** It is faster and ensures you get the exact versions from `package-lock.json`.
+2.  **Cache `node_modules`:** Use the Jenkins "Pipeline Caching" plugin or Docker layer caching.
+3.  **Run in Docker:** Ensures the build environment is identical every time.
+4.  **Parallel Stages:** Run Lint and Test at the same time to save time.
+
+---
+
+### ⚖️ Trade-offs
+*   **Jenkins:** Extremely powerful, highly customizable, but hard to manage and requires your own servers.
+*   **GitHub Actions:** Managed by GitHub, easy to set up, but can be expensive and less flexible for complex workflows.
+
+---
+
+## How
+### ⚡ Actual Behavior
 When a Node.js build runs in Jenkins:
 1.  **Worker Allocation:** Jenkins finds an available "Agent" (a machine or a Docker container) that has Node.js installed.
 2.  **The `npm ci` Command:** Unlike `npm install`, `npm ci` (Clean Install) is strictly for CI. It deletes your `node_modules` and re-installs them from scratch based *only* on the lockfile. This ensures that the build in Jenkins is identical to the build on your laptop.
@@ -33,7 +50,7 @@ When a Node.js build runs in Jenkins:
 
 ---
 
-## 🔬 Internal Mechanics (V8 + libuv + OS)
+### 🔬 Internal Mechanics (V8 + libuv + OS)
 *   **Child Processes:** Jenkins doesn't "run" Node.js inside its own process. It uses the OS `spawn()` or `exec()` commands to start a new, independent Node.js process. This means if your code crashes, it doesn't crash Jenkins.
 *   **The Exit Code Protocol:** This is the language of CI/CD.
     *   `0`: Success.
@@ -46,7 +63,7 @@ When a Node.js build runs in Jenkins:
 
 ---
 
-## 🔁 Execution Flow
+### 🔁 Execution Flow
 1.  Developer pushes code to GitHub.
 2.  GitHub triggers a Webhook to Jenkins.
 3.  Jenkins clones the repo.
@@ -58,28 +75,7 @@ When a Node.js build runs in Jenkins:
 
 ---
 
-## 🧠 Resource Behavior
-*   **Disk:** `node_modules` is huge. Cleaning up old workspaces is critical to prevent Jenkins from running out of disk space.
-*   **CPU:** Spikes during `npm install` (unzipping) and `npm test`.
-
----
-
-## 📐 ASCII Diagrams
-```text
-[ GITHUB ] --(Webhook)--> [ JENKINS ]
-                             |
-                   +---------v---------+
-                   |  PIPELINE STAGES  |
-                   |  1. Checkout      |
-                   |  2. Install       |
-                   |  3. Test & Lint   |
-                   |  4. Build & Push  |
-                   +-------------------+
-```
-
----
-
-## 🔍 Code Example (Latest Node.js - A Declarative Jenkinsfile)
+### 🔍 Code Example (Latest Node.js - A Declarative Jenkinsfile)
 ```groovy
 pipeline {
     agent { docker { image 'node:20-alpine' } }
@@ -122,48 +118,26 @@ pipeline {
 
 ---
 
-## 💥 Production Failures
+## Impact
+### 💥 Production Failures
 *   **The "NPM Install" Hang:** A private registry (like Artifactory) is down, causing the build to wait forever for a package. (Solution: Set a `timeout` in the Jenkinsfile).
 *   **Flaky Tests:** Tests that fail 10% of the time for no reason, causing the pipeline to fail randomly.
 *   **Secret Leak:** Printing environment variables (like `DATABASE_URL`) in the Jenkins console log.
 
 ---
 
-## 🧪 Real-time Scenarios
+### 🧪 Real-time Scenarios
 *   **Pull Request Checks:** Ensuring that no one can merge code into `main` unless the Jenkins build passes.
 *   **Environment-specific Builds:** Building a different artifact for `staging` vs `production`.
 
 ---
 
-## ⚠️ Edge Cases
+### ⚠️ Edge Cases
 *   **Architecture Mismatch:** Building a C++ addon (like `bcrypt`) on a Linux Jenkins agent and trying to run it on a macOS server. (Solution: Always build inside a Docker container that matches production).
 *   **Missing `.npmrc`:** Forgetting to provide the credentials for private npm packages.
 
 ---
 
-## 🏢 Best Practices
-1.  **Use `npm ci`:** It is faster and ensures you get the exact versions from `package-lock.json`.
-2.  **Cache `node_modules`:** Use the Jenkins "Pipeline Caching" plugin or Docker layer caching.
-3.  **Run in Docker:** Ensures the build environment is identical every time.
-4.  **Parallel Stages:** Run Lint and Test at the same time to save time.
-
 ---
 
-## ⚖️ Trade-offs
-*   **Jenkins:** Extremely powerful, highly customizable, but hard to manage and requires your own servers.
-*   **GitHub Actions:** Managed by GitHub, easy to set up, but can be expensive and less flexible for complex workflows.
-
----
-
-## 💼 Interview Q&A
-*   **Q:** Why use `npm ci` instead of `npm install` in a CI/CD pipeline?
-*   **A:** `npm ci` is designed for automated environments. It deletes the `node_modules` folder first, ensuring a clean state, and it fails if the `package-lock.json` is not in sync with `package.json`.
-
----
-
-## 🧩 Practice Problems
-1.  Write a Jenkinsfile stage that runs `eslint` and fails the build if there are any "error" level linting issues.
-2.  Research how to use "Credentials" in Jenkins to securely store a Docker Hub password.
-
----
 Prev: [../Observability/04_Debugging_Production.md](../Observability/04_Debugging_Production.md) | Index: [NodeJS/00_Index.md](../00_Index.md) | Next: [02_Build_Pipelines.md](./02_Build_Pipelines.md)

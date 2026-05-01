@@ -1,6 +1,7 @@
 # 📌 Topic: REST API Design
 
-## 🧠 Concept Explanation
+## What
+### 🧠 Concept Explanation
 REST (Representational State Transfer) is not a protocol, but a set of architectural constraints. It treats everything in your application as a **Resource** that can be identified, manipulated, and transferred.
 
 **The Restaurant Menu Analogy (Deep Dive):**
@@ -17,7 +18,7 @@ Imagine you are dining at a high-end restaurant.
 
 ---
 
-## 🏗️ Mental Model
+### 🏗️ Mental Model
 Think of REST as **Mapping URLs to Database Entities**.
 *   **Nouns over Verbs:** You don't use `/getUsers`. You use `/users` and the `GET` method. The URL is the *thing*, the HTTP method is the *action*.
 *   **Representation:** When you `GET /users/1`, the server doesn't send you the actual database row. It sends you a *representation* of it (usually as JSON). You could also ask for it as XML or HTML.
@@ -25,7 +26,23 @@ Think of REST as **Mapping URLs to Database Entities**.
 
 ---
 
-## ⚡ Actual Behavior
+## Why
+### 🏢 Best Practices
+1.  **Use Nouns, Not Verbs:** Use `/users`, not `/getUsers`.
+2.  **Pluralize Resources:** `/orders` is better than `/order`.
+3.  **Always use JSON:** It is the industry standard for REST.
+4.  **Implement Rate Limiting:** To prevent abuse of your endpoints.
+
+---
+
+### ⚖️ Trade-offs
+*   **REST:** Simple, cached by browsers/CDNs, widely understood.
+*   **GraphQL:** More flexible for complex data, avoids over-fetching, but harder to cache and more complex to implement.
+
+---
+
+## How
+### ⚡ Actual Behavior
 When a REST request hits your Node.js server:
 1.  **Routing:** Express looks at the path (`/users/:id`) and the method (`GET`). It finds the specific function (handler) responsible for that combination.
 2.  **Payload Extraction:** Node.js parses the URL parameters, the query strings (e.g., `?sort=desc`), and the request body.
@@ -34,7 +51,7 @@ When a REST request hits your Node.js server:
 
 ---
 
-## 🔬 Internal Mechanics (V8 + libuv + OS)
+### 🔬 Internal Mechanics (V8 + libuv + OS)
 *   **HTTP Parsing:** Node.js uses a highly optimized C-based parser (`llhttp`) to read the incoming TCP stream. It identifies the method (GET/POST) and the path before the data even reaches your JavaScript code.
 *   **Serialization Overhead:** `JSON.stringify()` is a synchronous, CPU-intensive operation in V8. If you are sending a 5MB JSON response, V8 will block the event loop for several milliseconds while it converts the JS object into a string.
 *   **Streamed Responses:** For very large responses, instead of using `res.json()` (which builds the whole string in memory), you can stream data directly from the DB to the client. This uses the `res` object as a **Writable Stream**, keeping memory usage low.
@@ -42,7 +59,7 @@ When a REST request hits your Node.js server:
 
 ---
 
-## 🔁 Execution Flow
+### 🔁 Execution Flow
 1.  Client sends `GET /api/v1/orders/123`.
 2.  Node.js parses the URL and extracts the ID `123`.
 3.  Middleware validates the user's JWT.
@@ -52,25 +69,7 @@ When a REST request hits your Node.js server:
 
 ---
 
-## 🧠 Resource Behavior
-*   **CPU:** Low for simple CRUD; spikes during complex filtering/sorting or JSON serialization.
-*   **Bandwidth:** Large JSON payloads can be compressed with Gzip/Brotli to save transfer costs and time.
-
----
-
-## 📐 ASCII Diagrams
-```text
-CLIENT (Browser/App)          REST API (Node.js)          DATABASE
-       |                             |                       |
-       | -- GET /users/42 ---------->|                       |
-       |                             | -- SELECT * ... ----> |
-       |                             | <--- { id: 42, ... }--|
-       | <--- 200 OK { JSON } -------|                       |
-```
-
----
-
-## 🔍 Code Example (Latest Node.js - Clean Architecture)
+### 🔍 Code Example (Latest Node.js - Clean Architecture)
 ```javascript
 import express from 'express';
 const router = express.Router();
@@ -97,47 +96,25 @@ router.delete('/:id', async (req, res) => {
 
 ---
 
-## 💥 Production Failures
+## Impact
+### 💥 Production Failures
 *   **Leaking Database Schema:** Returning internal DB fields (like `__v` or `password_hash`) directly in the API response. Always use a Data Transfer Object (DTO) or a "ToJSON" transform.
 *   **Ambiguous Status Codes:** Returning `200 OK` for everything, even when an error occurred, forcing the client to parse the response body to find the error.
 
 ---
 
-## 🧪 Real-time Scenarios
+### 🧪 Real-time Scenarios
 *   **Filtering & Pagination:** Handling `GET /products?category=tech&page=2&limit=50` to avoid sending 10,000 products at once.
 *   **HATEOAS:** Including links in the response that tell the client what they can do next (e.g., "Next Page" or "Cancel Order").
 
 ---
 
-## ⚠️ Edge Cases
+### ⚠️ Edge Cases
 *   **PUT vs PATCH:** `PUT` replaces the entire resource. If you only send `{"name": "New"}`, all other fields in the DB should be cleared. `PATCH` only updates the fields you provide.
 *   **Browser Pre-flights (CORS):** Browsers send an `OPTIONS` request before any `POST/PUT/DELETE` to ensure the server allows the request.
 
 ---
 
-## 🏢 Best Practices
-1.  **Use Nouns, Not Verbs:** Use `/users`, not `/getUsers`.
-2.  **Pluralize Resources:** `/orders` is better than `/order`.
-3.  **Always use JSON:** It is the industry standard for REST.
-4.  **Implement Rate Limiting:** To prevent abuse of your endpoints.
-
 ---
 
-## ⚖️ Trade-offs
-*   **REST:** Simple, cached by browsers/CDNs, widely understood.
-*   **GraphQL:** More flexible for complex data, avoids over-fetching, but harder to cache and more complex to implement.
-
----
-
-## 💼 Interview Q&A
-*   **Q:** What are the 4 levels of the Richardson Maturity Model?
-*   **A:** Level 0 (The Swamp of POX), Level 1 (Resources), Level 2 (HTTP Verbs), Level 3 (Hypermedia Controls/HATEOAS).
-
----
-
-## 🧩 Practice Problems
-1.  Design the URL structure and methods for a "Library Management System" (Books, Authors, Loans).
-2.  Implement a middleware that adds a `Link` header for pagination (First, Prev, Next, Last).
-
----
 Prev: [../Expert/07_Low_Level_Debugging.md](../Expert/07_Low_Level_Debugging.md) | Index: [NodeJS/00_Index.md](../00_Index.md) | Next: [02_GraphQL_Architecture.md](./02_GraphQL_Architecture.md)

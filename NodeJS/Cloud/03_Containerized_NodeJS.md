@@ -1,6 +1,7 @@
 # 📌 Topic: Containerized Node.js (Docker)
 
-## 🧠 Concept Explanation
+## What
+### 🧠 Concept Explanation
 Containerization is the process of packaging your Node.js application, its dependencies, its configuration, and even the operating system itself into a single, immutable unit called an "Image." Docker is the industry standard for creating and running these containers.
 
 **The Shipping Container Analogy (Deep Dive):**
@@ -13,7 +14,7 @@ Imagine you are a logistics company (The Developer) shipping fragile products (T
 
 ---
 
-## 🏗️ Mental Model
+### 🏗️ Mental Model
 Think of Docker as **Functional Programming for Infrastructure**.
 1.  **Immutability:** An Image is like a `const`. You cannot change a running image. If you need to update your code, you create a *new* image.
 2.  **Statelessness:** A Container is like a pure function. It takes inputs (Environment Variables) and produces outputs (Network responses). If you delete a container and start a new one, it should behave exactly the same way.
@@ -26,7 +27,23 @@ Think of Docker as **Functional Programming for Infrastructure**.
 
 ---
 
-## ⚡ Actual Behavior
+## Why
+### 🏢 Best Practices
+1.  **Use Alpine Images:** They are tiny (~50MB) and more secure.
+2.  **Use `.dockerignore`:** Exclude `node_modules`, `.git`, and `.env` from the build.
+3.  **Never hardcode secrets:** Pass them as Environment Variables via ECS or Kubernetes.
+4.  **One Process per Container:** Don't try to run Node, Redis, and Cron in the same container.
+
+---
+
+### ⚖️ Trade-offs
+*   **Containers:** Highly portable, easy to scale, industry standard. But adds a layer of complexity and networking overhead.
+*   **Direct Deploy:** Simpler for very small apps, but hard to manage as the app grows.
+
+---
+
+## How
+### ⚡ Actual Behavior
 When you run a Node.js container:
 1.  **Environment Isolation:** The Node.js process thinks it is the only process on the entire computer. It sees its own IP address, its own filesystem (starting at `/`), and its own CPU cores.
 2.  **Resource Limits:** You can tell Docker: "This container can only use 512MB of RAM." If Node.js tries to use 513MB, the OS kernel will kill the container (OOMKill) to protect the rest of the server.
@@ -35,7 +52,7 @@ When you run a Node.js container:
 
 ---
 
-## 🔬 Internal Mechanics (V8 + libuv + OS)
+### 🔬 Internal Mechanics (V8 + libuv + OS)
 *   **Linux Namespaces (The Walls):** This is the magic behind Docker. The Linux kernel "lies" to the process.
     *   **PID Namespace:** Node.js thinks its process ID is `1`.
     *   **NET Namespace:** Node.js thinks it has its own private network card.
@@ -47,7 +64,7 @@ When you run a Node.js container:
 
 ---
 
-## 🔁 Execution Flow
+### 🔁 Execution Flow
 1.  Developer writes a `Dockerfile`.
 2.  `docker build` creates the Image layers.
 3.  Developer pushes the image to **AWS ECR**.
@@ -57,29 +74,7 @@ When you run a Node.js container:
 
 ---
 
-## 🧠 Resource Behavior
-*   **Memory:** If you don't set a limit, a Node.js container can try to use all the RAM on the host machine. Always set `memory_limit`.
-*   **Storage:** Data written inside a container is **temporary**. If the container restarts, the data is gone. Use **Volumes** or S3 for persistence.
-
----
-
-## 📐 ASCII Diagrams
-```text
-[ SOURCE CODE ] + [ PACKAGE.JSON ] + [ NODE RUNTIME ]
-                   |
-             [ DOCKER BUILD ]
-                   |
-             [ DOCKER IMAGE ] (Immutable)
-                   |
-      +------------+------------+
-      |            |            |
- [ PROD ]     [ STAGING ]     [ DEV ]
- (Running Containers)
-```
-
----
-
-## 🔍 Code Example (Latest Node.js - Production Dockerfile)
+### 🔍 Code Example (Latest Node.js - Production Dockerfile)
 ```dockerfile
 # Use a specific version, not 'latest'
 FROM node:20-alpine
@@ -106,48 +101,26 @@ CMD ["node", "src/app.js"]
 
 ---
 
-## 💥 Production Failures
+## Impact
+### 💥 Production Failures
 *   **Running as Root:** If an attacker breaks your Node.js app, they have root access to the container and possibly the host.
 *   **Huge Images:** Including `node_modules` from development or OS tools like `git` and `python` in the production image. (Solution: Use `.dockerignore` and multi-stage builds).
 *   **Zombies:** Node.js doesn't handle OS signals (like `SIGTERM`) well when running as PID 1. (Solution: Use `tini` as an init process or run with `npm start`).
 
 ---
 
-## 🧪 Real-time Scenarios
+### 🧪 Real-time Scenarios
 *   **Microservice Deployment:** Running 50 different microservices, each with a different Node.js version, on the same cluster without conflicts.
 *   **CI/CD Testing:** Running your exact production environment on every PR to catch bugs before they merge.
 
 ---
 
-## ⚠️ Edge Cases
+### ⚠️ Edge Cases
 *   **Shared Memory:** If you use `SharedArrayBuffer` or Worker Threads, ensure your container has enough shared memory allocated (`--shm-size`).
 *   **Port Mapping:** Your app listens on 3000, but Docker maps it to 80. Ensure you understand the difference between internal and external ports.
 
 ---
 
-## 🏢 Best Practices
-1.  **Use Alpine Images:** They are tiny (~50MB) and more secure.
-2.  **Use `.dockerignore`:** Exclude `node_modules`, `.git`, and `.env` from the build.
-3.  **Never hardcode secrets:** Pass them as Environment Variables via ECS or Kubernetes.
-4.  **One Process per Container:** Don't try to run Node, Redis, and Cron in the same container.
-
 ---
 
-## ⚖️ Trade-offs
-*   **Containers:** Highly portable, easy to scale, industry standard. But adds a layer of complexity and networking overhead.
-*   **Direct Deploy:** Simpler for very small apps, but hard to manage as the app grows.
-
----
-
-## 💼 Interview Q&A
-*   **Q:** What is the difference between a Docker Image and a Container?
-*   **A:** An Image is a read-only blueprint (like a Class); a Container is a running instance of that image (like an Object).
-
----
-
-## 🧩 Practice Problems
-1.  Create a Dockerfile for a simple Express app and find its size using `docker images`.
-2.  Use `docker-compose` to run a Node.js container and a MongoDB container together.
-
----
 Prev: [02_Serverless_Lambda.md](./02_Serverless_Lambda.md) | Index: [NodeJS/00_Index.md](../00_Index.md) | Next: [04_Load_Balancing_ALB.md](./04_Load_Balancing_ALB.md)

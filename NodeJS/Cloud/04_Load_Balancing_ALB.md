@@ -1,6 +1,7 @@
 # 📌 Topic: Load Balancing (AWS ALB)
 
-## 🧠 Concept Explanation
+## What
+### 🧠 Concept Explanation
 Load Balancing is the process of distributing incoming network traffic across a group of backend servers. An AWS Application Load Balancer (ALB) is a "Layer 7" (Application Layer) device that is smart enough to look inside your HTTP requests and make routing decisions based on what it sees.
 
 **The Traffic Cop Analogy (Deep Dive):**
@@ -15,7 +16,7 @@ Imagine a massively popular stadium event (Your Node.js App).
 
 ---
 
-## 🏗️ Mental Model
+### 🏗️ Mental Model
 Think of a Load Balancer as a **Reverse Proxy on Steroids**.
 1.  **Frontend (The Public Face):** The single IP address or Domain Name that users talk to. It has your SSL certificates.
 2.  **Rules (The Brain):** A set of "If-Then" statements. (e.g., "If the host is `api.example.com`, send to Target Group A").
@@ -24,7 +25,22 @@ Think of a Load Balancer as a **Reverse Proxy on Steroids**.
 
 ---
 
-## ⚡ Actual Behavior
+## Why
+### 🏢 Best Practices
+1.  **Trust Proxy:** Set `app.set('trust proxy', true)` in Express so that `req.ip` shows the user's IP, not the ALB's IP.
+2.  **Use Target Group Port 80:** Since SSL is terminated at the ALB, your internal traffic can be plain HTTP to save CPU.
+3.  **Cross-Zone Load Balancing:** Ensure the ALB distributes traffic across multiple AWS Availability Zones for maximum reliability.
+
+---
+
+### ⚖️ Trade-offs
+*   **ALB (Layer 7):** Smart, understands HTTP/HTTPS, can do path routing. Great for web apps.
+*   **NLB (Network Load Balancer - Layer 4):** Faster, handles raw TCP/UDP, millions of RPS. Great for WebSockets and gaming.
+
+---
+
+## How
+### ⚡ Actual Behavior
 When an ALB is in place:
 1.  **Request Reception:** The client's browser performs a TLS handshake with the ALB. The ALB uses high-performance hardware (AWS Nitro) to decrypt the traffic.
 2.  **Header Injection:** The ALB adds important headers like `X-Forwarded-For` (The original user's IP) and `X-Forwarded-Proto` (Was the original request HTTP or HTTPS?). Node.js needs these to know who the user is.
@@ -33,7 +49,7 @@ When an ALB is in place:
 
 ---
 
-## 🔬 Internal Mechanics (V8 + libuv + OS)
+### 🔬 Internal Mechanics (V8 + libuv + OS)
 *   **Layer 7 vs. Layer 4:** 
     *   **Layer 4 (NLB):** Only looks at IP and Port. It's fast but "dumb." 
     *   **Layer 7 (ALB):** Understands HTTP. It can look at cookies, headers, and paths. This requires more CPU but allows for much smarter routing.
@@ -44,7 +60,7 @@ When an ALB is in place:
 
 ---
 
-## 🔁 Execution Flow
+### 🔁 Execution Flow
 1.  Client makes a request to `api.myapp.com`.
 2.  DNS points to the **Application Load Balancer (ALB)**.
 3.  ALB terminates the SSL and reads the HTTP headers.
@@ -55,27 +71,7 @@ When an ALB is in place:
 
 ---
 
-## 🧠 Resource Behavior
-*   **Bandwidth:** ALBs can handle millions of requests per second and scale automatically.
-*   **Latency:** Adds a tiny overhead (~1-2ms) but significantly improves reliability and scalability.
-
----
-
-## 📐 ASCII Diagrams
-```text
-      [ INTERNET ]
-           |
-   [ APPLICATION LOAD BALANCER ]
-      /    |    \
- [Target] [Target] [Target]
- (Node A) (Node B) (Node C)
-    |        |        |
-    +---[ DATABASE ]--+
-```
-
----
-
-## 🔍 Code Example (Latest Node.js - Health Check Endpoint)
+### 🔍 Code Example (Latest Node.js - Health Check Endpoint)
 ```javascript
 import express from 'express';
 const app = express();
@@ -97,46 +93,25 @@ app.listen(3000);
 
 ---
 
-## 💥 Production Failures
+## Impact
+### 💥 Production Failures
 *   **Unhealthy Targets:** All servers failing health checks at once, causing a total blackout. (Solution: Increase the "Health Check Interval" or "Unhealthy Threshold" to avoid premature removal).
 *   **Security Group Misconfiguration:** The Load Balancer can't talk to the servers because the server's firewall (Security Group) only allows traffic from "Your IP," not the "ALB's Security Group."
 
 ---
 
-## 🧪 Real-time Scenarios
+### 🧪 Real-time Scenarios
 *   **Zero-Downtime Deployment:** Adding a new version of the app to the Target Group, waiting for it to pass health checks, and then removing the old version.
 *   **DDoS Protection:** Using AWS WAF (Web Application Firewall) on top of the ALB to block malicious traffic before it reaches your Node.js servers.
 
 ---
 
-## ⚠️ Edge Cases
+### ⚠️ Edge Cases
 *   **WebSockets:** Standard ALBs support WebSockets, but you must enable "Sticky Sessions" or use a shared state (Redis) to ensure the client stays connected correctly.
 *   **Long-running Requests:** If your ALB timeout is 60s and your report generation takes 90s, the connection will be cut off.
 
 ---
 
-## 🏢 Best Practices
-1.  **Trust Proxy:** Set `app.set('trust proxy', true)` in Express so that `req.ip` shows the user's IP, not the ALB's IP.
-2.  **Use Target Group Port 80:** Since SSL is terminated at the ALB, your internal traffic can be plain HTTP to save CPU.
-3.  **Cross-Zone Load Balancing:** Ensure the ALB distributes traffic across multiple AWS Availability Zones for maximum reliability.
-
 ---
 
-## ⚖️ Trade-offs
-*   **ALB (Layer 7):** Smart, understands HTTP/HTTPS, can do path routing. Great for web apps.
-*   **NLB (Network Load Balancer - Layer 4):** Faster, handles raw TCP/UDP, millions of RPS. Great for WebSockets and gaming.
-
----
-
-## 💼 Interview Q&A
-*   **Q:** What is "SSL Termination" and why do we do it at the Load Balancer?
-*   **A:** It's the process of decrypting SSL/TLS traffic at the load balancer. We do it to reduce the CPU load on our backend servers and to centralize certificate management.
-
----
-
-## 🧩 Practice Problems
-1.  Draw a diagram showing how an ALB routes traffic to different target groups based on the URL path.
-2.  Research the difference between "Application," "Network," and "Classic" Load Balancers in AWS.
-
----
 Prev: [03_Containerized_NodeJS.md](./03_Containerized_NodeJS.md) | Index: [NodeJS/00_Index.md](../00_Index.md) | Next: [05_Scaling_on_AWS.md](./05_Scaling_on_AWS.md)

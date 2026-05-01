@@ -1,6 +1,7 @@
 # 📌 Topic: Authorization (RBAC vs ABAC)
 
-## 🧠 Concept Explanation
+## What
+### 🧠 Concept Explanation
 If Authentication is about "Identity," Authorization is about "Privilege." It's the set of rules that determines what an identified user can and cannot do within your system.
 
 **The Hotel Keycard Analogy (Deep Dive):**
@@ -13,7 +14,7 @@ Imagine you are a guest at a high-tech hotel.
 
 ---
 
-## 🏗️ Mental Model
+### 🏗️ Mental Model
 Think of Authorization as a **Guard standing at every door (Route)**.
 *   **Who? (Subject):** The user or service making the request (e.g., `req.user`).
 *   **What? (Action):** What are they trying to do? (e.g., `read`, `write`, `delete`).
@@ -22,7 +23,22 @@ Think of Authorization as a **Guard standing at every door (Route)**.
 
 ---
 
-## ⚡ Actual Behavior
+## Why
+### 🏢 Best Practices
+1.  **Principle of Least Privilege:** Users should only have the minimum permissions they need to do their job.
+2.  **Centralize Logic:** Use a library like `casl` or `accesscontrol` for complex rules.
+3.  **Fail Closed:** If a permission check fails or crashes, the default answer should always be "No access."
+
+---
+
+### ⚖️ Trade-offs
+*   **RBAC:** Simple, easy to audit, but inflexible for complex business logic.
+*   **ABAC:** Extremely powerful, handles any scenario, but complex to implement and can be slow.
+
+---
+
+## How
+### ⚡ Actual Behavior
 In a Node.js/Express environment:
 1.  **Middleware Chain:** Authorization always happens **after** authentication. You must know *who* someone is before you can decide what they can do.
 2.  **Stateless Check:** If using JWTs, the user's "Role" is often encoded directly in the token. The server reads the token and immediately knows the role without a database lookup.
@@ -31,7 +47,7 @@ In a Node.js/Express environment:
 
 ---
 
-## 🔬 Internal Mechanics (V8 + libuv + OS)
+### 🔬 Internal Mechanics (V8 + libuv + OS)
 *   **Policy Enforcement Point (PEP):** This is your middleware. It's the place in the code where the check is actually performed.
 *   **Bitwise Permissions:** For systems with hundreds of permissions, using strings like `"can_edit_post_v2"` is slow. High-performance systems use a single integer. Each bit in the integer represents a permission. 
     *   `1` (0001) = Read
@@ -46,7 +62,7 @@ In a Node.js/Express environment:
 
 ---
 
-## 🔁 Execution Flow
+### 🔁 Execution Flow
 1.  Request arrives for `DELETE /order/555`.
 2.  **Auth Middleware** identifies user as "Nishant" (Role: Editor).
 3.  **Authz Middleware** checks: Does "Editor" have the `order:delete` permission?
@@ -55,30 +71,7 @@ In a Node.js/Express environment:
 
 ---
 
-## 🧠 Resource Behavior
-*   **CPU:** ABAC can involve multiple database lookups (to check ownership or resource state), increasing latency and CPU usage compared to simple RBAC.
-*   **Memory:** No significant overhead unless you are caching thousands of complex permission rules.
-
----
-
-## 📐 ASCII Diagrams
-```text
-[ REQUEST ] -> [ AUTHENTICATION ] -> [ AUTHORIZATION ] -> [ LOGIC ]
-                      |                     |
-                      v                     v
-                (Who are you?)        (Can you do this?)
-                                            |
-                         +------------------+------------------+
-                         |                                     |
-                  [ RBAC: Roles ]                       [ ABAC: Rules ]
-                  - Admin                               - Owner == User
-                  - Editor                              - Time < 5PM
-                  - User                                - Dept == 'HR'
-```
-
----
-
-## 🔍 Code Example (Latest Node.js - Simple RBAC Middleware)
+### 🔍 Code Example (Latest Node.js - Simple RBAC Middleware)
 ```javascript
 // middleware/authorize.js
 export const authorize = (...allowedRoles) => {
@@ -102,46 +95,25 @@ app.delete('/users/:id', authenticate, authorize('admin'), (req, res) => {
 
 ---
 
-## 💥 Production Failures
+## Impact
+### 💥 Production Failures
 *   **Insecure Direct Object Reference (IDOR):** You check if the user is logged in, but you don't check if they own the resource. A user can change the URL to `/api/profile/999` and see someone else's data. (Solution: Always check `where userId = req.user.id`).
 *   **Hardcoded Roles:** Scattering `if (user.role === 'admin')` throughout your code makes it impossible to change role names or add new ones. (Solution: Use a central permission mapping).
 
 ---
 
-## 🧪 Real-time Scenarios
+### 🧪 Real-time Scenarios
 *   **SaaS Platforms:** Where an "Account Owner" can do everything, but an "Invite" can only see specific dashboards.
 *   **Content Management:** Where "Authors" can create posts but only "Editors" can publish them.
 
 ---
 
-## ⚠️ Edge Cases
+### ⚠️ Edge Cases
 *   **Hierarchical Roles:** An Admin should automatically have all the permissions of an Editor and a User. Your code should handle this "inheritance."
 *   **Dynamic Permissions:** Changing a user's role in the DB doesn't affect their current JWT. They keep their old permissions until the token expires. (Solution: Use short-lived tokens or a "Session Version" check).
 
 ---
 
-## 🏢 Best Practices
-1.  **Principle of Least Privilege:** Users should only have the minimum permissions they need to do their job.
-2.  **Centralize Logic:** Use a library like `casl` or `accesscontrol` for complex rules.
-3.  **Fail Closed:** If a permission check fails or crashes, the default answer should always be "No access."
-
 ---
 
-## ⚖️ Trade-offs
-*   **RBAC:** Simple, easy to audit, but inflexible for complex business logic.
-*   **ABAC:** Extremely powerful, handles any scenario, but complex to implement and can be slow.
-
----
-
-## 💼 Interview Q&A
-*   **Q:** What is the difference between 401 and 403 status codes?
-*   **A:** 401 (Unauthorized) means "I don't know who you are." 403 (Forbidden) means "I know who you are, but you aren't allowed to do this."
-
----
-
-## 🧩 Practice Problems
-1.  Implement a middleware that allows a user to `PUT /profile/:id` only if their `id` matches the `:id` in the URL.
-2.  Research how a "Bitmask" is used for permissions and write a small script that checks if a user has the `DELETE` bit set.
-
----
 Prev: [01_Authentication_JWT_OAuth.md](./01_Authentication_JWT_OAuth.md) | Index: [NodeJS/00_Index.md](../00_Index.md) | Next: [03_Common_Vulnerabilities.md](./03_Common_Vulnerabilities.md)

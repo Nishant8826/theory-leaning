@@ -1,6 +1,7 @@
 # 📌 Topic: TCP, HTTP, and TLS Internals
 
-## 🧠 Concept Explanation
+## What
+### 🧠 Concept Explanation
 Node.js was built from the ground up for networking. To understand it, you must see the "stack" of protocols that allow two computers to talk to each other across the globe.
 
 **The Diplomatic Cargo Analogy (Deep Dive):**
@@ -11,7 +12,7 @@ Imagine a shipment of secret documents being sent from one country to another.
 
 ---
 
-## 🏗️ Mental Model
+### 🏗️ Mental Model
 Think of the networking modules as **Nesting Dolls**:
 1.  **`net` (TCP):** The outermost doll. It manages the connection itself. It sees raw binary data.
 2.  **`tls` (SSL/TLS):** The middle doll. It takes the raw data from `net` and encrypts/decrypts it.
@@ -21,7 +22,22 @@ When you use `https.get()`, Node.js is actually using all three modules simultan
 
 ---
 
-## ⚡ Actual Behavior
+## Why
+### 🏢 Best Practices
+1.  **Use HTTP/2 or HTTP/3:** To reduce latency and improve throughput.
+2.  **Enable Compression:** Use `gzip` or `brotli` for HTTP responses.
+3.  **Set Timeouts:** `server.timeout`, `server.keepAliveTimeout`, and `server.headersTimeout` are critical for security.
+
+---
+
+### ⚖️ Trade-offs
+*   **TCP:** Reliable but slower due to handshakes.
+*   **UDP:** Fast but unreliable (packets can be lost or out of order). Used for streaming and gaming.
+
+---
+
+## How
+### ⚡ Actual Behavior
 When a Node.js server is running:
 1.  **Passive Open:** The server tells the OS, "I am listening on Port 443." It enters a "Listening" state.
 2.  **The 3-Way Handshake:** When a client connects, the OS kernel handles the `SYN -> SYN-ACK -> ACK` dance. Node.js isn't even involved yet!
@@ -30,7 +46,7 @@ When a Node.js server is running:
 
 ---
 
-## 🔬 Internal Mechanics (V8 + libuv + OS)
+### 🔬 Internal Mechanics (V8 + libuv + OS)
 *   **The Backlog Queue:** When 10,000 people try to connect at the exact same millisecond, they go into the OS "Backlog." If this queue fills up, the OS starts rejecting connections with `ECONNREFUSED`. You can tune this in Node.js via the `backlog` argument in `listen()`.
 *   **Nagle's Algorithm (TCP_NODELAY):** By default, the OS tries to be efficient by waiting for a few small messages to arrive before sending them as one big packet. For real-time apps (like games or chat), this is a disaster. Node.js calls `socket.setNoDelay(true)` to disable this and send data the instant it's ready.
 *   **OpenSSL Integration:** Node.js doesn't write its own encryption code (that's dangerous). It links directly to **OpenSSL**, a battle-tested C library. When you encrypt data, V8 hands the buffer to OpenSSL, which uses optimized CPU instructions (like AES-NI) to crunch the numbers.
@@ -38,7 +54,7 @@ When a Node.js server is running:
 
 ---
 
-## 🔁 Execution Flow (The Handshake)
+### 🔁 Execution Flow (The Handshake)
 1.  **Client -> Server:** SYN (Can we talk?)
 2.  **Server -> Client:** SYN-ACK (Yes, we can!)
 3.  **Client -> Server:** ACK (Great, let's go!)
@@ -47,31 +63,7 @@ When a Node.js server is running:
 
 ---
 
-## 🧠 Resource Behavior
-*   **File Descriptors:** Every TCP connection is a file descriptor. A server with 100,000 users needs the OS limit (ulimit) increased.
-*   **CPU:** TLS encryption/decryption is CPU-intensive. High traffic requires "SSL Offloading" or powerful cores.
-*   **Memory:** Each socket has a read and write buffer (usually a few KB).
-
----
-
-## 📐 ASCII Diagrams
-```text
-[ CLIENT ]              [ SERVER ]
-    |                       |
-    | -- TCP SYN ---------->| (3-Way Handshake)
-    | <--- SYN-ACK ---------|
-    | -- ACK -------------->|
-    |                       |
-    | -- TLS Client Hello ->| (Security Handshake)
-    | <--- TLS Server Hello |
-    |                       |
-    | -- GET / HTTP/1.1 --->| (Data Transfer)
-    | <--- 200 OK ----------|
-```
-
----
-
-## 🔍 Code Example (Latest Node.js - Raw TCP Server)
+### 🔍 Code Example (Latest Node.js - Raw TCP Server)
 ```javascript
 import net from 'node:net';
 
@@ -92,47 +84,26 @@ server.listen(8080, '127.0.0.1');
 
 ---
 
-## 💥 Production Failures
+## Impact
+### 💥 Production Failures
 *   **Socket Leaks:** Opening a connection and never closing it, eventually hitting the `EMFILE` (Too many open files) error.
 *   **Slowloris Attack:** A client sends headers very slowly, keeping the socket occupied and preventing other users from connecting.
 *   **Large Payloads:** Allowing a user to send a 1GB HTTP request body without a limit, crashing the server's memory.
 
 ---
 
-## 🧪 Real-time Scenarios
+### 🧪 Real-time Scenarios
 *   **Load Balancers:** Terminating TLS at the load balancer (ALB) and sending raw HTTP to the Node.js instances to save CPU.
 *   **Database Drivers:** Most DB drivers (MongoDB, PG) are built on top of the `net` (TCP) or `tls` modules.
 
 ---
 
-## ⚠️ Edge Cases
+### ⚠️ Edge Cases
 *   **Half-Open Connections:** When one side closes the connection but the other doesn't realize it. Node's `socket.setKeepAlive(true)` helps detect this.
 *   **MTU (Maximum Transmission Unit):** If a packet is larger than ~1500 bytes, it gets fragmented by the network.
 
 ---
 
-## 🏢 Best Practices
-1.  **Use HTTP/2 or HTTP/3:** To reduce latency and improve throughput.
-2.  **Enable Compression:** Use `gzip` or `brotli` for HTTP responses.
-3.  **Set Timeouts:** `server.timeout`, `server.keepAliveTimeout`, and `server.headersTimeout` are critical for security.
-
 ---
 
-## ⚖️ Trade-offs
-*   **TCP:** Reliable but slower due to handshakes.
-*   **UDP:** Fast but unreliable (packets can be lost or out of order). Used for streaming and gaming.
-
----
-
-## 💼 Interview Q&A
-*   **Q:** What is "Multiplexing" in HTTP/2?
-*   **A:** It allows multiple requests and responses to be sent over a single TCP connection simultaneously, preventing Head-of-Line blocking.
-
----
-
-## 🧩 Practice Problems
-1.  Create a simple TCP chat server where multiple clients can connect and see each other's messages.
-2.  Write a script that uses the `tls` module to connect to `google.com:443` and print the raw certificate information.
-
----
 Prev: [04_Worker_Threads.md](./04_Worker_Threads.md) | Index: [NodeJS/00_Index.md](../00_Index.md) | Next: [06_WebSockets_SocketIO.md](./06_WebSockets_SocketIO.md)

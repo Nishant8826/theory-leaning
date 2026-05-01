@@ -1,6 +1,7 @@
 # 📌 Topic: Event Loop Basics
 
-## 🧠 Concept Explanation
+## What
+### 🧠 Concept Explanation
 The Event Loop is the **engine room** of Node.js. It is what allows Node.js to be "non-blocking" despite being single-threaded.
 
 **The Waitstaff Analogy (Deep Dive):**
@@ -15,7 +16,7 @@ This allows the café to serve 100 people with only one waiter, provided the wai
 
 ---
 
-## 🏗️ Mental Model
+### 🏗️ Mental Model
 The Event Loop is essentially a **semi-infinite loop** that waits for events and then dispatches them to handler functions. It follows a very specific "schedule" of phases. It only checks for "ready" tasks when the Call Stack is empty.
 
 1.  **Call Stack:** Where your current JS code runs.
@@ -24,7 +25,22 @@ The Event Loop is essentially a **semi-infinite loop** that waits for events and
 
 ---
 
-## ⚡ Actual Behavior
+## Why
+### 🏢 Best Practices
+1.  **Don't starve the loop:** If you have a task that takes >10ms, it's starting to impact latency.
+2.  **Use `setImmediate` for "yielding":** If you have a long array to process, process 100 items, then `setImmediate` to process the next 100.
+3.  **Monitor Lag:** Use `perf_hooks` to monitor the time between ticks.
+
+---
+
+### ⚖️ Trade-offs
+*   **Pros:** Incredible efficiency for I/O-bound applications.
+*   **Cons:** One unhandled "blocking" line of code can bring down the entire system's responsiveness.
+
+---
+
+## How
+### ⚡ Actual Behavior
 The Event Loop isn't just one big pile of tasks; it's a series of **highly organized queues**. When the Call Stack is empty, Node.js enters the loop and processes these queues in order:
 
 1.  **Timers Phase:** Handles `setTimeout` and `setInterval` callbacks whose time has expired.
@@ -38,14 +54,14 @@ The Event Loop isn't just one big pile of tasks; it's a series of **highly organ
 
 ---
 
-## 🔬 Internal Mechanics (V8 + libuv + OS)
+### 🔬 Internal Mechanics (V8 + libuv + OS)
 *   **Libuv's `uv_run`:** This C function runs in a `while` loop. As long as there are "active handles" (like an open server) or "active requests" (like a pending file read), the loop keeps running.
 *   **The "Tick":** Every full rotation of the loop is one "Tick." Node.js monitors "Event Loop Lag" by measuring how long a single tick takes. If a tick takes 100ms, your server is effectively "lagging" because it can't respond to new events during that time.
 *   **OS Polling:** Libuv doesn't "ask" the OS if a file is ready over and over. It uses **Event Demultiplexing**. It tells the OS: "Let me know when something happens on these 500 connections," and the OS wakes Node.js up only when there is actual work to do. This is why Node.js is so power-efficient.
 
 ---
 
-## 🔁 Execution Flow
+### 🔁 Execution Flow
 ```text
 1. Start Script
 2. Run Synchronous Code (Top-to-bottom)
@@ -62,36 +78,7 @@ The Event Loop isn't just one big pile of tasks; it's a series of **highly organ
 
 ---
 
-## 🧠 Resource Behavior
-*   **CPU:** Idle while waiting for I/O; busy during "Ticks."
-*   **Throughput:** Allows Node.js to handle thousands of concurrent I/O connections because it doesn't wait for any single one.
-
----
-
-## 📐 ASCII Diagrams
-```text
-   +---------------------------------------+
-   |             CALL STACK                |
-   | (Synchronous JS Execution)            |
-   +-------------------+-------------------+
-                       |
-        (If Empty)     |
-                       v
-   +-------------------+-------------------+
-   |           EVENT LOOP (libuv)          |
-   |  [ Timers ] -> [ I/O ] -> [ Check ]   |
-   +-------------------+-------------------+
-                       ^
-                       | (Callback ready)
-   +-------------------+-------------------+
-   |           TASK QUEUE                  |
-   |  (Callbacks from Async Operations)    |
-   +-------------------+-------------------+
-```
-
----
-
-## 🔍 Code Example (Latest Node.js)
+### 🔍 Code Example (Latest Node.js)
 ```javascript
 console.log("1. Synchronous");
 
@@ -118,46 +105,25 @@ Output Logic:
 
 ---
 
-## 💥 Production Failures
+## Impact
+### 💥 Production Failures
 *   **The "Heavy Loop" Freeze:** `while(true) {}` will prevent the Event Loop from ever checking the Task Queue. The server will not respond to any new requests.
 *   **DNS Blocking:** Some legacy Node.js DNS lookups are synchronous and can block the entire loop if the DNS server is slow.
 
 ---
 
-## 🧪 Real-time Scenarios
+### 🧪 Real-time Scenarios
 *   **Logging:** Writing logs asynchronously ensures that the main request processing logic isn't slowed down by disk latency.
 *   **Database Queries:** While waiting for PostgreSQL to return 1000 rows, the Event Loop is free to handle 50 other incoming HTTP requests.
 
 ---
 
-## ⚠️ Edge Cases
+### ⚠️ Edge Cases
 *   **Timer Precision:** `setTimeout(..., 0)` does not mean 0ms. It depends on the loop's current phase and CPU load. It's usually ~1-4ms.
 *   **`setImmediate` vs `setTimeout`:** Within an I/O cycle, `setImmediate` is guaranteed to run before `setTimeout`.
 
 ---
 
-## 🏢 Best Practices
-1.  **Don't starve the loop:** If you have a task that takes >10ms, it's starting to impact latency.
-2.  **Use `setImmediate` for "yielding":** If you have a long array to process, process 100 items, then `setImmediate` to process the next 100.
-3.  **Monitor Lag:** Use `perf_hooks` to monitor the time between ticks.
-
 ---
 
-## ⚖️ Trade-offs
-*   **Pros:** Incredible efficiency for I/O-bound applications.
-*   **Cons:** One unhandled "blocking" line of code can bring down the entire system's responsiveness.
-
----
-
-## 💼 Interview Q&A
-*   **Q:** Does Node.js have a separate thread for each request?
-*   **A:** No. It handles all requests on a single main thread using the Event Loop to delegate tasks.
-
----
-
-## 🧩 Practice Problems
-1.  Predict the output of a script containing nested `setTimeout`, `setImmediate`, and `process.nextTick`.
-2.  Measure the "Event Loop Lag" by comparing `performance.now()` inside a recurring `setTimeout`.
-
----
 Prev: [02_JavaScript_Execution_Model.md](./02_JavaScript_Execution_Model.md) | Index: [NodeJS/00_Index.md](../00_Index.md) | Next: [04_Modules_CommonJS_ESM.md](./04_Modules_CommonJS_ESM.md)

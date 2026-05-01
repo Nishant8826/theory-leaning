@@ -1,6 +1,7 @@
 # 📌 Topic: Garbage Collection (Orinoco)
 
-## 🧠 Concept Explanation
+## What
+### 🧠 Concept Explanation
 Garbage Collection is like a **Janitorial Staff in a Hotel**.
 **Analogy:** 
 - **Young Generation (The Lobby):** Guests (objects) arrive and leave quickly. The janitors (Scavenger GC) clean the lobby every few minutes because most people don't stay long.
@@ -9,20 +10,34 @@ Garbage Collection is like a **Janitorial Staff in a Hotel**.
 
 ---
 
-## 🏗️ Mental Model
+### 🏗️ Mental Model
 V8 uses a **Generational Garbage Collector**. It assumes that "most objects die young."
 1.  **New Space (Young Generation):** Where new objects are allocated. Small (usually 1MB-64MB) and very fast to clean.
 2.  **Old Space (Old Generation):** Where long-lived objects are moved. Large and more expensive to clean.
 
 ---
 
-## ⚡ Actual Behavior
+## Why
+### 🏢 Best Practices
+1.  **Don't create global variables:** They are roots and will never be collected.
+2.  **Nullify references:** If you have a large object you no longer need, set it to `null`.
+3.  **Use Streams:** To avoid loading huge datasets into the heap in the first place.
+
+---
+
+### ⚖️ Trade-offs
+*   **Generational GC:** Very efficient for most JS patterns but adds complexity (write barriers) and uses more memory (semi-space) than simpler collectors.
+
+---
+
+## How
+### ⚡ Actual Behavior
 *   **Stop-the-world:** Historically, GC stopped everything. Modern V8 uses **Parallel**, **Incremental**, and **Concurrent** marking to avoid pausing the main thread for more than a few milliseconds.
 *   **Weak Generational Hypothesis:** Objects that survive two "Scavenge" cycles are "promoted" to the Old Space.
 
 ---
 
-## 🔬 Internal Mechanics (V8 + libuv + OS)
+### 🔬 Internal Mechanics (V8 + libuv + OS)
 *   **Scavenge (Minor GC):** Uses "Semi-space" allocation. It copies live objects from one half of the New Space to the other, then clears the first half.
 *   **Mark-Sweep-Compact (Major GC):** 
     1.  **Marking:** Traverse the heap from "roots" (global variables) to find all reachable objects.
@@ -32,7 +47,7 @@ V8 uses a **Generational Garbage Collector**. It assumes that "most objects die 
 
 ---
 
-## 🔁 Execution Flow
+### 🔁 Execution Flow
 1.  App creates a new object. It goes into the "From-Space" of the New Generation.
 2.  New Generation fills up.
 3.  **Scavenge Cycle:** Live objects are copied to "To-Space".
@@ -42,26 +57,7 @@ V8 uses a **Generational Garbage Collector**. It assumes that "most objects die 
 
 ---
 
-## 🧠 Resource Behavior
-*   **CPU:** GC spikes CPU usage. Frequent GCs (GC Thrashing) can drop throughput significantly.
-*   **Memory:** V8's heap limit (e.g., 4GB) is the hard ceiling. If the Old Space is full and Major GC can't free enough, you get an `Out of Memory` crash.
-
----
-
-## 📐 ASCII Diagrams
-```text
-NEW SPACE (Semi-Space)            OLD SPACE
-+------------+------------+      +--------------------------+
-| FROM-SPACE |  TO-SPACE  |      |                          |
-| [X][Y][ ]  | [ ][ ][ ]  |      | [ LONG-LIVED OBJECTS ]   |
-+------------+------------+      |                          |
-      |             |            +--------------------------+
-      +-- (Copy) ---+ promotion ----^
-```
-
----
-
-## 🔍 Code Example (Latest Node.js - Forcing GC for Testing)
+### 🔍 Code Example (Latest Node.js - Forcing GC for Testing)
 ```javascript
 // Run with: node --expose-gc script.js
 import { inspect } from 'node:util';
@@ -89,45 +85,25 @@ if (global.gc) {
 
 ---
 
-## 💥 Production Failures
+## Impact
+### 💥 Production Failures
 *   **Memory Leaks:** Keeping references to objects in a global array or closure, preventing the "Marking" phase from ever identifying them as garbage.
 *   **Large Object Space (LOS):** Massive objects (like huge strings or buffers) go directly to a special space that is only cleaned during Major GC, causing performance issues.
 
 ---
 
-## 🧪 Real-time Scenarios
+### 🧪 Real-time Scenarios
 *   **High-Volume APIs:** Thousands of short-lived objects (request/response metadata) are handled efficiently by the New Space Scavenger.
 *   **Long-lived Caches:** In-memory caches reside in the Old Space and can cause slow "Stop-the-world" pauses if they grow too large.
 
 ---
 
-## ⚠️ Edge Cases
+### ⚠️ Edge Cases
 *   **Closures:** A closure can keep a large parent scope alive in memory even if it only needs one tiny variable.
 *   **Hidden Classes:** If you have millions of objects with different shapes, V8's metadata for those hidden classes can consume significant memory.
 
 ---
 
-## 🏢 Best Practices
-1.  **Don't create global variables:** They are roots and will never be collected.
-2.  **Nullify references:** If you have a large object you no longer need, set it to `null`.
-3.  **Use Streams:** To avoid loading huge datasets into the heap in the first place.
-
 ---
 
-## ⚖️ Trade-offs
-*   **Generational GC:** Very efficient for most JS patterns but adds complexity (write barriers) and uses more memory (semi-space) than simpler collectors.
-
----
-
-## 💼 Interview Q&A
-*   **Q:** What is the "Scavenge" cycle in V8?
-*   **A:** It's a fast GC process that manages the New Space by copying live objects between two halves of the memory and clearing the unused half.
-
----
-
-## 🧩 Practice Problems
-1.  Use the `--trace-gc` flag to observe the frequency of Scavenge vs Mark-Sweep cycles in a running application.
-2.  Create a scenario where a closure causes a memory leak and find it using a heap snapshot.
-
----
 Prev: [02_Libuv_and_Threadpool.md](./02_Libuv_and_Threadpool.md) | Index: [NodeJS/00_Index.md](../00_Index.md) | Next: [04_Event_Loop_Phases.md](./04_Event_Loop_Phases.md)

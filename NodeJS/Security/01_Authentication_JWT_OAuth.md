@@ -1,6 +1,7 @@
 # 📌 Topic: Authentication (JWT & OAuth)
 
-## 🧠 Concept Explanation
+## What
+### 🧠 Concept Explanation
 Authentication is the process of verifying that a user is who they claim to be. In high-performance Node.js systems, we prioritize "Stateless Authentication" using JSON Web Tokens (JWT) to ensure our API can scale to millions of users without being bogged down by session database lookups.
 
 **The Airport Security Analogy (Deep Dive):**
@@ -16,7 +17,7 @@ Imagine you are traveling through an international airport (Your Application).
 
 ---
 
-## 🏗️ Mental Model
+### 🏗️ Mental Model
 Think of Authentication as **Cryptographic Trust**.
 1.  **Identity is Expensive:** Checking a database for a password involves disk I/O and expensive hashing (Bcrypt). We only want to do this *once*.
 2.  **Tokens are Cheap:** Verifying a digital signature involves pure math. It happens in memory and is thousands of times faster than a database query.
@@ -25,7 +26,23 @@ Think of Authentication as **Cryptographic Trust**.
 
 ---
 
-## ⚡ Actual Behavior
+## Why
+### 🏢 Best Practices
+1.  **Never put secrets in Payload:** Anyone can decode a JWT; it is not encrypted, only signed.
+2.  **Short Expiration:** Set access tokens to 15-60 minutes.
+3.  **Use Refresh Tokens:** Store them in a database so you can revoke them if needed.
+4.  **Rotate Secrets:** Regularly change your `JWT_SECRET`.
+
+---
+
+### ⚖️ Trade-offs
+*   **JWT:** Stateless (scales easily), but hard to revoke and can become large if you put too much data in it.
+*   **Sessions:** Full control (easy to logout), but requires a database/Redis lookup for every single request.
+
+---
+
+## How
+### ⚡ Actual Behavior
 In a Node.js production environment:
 1.  **The Handshake:** The user sends credentials over HTTPS. HTTPS is critical; without it, the JWT can be "sniffed" from the air.
 2.  **Hashing:** Node.js uses `bcrypt` or `argon2` to check the password. These are deliberately slow (e.g., 100ms per check) to prevent brute-force attacks.
@@ -35,7 +52,7 @@ In a Node.js production environment:
 
 ---
 
-## 🔬 Internal Mechanics (V8 + libuv + OS)
+### 🔬 Internal Mechanics (V8 + libuv + OS)
 *   **OpenSSL Integration:** Token signing (HMAC, RSA, ECDSA) is not done in JavaScript. It is offloaded to the C++ OpenSSL library via Node.js bindings. This ensures the CPU-heavy math doesn't block the Event Loop.
 *   **Symmetric (HS256) vs. Asymmetric (RS256):**
     *   **HS256:** Uses one secret key for both signing and verifying. Fast, but if the secret leaks, the whole system is compromised.
@@ -47,7 +64,7 @@ In a Node.js production environment:
 
 ---
 
-## 🔁 Execution Flow (JWT)
+### 🔁 Execution Flow (JWT)
 1.  User sends `POST /login` with credentials.
 2.  Server verifies credentials against the DB.
 3.  Server creates a payload: `{ uid: 123, role: 'admin', exp: 1714545600 }`.
@@ -58,25 +75,7 @@ In a Node.js production environment:
 
 ---
 
-## 🧠 Resource Behavior
-*   **CPU:** Verifying a JWT is much faster than a DB lookup but still requires CPU cycles for hashing.
-*   **Memory:** No server-side memory is used for stateless JWTs, making them ideal for scaling.
-
----
-
-## 📐 ASCII Diagrams
-```text
-JWT STRUCTURE:
-[ HEADER ] . [ PAYLOAD ] . [ SIGNATURE ]
-   |            |             |
-   |            |             +-> HMACSHA256(Base64(H) + "." + Base64(P), SECRET)
-   |            +-> { "id": 1, "name": "Antigravity" }
-   +-> { "alg": "HS256", "typ": "JWT" }
-```
-
----
-
-## 🔍 Code Example (Latest Node.js - signing a JWT)
+### 🔍 Code Example (Latest Node.js - signing a JWT)
 ```javascript
 import jwt from 'jsonwebtoken';
 
@@ -107,48 +106,26 @@ const authMiddleware = (req, res, next) => {
 
 ---
 
-## 💥 Production Failures
+## Impact
+### 💥 Production Failures
 *   **Storing JWTs in LocalStorage:** This makes them vulnerable to XSS. If a malicious script runs on your page, it can steal the token. (Solution: Use `HttpOnly` cookies).
 *   **No Revocation Strategy:** If a user is fired, their JWT is still valid until it expires. (Solution: Use a "Blacklist" in Redis or short-lived Access Tokens with long-lived Refresh Tokens).
 *   **Secret Leak:** If your `JWT_SECRET` is leaked, anyone can create an "Admin" token for your site.
 
 ---
 
-## 🧪 Real-time Scenarios
+### 🧪 Real-time Scenarios
 *   **Microservices:** The API Gateway validates the JWT once and passes the user ID to internal services, avoiding 10 different DB lookups for the same user.
 *   **SSO (Single Sign-On):** One token that works across multiple subdomains (e.g., `mail.google.com` and `drive.google.com`).
 
 ---
 
-## ⚠️ Edge Cases
+### ⚠️ Edge Cases
 *   **Clock Skew:** If the server's clock is 5 minutes behind the client's, the token might look "not yet valid." (Solution: Use `iat` and a small grace period).
 *   **Algorithm "none" Attack:** Some old libraries allowed a header with `"alg": "none"`, causing them to skip signature verification entirely. Always use a library that enforces an algorithm.
 
 ---
 
-## 🏢 Best Practices
-1.  **Never put secrets in Payload:** Anyone can decode a JWT; it is not encrypted, only signed.
-2.  **Short Expiration:** Set access tokens to 15-60 minutes.
-3.  **Use Refresh Tokens:** Store them in a database so you can revoke them if needed.
-4.  **Rotate Secrets:** Regularly change your `JWT_SECRET`.
-
 ---
 
-## ⚖️ Trade-offs
-*   **JWT:** Stateless (scales easily), but hard to revoke and can become large if you put too much data in it.
-*   **Sessions:** Full control (easy to logout), but requires a database/Redis lookup for every single request.
-
----
-
-## 💼 Interview Q&A
-*   **Q:** Is a JWT encrypted?
-*   **A:** No, it's typically only Base64 encoded and signed. Anyone can see the contents. To hide data, you would need JWE (JSON Web Encryption).
-
----
-
-## 🧩 Practice Problems
-1.  Go to `jwt.io`, paste your generated token, and see how easy it is to read the payload.
-2.  Implement a "Refresh Token" flow where the client gets a new Access Token without logging in again.
-
----
 Prev: [../Architecture/06_API_Gateway.md](../Architecture/06_API_Gateway.md) | Index: [NodeJS/00_Index.md](../00_Index.md) | Next: [02_Authorization.md](./02_Authorization.md)

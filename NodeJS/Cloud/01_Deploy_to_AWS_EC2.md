@@ -1,6 +1,7 @@
 # 📌 Topic: Deploying Node.js to AWS EC2
 
-## 🧠 Concept Explanation
+## What
+### 🧠 Concept Explanation
 Deploying to AWS EC2 (Elastic Compute Cloud) is the process of hosting your Node.js application on a virtual server in the Amazon cloud. It is the most "Raw" way to host in the cloud, giving you total control over the operating system, memory, and CPU.
 
 **The Empty Apartment Analogy (Deep Dive):**
@@ -14,7 +15,7 @@ Imagine you are moving to a new city (The Cloud).
 
 ---
 
-## 🏗️ Mental Model
+### 🏗️ Mental Model
 Think of EC2 as **Provisioning Virtual Hardware**.
 1.  **The Instance (The Hardware):** Choosing the CPU/RAM combo (e.g., `t3.medium`).
 2.  **The AMI (The Brain):** Choosing the OS (Ubuntu, Amazon Linux).
@@ -23,7 +24,23 @@ Think of EC2 as **Provisioning Virtual Hardware**.
 
 ---
 
-## ⚡ Actual Behavior
+## Why
+### 🏢 Best Practices
+1.  **Use an Elastic Load Balancer (ELB):** Even for one instance. It handles SSL termination and makes scaling easier later.
+2.  **Use Amazon Linux 2023:** It is optimized for AWS and has better security defaults.
+3.  **Infrastructure as Code (IaC):** Use Terraform or CloudFormation instead of clicking buttons in the AWS Console.
+4.  **Use Private Subnets:** Put your EC2 in a private subnet and only allow access through a Load Balancer or Bastion host.
+
+---
+
+### ⚖️ Trade-offs
+*   **EC2:** Maximum control, cheap for steady load, but high management overhead (patches, security, scaling).
+*   **Lambda (Serverless):** Zero management, scales to infinity, but "Cold Starts" and can be expensive for high-traffic steady loads.
+
+---
+
+## How
+### ⚡ Actual Behavior
 When you deploy a Node.js app to EC2:
 1.  **The SSH Tunnel:** You log in via a secure terminal. This is the only way to "talk" to the server's OS.
 2.  **Process Persistence:** If you run `node app.js`, the app will die as soon as you close your terminal. You must use a "Process Manager" like **PM2**. PM2 acts as a 24/7 supervisor—if the app crashes, PM2 catches it and restarts it in milliseconds.
@@ -32,7 +49,7 @@ When you deploy a Node.js app to EC2:
 
 ---
 
-## 🔬 Internal Mechanics (V8 + libuv + OS)
+### 🔬 Internal Mechanics (V8 + libuv + OS)
 *   **The Hypervisor (Nitro System):** Your "Server" isn't real. It's a slice of a much larger physical machine. AWS uses the Nitro Hypervisor to ensure that your Node.js process doesn't "leak" into another customer's space. This introduces a tiny amount of "Context Switching" overhead that you wouldn't see on a bare-metal server.
 *   **EBS (Networked Storage):** On EC2, your "Hard Drive" is actually a separate server connected via a high-speed cable. When Node.js performs a `fs.readFile()`, the data travels over a specialized storage network. This means disk I/O is often slower than RAM but much more reliable (it survives if the EC2 instance crashes).
 *   **The Linux Kernel and PM2:** PM2 uses the Linux `fork()` or `spawn()` system calls to create "Worker" processes. If you use PM2's "Cluster Mode," it uses the Node.js `cluster` module to distribute incoming TCP connections across all your CPU cores, bypassing the single-thread limit of V8.
@@ -41,7 +58,7 @@ When you deploy a Node.js app to EC2:
 
 ---
 
-## 🔁 Execution Flow (Manual Deployment)
+### 🔁 Execution Flow (Manual Deployment)
 1.  Launch EC2 instance via AWS Console.
 2.  Connect via SSH: `ssh -i key.pem ubuntu@1.2.3.4`.
 3.  Update system: `sudo apt update && sudo apt upgrade`.
@@ -53,23 +70,7 @@ When you deploy a Node.js app to EC2:
 
 ---
 
-## 🧠 Resource Behavior
-*   **Instance Types:** `t3.micro` (Burstable CPU, 1GB RAM) is good for small apps. `c5.large` (Compute Optimized) is better for high-traffic Node.js APIs.
-*   **Disk:** AWS EBS (Elastic Block Store) provides persistent storage that is separate from the CPU.
-
----
-
-## 📐 ASCII Diagrams
-```text
-[ USER ] --(HTTPS:443)--> [ SECURITY GROUP ] --(Port 3000)--> [ EC2 INSTANCE ]
-                                                                     |
-                                                               [ PM2 PROCESS ]
-                                                               [ NODE.JS APP ]
-```
-
----
-
-## 🔍 Code Example (Latest Node.js - Using PM2 for Production)
+### 🔍 Code Example (Latest Node.js - Using PM2 for Production)
 ```bash
 # Install PM2 globally
 npm install -g pm2
@@ -88,48 +89,26 @@ pm2 monit
 
 ---
 
-## 💥 Production Failures
+## Impact
+### 💥 Production Failures
 *   **Forgetting to open Port 80:** Your app is running perfectly, but you can't see it in the browser because the Security Group is blocking traffic.
 *   **Running as Root:** Running your Node app with `sudo`. If an attacker finds an RCE (Remote Code Execution) bug, they have full control over your entire server. (Solution: Use a non-privileged user).
 *   **Disk Full with Logs:** PM2 logs grow forever and fill the disk. (Solution: Use `pm2-logrotate`).
 
 ---
 
-## 🧪 Real-time Scenarios
+### 🧪 Real-time Scenarios
 *   **Single-Server MVP:** Getting a startup idea live in 10 minutes for $5/month.
 *   **Legacy App Hosting:** Moving an old application that isn't Dockerized yet into the cloud.
 
 ---
 
-## ⚠️ Edge Cases
+### ⚠️ Edge Cases
 *   **Instance Retirement:** Sometimes AWS needs to fix the underlying hardware and will force your instance to stop/restart. (Solution: Use an Auto-Scaling Group).
 *   **In-Memory Storage:** If you save files to the EC2's local disk and the instance is terminated, those files are lost.
 
 ---
 
-## 🏢 Best Practices
-1.  **Use an Elastic Load Balancer (ELB):** Even for one instance. It handles SSL termination and makes scaling easier later.
-2.  **Use Amazon Linux 2023:** It is optimized for AWS and has better security defaults.
-3.  **Infrastructure as Code (IaC):** Use Terraform or CloudFormation instead of clicking buttons in the AWS Console.
-4.  **Use Private Subnets:** Put your EC2 in a private subnet and only allow access through a Load Balancer or Bastion host.
-
 ---
 
-## ⚖️ Trade-offs
-*   **EC2:** Maximum control, cheap for steady load, but high management overhead (patches, security, scaling).
-*   **Lambda (Serverless):** Zero management, scales to infinity, but "Cold Starts" and can be expensive for high-traffic steady loads.
-
----
-
-## 💼 Interview Q&A
-*   **Q:** What is a "Security Group" in AWS?
-*   **A:** It acts as a virtual firewall for your EC2 instances to control incoming and outgoing traffic.
-
----
-
-## 🧩 Practice Problems
-1.  Launch a `t3.micro` instance and set up a Node.js server that is accessible via its Public IP.
-2.  Write a simple `ecosystem.config.js` for PM2 that includes environment variables for `production`.
-
----
 Prev: [../CI_CD/04_Deployment_Strategies.md](../CI_CD/04_Deployment_Strategies.md) | Index: [NodeJS/00_Index.md](../00_Index.md) | Next: [02_Serverless_Lambda.md](./02_Serverless_Lambda.md)

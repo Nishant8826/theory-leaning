@@ -1,6 +1,7 @@
 # 📌 Topic: JavaScript Execution Model in Node.js
 
-## 🧠 Concept Explanation
+## What
+### 🧠 Concept Explanation
 To understand how JavaScript runs in Node.js, you must visualize a **Single-Threaded Execution** environment. 
 
 **The Single-Lane Bridge Analogy:**
@@ -13,7 +14,22 @@ In essence, Node.js uses a **Single-Threaded Event Loop** model. This means whil
 
 ---
 
-## ⚡ Actual Behavior
+## Why
+### 🏢 Best Practices
+1.  **Chunk Large Tasks:** Break long loops into smaller chunks using `setImmediate()` to allow the event loop to breathe.
+2.  **Avoid Deep Recursion:** Use iterative approaches for large data sets.
+3.  **Profile Often:** Use the `--inspect` flag to see the stack trace in real-time.
+
+---
+
+### ⚖️ Trade-offs
+*   **Pros:** Simplicity (no deadlocks, no race conditions on variables).
+*   **Cons:** Cannot utilize multi-core CPUs for a single execution thread without Workers.
+
+---
+
+## How
+### ⚡ Actual Behavior
 When Node.js executes your script, it creates an **Execution Context**. This is a sophisticated environment that tracks variables and the flow of control.
 
 1.  **Global Execution Context (GEC):** Before any code runs, a Global context is created. This is the "parent" environment where your top-level code lives.
@@ -25,7 +41,7 @@ When Node.js executes your script, it creates an **Execution Context**. This is 
 
 ---
 
-## 🔬 Internal Mechanics (V8 + libuv + OS)
+### 🔬 Internal Mechanics (V8 + libuv + OS)
 *   **Stack Frames:** Each time a function is pushed onto the Call Stack, a "Frame" is created. This frame contains the function's arguments, local variables, and a pointer to where the code should return after completion.
 *   **Memory Management (The Heap):** While the Stack is organized and fast, the Heap is vast and unstructured. When you create a large object or an array, the *reference* (the address) is stored on the Stack, but the *actual data* is stored in the Heap.
 *   **Context Hoisting:** During the creation phase of an Execution Context, Node.js performs "Hoisting." It scans the code and allocates memory for variable and function declarations before the code even runs. This is why you can sometimes call a function before it's defined in the file.
@@ -33,7 +49,7 @@ When Node.js executes your script, it creates an **Execution Context**. This is 
 
 ---
 
-## 🔁 Execution Flow
+### 🔁 Execution Flow
 ```js
 function greet(name) {
     return `Hello ${name}`;
@@ -55,29 +71,7 @@ start();
 
 ---
 
-## 🧠 Resource Behavior
-*   **CPU:** Execution happens linearly on one core.
-*   **Memory:** The stack size is limited (usually ~1MB). Deep recursion leads to `RangeError: Maximum call stack size exceeded`.
-*   **Memory Leak:** Objects in the Heap that are still referenced but no longer needed prevent GC from freeing space.
-
----
-
-## 📐 ASCII Diagrams
-```text
-+------------------------+      +--------------------------+
-|       CALL STACK       |      |           HEAP           |
-+------------------------+      +--------------------------+
-|  greet("Antigravity")  | ---> | { name: "Antigravity" }  |
-+------------------------+      | (Objects, Closures, etc.)|
-|        start()         |      |                          |
-+------------------------+      |                          |
-|    Global Context      |      |                          |
-+------------------------+      +--------------------------+
-```
-
----
-
-## 🔍 Code Example (Latest Node.js)
+### 🔍 Code Example (Latest Node.js)
 ```javascript
 // Demonstrating the difference between synchronous blocking and async delegation
 import { performance } from 'node:perf_hooks';
@@ -103,46 +97,25 @@ Heavy Task Done
 
 ---
 
-## 💥 Production Failures
+## Impact
+### 💥 Production Failures
 *   **Recursion Bombs:** Unbounded recursive calls (e.g., traversing a massive tree structure) crashing the process.
 *   **Synchronous Loops:** Processing a 1 million item array with `forEach` while trying to serve HTTP requests. The HTTP requests will timeout.
 
 ---
 
-## 🧪 Real-time Scenarios
+### 🧪 Real-time Scenarios
 *   **JSON Parsing:** Parsing a 50MB JSON string with `JSON.parse()` is synchronous and will block the thread, causing "Event Loop Lag."
 *   **Data Transformation:** Complex mapping of database results before sending to the client.
 
 ---
 
-## ⚠️ Edge Cases
+### ⚠️ Edge Cases
 *   **Tail Call Optimization (TCO):** Although part of the ES6 spec, V8 largely does not implement it for stability reasons, so recursion is always risky.
 *   **Microtask Starvation:** If a Promise continuously resolves another Promise, the Call Stack might never empty, starving the I/O tasks.
 
 ---
 
-## 🏢 Best Practices
-1.  **Chunk Large Tasks:** Break long loops into smaller chunks using `setImmediate()` to allow the event loop to breathe.
-2.  **Avoid Deep Recursion:** Use iterative approaches for large data sets.
-3.  **Profile Often:** Use the `--inspect` flag to see the stack trace in real-time.
-
 ---
 
-## ⚖️ Trade-offs
-*   **Pros:** Simplicity (no deadlocks, no race conditions on variables).
-*   **Cons:** Cannot utilize multi-core CPUs for a single execution thread without Workers.
-
----
-
-## 💼 Interview Q&A
-*   **Q:** What happens if the Call Stack overflows?
-*   **A:** Node.js throws a `RangeError` and, depending on the error handling, might terminate the process to prevent memory corruption.
-
----
-
-## 🧩 Practice Problems
-1.  Implement a recursive Fibonacci function and find the input value that causes a Stack Overflow.
-2.  Rewrite the same function using an iterative approach and compare memory usage.
-
----
 Prev: [01_What_is_NodeJS_Runtime.md](./01_What_is_NodeJS_Runtime.md) | Index: [NodeJS/00_Index.md](../00_Index.md) | Next: [03_Event_Loop_Basics.md](./03_Event_Loop_Basics.md)

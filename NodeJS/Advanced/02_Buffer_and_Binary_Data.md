@@ -1,6 +1,7 @@
 # 📌 Topic: Buffer and Binary Data
 
-## 🧠 Concept Explanation
+## What
+### 🧠 Concept Explanation
 In the browser, JavaScript developers mostly deal with strings and objects. But in the server-world (Node.js), we must handle raw binary data: TCP streams, file system reads, and image processing. Standard JavaScript strings are UTF-16 encoded, which is too "heavy" and inflexible for raw bytes. This is where **Buffers** come in.
 
 **The Cargo Container Analogy (Deep Dive):**
@@ -13,7 +14,7 @@ Imagine you are managing a busy shipping port.
 
 ---
 
-## 🏗️ Mental Model
+### 🏗️ Mental Model
 Think of a Buffer as an **Array of Integers**, where each integer represents exactly one byte (8 bits) of memory.
 *   **Range:** Each slot in a Buffer can only hold a value from `0` to `255` (0x00 to 0xFF).
 *   **Static Allocation:** Unlike a JS Array, which can grow dynamically, a Buffer's size is set at the moment of creation and can never change.
@@ -21,7 +22,22 @@ Think of a Buffer as an **Array of Integers**, where each integer represents exa
 
 ---
 
-## ⚡ Actual Behavior
+## Why
+### 🏢 Best Practices
+1.  **Prefer `Buffer.alloc()`:** Unless you have a extreme performance need and know exactly what you are doing.
+2.  **Use `subarray()` instead of `slice()`:** It's clearer that it's a view of the same memory.
+3.  **Specify Encoding:** Always be explicit: `buf.toString('utf-8')`.
+
+---
+
+### ⚖️ Trade-offs
+*   **Buffer:** Fast, raw, handles any data.
+*   **String:** Easy to use, limited to text, slow for large data manipulations.
+
+---
+
+## How
+### ⚡ Actual Behavior
 When you work with Buffers in Node.js:
 1.  **Direct Manipulation:** You are editing bits and bytes directly. If you change a byte in a Buffer, you are changing the underlying RAM instantly.
 2.  **No Encoding by Default:** A Buffer is "dumb." It doesn't know it's a string. When you do `buf.toString()`, you are asking Node.js to *interpret* those raw bytes as characters using a specific rule (like UTF-8).
@@ -29,7 +45,7 @@ When you work with Buffers in Node.js:
 
 ---
 
-## 🔬 Internal Mechanics (V8 + libuv + OS)
+### 🔬 Internal Mechanics (V8 + libuv + OS)
 *   **The Memory Pool:** To avoid the high cost of asking the OS for memory every time you need a tiny 10-byte buffer, Node.js pre-allocates a massive **8KB "Pool."** When you create a small Buffer, Node just gives you a "slice" of this pre-warmed pool. This is why `Buffer.allocUnsafe` is so fast.
 *   **Typed Arrays:** Modern Buffers (since Node.js 4+) are actually built on top of V8's `Uint8Array`. This means they share the same underlying memory architecture as WebGL and other browser-based binary tools.
 *   **Memory Fragmentation:** Because Buffers stay in memory until the JS object is GC'd, creating thousands of small buffers from one large pool can sometimes lead to "memory fragmentation," where a large pool stays in memory because one tiny 1-byte slice is still being used by your code.
@@ -37,7 +53,7 @@ When you work with Buffers in Node.js:
 
 ---
 
-## 🔁 Execution Flow
+### 🔁 Execution Flow
 1.  `Buffer.alloc(10)` calls C++ to reserve 10 bytes of memory.
 2.  Memory is zero-filled (for safety).
 3.  A JS object is created that points to this memory address.
@@ -45,24 +61,7 @@ When you work with Buffers in Node.js:
 
 ---
 
-## 🧠 Resource Behavior
-*   **Memory:** Allocated outside the V8 Heap. This is why you can sometimes use more memory than your `--max-old-space-size` limit allows if you use many buffers.
-*   **GC:** When the JS `Buffer` object is garbage collected, the underlying C++ memory is freed.
-
----
-
-## 📐 ASCII Diagrams
-```text
-V8 HEAP (Managed)           EXTERNAL MEMORY (Unmanaged/Raw)
-+-------------------+       +-----------------------------+
-| Buffer Object     | ----> | [ 0x48 | 0x65 | 0x6C | 0x6C ]|
-| (Size, Pointer)   |       | (Raw Bytes: "Hell")         |
-+-------------------+       +-----------------------------+
-```
-
----
-
-## 🔍 Code Example (Latest Node.js)
+### 🔍 Code Example (Latest Node.js)
 ```javascript
 // Allocation
 const buf = Buffer.alloc(10); // Safe, zero-filled
@@ -81,46 +80,25 @@ console.log(buf.toString()); // "World" (Original changed!)
 
 ---
 
-## 💥 Production Failures
+## Impact
+### 💥 Production Failures
 *   **Memory Leak via Slicing:** In older Node versions, `.slice()` would keep a reference to the *entire* original buffer's memory. If you sliced 10 bytes from a 1GB buffer, that 1GB would stay in memory. (Fixed in newer versions with `Uint8Array` logic, but still a risk if not careful).
 *   **allocUnsafe Data Leak:** Using `allocUnsafe` and sending it to a user without filling it first can leak sensitive data (like passwords) from previously deleted buffers.
 
 ---
 
-## 🧪 Real-time Scenarios
+### 🧪 Real-time Scenarios
 *   **Image Processing:** Resizing an image involves reading raw pixels as bytes into a Buffer.
 *   **Cryptography:** Hashing a password or encrypting a file always uses Buffers to ensure no data is lost during encoding.
 
 ---
 
-## ⚠️ Edge Cases
+### ⚠️ Edge Cases
 *   **Buffer vs String Length:** `Buffer.from('🚀').length` is 4. `'🚀'.length` is 2. Always use Buffer length for network headers like `Content-Length`.
 *   **Maximum Size:** Buffers have a limit (usually ~4GB on 64-bit systems).
 
 ---
 
-## 🏢 Best Practices
-1.  **Prefer `Buffer.alloc()`:** Unless you have a extreme performance need and know exactly what you are doing.
-2.  **Use `subarray()` instead of `slice()`:** It's clearer that it's a view of the same memory.
-3.  **Specify Encoding:** Always be explicit: `buf.toString('utf-8')`.
-
 ---
 
-## ⚖️ Trade-offs
-*   **Buffer:** Fast, raw, handles any data.
-*   **String:** Easy to use, limited to text, slow for large data manipulations.
-
----
-
-## 💼 Interview Q&A
-*   **Q:** Why is `Buffer` allocated outside the V8 heap?
-*   **A:** To allow for larger memory allocations and to prevent binary data from slowing down the Garbage Collector.
-
----
-
-## 🧩 Practice Problems
-1.  Create a Buffer from the string "Node.js" and print its Hex and Base64 representations.
-2.  Write a script that reads a file as a Buffer and replaces every occurrence of the byte `0x20` (space) with `0x2D` (dash).
-
----
 Prev: [01_Streams_and_Backpressure.md](./01_Streams_and_Backpressure.md) | Index: [NodeJS/00_Index.md](../00_Index.md) | Next: [03_Clustering_and_Child_Processes.md](./03_Clustering_and_Child_Processes.md)

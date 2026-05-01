@@ -1,6 +1,7 @@
 # 📌 Topic: Error Handling Strategies
 
-## 🧠 Concept Explanation
+## What
+### 🧠 Concept Explanation
 Error handling is not just about stopping crashes; it's about **managing the unexpected** so your application remains reliable and predictable. In a single-threaded environment like Node.js, an unhandled error is often fatal.
 
 **The Hospital Triage Analogy (Deep Dive):**
@@ -14,7 +15,7 @@ Imagine a busy Emergency Room.
 
 ---
 
-## 🏗️ Mental Model
+### 🏗️ Mental Model
 Think of error handling as a **Safety Net** system with multiple layers:
 1.  **The Local Net (Try/Catch):** Catching immediate, synchronous errors right where they happen.
 2.  **The Async Net (Promises):** Using `.catch()` or `await` with try/catch to catch errors that happen "later" in the event loop.
@@ -23,7 +24,22 @@ Think of error handling as a **Safety Net** system with multiple layers:
 
 ---
 
-## ⚡ Actual Behavior
+## Why
+### 🏢 Best Practices
+1.  **Distinguish Error Types:** Use `isOperational` to decide whether to crash the process or just send a 4xx/5xx.
+2.  **Use a Logger:** Don't just `console.log`; use Pino or Winston for structured logs.
+3.  **Shut Down Gracefully:** When crashing, stop accepting new connections and finish existing ones before calling `process.exit()`.
+
+---
+
+### ⚖️ Trade-offs
+*   **Centralized Handling:** Easy to maintain, but can become complex if handling many different types of errors in one place.
+*   **Local Handling:** Faster to write, but leads to duplicated code and inconsistent error responses.
+
+---
+
+## How
+### ⚡ Actual Behavior
 When an error occurs in Node.js:
 1.  **Throwing:** An `Error` object is created. At this exact moment, V8 "takes a snapshot" of the call stack.
 2.  **Bubbling:** The error "bubbles up" the call stack. It looks for the nearest `catch` block. 
@@ -32,7 +48,7 @@ When an error occurs in Node.js:
 
 ---
 
-## 🔬 Internal Mechanics (V8 + libuv + OS)
+### 🔬 Internal Mechanics (V8 + libuv + OS)
 *   **The V8 Stack Trace:** When you do `new Error()`, V8 executes a specialized C++ function to walk back through the current execution frames. It collects the function names, file names, and line numbers. This is why creating errors in a tight loop can actually slow down your CPU—stack walking is expensive!
 *   **Error.captureStackTrace:** This is a hidden V8 superpower. It allows you to create custom error classes that hide their own internal constructor from the stack trace, making your logs cleaner and easier to read.
 *   **Signal Handling:** When a process crashes or is told to stop, the OS sends **Signals** (like `SIGTERM` or `SIGINT`). A well-behaved Node.js app listens for these signals to perform "Graceful Shutdown"—finishing current database writes before the OS kills the process.
@@ -40,7 +56,7 @@ When an error occurs in Node.js:
 
 ---
 
-## 🔁 Execution Flow
+### 🔁 Execution Flow
 1.  Error occurs in a route handler.
 2.  Developer uses `try { ... } catch (err) { next(err); }`.
 3.  `next(err)` tells Express to find the error handler.
@@ -48,28 +64,7 @@ When an error occurs in Node.js:
 
 ---
 
-## 🧠 Resource Behavior
-*   **CPU:** Generating stack traces is a relatively expensive operation.
-*   **Memory:** Storing large numbers of error objects can lead to memory pressure if they are not garbage collected quickly.
-
----
-
-## 📐 ASCII Diagrams
-```text
-[ REQUEST ] --> [ ROUTE HANDLER (Error!) ]
-                       |
-                       v (next(err))
-          +----------------------------+
-          |  GLOBAL ERROR MIDDLEWARE   |
-          |  1. Log to CloudWatch      |
-          |  2. Clean sensitive info   |
-          |  3. Send 500 to User       |
-          +----------------------------+
-```
-
----
-
-## 🔍 Code Example (Latest Node.js)
+### 🔍 Code Example (Latest Node.js)
 ```javascript
 // Centralized Error Class
 class AppError extends Error {
@@ -99,19 +94,20 @@ app.use((err, req, res, next) => {
 
 ---
 
-## 💥 Production Failures
+## Impact
+### 💥 Production Failures
 *   **Swallowing Errors:** `catch(e) { }` - This makes debugging impossible because the error disappears without a trace.
 *   **Leaking Secrets:** Sending the full `err` object to the client might reveal database credentials or internal file paths in the stack trace.
 
 ---
 
-## 🧪 Real-time Scenarios
+### 🧪 Real-time Scenarios
 *   **Database Timeout:** Catching the timeout, logging a warning, and telling the user to "Try again in a minute."
 *   **Validation Failure:** Catching a schema error and returning a `400 Bad Request` with specific details about which field failed.
 
 ---
 
-## ⚠️ Edge Cases
+### ⚠️ Edge Cases
 *   **Uncaught Exception:** If an error happens outside a try/catch or middleware, use:
     ```javascript
     process.on('uncaughtException', (err) => {
@@ -123,28 +119,6 @@ app.use((err, req, res, next) => {
 
 ---
 
-## 🏢 Best Practices
-1.  **Distinguish Error Types:** Use `isOperational` to decide whether to crash the process or just send a 4xx/5xx.
-2.  **Use a Logger:** Don't just `console.log`; use Pino or Winston for structured logs.
-3.  **Shut Down Gracefully:** When crashing, stop accepting new connections and finish existing ones before calling `process.exit()`.
-
 ---
 
-## ⚖️ Trade-offs
-*   **Centralized Handling:** Easy to maintain, but can become complex if handling many different types of errors in one place.
-*   **Local Handling:** Faster to write, but leads to duplicated code and inconsistent error responses.
-
----
-
-## 💼 Interview Q&A
-*   **Q:** Why should you crash the process on an `uncaughtException`?
-*   **A:** Because the application state has become unpredictable. Continuing to run might lead to data corruption or security vulnerabilities.
-
----
-
-## 🧩 Practice Problems
-1.  Create a custom `ValidationError` class that inherits from `AppError` and handles multiple error messages.
-2.  Write a "wrapper" function for async routes that automatically catches errors and passes them to `next()`.
-
----
 Prev: [04_Middleware_Architecture.md](./04_Middleware_Architecture.md) | Index: [NodeJS/00_Index.md](../00_Index.md) | Next: [06_Configuration_Management.md](./06_Configuration_Management.md)

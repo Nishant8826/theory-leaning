@@ -1,6 +1,7 @@
 # 📌 Topic: Distributed Tracing
 
-## 🧠 Concept Explanation
+## What
+### 🧠 Concept Explanation
 Distributed Tracing is a method used to profile and monitor applications, especially those built using a microservices architecture. It allows you to see the "Full Story" of a request as it travels across different servers, databases, and third-party APIs.
 
 **The GPS Package Tracker Analogy (Deep Dive):**
@@ -13,7 +14,7 @@ Imagine you order a custom pizza from a chain that has separate locations for Do
 
 ---
 
-## 🏗️ Mental Model
+### 🏗️ Mental Model
 Think of a Trace as a **Tree of Spans**.
 *   **The Trace (The Tree):** The entire request/response lifecycle.
 *   **The Span (The Branch):** A single unit of work. Every database query is a span. Every outgoing HTTP call is a span. Even a heavy CPU function can be a span.
@@ -21,7 +22,22 @@ Think of a Trace as a **Tree of Spans**.
 
 ---
 
-## ⚡ Actual Behavior
+## Why
+### 🏢 Best Practices
+1.  **Use OpenTelemetry:** It is the industry standard and vendor-neutral.
+2.  **Instrument at the Boundaries:** Focus on HTTP calls, DB queries, and Message Queues.
+3.  **Add Metadata:** Add `userId`, `planType`, or `region` to spans as "Attributes" to help filter traces.
+4.  **Sampling Policy:** Start with 1% and increase it if you need more data.
+
+---
+
+### ⚖️ Trade-offs
+*   **Distributed Tracing:** Unbeatable for debugging microservices, but adds complexity and costs money/bandwidth to store the data.
+
+---
+
+## How
+### ⚡ Actual Behavior
 In a production Node.js environment:
 1.  **Incoming Request:** Your API Gateway receives a request. It checks for a `traceparent` header. If missing, it creates a new `TraceID`.
 2.  **Propagation:** As Node.js makes a call to the "User Service," the OpenTelemetry library automatically injects the `TraceID` into the outgoing HTTP headers.
@@ -30,7 +46,7 @@ In a production Node.js environment:
 
 ---
 
-## 🔬 Internal Mechanics (V8 + libuv + OS)
+### 🔬 Internal Mechanics (V8 + libuv + OS)
 *   **`AsyncLocalStorage` (The Magic):** This is the core Node.js API that makes tracing possible. It works like a "Thread-Local Storage" but for asynchronous callbacks. It allows you to store a `TraceID` at the start of a request and access it anywhere in the code—even 50 levels deep in nested promises—without ever passing it as a function argument.
 *   **Monkey Patching:** Most tracing libraries "Monkey Patch" (wrap) core Node.js modules like `http`, `https`, and `net`. When you call `http.get()`, you are actually calling a wrapped version that starts a span, attaches the Trace ID, and then calls the real `http.get()`.
 *   **Sampling Algorithms:** Tracing every single request is expensive. 
@@ -40,7 +56,7 @@ In a production Node.js environment:
 
 ---
 
-## 🔁 Execution Flow
+### 🔁 Execution Flow
 1.  **Gateway:** Receives a request. Generates `TraceID: 123`. Starts `Span: Gateway-Main`.
 2.  **Gateway:** Calls Order Service. Adds `traceparent: 123` to the headers.
 3.  **Order Service:** Receives request. Sees `TraceID: 123`. Starts `Span: Order-Process` as a child of `Gateway-Main`.
@@ -49,29 +65,7 @@ In a production Node.js environment:
 
 ---
 
-## 🧠 Resource Behavior
-*   **CPU:** Low to medium overhead for creating and managing spans.
-*   **Bandwidth:** Spans are sent over the network. High traffic + 100% sampling = High bandwidth cost.
-
----
-
-## 📐 ASCII Diagrams
-```text
-TRACE: Login Flow (123)
-[ Gateway-Main ] =======================================> (100ms)
-    |
-    +-- [ Auth-Service ] ==========> (40ms)
-    |       |
-    |       +-- [ LDAP-Query ] ==> (10ms)
-    |
-    +-- [ Profile-Service ] =======> (50ms)
-            |
-            +-- [ DB-Lookup ] ===> (20ms)
-```
-
----
-
-## 🔍 Code Example (Latest Node.js - OpenTelemetry)
+### 🔍 Code Example (Latest Node.js - OpenTelemetry)
 ```javascript
 // instrumentation.js
 import { NodeSDK } from '@opentelemetry/sdk-node';
@@ -89,46 +83,25 @@ sdk.start();
 
 ---
 
-## 💥 Production Failures
+## Impact
+### 💥 Production Failures
 *   **Broken Context:** Forgetting to pass the trace header to a background worker or a message queue, causing the trace to "die" and a new, unrelated trace to start in the next service.
 *   **Span Overload:** Creating a new span for every single variable assignment or small function, creating massive trace files that are impossible to read.
 
 ---
 
-## 🧪 Real-time Scenarios
+### 🧪 Real-time Scenarios
 *   **Identifying "The Slow Service":** A user says the site is slow. You look at their trace and see that the "Inventory Service" took 90% of the total time.
 *   **Debugging 500 Errors:** Seeing exactly which internal DB query failed in a chain of 10 microservice calls.
 
 ---
 
-## ⚠️ Edge Cases
+### ⚠️ Edge Cases
 *   **Clock Skew:** If Service A and Service B have different system times, the spans might look like they overlap or happen in the wrong order. (Solution: Use NTP to sync clocks).
 *   **Long-running spans:** If a span lasts 24 hours (e.g., a background job), it won't be visible in most tools until it finishes.
 
 ---
 
-## 🏢 Best Practices
-1.  **Use OpenTelemetry:** It is the industry standard and vendor-neutral.
-2.  **Instrument at the Boundaries:** Focus on HTTP calls, DB queries, and Message Queues.
-3.  **Add Metadata:** Add `userId`, `planType`, or `region` to spans as "Attributes" to help filter traces.
-4.  **Sampling Policy:** Start with 1% and increase it if you need more data.
-
 ---
 
-## ⚖️ Trade-offs
-*   **Distributed Tracing:** Unbeatable for debugging microservices, but adds complexity and costs money/bandwidth to store the data.
-
----
-
-## 💼 Interview Q&A
-*   **Q:** What is a "Span" in distributed tracing?
-*   **A:** A Span is the primary building block of a trace. It represents an individual unit of work done by a system, with a start time, duration, and metadata.
-
----
-
-## 🧩 Practice Problems
-1.  Run a local instance of **Jaeger** using Docker and send a manual span from a Node.js script.
-2.  Explain why `AsyncLocalStorage` is better than manually passing a `traceId` through every function argument.
-
----
 Prev: [02_Metrics_and_Monitoring.md](./02_Metrics_and_Monitoring.md) | Index: [NodeJS/00_Index.md](../00_Index.md) | Next: [04_Debugging_Production.md](./04_Debugging_Production.md)

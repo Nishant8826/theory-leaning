@@ -1,6 +1,7 @@
 # 📌 Topic: Load Testing
 
-## 🧠 Concept Explanation
+## What
+### 🧠 Concept Explanation
 Load Testing is the practice of simulating high levels of traffic to your application to understand how it behaves under pressure. It's about finding the "Breaking Point" before your users do.
 
 **The Bridge Stress-Test Analogy (Deep Dive):**
@@ -13,7 +14,7 @@ Imagine you have just built a new bridge over a river.
 
 ---
 
-## 🏗️ Mental Model
+### 🏗️ Mental Model
 Think of Load Testing as a **Dialogue between your App and its Resources**.
 *   **Requests Per Second (RPS):** How many "questions" can your app answer per second?
 *   **Latency Percentiles (The Tail):** Don't look at the average! 
@@ -23,7 +24,22 @@ Think of Load Testing as a **Dialogue between your App and its Resources**.
 
 ---
 
-## ⚡ Actual Behavior
+## Why
+### 🏢 Best Practices
+1.  **Monitor the Server:** Use `top` or `htop` on the server while the test is running.
+2.  **Test the Full Stack:** Don't just test a "Hello World" endpoint; test real flows (Login -> Search -> Purchase).
+3.  **Automate:** Run a small load test as part of your CI/CD pipeline to catch performance regressions.
+
+---
+
+### ⚖️ Trade-offs
+*   **Autocannon:** Very fast, easy to use, but limited to HTTP.
+*   **k6:** Scriptable in JS, handles multiple protocols (WebSockets, gRPC), gives beautiful reports, but more complex to set up.
+
+---
+
+## How
+### ⚡ Actual Behavior
 When you run a load test on Node.js:
 1.  **The JIT Warm-up:** For the first few thousand requests, V8 is "Learning." It's compiling JS into machine code. Your latency will be high and erratic. Once it's "Warm," latency drops and stabilizes.
 2.  **Event Loop Lag:** As concurrency increases, the Event Loop takes longer to finish a full rotation. You'll see "Lag" increase, meaning tasks are sitting in the queue longer before they even start.
@@ -32,7 +48,7 @@ When you run a load test on Node.js:
 
 ---
 
-## 🔬 Internal Mechanics (V8 + libuv + OS)
+### 🔬 Internal Mechanics (V8 + libuv + OS)
 *   **TCP Backlog (SOMAXCONN):** When a request arrives, it sits in a "Pending" queue in the OS kernel before Node.js calls `accept()`. If you send 10,000 requests in 1ms, this queue fills up instantly. Any further requests are "Dropped" by the OS, and the user gets a "Connection Refused" error without Node.js ever seeing the request.
 *   **V8 Scavenging:** High throughput means high object creation. You'll see the V8 "Scavenger" GC running every few milliseconds. This is normal, but if it takes too long, it will add "Jitter" to your P99 latency.
 *   **Context Switching:** If you have 1,000 concurrent "Users" in your test, the OS has to manage 1,000 different TCP sockets. The CPU spends a significant amount of its time just switching its focus from one socket to another. This "Management Overhead" is why a single process can eventually reach a limit even if the code is fast.
@@ -40,7 +56,7 @@ When you run a load test on Node.js:
 
 ---
 
-## 🔁 Execution Flow
+### 🔁 Execution Flow
 1.  **Baseline:** Measure app idling (CPU/RAM).
 2.  **Ramp-up:** Gradually increase concurrent users from 1 to 500.
 3.  **Peak:** Hold high load for 5-10 minutes.
@@ -49,28 +65,7 @@ When you run a load test on Node.js:
 
 ---
 
-## 🧠 Resource Behavior
-*   **CPU:** Usually hits 100% first in Node.js apps.
-*   **Memory:** Should stay stable. A steady climb indicates a leak.
-*   **Disk:** High if you are logging every request during the test.
-
----
-
-## 📐 ASCII Diagrams
-```text
-PERFORMANCE CURVE
-Latency
-  ^         / (Breaking Point / Knee)
-  |        /
-  |       /
-  | _____/
-  +------------> RPS
-     (Linear)
-```
-
----
-
-## 🔍 Code Example (Latest Node.js - Using Autocannon)
+### 🔍 Code Example (Latest Node.js - Using Autocannon)
 ```bash
 # Install
 npm install -g autocannon
@@ -86,46 +81,25 @@ autocannon -c 100 -d 10 http://localhost:3000
 
 ---
 
-## 💥 Production Failures
+## Impact
+### 💥 Production Failures
 *   **Testing against Production:** Running a load test against your live site and accidentally taking it down for real users. (Solution: Use a Staging environment).
 *   **Ignoring the Network:** Testing from your laptop to a server across the country. Your results will measure the internet's speed, not your server's speed. (Solution: Run the test from the same data center).
 
 ---
 
-## 🧪 Real-time Scenarios
+### 🧪 Real-time Scenarios
 *   **Black Friday Sale:** Simulating 10x normal traffic to ensure the checkout service can handle the spike.
 *   **New Feature Launch:** Checking if a new complex query slows down the whole API.
 
 ---
 
-## ⚠️ Edge Cases
+### ⚠️ Edge Cases
 *   **Statelessness:** If your app uses sessions, the load tester must support "Cookie Persistence," otherwise every request will look like a new user.
 *   **Caching:** If you test the same URL over and over, you are just testing your cache. Use randomized parameters to test the real DB logic.
 
 ---
 
-## 🏢 Best Practices
-1.  **Monitor the Server:** Use `top` or `htop` on the server while the test is running.
-2.  **Test the Full Stack:** Don't just test a "Hello World" endpoint; test real flows (Login -> Search -> Purchase).
-3.  **Automate:** Run a small load test as part of your CI/CD pipeline to catch performance regressions.
-
 ---
 
-## ⚖️ Trade-offs
-*   **Autocannon:** Very fast, easy to use, but limited to HTTP.
-*   **k6:** Scriptable in JS, handles multiple protocols (WebSockets, gRPC), gives beautiful reports, but more complex to set up.
-
----
-
-## 💼 Interview Q&A
-*   **Q:** What is "P99 Latency" and why is it important?
-*   **A:** It means 99% of requests were faster than this value. It's important because it represents the "worst case" experience for your users. A fast average doesn't matter if 1 in 100 users waits 10 seconds.
-
----
-
-## 🧩 Practice Problems
-1.  Run `autocannon` on a simple Node.js server and note the RPS. Then add a 10ms `while` loop block and see how much the RPS drops.
-2.  Write a `k6` script that performs a GET request with a random ID between 1 and 1000.
-
----
 Prev: [03_Caching_Strategies.md](./03_Caching_Strategies.md) | Index: [NodeJS/00_Index.md](../00_Index.md) | Next: [05_Scaling_NodeJS.md](./05_Scaling_NodeJS.md)
