@@ -225,21 +225,13 @@ docker run -v HOST_PATH:CONTAINER_PATH image_name
 
 ```bash
 # Mount host directory to NGINX html directory
-docker run -d \
-  -p 8080:80 \
-  -v /home/ubuntu/mywebsite:/usr/share/nginx/html \
-  --name my-nginx \
-  nginx
+docker run -d -p 8080:80 -v /home/ubuntu/mywebsite:/usr/share/nginx/html --name my-nginx nginx
 
 # Now edit /home/ubuntu/mywebsite/index.html on the host
 # Changes appear immediately in the container — no rebuild needed
 
 # Mount a host directory for Jenkins data
-docker run -d \
-  -p 8080:8080 \
-  -v /home/ubuntu/jenkins-data:/var/jenkins_home \
-  --name jenkins \
-  jenkins/jenkins
+docker run -d -p 8080:8080 -v /home/ubuntu/jenkins-data:/var/jenkins_home --name jenkins jenkins/jenkins
 
 # Jenkins data (jobs, plugins, configs) saved in /home/ubuntu/jenkins-data
 # Delete and recreate the container → all Jenkins data still there
@@ -272,25 +264,58 @@ docker volume inspect my-data
 | **Named Volume** | `-v my-volume:/container/path` | Docker | Production data persistence |
 | **tmpfs Mount** | `--tmpfs /container/path` | RAM | Temporary sensitive data |
 
-### NGINX with Custom Content – Practical from Class
+### 6.1 NGINX with Custom Content – Step-by-Step Practical
 
+#### What
+A hands-on exercise to host a custom website using NGINX and Docker volumes.
+
+#### Why
+- Learn how to map host ports to container ports.
+- Understand how Docker volumes enable "Live Reloading" without rebuilding images or restarting containers.
+- Practice basic container management (run, stop, logs).
+
+#### How – Step-by-Step
+
+**Step 1: Create the Project Directory**
+Create a folder on your Ubuntu host to store your website files.
 ```bash
-# Create directory on host
 mkdir -p /home/ubuntu/mysite
-
-# Create custom HTML
-echo "<h1>Hello from Docker!</h1>" > /home/ubuntu/mysite/index.html
-
-# Run NGINX with volume pointing to custom content
-docker run -d \
-  -p 8080:80 \
-  -v /home/ubuntu/mysite:/usr/share/nginx/html \
-  --name custom-nginx \
-  nginx
-
-# Access at http://YOUR_VM_IP:8080 → shows "Hello from Docker!"
-# Edit the HTML file → browser refresh shows changes immediately
 ```
+
+**Step 2: Create your HTML Content**
+Create an `index.html` file. This is the entry point for your website.
+```bash
+echo "<h1>Hello from NGINX in Docker! 🐳</h1><p>Served via Volume Mapping</p>" > /home/ubuntu/mysite/index.html
+```
+
+**Step 3: Run the NGINX Container**
+Deploy the container with both port and volume mapping.
+```bash
+docker run -d --name custom-nginx -p 8080:80 -v /home/ubuntu/mysite:/usr/share/nginx/html nginx
+```
+
+**Step 4: Verify and Access**
+- **Check status:** `docker ps`
+- **Access in browser:** `http://YOUR_VM_IP:8080` (or `localhost:8080` if local)
+
+**Step 5: Test Live Updates**
+Modify the file on the host machine and refresh your browser. You will see the changes immediately without restarting the container.
+```bash
+echo "<h1>Updated! No restart needed.</h1>" > /home/ubuntu/mysite/index.html
+```
+
+#### Troubleshooting: Fixing the 403 Forbidden Error
+If your browser shows a "403 Forbidden" error, NGINX cannot find or read your file. Follow these steps:
+
+1.  **Check if the file exists:** Ensure `index.html` is actually in the folder: `ls -l /home/ubuntu/mysite/index.html`.
+2.  **Verify Permissions:** NGINX needs read permissions. Fix them with: `chmod -R 755 /home/ubuntu/mysite`.
+3.  **Inspect Logs:** Check the container's error logs to see the specific reason: `docker logs custom-nginx`.
+4.  **Path Mismatch:** If you are on Windows using PowerShell, use `${PWD}` instead of the Linux path: `-v ${PWD}/mysite:/usr/share/nginx/html`.
+
+#### Impact
+- **Speed:** Develop and test websites instantly without environment setup.
+- **Isolation:** Your host machine stays clean (no NGINX installed locally).
+- **Persistent Data:** Your website files stay safe on the host even if the container is deleted.
 
 ### Impact
 
@@ -601,12 +626,7 @@ b2c3d4e5       jenkins    2.50%   512MiB / 3.84GiB    13.0%   45kB / 12kB     8M
 
 ```bash
 # Limit container to 512MB RAM and 1 CPU
-docker run -d \
-  --name limited-app \
-  --memory="512m" \
-  --cpus="1.0" \
-  -p 3000:3000 \
-  my-app
+docker run -d --name limited-app --memory="512m" --cpus="1.0" -p 3000:3000 my-app
 
 # Limit to 25% of one CPU
 docker run -d --cpus="0.25" my-app
@@ -756,12 +776,7 @@ docker run -v /host:/container nginx       # Volume mapping
 docker run alpine date                     # Run single command
 
 # Combined (common pattern)
-docker run -d \
-  --name my-nginx \
-  -p 8080:80 \
-  -v /home/ubuntu/html:/usr/share/nginx/html \
-  --restart unless-stopped \
-  nginx
+docker run -d --name my-nginx -p 8080:80 -v /home/ubuntu/html:/usr/share/nginx/html --restart unless-stopped nginx
 ```
 
 ### Container Management Commands
@@ -846,11 +861,7 @@ Container Registry (Docker Hub / AWS ECR / GCR)
         │
         ▼
 Deployment (Docker run / Kubernetes / ECS)
-  docker run -d \
-    -p 80:3000 \
-    -v /data:/app/data \
-    --name shopping-cart \
-    registry/shopping-cart:v1.2
+  docker run -d -p 80:3000 -v /data:/app/data --name shopping-cart registry/shopping-cart:v1.2
 ```
 
 ### Common Docker Use Cases by Stack
@@ -1020,12 +1031,7 @@ cat > /home/ubuntu/mywebsite/index.html << 'EOF'
 EOF
 
 # Step 3: Run NGINX with volume and port mapping
-docker run -d \
-  --name my-nginx \
-  -p 8080:80 \
-  -v /home/ubuntu/mywebsite:/usr/share/nginx/html \
-  --restart unless-stopped \
-  nginx
+docker run -d --name my-nginx -p 8080:80 -v /home/ubuntu/mywebsite:/usr/share/nginx/html --restart unless-stopped nginx
 
 # Step 4: Verify it's running
 docker ps
@@ -1050,13 +1056,7 @@ mkdir -p /home/ubuntu/jenkins-data
 chown -R 1000:1000 /home/ubuntu/jenkins-data
 
 # Run Jenkins
-docker run -d \
-  --name jenkins \
-  -p 8080:8080 \
-  -p 50000:50000 \
-  -v /home/ubuntu/jenkins-data:/var/jenkins_home \
-  --restart unless-stopped \
-  jenkins/jenkins:lts
+docker run -d --name jenkins -p 8080:8080 -p 50000:50000 -v /home/ubuntu/jenkins-data:/var/jenkins_home --restart unless-stopped jenkins/jenkins:lts
 
 # Port 8080 = Jenkins Web UI
 # Port 50000 = Jenkins agent communication
@@ -1076,36 +1076,16 @@ docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 # Start a complete local development environment
 
 # NGINX (web server / reverse proxy)
-docker run -d \
-  --name nginx \
-  -p 80:80 \
-  -v /home/ubuntu/nginx-conf:/etc/nginx/conf.d \
-  nginx
+docker run -d --name nginx -p 80:80 -v /home/ubuntu/nginx-conf:/etc/nginx/conf.d nginx
 
 # PostgreSQL database
-docker run -d \
-  --name postgres \
-  -p 5432:5432 \
-  -e POSTGRES_PASSWORD=mysecret \
-  -e POSTGRES_DB=myapp \
-  -v postgres-data:/var/lib/postgresql/data \
-  postgres:15
+docker run -d --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=mysecret -e POSTGRES_DB=myapp -v postgres-data:/var/lib/postgresql/data postgres:15
 
 # Redis cache
-docker run -d \
-  --name redis \
-  -p 6379:6379 \
-  -v redis-data:/data \
-  redis:7 \
-  redis-server --appendonly yes
+docker run -d --name redis -p 6379:6379 -v redis-data:/data redis:7 redis-server --appendonly yes
 
 # Node.js API
-docker run -d \
-  --name api \
-  -p 3000:3000 \
-  -e DATABASE_URL=postgresql://postgres:mysecret@postgres:5432/myapp \
-  -e REDIS_URL=redis://redis:6379 \
-  my-node-api:latest
+docker run -d --name api -p 3000:3000 -e DATABASE_URL=postgresql://postgres:mysecret@postgres:5432/myapp -e REDIS_URL=redis://redis:6379 my-node-api:latest
 
 docker ps
 echo "All services started!"
@@ -1177,11 +1157,7 @@ Build and run:
 docker build -t my-node-app:v1.0 .
 
 # Run it with port and volume mapping
-docker run -d \
-  --name node-api \
-  -p 3000:3000 \
-  -v /app/logs:/usr/src/app/logs \
-  my-node-app:v1.0
+docker run -d --name node-api -p 3000:3000 -v /app/logs:/usr/src/app/logs my-node-app:v1.0
 ```
 
 ---
@@ -1225,12 +1201,7 @@ pipeline {
                 sh '''
                     docker stop shopping-cart 2>/dev/null || true
                     docker rm shopping-cart 2>/dev/null || true
-                    docker run -d \
-                      --name shopping-cart \
-                      -p 3000:3000 \
-                      -v /app/data:/app/data \
-                      --restart unless-stopped \
-                      shopping-cart:${BUILD_NUMBER}
+                    docker run -d --name shopping-cart -p 3000:3000 -v /app/data:/app/data --restart unless-stopped shopping-cart:${BUILD_NUMBER}
                 '''
             }
         }
@@ -1287,10 +1258,7 @@ Each container is isolated, each uses its own network namespace, and the host po
 ✅ **Answer:** Use a bash loop:
 ```bash
 for i in $(seq 1 50); do
-  docker run -d \
-    --name load-test-$i \
-    -e TARGET_URL=http://your-service:3000 \
-    load-test-image
+  docker run -d --name load-test-$i -e TARGET_URL=http://your-service:3000 load-test-image
 done
 echo "Total containers: $(docker ps | grep load-test | wc -l)"
 ```
