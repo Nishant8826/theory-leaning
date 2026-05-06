@@ -121,10 +121,7 @@ RUN apt-get install -y nginx
 RUN apt-get install -y python3
 
 # Good practice (chain commands with && to create ONE layer)
-RUN apt-get update && \
-    apt-get install -y nginx python3 git && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y nginx python3 git && apt-get clean && rm -rf /var/lib/apt/lists/*
 ```
 
 > ⚠️ **`RUN` vs `CMD`:** `RUN` runs at **build time** (baked into image). `CMD` runs at **container start time** (when you do `docker run`).
@@ -150,6 +147,18 @@ CMD ["java", "-jar", "app.jar"]
 CMD ["nginx", "-g", "daemon off;"]   # Exec format (recommended)
 CMD nginx -g "daemon off;"           # Shell format (runs in /bin/sh -c)
 ```
+
+> 💡 **Deep Dive: Why `daemon off;`?**
+>
+> In the command `CMD ["nginx", "-g", "daemon off;"]`:
+> - **`nginx`**: Starts the Nginx web server.
+> - **`-g`**: Allows you to pass "global" configuration directives to Nginx.
+> - **`daemon off;`**: This tells Nginx to run in the **foreground**.
+>
+> **Why is this required in Docker?**
+> A Docker container lives only as long as its **main process** (PID 1) is running.
+> - By default, Nginx runs as a background "daemon". If it runs in the background, the initial start command finishes immediately, and Docker thinks the task is done, so it **stops the container**.
+> - By setting `daemon off;`, Nginx stays in the foreground, keeping the process active. As long as Nginx is active, the container stays running.
 
 ---
 
@@ -524,13 +533,10 @@ docker run classmate_username/their-image:latest
 
 ```bash
 # Authenticate to ECR
-aws ecr get-login-password --region us-east-1 | \
-  docker login --username AWS --password-stdin \
-  ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com
 
 # Tag for ECR
-docker tag my-app:latest \
-  ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/my-app:latest
+docker tag my-app:latest ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/my-app:latest
 
 # Push to ECR
 docker push ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/my-app:latest
@@ -570,11 +576,7 @@ docker ps -a
 docker commit a1b2c3d4e5f6 my-custom-ubuntu
 
 # With a commit message and author:
-docker commit \
-  --message "Added nginx, python3, git" \
-  --author "John Doe" \
-  a1b2c3d4e5f6 \
-  my-custom-ubuntu:v1.0
+docker commit --message "Added nginx, python3, git" --author "John Doe" a1b2c3d4e5f6 my-custom-ubuntu:v1.0
 
 # Step 4: Verify
 docker images
@@ -1358,9 +1360,7 @@ LABEL maintainer="devops@company.com"
 WORKDIR /app
 
 # Install system dependencies
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends curl && \
-    rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
 COPY requirements.txt .
@@ -1382,6 +1382,191 @@ HEALTHCHECK CMD curl -f http://localhost:5000/health || exit 1
 
 CMD ["python", "-m", "flask", "run", "--host=0.0.0.0", "--port=5000"]
 ```
+
+---
+
+### Practical: Create Dockerfile, Build Custom Nginx Image, Tag & Push to Docker Hub
+
+#### What
+This practical covers the full lifecycle of a custom Docker image: from writing the "recipe" (Dockerfile) using a base OS (Ubuntu), building the binary artifact (Image), naming it for the cloud (Tagging), and finally publishing it to a global registry (Pushing).
+
+#### Why
+Using a base OS like Ubuntu allows you to fully customize your environment. However, you must explicitly install and configure services like Nginx. Sharing these images on **Docker Hub** ensures that your team can pull the exact same configuration you've built.
+
+#### Step-by-Step Guidance
+
+**Step 1: Create Your Project Workspace**
+```bash
+mkdir custom-ubuntu-nginx
+cd custom-ubuntu-nginx
+```
+
+**Step 2: Create the Dockerfile**
+Create a file named `Dockerfile` and add the following content:
+```dockerfile
+FROM ubuntu
+MAINTAINER rnishant428@gmail.com
+
+RUN apt-get update
+RUN apt-get install nginx -y
+
+CMD ["echo", "Image created"]
+```
+
+**Step 3: Build Your Custom Image**
+```bash
+docker build -t my-ubuntu-nginx .
+```
+*   `docker build`: The command to create an image.
+*   `-t`: Tags the image with a local name.
+*   `.`: The build context (current directory).
+
+**Step 4: Verify the Local Image**
+```bash
+docker images
+# You should see 'my-ubuntu-nginx' in the list
+```
+
+**Step 5: Run the Container**
+```bash
+docker run my-ubuntu-nginx
+# Output: Image created
+```
+*Note: The container exits immediately after printing the message because the CMD finished.*
+
+**Step 6: Login to Docker Hub**
+```bash
+docker login
+```
+
+**Step 7: Tag Your Image for Docker Hub**
+```bash
+docker tag my-ubuntu-nginx rnishant428/my-ubuntu-nginx:v1.0
+docker tag my-ubuntu-nginx rnishant428/my-ubuntu-nginx:latest
+```
+
+**Step 8: Push to Docker Hub**
+```bash
+docker push rnishant428/my-ubuntu-nginx:latest
+```
+
+---
+
+### HW Assignment: Fix the Nginx Container
+
+**The Problem:**
+You successfully pushed your image. However, when you run it:
+`docker run -d --name my-nginx -p 80:80 rnishant428/my-ubuntu-nginx:latest`
+
+1.  The container starts and **immediately stops** (status: Exited).
+2.  You cannot access the Nginx web page at `localhost:80`.
+3.  `docker logs my-nginx` only shows "Image created".
+
+**Your Task:**
+Troubleshoot and fix the Dockerfile so the container **stays running** and **serves the Nginx web page**.
+
+#### Troubleshooting & Fix Guidance (How to Solve)
+
+1.  **Step 1: Understand why it stopped**
+    Docker containers stay alive only as long as their main process (the `CMD`) is running. In our case, the `echo` command finishes in milliseconds, so the container shuts down.
+
+2.  **Step 2: Identify the fix**
+    To keep the container running, the `CMD` must start a long-running process. Since we installed Nginx, we should tell Nginx to start in the **foreground**.
+
+3.  **Step 3: Update the Dockerfile**
+    Modify the last line of your Dockerfile:
+    ```dockerfile
+    FROM ubuntu
+    MAINTAINER rnishant428@gmail.com
+    RUN apt-get update
+    RUN apt-get install nginx -y
+    
+    # FIX: Start nginx in the foreground
+    CMD ["nginx", "-g", "daemon off;"]
+    ```
+
+4.  **Step 4: Rebuild, Retag, and Rerun**
+    ```bash
+    # Rebuild
+    docker build -t rnishant428/my-ubuntu-nginx:fixed .
+    
+    # Run in background
+    docker run -d --name my-web-fixed -p 80:80 rnishant428/my-ubuntu-nginx:fixed
+    
+    # Verify it's running
+    docker ps
+    ```
+    *Now visit `localhost:80` and you will see the Ubuntu Nginx welcome page!*
+
+---
+
+### Practical: Create, Build & Run a Jenkins Docker Image
+
+#### What
+This practical involves creating a customized Jenkins environment. We start with the official Jenkins Long Term Support (LTS) image and add specific system tools needed for our automation pipelines.
+
+#### Why
+In a real DevOps setup, a "naked" Jenkins installation is rarely enough. You often need to:
+1.  **Pre-install tools**: Like Python, Maven, or Docker CLI inside the Jenkins container.
+2.  **Security**: Switch between `root` (for installation) and `jenkins` user (for running) to follow the Principle of Least Privilege.
+3.  **Persistence**: Prepare the image for volume mounting so your jobs aren't lost.
+
+#### The Jenkins Dockerfile
+Create a new directory `my-jenkins-setup` and save this as `Dockerfile`:
+
+```dockerfile
+# Stage 1: Base Image
+FROM jenkins/jenkins:lts
+
+# Stage 2: Metadata
+LABEL maintainer="rnishant428@gmail.com"
+
+# Stage 3: Installation (Requires Root)
+USER root
+RUN apt-get update && apt-get install -y python3 python3-pip git curl
+
+# Stage 4: Revert to Jenkins User (Security Best Practice)
+USER jenkins
+
+# Stage 5: Documentation
+# 8080: Web UI | 50000: Agent communication
+EXPOSE 8080
+EXPOSE 50000
+```
+
+#### Step-by-Step Guidance
+
+**Step 1: Create Workspace**
+```bash
+mkdir jenkins-custom && cd jenkins-custom
+touch Dockerfile
+```
+
+**Step 2: Build the Image**
+```bash
+docker build -t my-custom-jenkins:v1 .
+```
+*   The `USER root` command allowed us to install python3 and git during this build phase.
+
+**Step 3: Run the Jenkins Container**
+```bash
+docker run -d \
+  --name jenkins-server \
+  -p 8080:8080 \
+  -p 50000:50000 \
+  -v jenkins_home:/var/jenkins_home \
+  my-custom-jenkins:v1
+```
+*   `-p 8080:8080`: Maps the Jenkins Web Dashboard to your host.
+*   `-p 50000:50000`: Used for connecting Jenkins build agents.
+*   `-v jenkins_home...`: Ensures your configurations/jobs survive container restarts.
+
+**Step 4: Access Jenkins**
+1.  Open `http://localhost:8080`.
+2.  To get the initial admin password, run:
+    ```bash
+    docker exec jenkins-server cat /var/jenkins_home/secrets/initialAdminPassword
+    ```
 
 ---
 
@@ -1490,4 +1675,4 @@ The developer's machine stays clean — no native installs needed. Each service 
 
 ---
 
-← Previous: [`33_Container_Operations_Port_Mapping_Volumes_&_Management.md`](33_Container_Operations_Port_Mapping_Volumes_&_Management.md) | Next: [`34_Dockerfiles_Custom_Images_Docker_Hub_&_Troubleshooting.md`](34_Dockerfiles_Custom_Images_Docker_Hub_&_Troubleshooting.md) →
+← Previous: [`33_Container_Operations_Port_Mapping_Volumes_&_Management.md`](33_Container_Operations_Port_Mapping_Volumes_&_Management.md) | Next: [`35_Image_Optimization_Multi-Stage_Builds_Container_Registries_&_Docker_vs_Kubernetes.md`](35_Image_Optimization_Multi-Stage_Builds_Container_Registries_&_Docker_vs_Kubernetes.md) →

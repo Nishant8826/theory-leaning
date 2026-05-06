@@ -165,12 +165,48 @@ The **Document Object Model (DOM)** is a programming interface for web documents
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-Type coercion is the automatic or implicit conversion of values from one data type to another (e.g., string to number).
+Type coercion is the automatic or implicit conversion of values from one data type to another. In JavaScript, this happens because it is a **weakly-typed** language.
 
-- **Explicit:** `Number("123")`.
-- **Implicit:** `1 + "2" === "12"` (String coercion) or `"10" - 5 === 5` (Numeric coercion).
+#### 1. Implicit vs. Explicit Conversion
+- **Explicit (Type Conversion):** When a developer intentionally converts a type.
+  - `Number("10")`, `String(true)`, `Boolean(1)`.
+- **Implicit (Type Coercion):** When JavaScript converts the type automatically during an operation.
+  - `'5' - 2 // 3` (String to Number)
+  - `'5' + 2 // "52"` (Number to String)
 
-> 💡 **Interviewer Focus:** The `+` operator is overloaded for string concatenation, which is a common source of confusion.
+#### 2. Three Types of Coercion
+JavaScript mainly coerces values to **Boolean**, **String**, or **Number**.
+
+| Target Type | Triggered By | Logic |
+| :--- | :--- | :--- |
+| **Boolean** | Logical operators (`&&`, `||`, `!`) or control flow (`if`, `while`). | Uses **Truthy/Falsy** rules. |
+| **String** | The binary `+` operator when at least one operand is a string. | All operands are converted to strings and concatenated. |
+| **Number** | Math operators (`-`, `*`, `/`, `%`), comparison (`>`), or bitwise ops. | Values are converted to numbers. `true -> 1`, `false -> 0`, `null -> 0`, `undefined -> NaN`. |
+
+#### 3. The `+` Operator Exception
+The `+` operator is **overloaded**. It performs both addition and concatenation.
+- If **any** operand is a string, it prefers **concatenation**.
+- If **both** operands are numbers/booleans/null, it performs **addition**.
+
+#### 4. Object to Primitive Conversion
+When an object is used in a context where a primitive is expected (e.g., `obj + 1`), JavaScript follows the **`ToPrimitive`** algorithm:
+1. It looks for `Symbol.toPrimitive(hint)`.
+2. If not found, and hint is "string": calls `toString()`, then `valueOf()`.
+3. If not found, and hint is "number" or "default": calls `valueOf()`, then `toString()`.
+
+#### 5. Common "Gotchas" (The Weird Parts)
+```javascript
+true + false   // 1 (1 + 0)
+12 / "6"       // 2
+"number" + 15 + 3 // "number153"
+15 + 3 + "number" // "18number"
+[1] > null     // true (1 > 0)
+"foo" + + "bar" // "fooNaN" (unary + "bar" is NaN)
+[] + []        // "" (empty string)
+[] + {}        // "[object Object]"
+```
+
+> 💡 **Interviewer Focus:** Coercion is why we use `===` (Strict Equality). It avoids the unpredictable results of implicit coercion that occur with `==`.
 
 </details>
 
