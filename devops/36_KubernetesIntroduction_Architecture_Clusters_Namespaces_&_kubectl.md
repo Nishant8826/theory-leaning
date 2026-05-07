@@ -778,4 +778,4 @@ kubectl get svc -n production
 
 ---
 
-*Notes prepared from Batch 43 — CloudDevOpsHub Live Session | Kubernetes Fundamentals*
+← Previous: [`35_Image_Optimization_Multi-Stage_Builds_Container_Registries_&_Docker_vs_Kubernetes.md`](35_Image_Optimization_Multi-Stage_Builds_Container_Registries_&_Docker_vs_Kubernetes.md) | Next: [`37_Pods_Deployments_Services_ReplicaSets_StatefulSets_&_Persistent_Volumes.md`](37_Pods_Deployments_Services_ReplicaSets_StatefulSets_&_Persistent_Volumes.md) →
