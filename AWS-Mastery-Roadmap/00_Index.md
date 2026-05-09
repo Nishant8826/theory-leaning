@@ -54,8 +54,9 @@ Welcome to the production-grade AWS learning repository tailored specifically fo
 - [04. Cost Optimization](./07_ProductionArchitecture/04_Cost_Optimization.md)
 
 ### Phase 8: Real World Projects
-- [01. MERN on EC2](./08_RealWorldProjects/01_MERN_on_EC2.md)
-- [02. MERN on ECS](./08_RealWorldProjects/02_MERN_on_ECS.md)
-- [03. MERN on EKS](./08_RealWorldProjects/03_MERN_on_EKS.md)
-- [04. Serverless Backend](./08_RealWorldProjects/04_Serverless_Backend.md)
-- [05. Production Grade Architecture](./08_RealWorldProjects/05_Production_Grade_Architecture.md)
+- [Project 1: MERN on EC2](./08_Real_World_Projects/01_Project_MERN_on_EC2.md)
+- [Project 2: MERN on ECS](./08_Real_World_Projects/02_Project_MERN_on_ECS.md)
+- [Project 3: MERN on EKS](./08_Real_World_Projects/03_Project_MERN_on_EKS.md)
+- [Project 4: CI/CD Pipeline](./08_Real_World_Projects/04_Project_CI_CD_Pipeline.md)
+- [Project 5: Custom VPC Networking](./08_Real_World_Projects/05_Project_Custom_VPC_Networking.md)
+- [Project 6: Next.js SSR Deployment](./08_Real_World_Projects/06_Project_NextJS_Deployment.md)
