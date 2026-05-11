@@ -9,6 +9,7 @@
 | # | Topic | Documentation | Status |
 | :--- | :--- | :--- | :--- |
 | 01 | **JavaScript** | [View Prep Material](./01_Javascript.md) | ✅ Completed |
+| 02 | **Node.js** | [View Prep Material](./02_Nodejs.md) | ✅ Completed |
 
 ---
 
@@ -47,7 +48,11 @@ OUTPUT REQUIREMENTS:
 
 3. Start with:
 
-# Interview Preparation - [TOPIC_NAME]
+# 🚀 Interview Preparation - [TOPIC_NAME]
+
+> **Domain:** Web Development / Frontend & Backend  
+> **Level:** Beginner to Expert  
+> **Target Role:** Software Engineer / Senior Engineer / Lead
 
 ---
 
@@ -61,25 +66,33 @@ OUTPUT REQUIREMENTS:
 
 6. Structure:
 
-## [TOPIC_NAME]
+## 🟢 Beginner Level
 
-### Beginner
-Q1. Question
+### ❓ Q1. **Question**
 
 <details>
-<summary>Show Answer</summary>
+<summary><b>👀 Show Answer</b></summary>
 
 Answer...
 
+> 💡 **Interviewer Focus:** Key points...
+
 </details>
 
-### Intermediate
+<hr/>
+
+### ❓ Q2. **Question**
+*(No answer provided. Discuss [topic].)*
+
+<hr/>
+
+## 🟡 Intermediate Level
 ...
 
-### Advanced
+## 🔴 Advanced Level
 ...
 
-### Expert
+## 🟣 Expert Level
 ...
 
 7. Question types:
@@ -91,10 +104,12 @@ Answer...
 
 8. For at least 25–30 key questions:
    - Provide strong answers
-   - Include key interviewer points
+   - Include key interviewer points (`> 💡 **Interviewer Focus:**`)
 
 9. IMPORTANT UI:
-   - Use <details> and <summary>
+   - Use `<details>` and `<summary><b>👀 Show Answer</b></summary>`
+   - Use `<hr/>` after every question
+   - Make questions bold
    - Answers hidden by default
 
 10. Keep content:
