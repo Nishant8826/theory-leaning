@@ -51,8 +51,8 @@ Before learning abstractions like Docker, Kubernetes, or Serverless, you must un
 ### Step 4: Deploy the Express Backend
 1. Clone your MERN repository to the EC2 instance.
    ```bash
-   git clone https://github.com/yourusername/mern-app.git
-   cd mern-app/backend
+   git clone https://github.com/Nishant8826/ecom.git
+   cd ecom/backend
    ```
 2. Install dependencies: `npm install`.
 3. Create a `.env` file and add your MongoDB URI:
@@ -61,39 +61,42 @@ Before learning abstractions like Docker, Kubernetes, or Serverless, you must un
    ```
 4. Start the server with PM2:
    ```bash
-   pm2 start server.js --name "mern-backend"
+   pm2 start server.js --name "ecom-backend"
    pm2 save
    pm2 startup
    ```
    *(Your backend is now running on port 5000 in the background).*
 
 ### Step 5: Deploy the React Frontend (via NGINX)
-1. Go to your frontend directory:
+1. Go to your client directory:
    ```bash
-   cd ../frontend
+   cd ../client
    npm install
    npm run build
    ```
 2. Configure NGINX to serve the React build and proxy API requests:
    ```bash
-   sudo nano /etc/nginx/sites-available/default
+   sudo vi /etc/nginx/sites-available/default
    ```
-3. Replace the contents with:
+3. In the `vi` editor, replace the boilerplate configuration with your custom block:
+   - Type `ggdG` to delete all existing text.
+   - Press `i` to enter Insert Mode.
+   - Paste the following block:
    ```nginx
    server {
        listen 80;
-       server_name your_domain_or_IP;
+       server_name _;
 
        # Serve React frontend
        location / {
-           root /home/ubuntu/mern-app/frontend/build;
+           root /root/ecom/client/dist;
            index index.html index.htm;
            try_files $uri $uri/ /index.html;
        }
 
        # Proxy API requests to Node.js backend
        location /api/ {
-           proxy_pass http://127.0.0.1:5000/;
+           proxy_pass http://127.0.0.1:5000;
            proxy_http_version 1.1;
            proxy_set_header Upgrade $http_upgrade;
            proxy_set_header Connection 'upgrade';
@@ -102,6 +105,7 @@ Before learning abstractions like Docker, Kubernetes, or Serverless, you must un
        }
    }
    ```
+   - Press `Esc`, then type `:wq` and press `Enter` to save and exit.
 4. Restart NGINX:
    ```bash
    sudo systemctl restart nginx

@@ -509,18 +509,35 @@ console.log(twoSum([3, 2, 4], 6));        // [1, 2] → 2 + 4 = 6
 
 ```javascript
 function removeDuplicates(arr) {
-  if (arr.length === 0) return 0;
 
-  let uniquePos = 0; // Position of last unique element
+    // Pointer 'j' keeps track of the position
+    // where the next unique element should be placed
+    let j = 0;
 
-  for (let i = 1; i < arr.length; i++) {
-    if (arr[i] !== arr[uniquePos]) {
-      uniquePos++;            // Move to next position
-      arr[uniquePos] = arr[i]; // Place the unique element
+    // Traverse the array starting from index 0
+    for (let i = 0; i < arr.length; i++) {
+
+        // If current element is same as arr[j],
+        // it means it's a duplicate, so skip it
+        if (arr[i] == arr[j]) continue;
+
+        else {
+
+            // Move j to the next position
+            // for storing a unique element
+            j++;
+
+            // Swap current unique element with arr[j]
+            // so that all unique elements stay in front
+            let temp = arr[i];
+            arr[i] = arr[j];
+            arr[j] = temp;
+        }
     }
-  }
 
-  return uniquePos + 1; // Length of unique portion
+    // Return total count of unique elements
+    // (index + 1 because array index starts from 0)
+    return j + 1;
 }
 
 const arr = [1, 1, 2, 2, 3, 4, 4, 5];
@@ -552,20 +569,32 @@ console.log(arr.slice(0, len));      // [1, 2, 3, 4, 5]
 **Approach:** Track current sum; if it goes negative, reset it to 0 (start fresh).
 
 ```javascript
-function maxSubarraySum(arr) {
-  let maxSum = arr[0];      // Best sum seen so far
-  let currentSum = arr[0];  // Current running sum
+var maxSubArray = function(nums) {
 
-  for (let i = 1; i < arr.length; i++) {
-    // Either extend the current subarray or start fresh
-    currentSum = Math.max(arr[i], currentSum + arr[i]);
+    // Stores the maximum subarray sum found so far
+    let maxSum = -Infinity;
 
-    // Update best if current is better
-    maxSum = Math.max(maxSum, currentSum);
-  }
+    // Stores the running sum of current subarray
+    let currSum = 0;
 
-  return maxSum;
-}
+    // Traverse the entire array
+    for (let i = 0; i < nums.length; i++) {
+
+        // Add current element to running sum
+        currSum += nums[i];
+
+        // Update maxSum if current running sum is greater
+        maxSum = Math.max(currSum, maxSum);
+
+        // If running sum becomes negative,
+        // reset it because a negative sum
+        // can never help future subarrays
+        if (currSum < 0) currSum = 0;
+    }
+
+    // Return the maximum subarray sum
+    return maxSum;
+};
 
 console.log(maxSubarraySum([-2, 1, -3, 4, -1, 2, 1, -5, 4])); // 6 → [4, -1, 2, 1]
 console.log(maxSubarraySum([1, 2, 3, 4]));                       // 10 → entire array
@@ -595,36 +624,47 @@ console.log(maxSubarraySum([-1, -2, -3]));                       // -1 → least
 **Approach:** Use two pointers, one for each array. Compare and pick the smaller element.
 
 ```javascript
-function mergeSortedArrays(arr1, arr2) {
-  const merged = [];
-  let i = 0; // Pointer for arr1
-  let j = 0; // Pointer for arr2
+var mergeSortedArrays = function(nums1, m, nums2, n) {
 
-  // Compare elements from both arrays
-  while (i < arr1.length && j < arr2.length) {
-    if (arr1[i] <= arr2[j]) {
-      merged.push(arr1[i]);
-      i++;
-    } else {
-      merged.push(arr2[j]);
-      j++;
+    // Pointer for last valid element in nums1
+    let i = m - 1;
+
+    // Pointer for last element in nums2
+    let j = n - 1;
+
+    // Pointer for last position in nums1
+    let k = m + n - 1;
+
+    // Compare elements from the back
+    // and place the bigger one at position k
+    while (i >= 0 && j >= 0) {
+
+        // If nums1 element is bigger
+        if (nums1[i] > nums2[j]) {
+
+            nums1[k] = nums1[i];
+            i--;
+
+        } else {
+
+            nums1[k] = nums2[j];
+            j--;
+        }
+
+        // Move final position backward
+        k--;
     }
-  }
 
-  // Add remaining elements from arr1
-  while (i < arr1.length) {
-    merged.push(arr1[i]);
-    i++;
-  }
+    // If nums2 still has remaining elements,
+    // copy them into nums1
+    while (j >= 0) {
 
-  // Add remaining elements from arr2
-  while (j < arr2.length) {
-    merged.push(arr2[j]);
-    j++;
-  }
+        nums1[k] = nums2[j];
 
-  return merged;
-}
+        j--;
+        k--;
+    }
+};
 
 console.log(mergeSortedArrays([1, 3, 5], [2, 4, 6])); // [1, 2, 3, 4, 5, 6]
 console.log(mergeSortedArrays([1, 2], [3, 4, 5, 6])); // [1, 2, 3, 4, 5, 6]
@@ -636,11 +676,11 @@ console.log(mergeSortedArrays([1, 2], [3, 4, 5, 6])); // [1, 2, 3, 4, 5, 6]
 
 
 #### Code Story
-- This problem is about combining two already-sorted piles into one big sorted pile.
-- First, we compare the top items of both piles.
-- Then, we pick the smaller one, add it to our new pile, and move to the next item in that pile.
-- Finally, we repeat this until all items are moved.
-- This works because since both piles are already ordered, the overall smallest item *must* be at the top of one of the two piles.
+- This problem is about combining two already-sorted arrays into the first array without using extra space.
+- First, we look at the very last items of both arrays and an empty spot at the far end of the first array.
+- Then, we pick the larger item, place it in the empty spot at the back, and step backward.
+- Finally, if the second array still has items left, we copy them over to the remaining spots at the front.
+- This works because filling the array from back to front safely uses the empty space without overwriting any existing numbers.
 
 ---
 
