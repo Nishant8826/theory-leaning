@@ -1380,4 +1380,4 @@ kubectl get pods -l app=demo -w
 ---
 
 
-← Previous: [`36_KubernetesIntroduction_Architecture_Clusters_Namespaces_&_kubectl.md`](36_KubernetesIntroduction_Architecture_Clusters_Namespaces_&_kubectl.md) | Next: [`38_Kubernetes_ConfigMaps_Secrets_Ingress_HPA.md`](38_Kubernetes_ConfigMaps_Secrets_Ingress_HPA.md) →
+← Previous: [`36_KubernetesIntroduction_Architecture_Clusters_Namespaces_&_kubectl.md`](36_KubernetesIntroduction_Architecture_Clusters_Namespaces_&_kubectl.md) | Next: [`38_Kubernetes_Microservices_Deployment_Monolithic_vs_Microservices_GKE_&_Real-World_E-Commerce_App.md`](38_Kubernetes_Microservices_Deployment_Monolithic_vs_Microservices_GKE_&_Real-World_E-Commerce_App.md) →
