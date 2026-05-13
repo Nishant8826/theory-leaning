@@ -1376,4 +1376,4 @@ kubectl get service frontend-external | awk '{print $4}'
 
 ---
 
-← Previous: [`37_Pods_Deployments_Services_ReplicaSets_StatefulSets_&_Persistent_Volumes.md`](37_Pods_Deployments_Services_ReplicaSets_StatefulSets_&_Persistent_Volumes.md) | Next: [`39_Kubernetes_HPA_Monitoring_Advanced.md`](39_Kubernetes_HPA_Monitoring_Advanced.md) →
+← Previous: [`37_Pods_Deployments_Services_ReplicaSets_StatefulSets_&_Persistent_Volumes.md`](37_Pods_Deployments_Services_ReplicaSets_StatefulSets_&_Persistent_Volumes.md) | Next: [`39_Kubernetes_Advanced_Horizontal_Pod_Autoscaling_(HPA)_&_Troubleshooting.md`](39_Kubernetes_Advanced_Horizontal_Pod_Autoscaling_(HPA)_&_Troubleshooting.md) →

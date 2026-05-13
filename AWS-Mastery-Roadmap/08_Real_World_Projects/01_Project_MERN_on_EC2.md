@@ -49,8 +49,13 @@ Before learning abstractions like Docker, Kubernetes, or Serverless, you must un
 4. Copy the connection string (URI).
 
 ### Step 4: Deploy the Express Backend
+
+> [!NOTE]
+> **Where to clone?** Always clone your repository into the home directory of your user (usually `/home/ubuntu/`). Avoid cloning into `/root` or system directories as it causes permission issues.
+
 1. Clone your MERN repository to the EC2 instance.
    ```bash
+   cd ~
    git clone https://github.com/Nishant8826/ecom.git
    cd ecom/backend
    ```
@@ -89,7 +94,7 @@ Before learning abstractions like Docker, Kubernetes, or Serverless, you must un
 
        # Serve React frontend
        location / {
-           root /root/ecom/client/dist;
+            root /home/ubuntu/ecom/client/dist;
            index index.html index.htm;
            try_files $uri $uri/ /index.html;
        }
@@ -112,6 +117,25 @@ Before learning abstractions like Docker, Kubernetes, or Serverless, you must un
    ```
 5. Visit your EC2 Public IP in the browser. Your MERN app is live!
 
+## Best Practices & Common Gotchas
+
+### 1. PM2 Multi-User Behavior (Why is my list empty?)
+**The Problem**: You SSH in, run `pm2 list`, and it shows no processes, but your website is still working on the external IP.
+**The Cause**: PM2 isolates process lists by the Linux user that spawned the process. It stores state in `~/.pm2`.
+- If user `ubuntu` starts the app, the state is in `/home/ubuntu/.pm2`.
+- If you switch to `root` or another user and run `pm2 list`, it looks in `/root/.pm2` (which is empty).
+**The Fix**:
+- Always run PM2 commands as the user that owns the process.
+- Use `sudo -u ubuntu pm2 list` or `su - ubuntu` to switch users.
+
+### 2. NGINX Permissions (Permission Denied / 500 Error)
+Never serve files from the `/root` directory. NGINX runs as the `www-data` user and usually does not have permission to read the `/root` folder, leading to `403 Forbidden` errors. Always clone your repository into the home directory of a standard user (like `/home/ubuntu/`) or `/var/www/`.
+
+**The Home Directory Gotcha**: On many modern Ubuntu AMIs, the home directory `/home/ubuntu` defaults to permissions `750` (`drwxr-x---`), which prevents NGINX from accessing it even if the subdirectories are readable.
+- **The Symptom**: `500 Internal Server Error` or `403 Forbidden` with "Permission denied" in `/var/log/nginx/error.log`.
+- **The Fix**: Run `chmod o+x /home/ubuntu` to allow NGINX to traverse the directory.
+
+
 ## Production Impact
 - **Cost**: Extremely low. A single instance costs ~$10-$15/month.
 - **Maintenance**: High. You must manually run `sudo apt-get upgrade` to patch Linux vulnerabilities and manually pull code updates from Git.
@@ -119,6 +143,15 @@ Before learning abstractions like Docker, Kubernetes, or Serverless, you must un
 ## Knowledge Transfer (KT)
 - **Why NGINX?** Node.js is excellent at processing data, but terrible at serving static files (images, CSS, JS). NGINX serves the React build files instantaneously using minimal RAM, offloading work from Node.
 - **Why PM2?** If an unhandled promise crashes Node.js, the process exits. Without PM2, your site goes down permanently until you SSH back in. PM2 restarts the process instantly.
+
+### NGINX Configuration Explained
+Here is what the configuration block in Step 5 does:
+- **`listen 80;`**: Listens for incoming HTTP traffic on port 80.
+- **`location / { ... }`**: Handles frontend requests.
+  - **`try_files $uri $uri/ /index.html;`**: Crucial for React! If a file/folder isn't found, it falls back to `index.html` so React Router can handle the URL in the browser.
+- **`location /api/ { ... }`**: Handles backend requests.
+  - **`proxy_pass http://127.0.0.1:5000;`**: Forwards requests starting with `/api/` to the Node.js app running on port 5000.
+
 
 ---
 Prev : [../07_ProductionArchitecture/04_Cost_Optimization.md](../07_ProductionArchitecture/04_Cost_Optimization.md) | Index : [../00_Index.md](../00_Index.md) | Next : [./02_Project_MERN_on_ECS.md](./02_Project_MERN_on_ECS.md)
