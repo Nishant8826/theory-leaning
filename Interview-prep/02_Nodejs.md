@@ -2591,4 +2591,4 @@ const consume = async () => {
 
 | ⬅️ Previous | 🏠 Index | ➡️ Next |
 | :--- | :---: | ---: |
-| [⬅️ JavaScript](./01_Javascript.md) | [Home](./00_Index.md) | 🚫 *None* |
+| [⬅️ JavaScript](./01_Javascript.md) | [Home](./00_Index.md) | [➡️ React & Redux](./03_React_Redux.md) |

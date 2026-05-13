@@ -2049,4 +2049,4 @@ function outer() {
 
 | ⬅️ Previous | 🏠 Index | ➡️ Next |
 | :--- | :---: | ---: |
-| 🚫 *None* | [Home](./00_Index.md) | 🚫 *None* |
+| 🚫 *None* | [Home](./00_Index.md) | [➡️ Node.js](./02_Nodejs.md) |

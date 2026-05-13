@@ -10,6 +10,9 @@
 | :--- | :--- | :--- | :--- |
 | 01 | **JavaScript** | [View Prep Material](./01_Javascript.md) | ✅ Completed |
 | 02 | **Node.js** | [View Prep Material](./02_Nodejs.md) | ✅ Completed |
+| 03 | **React & Redux** | [View Prep Material](./03_React_Redux.md) | ✅ Completed |
+| 04 | **Next.js** | [View Prep Material](./04_Nextjs.md) | ✅ Completed |
+| 05 | **React Native** | [View Prep Material](./05_ReactNative.md) | ✅ Completed |
 
 ---
 

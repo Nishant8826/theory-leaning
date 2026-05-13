@@ -120,12 +120,7 @@ Example: `"A man, a plan, a canal: Panama"` → `true`
 **Thought Process:** Clean the string (remove non-alphanumeric, lowercase), then compare from both ends.
 
 
-#### Code Story
-- This problem is about checking if a phrase reads the same way forward and backward.
-- First, we clean up the text by removing spaces and punctuation and making everything lowercase.
-- Then, we use two pointers—one at the start and one at the end—to compare each character.
-- Finally, if all characters match, it's a palindrome; if even one pair differs, it isn't.
-- This works because a palindrome is perfectly symmetrical, so the front and back must be identical mirror images.
+
 
 #### 🐢 Brute Force
 
@@ -157,32 +152,93 @@ console.log(isPalindromeBrute("race a car"));                      // false
 #### ⚡ Optimized — Two Pointers
 
 ```javascript
-function isPalindromeOptimized(s) {
-  let left = 0;
-  let right = s.length - 1;
+/**
+ * Valid Palindrome
+ *
+ * We use TWO POINTERS:
+ * i -> starts from left
+ * j -> starts from right
+ *
+ * Example:
+ * "A man, a plan, a canal: Panama"
+ *
+ * After ignoring spaces and symbols:
+ * "amanaplanacanalpanama"
+ *
+ * Compare:
+ * a == a
+ * m == m
+ * a == a
+ * ...
+ *
+ * If every character matches → palindrome
+ */
 
-  while (left < right) {
-    // Skip non-alphanumeric characters from left
-    while (left < right && !isAlphaNumeric(s[left])) left++;
-    // Skip non-alphanumeric characters from right
-    while (left < right && !isAlphaNumeric(s[right])) right--;
+var isPalindrome = function (s) {
 
-    // Compare characters (case-insensitive)
-    if (s[left].toLowerCase() !== s[right].toLowerCase()) {
-      return false;
+    // Convert entire string to lowercase
+    // so 'A' and 'a' are treated the same
+    s = s.toLowerCase();
+
+    /**
+     * Checks whether character is:
+     * a-z OR 0-9
+     */
+    function isAlphaNumeric(ch) {
+        return /^[a-z0-9]$/i.test(ch);
     }
 
-    left++;
-    right--;
-  }
+    // Left pointer
+    let i = 0;
 
-  return true;
-}
+    // Right pointer
+    let j = s.length - 1;
 
-function isAlphaNumeric(ch) {
-  const c = ch.toLowerCase();
-  return (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9');
-}
+    /**
+     * Keep checking until pointers cross
+     */
+    while (i < j) {
+
+        /**
+         * Skip invalid characters from LEFT
+         *
+         * Example:
+         * "a,"
+         *     ^
+         * comma is ignored
+         */
+        while (i < j && !isAlphaNumeric(s[i])) {
+            i++;
+        }
+
+        /**
+         * Skip invalid characters from RIGHT
+         */
+        while (i < j && !isAlphaNumeric(s[j])) {
+            j--;
+        }
+
+        /**
+         * Compare characters
+         *
+         * If mismatch found,
+         * string is NOT palindrome
+         */
+        if (s[i] !== s[j]) {
+            return false;
+        }
+
+        // Move both pointers inward
+        i++;
+        j--;
+    }
+
+    /**
+     * If loop completes,
+     * every character matched
+     */
+    return true;
+};
 
 console.log(isPalindromeOptimized("A man, a plan, a canal: Panama")); // true
 console.log(isPalindromeOptimized("race a car"));                      // false
@@ -280,12 +336,7 @@ Example: `"listen"` and `"silent"` → `true`
 **Thought Process:** Count characters in both strings and compare.
 
 
-#### Code Story
-- This problem is about checking if two words contain exactly the same letters in a different order.
-- First, we count how many times each letter appears in the first word.
-- Then, we go through the second word and subtract the counts for each letter we find.
-- Finally, if all our counts end up back at zero, the words are anagrams.
-- This works because words with the same 'ingredient list' of letters will always cancel each other out in a tally.
+
 
 #### 🐢 Brute Force — Sort and Compare
 
@@ -307,26 +358,40 @@ console.log(isAnagramBrute("hello", "world"));   // false
 #### ⚡ Optimized — Frequency Count
 
 ```javascript
-function isAnagramOptimized(s1, s2) {
-  if (s1.length !== s2.length) return false;
+/**
+ * Valid Anagram
+ *
+ * We use a FREQUENCY MAP to count characters:
+ * 1. Count characters in s1 (+1 for each)
+ * 2. Subtract characters in s2 (-1 for each)
+ *
+ * Example:
+ * s1 = "listen", s2 = "silent"
+ *
+ * Tally for "listen":
+ * l:1, i:1, s:1, t:1, e:1, n:1
+ *
+ * Process "silent":
+ * 's' -> count becomes 0
+ * 'i' -> count becomes 0
+ * ...
+ *
+ * If all counts return to 0 → Anagram
+ */
+var isAnagramOptimized = function (s, t) {
+    if (s.length != t.length) return false;
 
-  const freq = new Map();
-
-  // Count characters in first string
-  for (const ch of s1) {
-    freq.set(ch, (freq.get(ch) || 0) + 1);
-  }
-
-  // Subtract counts using second string
-  for (const ch of s2) {
-    if (!freq.has(ch) || freq.get(ch) === 0) {
-      return false; // Character not found or count exhausted
+    let map = new Map();
+    for (let i = 0; i < s.length; i++) {
+        map.set(s[i], (map.get(s[i]) || 0) + 1);
     }
-    freq.set(ch, freq.get(ch) - 1);
-  }
 
-  return true;
-}
+    for (let i = 0; i < t.length; i++) {
+        if (!map.has(t[i]) || map.get(t[i]) == 0) return false;
+        map.set(t[i], map.get(t[i]) - 1);
+    }
+    return true;
+};
 
 console.log(isAnagramOptimized("listen", "silent")); // true
 console.log(isAnagramOptimized("rat", "car"));       // false
@@ -464,23 +529,43 @@ console.log(countVowelsConsonants("Hello World"));
 **Approach:** Walk through the string, count consecutive same characters.
 
 ```javascript
+/**
+ * String Compression
+ *
+ * We walk through the string and count consecutive repeated characters.
+ *
+ * Example:
+ * "aabcccccaaa"
+ *
+ * Streak tracking:
+ * 'a' -> 2
+ * 'b' -> 1
+ * 'c' -> 5
+ * 'a' -> 3
+ *
+ * Result: "a2b1c5a3"
+ */
 function compressString(s) {
-  if (s.length === 0) return s;
+    if (s.length === 0) return s;
 
-  let compressed = "";
-  let count = 1;
+    let compressed = "";
+    let count = 1;
 
-  for (let i = 1; i <= s.length; i++) {
-    if (i < s.length && s[i] === s[i - 1]) {
-      count++; // Same character, increment count
-    } else {
-      compressed += s[i - 1] + count; // Add character and its count
-      count = 1; // Reset count
+    // Loop through the string starting from the second character
+    for (let i = 1; i <= s.length; i++) {
+        // If current character is same as previous, increment count
+        if (i < s.length && s[i] === s[i - 1]) {
+            count++;
+        } else {
+            // If character changes or we reach end, append previous char and count
+            compressed += s[i - 1] + count;
+            // Reset count for next character
+            count = 1;
+        }
     }
-  }
 
-  // Return shorter version
-  return compressed.length < s.length ? compressed : s;
+    // Return shorter version
+    return compressed.length < s.length ? compressed : s;
 }
 
 console.log(compressString("aabcccccaaa")); // "a2b1c5a3"
@@ -488,12 +573,7 @@ console.log(compressString("abc"));          // "abc" (compressed is longer)
 ```
 
 
-#### Code Story
-- This problem is about shortening a string like 'aaabb' into 'a3b2'.
-- First, we look at the first character and start counting its 'streak'.
-- Then, as soon as the character changes, we write the old character and its count into our result.
-- Finally, if the 'compressed' version is actually shorter than the original, we keep it.
-- This works because it replaces repeated patterns with a simple tally, saving space whenever many same letters are in a row.
+
 
 **Explanation:** Like describing a crowd: "2 red shirts, 1 blue, 5 green, 3 red" instead of listing each person. You walk through the string counting same-character streaks.
 
@@ -576,25 +656,42 @@ Example: `["flower", "flow", "flight"]` → `"fl"`
 **Approach:** Compare characters column by column across all strings.
 
 ```javascript
+/**
+ * Longest Common Prefix
+ *
+ * We compare characters column by column across all strings.
+ *
+ * Example:
+ * ["flower", "flow", "flight"]
+ *
+ * Col 0: 'f', 'f', 'f' -> matches
+ * Col 1: 'l', 'l', 'l' -> matches
+ * Col 2: 'o', 'o', 'i' -> mismatch!
+ *
+ * Result: "fl"
+ */
 function longestCommonPrefix(strs) {
-  if (strs.length === 0) return "";
+    if (strs.length === 0) return "";
 
-  // Use the first string as reference
-  const first = strs[0];
+    // Use the first string as reference
+    const first = strs[0];
 
-  for (let i = 0; i < first.length; i++) {
-    const char = first[i];
+    // Loop through characters of the first string
+    for (let i = 0; i < first.length; i++) {
+        const char = first[i];
 
-    // Check this character against all other strings
-    for (let j = 1; j < strs.length; j++) {
-      // If we've exceeded a word's length or characters don't match
-      if (i >= strs[j].length || strs[j][i] !== char) {
-        return first.substring(0, i);
-      }
+        // Check this character against all other strings
+        for (let j = 1; j < strs.length; j++) {
+            // If we've exceeded a word's length or characters don't match,
+            // we return the prefix found so far
+            if (i >= strs[j].length || strs[j][i] !== char) {
+                return first.substring(0, i);
+            }
+        }
     }
-  }
 
-  return first; // First string is the prefix
+    // If loop completes, the first string is the common prefix
+    return first;
 }
 
 console.log(longestCommonPrefix(["flower", "flow", "flight"])); // "fl"
@@ -603,12 +700,7 @@ console.log(longestCommonPrefix(["interstellar", "internet", "internal"])); // "
 ```
 
 
-#### Code Story
-- This problem is about finding the longest starting string shared by a group of words.
-- First, we take the first word and assume it's the whole prefix.
-- Then, we compare it to the next word and 'shrink' it until it matches the start of that word.
-- Finally, we repeat this for every word until our prefix is either correct for everyone or empty.
-- This works because a shared prefix can only get smaller as you add more words to the rule.
+
 
 **Explanation:** Line up all the words vertically. Read column by column (first letter of each, then second, etc.). The moment any word doesn't match, stop. Everything you've read so far is the common prefix.
 
