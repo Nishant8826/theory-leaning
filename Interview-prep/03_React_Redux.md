@@ -48,9 +48,26 @@ JSX stands for JavaScript XML. It is a syntax extension for JavaScript that allo
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-Hooks are functions that let you "hook into" React state and lifecycle features from function components. They were introduced in React 16.8. Examples include `useState`, `useEffect`, and `useContext`.
+Hooks are functions that let you "hook into" React state and lifecycle features from function components. They were introduced in React 16.8 and allow you to use state and other React features without writing a class component.
 
-> 💡 **Interviewer Focus:** Mention that they allow using state without writing a class component.
+**Why were they introduced? (Problems they solved):**
+1. **Reuse stateful logic:** Before hooks, sharing stateful logic required patterns like Render Props or Higher-Order Components (HOCs), which led to "wrapper hell" (deeply nested component trees).
+2. **Complex components became hard to understand:** Lifecycle methods often contained a mix of unrelated logic (e.g., `componentDidMount` might handle data fetching AND event listeners). Hooks let you split one component into smaller functions based on what pieces are related.
+3. **Classes are confusing:** Humans and machines struggle with classes (e.g., understanding `this`, binding event handlers, difficulty with minification and hot reloading).
+
+**Core Hooks to Know:**
+- `useState`: Manages local state in a functional component.
+- `useEffect`: Handles side effects (API calls, subscriptions, timers) - replaces lifecycle methods.
+- `useContext`: Subscribes to React context without nesting.
+- `useReducer`: An alternative to `useState` for complex state logic.
+- `useMemo` & `useCallback`: For performance optimization (memoizing values and functions).
+- `useRef`: For accessing DOM elements or persisting values across renders without triggering re-renders.
+
+**Rules of Hooks:**
+1. **Only call Hooks at the top level:** Don't call Hooks inside loops, conditions, or nested functions.
+2. **Only call Hooks from React functions:** Call them from React function components or custom Hooks.
+
+> 💡 **Interviewer Focus:** Emphasize how hooks solve "wrapper hell", allow better logic reuse, and make code cleaner. Mentioning the Rules of Hooks is a strong signal.
 </details>
 <hr/>
 
@@ -58,12 +75,12 @@ Hooks are functions that let you "hook into" React state and lifecycle features 
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-`useState` is a Hook that lets you add React state to function components. It returns a pair: the current state value and a function that lets you update it.
+`useState` hook is a built-in react hook used to add state to functional components. It returns a pair: the current state value and a function that lets you update it.
 ```javascript
 const [count, setCount] = useState(0);
 ```
 
-> 💡 **Interviewer Focus:** Check if they understand array destructuring used in the syntax.
+> 💡 **Interviewer Focus:** Check if they understand array destructuring used in the syntax and that the setter function replaces the state (it doesn't merge for objects like `setState` in classes).
 </details>
 <hr/>
 
@@ -91,10 +108,45 @@ Keys help React identify which items have changed, are added, or are removed. Th
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-- **Controlled:** React controls the state of the form element. Value is driven by state, and changes are handled by callbacks (e.g., `onChange`).
-- **Uncontrolled:** The DOM handles the form data. You use a `ref` to pull values from the field when needed.
+The difference lies in **how the data/state of form elements (like inputs) is managed**.
 
-> 💡 **Interviewer Focus:** Controlled is usually preferred for validation and instant feedback.
+**1. Controlled Components**
+In a controlled component, the form data is handled by a **React component**. The current value of the input is driven by React state, and changes are handled via callback functions.
+- **Source of Truth:** React State.
+- **How it works:** You bind the `value` prop to a state variable and update it via `onChange`.
+- **Code Example:**
+```javascript
+const [name, setName] = useState('');
+<input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+```
+
+**2. Uncontrolled Components**
+In an uncontrolled component, the form data is handled by the **DOM itself**. You pull the values from the DOM when you need them, usually on form submission.
+- **Source of Truth:** The DOM.
+- **How it works:** You use a `ref` (via `useRef`) to access the DOM element directly.
+- **Code Example:**
+```javascript
+const inputRef = useRef(null);
+const handleSubmit = () => {
+  console.log(inputRef.current.value);
+};
+<input type="text" ref={inputRef} />
+```
+
+**Key Differences at a Glance:**
+
+| Feature | Controlled | Uncontrolled |
+| :--- | :--- | :--- |
+| **Source of Truth** | React State | DOM |
+| **Value Access** | Available on every keystroke | Available only when pulled (e.g., submit) |
+| **Performance** | Can cause more re-renders | Better for large forms (less re-renders) |
+| **Validation** | Easy to validate on the fly | Harder to validate instantly |
+
+**When to use which?**
+- Use **Controlled** for: Instant field validation, disabling submit buttons based on valid input, enforcing specific input formats (like credit cards), and dynamic inputs.
+- Use **Uncontrolled** for: Simple forms where you only need the value on submit, non-interactive UI elements, or when integrating with non-React libraries.
+
+> 💡 **Interviewer Focus:** Controlled components are the recommended approach in React for most use cases because they give you full control over the data flow.
 </details>
 <hr/>
 
@@ -102,9 +154,20 @@ Keys help React identify which items have changed, are added, or are removed. Th
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-Redux is a predictable state container for JavaScript apps. It helps you write applications that behave consistently, run in different environments (client, server, and native), and are easy to test. It centralizes the application's state and logic.
+Redux is a **predictable state container** for JavaScript apps. It helps you manage global state (data shared across many parts of your app) in a centralized and predictable way.
 
-> 💡 **Interviewer Focus:** Centralized state management and predictability.
+**Why use Redux?**
+1. **Centralized State:** Instead of passing props down multiple levels (prop drilling) or spreading state across many components, Redux keeps all application state in a single, centralized location called the **Store**.
+2. **Predictability:** State is read-only. The only way to change it is by dispatching an **Action** (an object describing what happened). This makes the state predictable and traceable.
+3. **Debugging:** Redux DevTools allow you to see when, where, and why your state changed. You can even do "time-travel debugging" (stepping back and forth through state changes).
+4. **Consistency:** It ensures that your app behaves consistently across client, server, and native environments.
+
+**Key Concepts:**
+- **Store:** The single source of truth that holds the state.
+- **Action:** A plain JavaScript object that describes *what* happened (e.g., `{ type: 'ADD_TODO', payload: 'Learn Redux' }`).
+- **Reducer:** A pure function that takes the current state and an action, and returns the *new* state.
+
+> 💡 **Interviewer Focus:** Emphasize keywords like **Predictable**, **Centralized Store**, **Actions**, and **Reducers**. Mention that it is library-agnostic but most commonly used with React.
 </details>
 <hr/>
 
@@ -112,11 +175,21 @@ Redux is a predictable state container for JavaScript apps. It helps you write a
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-1. **Single source of truth:** The state of your whole application is stored in an object tree within a single store.
-2. **State is read-only:** The only way to change the state is to emit an action, an object describing what happened.
-3. **Changes are made with pure functions:** To specify how the state tree is transformed by actions, you write pure reducers.
+Redux is built on three core principles:
 
-> 💡 **Interviewer Focus:** This is a classic question. Must mention Single Store, Actions, and Reducers.
+1. **Single Source of Truth:**
+   - The state of your whole application is stored in an object tree within a single **store**.
+   - **Why it matters:** This makes it easy to inspect the app state, persist it (e.g., to local storage), and share data between components without prop drilling.
+
+2. **State is Read-Only:**
+   - The only way to change the state is to emit (dispatch) an **action**, an object describing what happened.
+   - **Why it matters:** This ensures that views or network callbacks cannot mutate the state directly. All changes are centralized and happen one by one in a strict order.
+
+3. **Changes are made with Pure Functions (Reducers):**
+   - To specify how the state tree is transformed by actions, you write pure functions called **reducers**.
+   - **Why it matters:** Reducers take the current state and an action, and return a *new* state object (they do not mutate the original state). Because they are pure functions, they are predictable and easy to test.
+
+> 💡 **Interviewer Focus:** This is a fundamental Redux question. You must list all three principles. Emphasize that state immutability and pure functions are key to Redux's predictability.
 </details>
 <hr/>
 
@@ -126,7 +199,8 @@ Redux is a predictable state container for JavaScript apps. It helps you write a
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-`useEffect` serves the purpose of lifecycle methods like `componentDidMount`, `componentDidUpdate`, and `componentWillUnmount`.
+`useEffect` is a React hook used to handle side effects in functional components.  It serves the purpose of lifecycle methods like `componentDidMount`, `componentDidUpdate`, and `componentWillUnmount`.
+
 - **No array:** Runs on every render.
 - **Empty array `[]`:** Runs once on mount.
 - **Array with values `[dep1, dep2]`:** Runs on mount and when dependencies change.
@@ -139,11 +213,22 @@ Redux is a predictable state container for JavaScript apps. It helps you write a
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-Reconciliation is the process through which React updates the DOM. React uses a heuristic O(n) algorithm based on two assumptions:
-1. Two elements of different types will produce different trees.
-2. The developer can hint at which child elements may be stable across different renders with a `key` prop.
+Reconciliation is the process through which React updates the real DOM. When a component's props or state change, React creates a new Virtual DOM tree and compares it with the previous one. This process of comparing two trees is called **Diffing**.
 
-> 💡 **Interviewer Focus:** Understanding that React doesn't do a full tree comparison (which is O(n^3)) for performance reasons.
+A full tree comparison has a complexity of $O(n^3)$. To make it performant, React uses a heuristic algorithm with $O(n)$ complexity based on two main assumptions:
+
+**1. Two elements of different types will produce different trees.**
+- If a `<div>` is replaced by a `<span>`, React will tear down the old tree (and its state) and build the new one from scratch.
+
+**2. The developer can hint at which child elements are stable across renders with a `key` prop.**
+- This is crucial for lists. Keys help React identify which items were added, removed, or reordered.
+
+**How the Diffing Algorithm Works:**
+- **Elements Of Different Types:** React tears down the old tree and builds the new tree from scratch. Component instances are destroyed and unmounted.
+- **DOM Elements Of The Same Type:** React looks at the attributes of both, keeps the same underlying DOM node, and only updates the changed attributes (e.g., changing `className` or `style`).
+- **Component Elements Of The Same Type:** React updates the props of the underlying component instance to match the new element, and calls `render` on it.
+
+> 💡 **Interviewer Focus:** Understanding that React doesn't do a full tree comparison for performance reasons. Mentioning the $O(n)$ heuristic algorithm, "Diffing", and the importance of `keys` are key indicators of a strong candidate.
 </details>
 <hr/>
 

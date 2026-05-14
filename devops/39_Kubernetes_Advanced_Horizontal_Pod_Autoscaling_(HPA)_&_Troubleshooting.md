@@ -1505,4 +1505,4 @@ kubectl auth can-i delete pods \
 
 ---
 
-← Previous: [`38_Kubernetes_Microservices_Deployment_Monolithic_vs_Microservices_GKE_&_Real-World_E-Commerce_App.md`](38_Kubernetes_Microservices_Deployment_Monolithic_vs_Microservices_GKE_&_Real-World_E-Commerce_App.md) | Next: [`40_Kubernetes_ConfigMaps_Secrets_Ingress.md`](40_Kubernetes_ConfigMaps_Secrets_Ingress.md) →
+← Previous: [`38_Kubernetes_Microservices_Deployment_Monolithic_vs_Microservices_GKE_&_Real-World_E-Commerce_App.md`](38_Kubernetes_Microservices_Deployment_Monolithic_vs_Microservices_GKE_&_Real-World_E-Commerce_App.md) | Next: [`40_Kubernetes_Monitoring_Prometheus_Grafana_&_Helm.md`](40_Kubernetes_Monitoring_Prometheus_Grafana_&_Helm.md) →
