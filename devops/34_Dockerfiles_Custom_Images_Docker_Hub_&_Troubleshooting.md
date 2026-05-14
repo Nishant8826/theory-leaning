@@ -76,7 +76,7 @@ FROM ubuntu:22.04        # Full Ubuntu OS
 FROM debian:12-slim      # Minimal Debian (smaller)
 FROM alpine:3.18         # Tiny Linux (~5MB) — smallest common base
 FROM python:3.11-slim    # Python with slim Debian
-FROM node:18-alpine      # Node.js on Alpine
+FROM node:22-alpine      # Node.js on Alpine
 FROM openjdk:21-slim     # Java 21
 FROM nginx:latest        # NGINX web server
 FROM scratch             # Literally nothing (for static binaries)
@@ -965,8 +965,8 @@ Production Server pulls and runs:
 
 | App Type | Base Image | Key Instructions | Start Command |
 |----------|-----------|-----------------|--------------|
-| **Node.js API** | `node:18-alpine` | `COPY package*.json`, `RUN npm ci`, `COPY . .` | `CMD ["node", "server.js"]` |
-| **React/Next.js** | `node:18-alpine` (build), `nginx:alpine` (serve) | Multi-stage build | `CMD ["nginx", "-g", "daemon off;"]` |
+| **Node.js API** | `node:22-alpine` | `COPY package*.json`, `RUN npm ci`, `COPY . .` | `CMD ["node", "server.js"]` |
+| **React/Next.js** | `node:22-alpine` (build), `nginx:alpine` (serve) | Multi-stage build | `CMD ["nginx", "-g", "daemon off;"]` |
 | **Spring Boot** | `openjdk:21-slim` | `COPY *.jar app.jar` | `CMD ["java", "-jar", "app.jar"]` |
 | **Python Flask** | `python:3.11-slim` | `COPY requirements.txt`, `RUN pip install` | `CMD ["python", "app.py"]` |
 | **Static HTML** | `nginx:alpine` | `COPY html/ /usr/share/nginx/html/` | (NGINX starts by default) |
@@ -1007,7 +1007,7 @@ docker build -t myapp .    docker images           docker run myapp
 ├─────────────────────────────────────┤
 │  Layer 2: COPY package.json /app    │  ← Your Dockerfile
 ├─────────────────────────────────────┤
-│  Layer 1: node:18-alpine (base)     │  ← FROM
+│  Layer 1: node:22-alpine (base)     │  ← FROM
 └─────────────────────────────────────┘
 
 Each layer is cached. Change Layer 4 → Layers 1-3 reused from cache ✅
@@ -1134,7 +1134,7 @@ docker run -it my-ubuntu-custom /bin/bash
 # Multi-stage build for a production Node.js API
 
 # ── Stage 1: Build Stage ──────────────────────────────────
-FROM node:18-alpine AS builder
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
@@ -1151,7 +1151,7 @@ COPY . .
 RUN npm run build
 
 # ── Stage 2: Production Stage ────────────────────────────
-FROM node:18-alpine AS production
+FROM node:22-alpine AS production
 
 LABEL maintainer="devops@company.com"
 LABEL version="1.0.0"
@@ -1191,19 +1191,19 @@ CMD ["node", "dist/server.js"]
 ### Example 3: Next.js Production Dockerfile
 
 ```dockerfile
-FROM node:18-alpine AS deps
+FROM node:22-alpine AS deps
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 
-FROM node:18-alpine AS builder
+FROM node:22-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED 1
 RUN npm run build
 
-FROM node:18-alpine AS runner
+FROM node:22-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED 1
@@ -1611,7 +1611,7 @@ docker run -d \
 docker run -d --name mongo -p 27017:27017 -v mongo-data:/data/db mongo:6
 docker run -d --name redis -p 6379:6379 -v redis-data:/data redis:7
 docker run -d --name nginx -p 80:80 -v ./nginx.conf:/etc/nginx/conf.d/default.conf nginx
-docker run -d --name api -p 3000:3000 -v .:/app -w /app node:18-alpine node server.js
+docker run -d --name api -p 3000:3000 -v .:/app -w /app node:22-alpine node server.js
 ```
 The developer's machine stays clean — no native installs needed. Each service is isolated, versioned, and identical to what runs in production. This is also a great introduction to Docker Compose, which would manage all these services from a single file.
 

@@ -261,7 +261,7 @@ app.get('/health', async (req, res) => {
 # Each microservice has its own Dockerfile
 # post-service/Dockerfile
 
-FROM node:18-alpine
+FROM node:22-alpine
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci --only=production

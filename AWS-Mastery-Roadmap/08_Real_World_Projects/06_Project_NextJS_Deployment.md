@@ -32,7 +32,7 @@ By default, Next.js builds a massive `.next` folder. To deploy to Docker efficie
 *Best for enterprise teams who need the Next.js app to live inside a custom VPC next to their backend APIs and databases.*
 1. Create a `Dockerfile` in the root of your Next.js project:
    ```dockerfile
-   FROM node:18-alpine AS runner
+   FROM node:22-alpine AS runner
    WORKDIR /app
    
    ENV NODE_ENV production

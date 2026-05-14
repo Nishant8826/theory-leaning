@@ -22,7 +22,7 @@ This is the industry standard for production MERN deployments. It provides high 
 ### Step 2: Dockerize the Backend
 1. In your Express backend folder, create a `Dockerfile`:
    ```dockerfile
-   FROM node:18-alpine
+   FROM node:22-alpine
    WORKDIR /usr/src/app
    COPY package*.json ./
    RUN npm install --production

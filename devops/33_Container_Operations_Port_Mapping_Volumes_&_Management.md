@@ -1130,7 +1130,7 @@ echo "Containers remaining: $(docker ps -a | wc -l)"
 
 ```dockerfile
 # Dockerfile for a Node.js API
-FROM node:18-alpine
+FROM node:22-alpine
 
 # Set working directory inside container
 WORKDIR /usr/src/app

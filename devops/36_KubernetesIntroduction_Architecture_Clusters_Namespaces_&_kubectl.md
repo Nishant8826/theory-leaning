@@ -443,7 +443,7 @@ metadata:
 spec:
   containers:
     - name: node-container
-      image: node:18-alpine
+      image: node:22-alpine
       ports:
         - containerPort: 3000
 ```
@@ -540,13 +540,13 @@ Developer
 ### 11.1 Dockerfile for Node.js App
 ```dockerfile
 # Stage 1: Build
-FROM node:18-alpine AS builder
+FROM node:22-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci --only=production
 
 # Stage 2: Run
-FROM node:18-alpine
+FROM node:22-alpine
 WORKDIR /app
 COPY --from=builder /app/node_modules ./node_modules
 COPY . .

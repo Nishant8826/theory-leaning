@@ -102,7 +102,7 @@ The `FROM` instruction is the single most impactful optimization decision. Your 
 | `python:3.11-alpine` | ~48 MB | Smallest Python — best size |
 | `node:18` | ~991 MB | Full Node.js |
 | `node:18-slim` | ~245 MB | Slim Node.js |
-| `node:18-alpine` | ~112 MB | Smallest Node.js — recommended |
+| `node:22-alpine` | ~112 MB | Smallest Node.js — recommended |
 | `openjdk:21-slim` | ~417 MB | Slim Java — good for Spring Boot |
 | `nginx:alpine` | ~41 MB | NGINX on Alpine — excellent |
 | `scratch` | 0 MB | For compiled static binaries only |
@@ -314,7 +314,7 @@ RUN npm run build            # Produces /app/dist/ (compiled output)
 
 # ═══ STAGE 2: RUNTIME ═════════════════════════════════════
 # Fresh start — only what we need to RUN
-FROM node:18-alpine AS runtime
+FROM node:22-alpine AS runtime
 
 WORKDIR /app
 
@@ -425,7 +425,7 @@ Single Stage (FROM node:18):
   build output:  +10 MB
   Total: ~1.55 GB 😱
 
-Multi-Stage (builder=node:18, runtime=node:18-alpine):
+Multi-Stage (builder=node:18, runtime=node:22-alpine):
   runtime base:  112 MB (alpine)
   prod only deps: +100 MB
   dist only:     +5 MB
@@ -771,7 +771,7 @@ Production Kubernetes Cluster
 
 | Service | Bloated Image | Optimized Image | Savings |
 |---------|--------------|-----------------|---------|
-| Node.js API | `node:18` = 991 MB | `node:18-alpine` = 112 MB | 88% |
+| Node.js API | `node:18` = 991 MB | `node:22-alpine` = 112 MB | 88% |
 | Python ML service | `ubuntu` + python = 1.14 GB | `python:3.11-slim` = 188 MB | 84% |
 | React frontend | `node:18` = 991 MB | Multi-stage → `nginx:alpine` = 41 MB | 96% |
 | Spring Boot API | `openjdk:21` = 470 MB | Multi-stage → `openjdk:21-slim` = 417 MB | 11% |
@@ -798,7 +798,7 @@ Build                                   └────────────�
 FINAL IMAGE: ~1.5 GB ❌                                 ↓ /dist only
                                         ┌─────────────────────────────┐
                                         │  STAGE 2: RUNTIME           │
-                                        │  FROM node:18-alpine (112MB)│
+                                        │  FROM node:22-alpine (112MB)│
                                         │  npm install --only=prod    │
                                         │  COPY /dist from builder    │
                                         └─────────────────────────────┘
@@ -839,7 +839,7 @@ Total: ~80MB (only what you need) ✅
 scratch             ████ 0 MB        ← Static binary only
 alpine:3.18         ████ 7 MB        ← Smallest full Linux
 nginx:alpine        ████████ 41 MB   ← NGINX on Alpine
-node:18-alpine      █████████████ 112 MB   ← Node.js on Alpine
+node:22-alpine      █████████████ 112 MB   ← Node.js on Alpine
 python:3.11-slim    ████████████████ 188 MB ← Slim Debian + Python
 node:18-slim        ███████████████████ 245 MB
 openjdk:21-slim     ████████████████████████ 417 MB
@@ -1010,7 +1010,7 @@ RUN npm run build
 # This produces /app/dist/ — compiled, optimized output
 
 # ════ Stage 2: Run the Application ═════════════════════════
-FROM node:18-alpine AS runtime
+FROM node:22-alpine AS runtime
 
 LABEL stage="runtime"
 LABEL maintainer="devops@company.com"
@@ -1169,7 +1169,7 @@ pipeline {
 
 ```dockerfile
 # ════ Stage 1: Build React/Next.js app ═════════════════════
-FROM node:18-alpine AS builder
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
@@ -1278,7 +1278,7 @@ docker-compose*
 
 🔍 **Scenario 1:** Your Jenkins CI/CD pipeline takes 18 minutes per run because `docker pull` downloads a 1.4 GB image every time. Your manager wants it under 5 minutes. What do you do?
 
-✅ **Answer:** Optimize the Docker image in two steps: (1) Switch the base image — from `FROM ubuntu:22.04` to `FROM python:3.11-slim` or `FROM node:18-alpine` depending on the runtime. This alone can cut image size by 80-85%; (2) Implement a multi-stage Dockerfile — keep all build tools in a builder stage, copy only the compiled artifact to a slim runtime stage. A 1.4 GB image typically becomes 150-250 MB. Docker pull of 200 MB completes in ~10-20 seconds even on a slow connection. Total pipeline time should drop from 18 minutes to under 4 minutes — and subsequent builds are faster due to layer caching.
+✅ **Answer:** Optimize the Docker image in two steps: (1) Switch the base image — from `FROM ubuntu:22.04` to `FROM python:3.11-slim` or `FROM node:22-alpine` depending on the runtime. This alone can cut image size by 80-85%; (2) Implement a multi-stage Dockerfile — keep all build tools in a builder stage, copy only the compiled artifact to a slim runtime stage. A 1.4 GB image typically becomes 150-250 MB. Docker pull of 200 MB completes in ~10-20 seconds even on a slow connection. Total pipeline time should drop from 18 minutes to under 4 minutes — and subsequent builds are faster due to layer caching.
 
 ---
 
@@ -1360,7 +1360,7 @@ Docker caches each layer. Since `package.json` rarely changes (only when adding/
 
 **Q3. What is the difference between `alpine`, `slim`, and full Docker base images?**
 
-**A:** Three variants exist for most official images: **Full** (e.g., `python:3.11`, `node:18`) is based on full Debian — includes compilers, build tools, documentation. ~900MB-1GB+. For build stages only. **Slim** (e.g., `python:3.11-slim`, `node:18-slim`) is stripped Debian — removes documentation, locale files, non-essential utilities. ~200-250MB. Good production choice for most apps. **Alpine** (e.g., `python:3.11-alpine`, `node:18-alpine`) is based on Alpine Linux with musl libc instead of glibc. ~50-120MB. Smallest option but some Python packages that need glibc require extra setup (`apk add build-base`). Best choice when you verify compatibility. Alpine also uses `apk` package manager instead of `apt`. The recommendation: use Alpine if compatibility is confirmed, otherwise use Slim.
+**A:** Three variants exist for most official images: **Full** (e.g., `python:3.11`, `node:18`) is based on full Debian — includes compilers, build tools, documentation. ~900MB-1GB+. For build stages only. **Slim** (e.g., `python:3.11-slim`, `node:18-slim`) is stripped Debian — removes documentation, locale files, non-essential utilities. ~200-250MB. Good production choice for most apps. **Alpine** (e.g., `python:3.11-alpine`, `node:22-alpine`) is based on Alpine Linux with musl libc instead of glibc. ~50-120MB. Smallest option but some Python packages that need glibc require extra setup (`apk add build-base`). Best choice when you verify compatibility. Alpine also uses `apk` package manager instead of `apt`. The recommendation: use Alpine if compatibility is confirmed, otherwise use Slim.
 
 ---
 

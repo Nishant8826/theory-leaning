@@ -14,7 +14,7 @@ Before shipping containers, loading a cargo ship meant manually stacking barrels
 You write a `Dockerfile` for your Express/Next.js application. You build this into a Docker Image. This Image is pushed to a registry (like AWS ECR). AWS compute services (like ECS or EKS) pull this image and run it as a Container.
 
 ## Core Concepts
-- **Dockerfile**: A text file containing the instructions to build an image (e.g., `FROM node:18-alpine`).
+- **Dockerfile**: A text file containing the instructions to build an image (e.g., `FROM node:22-alpine`).
 - **Image**: The immutable, built artifact containing your code and runtime.
 - **Container**: The running, executing instance of the Image.
 - **Orchestration**: The process of automatically managing, scaling, and networking thousands of containers (handled by ECS/EKS).
@@ -32,7 +32,7 @@ You write a `Dockerfile` for your Express/Next.js application. You build this in
 
 ## Production Best Practices
 - **Multi-Stage Builds**: Use multi-stage Dockerfiles to compile your TypeScript/Next.js code in one stage, and only copy the compiled output to the final image. This drastically reduces image size.
-- **Use Alpine/Slim Images**: Always use `node:18-alpine` instead of `node:18` to reduce the image size from 1GB to ~100MB, saving ECR storage costs and ECS pull times.
+- **Use Alpine/Slim Images**: Always use `node:22-alpine` instead of `node:18` to reduce the image size from 1GB to ~100MB, saving ECR storage costs and ECS pull times.
 
 ## Security Best Practices
 - **Run as Non-Root**: By default, Docker runs processes as `root`. Always add `USER node` to your Dockerfile so if the Node app is compromised, the attacker has limited privileges.
