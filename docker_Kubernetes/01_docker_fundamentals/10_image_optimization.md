@@ -57,7 +57,7 @@ Let's compare the size of a standard Node image vs an Alpine Node image.
 
 1. Pull both images:
    ```bash
-   docker pull node:18
+   docker pull node:22
    docker pull node:22-alpine
    ```
 2. Check their sizes:

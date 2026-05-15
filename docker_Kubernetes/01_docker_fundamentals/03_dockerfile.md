@@ -63,6 +63,14 @@ docker build -f Dockerfile.dev -t my-app:dev .
 docker run -d -p 3000:3000 my-app:v1
 ```
 
+> [!NOTE]
+> **Command Breakdown: `docker build -t my-app:v1 .`**
+> - **`build`**: Tells Docker to create an image.
+> - **`-t` (tag)**: Flags Docker to name and tag the image (e.g., `name:tag`).
+> - **`my-app:v1`**: The name (`my-app`) and version (`v1`). Defaults to `latest` if tag is omitted.
+> - **`.` (Dot)**: The **Build Context**. Tells Docker to look for the `Dockerfile` in the current directory and use it as the context for the build.
+> - **`-f` (file)**: Used to specify a custom Dockerfile name (e.g., `-f Dockerfile.dev`).
+
 ## Hands-On Exercise
 Let's containerize a simple Node.js application.
 
