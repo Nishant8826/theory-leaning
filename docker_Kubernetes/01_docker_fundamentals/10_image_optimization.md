@@ -23,18 +23,21 @@ An optimized Docker image is the backpacking gear.
 
 ## Architecture / Flow
 
-```mermaid
-graph TD
-    A[Unoptimized Image: 1GB] -->|Use Alpine| B[Image: 200MB]
-    B -->|Use Multi-stage| C[Image: 50MB]
-    C -->|Combine RUN commands| D[Image: 30MB]
+```text
+[Standard Image] (1GB)
+        |
+        | 1. Use Alpine base
+        v
+[Alpine Image] (200MB)
+        |
+        | 2. Multi-stage build
+        v
+[Artifacts Only] (50MB)
+        |
+        | 3. Combine RUN commands
+        v
+[Optimized Image] (30MB)
 ```
-
-### Optimization Breakdown:
-1. **The Starting Point**: A standard image (like `node:18`) contains a full Debian OS and many tools you don't need, resulting in a large size.
-2. **Step 1: Minimal Base**: Switching to `node:22-alpine` cuts the size drastically by using a minimal Linux distribution.
-3. **Step 2: Multi-Stage**: Copying only the build artifacts (as seen in the previous topic) removes build-time dependencies.
-4. **Step 3: Layer Reduction**: Combining commands (e.g., `RUN apt-get update && apt-get install -y ...`) prevents Docker from creating intermediate layers for temporary files.
 
 
 ## Practical Commands

@@ -30,14 +30,23 @@ Think of this relationship like **Object-Oriented Programming (OOP)** or **Bakin
 
 ## Architecture / Flow
 
-```mermaid
-graph TD
-    A[Dockerfile] -->|docker build| B(Docker Image)
-    B -->|docker run| C(Container 1)
-    B -->|docker run| D(Container 2)
-    B -->|docker run| E(Container 3)
-    
-    style B fill:#f9f,stroke:#333,stroke-width:2px
+```text
++------------+
+| Dockerfile |
++------------+
+      |
+      | docker build
+      v
++------------------+
+|   Docker Image   |
+| (Read-Only Base) |
++------------------+
+      |
+      +---> docker run ---> [Container 1]
+      |
+      +---> docker run ---> [Container 2]
+      |
+      +---> docker run ---> [Container 3]
 ```
 
 ### Key Takeaways from the Diagram:

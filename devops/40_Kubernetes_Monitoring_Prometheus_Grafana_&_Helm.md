@@ -1431,4 +1431,4 @@ pipeline {
 
 ---
 
-← Previous: [`39_Kubernetes_Advanced_Horizontal_Pod_Autoscaling_(HPA)_&_Troubleshooting.md`](39_Kubernetes_Advanced_Horizontal_Pod_Autoscaling_(HPA)_&_Troubleshooting.md) | Next: [`40_Kubernetes_Monitoring_Prometheus_Grafana_&_Helm.md`](40_Kubernetes_Monitoring_Prometheus_Grafana_&_Helm.md) →
+← Previous: [`39_Kubernetes_Advanced_Horizontal_Pod_Autoscaling_(HPA)_&_Troubleshooting.md`](39_Kubernetes_Advanced_Horizontal_Pod_Autoscaling_(HPA)_&_Troubleshooting.md) | Next: [`41_Grafana_Deep_Dive_Dashboards_Alerting_User_Management_&_Real_World_Monitoring.md`](41_Grafana_Deep_Dive_Dashboards_Alerting_User_Management_&_Real_World_Monitoring.md) →

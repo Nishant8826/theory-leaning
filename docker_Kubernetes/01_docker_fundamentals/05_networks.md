@@ -18,18 +18,18 @@ Think of Docker Networks like an **Office LAN (Local Area Network)** or a **Priv
 
 ## Architecture / Flow
 
-```mermaid
-graph TD
-    subgraph Custom Bridge Network
-        A[Node.js App Container] <--> B[MongoDB Container]
-    end
-    C[Host Machine] <--> A
+```text
+[App Container] <-----> [DB Container]
+          |                           |
+          | (Can talk by name via Docker DNS)
+          v                           v
++-----------------------------------------------+
+|         Custom Bridge Network (Virtual LAN)   |
++-----------------------------------------------+
+          ^
+          | (Host can only access exposed ports)
+    [Host Machine]
 ```
-
-### Understanding the Flow:
-1. **Isolated Network**: Docker creates a virtual software bridge (network). Containers attached to it can talk to each other.
-2. **Built-in DNS**: Docker runs a DNS server. When the Node.js app tries to connect to `mongodb://mongo-db:27017`, Docker resolves `mongo-db` to the internal IP of the MongoDB container.
-3. **External Access**: The Host Machine can only talk to containers that expose ports (like the Node.js app). The database can remain hidden from the outside world while still being accessible to the app.
 
 
 ## Practical Commands

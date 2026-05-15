@@ -25,22 +25,25 @@ In this analogy:
 
 ## Architecture / Flow
 
-```mermaid
-graph LR
-    A[Developer] -->|docker build| B(Docker Client)
-    B -->|API| C(Docker Daemon)
-    C -->|Pulls| D[Docker Registry]
-    C -->|Creates| E[Docker Image]
-    E -->|Runs| F[Docker Container]
+```text
+[Developer]
+    |
+    | 1. Writes Code & Dockerfile
+    v
+[Docker Client]
+    |
+    | 2. Sends commands (build/run)
+    v
+[Docker Daemon] <-----> [Docker Registry] (3. Pulls if not local)
+    |
+    | 4. Creates
+    v
+[Docker Image]
+    |
+    | 5. Runs as
+    v
+[Docker Container]
 ```
-
-### Step-by-Step Breakdown:
-1. **Developer**: Writes code and a `Dockerfile` (instructions).
-2. **Docker Client**: The command-line tool (CLI) where you type `docker build` or `docker run`. It sends your commands to the Daemon.
-3. **Docker Daemon**: The brain running on your machine. It listens for API requests and manages Docker objects like images, containers, networks, and volumes.
-4. **Docker Registry**: A library of images (like Docker Hub). If you don't have the image locally, the Daemon pulls it from here.
-5. **Docker Image**: The read-only blueprint created by the Daemon.
-6. **Docker Container**: The actual running application instance created from the image.
 
 
 ## Practical Commands

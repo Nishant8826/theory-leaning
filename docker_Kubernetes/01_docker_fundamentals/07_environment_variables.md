@@ -18,17 +18,20 @@ Think of a Docker image like a **Universal Remote Control**.
 
 ## Architecture / Flow
 
-```mermaid
-graph TD
-    A[Environment Variables] -->|Passed to| B(docker run)
-    B -->|Injected into| C(Running Container)
-    C -->|Read by| D(Application Code)
+```text
+[Define Variables]
+(Terminal, .env file, or CI/CD)
+        |
+        | 1. docker run -e KEY=VALUE
+        v
+[Docker Daemon]
+        |
+        | 2. Injects into
+        v
+[Running Container]
+        |
+        | 3. App code reads process.env.KEY
 ```
-
-### Flow Breakdown:
-1. **Definition**: You define variables in your terminal, a `.env` file, or your CI/CD system.
-2. **Injection**: When you execute `docker run -e KEY=VALUE`, the Docker daemon injects these variables into the container's environment space.
-3. **Consumption**: Your application code (e.g., `process.env.KEY` in Node.js) reads these values at runtime to configure itself.
 
 
 ## Practical Commands

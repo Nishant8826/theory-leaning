@@ -19,23 +19,16 @@ Think of debugging a container like **Diagnosing a modern car vs an old car**.
 
 ## Architecture / Flow
 
-```mermaid
-graph TD
-    A[Issue Occurs] --> B{Container Running?}
-    B -->|Yes| C[Check Logs / Exec into it]
-    B -->|No| D[Check Logs / Inspect exit code]
-    C --> E[Identify Root Cause]
-    D --> E
+```text
+[Issue Occurs]
+      |
+      v
+{Is Container Running?}
+      |
+      +---> [Yes] ---> Check Logs ---> Exec into it
+      |
+      +---> [No]  ---> Check Logs ---> Inspect Exit Code
 ```
-
-### Debugging Flow Breakdown:
-1. **Identify the State**: First, check if the container is still running or has crashed (`docker ps -a`).
-2. **If Running**: 
-   - Check the logs (`docker logs`) to see application errors.
-   - Use `docker exec` to get a shell inside and inspect the environment or test connections.
-3. **If Stopped/Crashed**:
-   - Check the logs to see the last output before death.
-   - Use `docker inspect` to look for the `ExitCode`. An exit code of `0` means it finished its job successfully; anything else usually means a crash.
 
 
 ## Practical Commands

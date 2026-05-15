@@ -21,22 +21,19 @@ The customer (the production environment) only sees the bread, not the messy kit
 
 ## Architecture / Flow
 
-```mermaid
-graph TD
-    subgraph Stage 1: Build (Heavy)
-        A[Node.js Image] --> B[npm install]
-        B --> C[npm run build]
-    end
-    subgraph Stage 2: Serve (Light)
-        D[Nginx Image] --> E[Copy files from Stage 1]
-    end
-    E --> F(Small Production Image)
+```text
+[Stage 1: Build]
+- Uses heavy image (Node)
+- Installs dependencies
+- Generates build artifacts
+        |
+        | COPY --from=build
+        v
+[Stage 2: Production]
+- Uses light image (Nginx)
+- Copies ONLY artifacts
+- Result: Small & secure image
 ```
-
-### Flow Breakdown:
-1. **Stage 1 (The Kitchen)**: We use a full Node.js image to install dependencies and build the application. This creates a lot of temporary files (like `node_modules`) that we don't need in production.
-2. **The Handover**: We use `COPY --from` to grab *only* the finished build folder (e.g., `dist/` or `build/`) and bring it over to the next stage.
-3. **Stage 2 (The Cafe)**: We use a fresh, lightweight image (like Nginx on Alpine) to host the files. This image does not contain Node.js or any build tools, making it extremely small and secure.
 
 
 ## Practical Commands

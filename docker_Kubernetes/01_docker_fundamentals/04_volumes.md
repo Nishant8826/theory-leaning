@@ -19,18 +19,18 @@ If you want to keep your stuff, you put it in a **Suitcase** (Volume) that you t
 
 ## Architecture / Flow
 
-```mermaid
-graph TD
-    A[Container] -->|Writes to| B(/data/db inside container)
-    B -->|Mapped to| C(Host Machine Filesystem)
-    
-    style C fill:#f9f,stroke:#333,stroke-width:2px
+```text
+[Container App]
+      |
+      | 1. Writes to /data/db
+      v
+[Isolated Path in Container]
+      |
+      | 2. Mapped by Docker
+      v
+[Host Machine Folder]
+(3. Data persists here even if container is deleted)
 ```
-
-### How it Works:
-1. **Isolated Path**: The container thinks it is writing to a normal folder inside its isolated filesystem (e.g., `/data/db`).
-2. **The Map (Mount)**: Docker intercepts writes to that specific path and redirects them to a folder on the **Host Machine** (your real computer or server).
-3. **Decoupled Lifecycle**: When the container dies, the data remains safe on the host machine. A new container can be created and mapped to the same host path, picking up right where the old one left off.
 
 
 ## Practical Commands

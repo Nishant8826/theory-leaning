@@ -19,18 +19,20 @@ Think of Docker Compose like a **Conductor of an Orchestra** or a **Blueprint fo
 
 ## Architecture / Flow
 
-```mermaid
-graph TD
-    A[docker-compose.yml] -->|docker compose up| B(Docker Compose)
-    B -->|Creates| C[Service 1: Web]
-    B -->|Creates| D[Service 2: API]
-    B -->|Creates| E[Service 3: DB]
+```text
+[docker-compose.yml]
+(The Blueprint)
+        |
+        | 1. docker compose up
+        v
+[Docker Compose Tool]
+        |
+        +---> Creates [Services (Containers)]
+        |
+        +---> Creates [Networks]
+        |
+        +---> Creates [Volumes]
 ```
-
-### How it Works:
-1. **The Blueprint**: You define all your services, networks, and volumes in a single `docker-compose.yml` file.
-2. **The Execution**: When you run `docker compose up`, the Compose tool reads the file and makes calls to the Docker API to create all the resources in the correct order.
-3. **Automatic Networking**: Compose automatically creates a default network for your app and attaches all services to it, enabling them to talk to each other by service name (e.g., `web` can talk to `db`).
 
 
 ## Practical Commands

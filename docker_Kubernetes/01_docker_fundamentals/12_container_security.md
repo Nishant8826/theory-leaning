@@ -22,19 +22,22 @@ Running as root in a container is like leaving your apartment door wide open.
 
 ## Architecture / Flow
 
-```mermaid
-graph TD
-    A[Secure Base Image] --> B[Non-Root User]
-    B --> C[No Hardcoded Secrets]
-    C --> D[Vulnerability Scanning]
-    D --> E(Secure Production Container)
+```text
+[1. Foundation]
+Use secure, minimal base image (Alpine)
+        |
+        v
+[2. Execution]
+Switch to non-root user
+        |
+        v
+[3. Configuration]
+Pass secrets at runtime (no baking)
+        |
+        v
+[4. Validation]
+Scan image in CI/CD
 ```
-
-### Defense in Depth Flow:
-1. **Foundation**: Start with a secure, minimal base image (like Alpine) to reduce the number of installed packages (and thus potential vulnerabilities).
-2. **Execution**: Switch to a non-root user so that even if the app has a vulnerability (like Remote Code Execution), the attacker cannot easily access system files.
-3. **Configuration**: Pass secrets at runtime, ensuring that no sensitive data is baked into the image layers.
-4. **Validation**: Scan the image in your CI/CD pipeline to ensure no known vulnerabilities make it to production.
 
 
 ## Practical Commands

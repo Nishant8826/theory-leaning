@@ -27,16 +27,28 @@ A `Dockerfile` is just a list of these exact steps, written in a way that Docker
 
 ## Architecture / Flow
 
-```mermaid
-graph TD
-    A[Dockerfile] -->|docker build| B(Docker Image)
-    B -->|docker run| C(Running Container)
+```text
++-------------------------+
+| Source Code & Dockerfile|
++-------------------------+
+            |
+            | 1. docker build
+            v
++-------------------------+
+| Docker Image            |
+| (Static, Read-Only)     |
++-------------------------+
+            |
+            | 2. docker run
+            v
++-------------------------+
+| Running Container       |
+| (Isolated Environment + |
+|  Writable Layer)        |
+|                         |
+| -> Executes CMD         |
++-------------------------+
 ```
-
-### Detailed Flow:
-1. **Source Code & Dockerfile**: You start with your application code and a `Dockerfile` (the build instructions).
-2. **The Build Stage (`docker build`)**: Docker reads the `Dockerfile` line by line. For each instruction, it creates a new layer in the **Docker Image**. This image is a static, read-only package.
-3. **The Run Stage (`docker run`)**: When you run the image, Docker creates an isolated environment (the **Container**), adds a writable layer on top, and executes the `CMD` specified in the Dockerfile.
 
 
 ## Practical Commands

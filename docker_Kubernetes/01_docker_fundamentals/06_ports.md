@@ -20,17 +20,19 @@ Port forwarding is that directory. It maps `HostPort:ContainerPort`.
 
 ## Architecture / Flow
 
-```mermaid
-graph LR
-    A[Internet / User] -->|Port 8080| B(Host Machine)
-    B -->|Forwards to| C(Container Port 80)
+```text
+[User / Internet]
+        |
+        | 1. Hits Host on Port 8080
+        v
+[Host Machine]
+        |
+        | 2. Docker forwards traffic
+        v
+[Container (Port 80)]
+        |
+        | 3. App processes request
 ```
-
-### Breakdown of the Flow:
-1. **Traffic Arrives**: A user or external system sends a request to your host machine's IP address on a specific port (e.g., `8080`).
-2. **Docker Proxy**: The Docker daemon has set up a rule (using iptables on Linux) to listen on that host port.
-3. **Forwarding**: Docker forwards that traffic directly into the isolated network of the container, targeting the specific container port (e.g., `80`).
-4. **Response**: The application inside the container processes the request and sends the response back through the same path.
 
 
 ## Practical Commands
