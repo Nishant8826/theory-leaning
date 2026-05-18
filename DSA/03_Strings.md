@@ -152,96 +152,37 @@ console.log(isPalindromeBrute("race a car"));                      // false
 #### ⚡ Optimized — Two Pointers
 
 ```javascript
-/**
- * Valid Palindrome
- *
- * We use TWO POINTERS:
- * i -> starts from left
- * j -> starts from right
- *
- * Example:
- * "A man, a plan, a canal: Panama"
- *
- * After ignoring spaces and symbols:
- * "amanaplanacanalpanama"
- *
- * Compare:
- * a == a
- * m == m
- * a == a
- * ...
- *
- * If every character matches → palindrome
- */
-
 var isPalindrome = function (s) {
-
-    // Convert entire string to lowercase
-    // so 'A' and 'a' are treated the same
+    // Convert string to lowercase
     s = s.toLowerCase();
-
-    /**
-     * Checks whether character is:
-     * a-z OR 0-9
-     */
+    
+    // Check if character is letter or number
     function isAlphaNumeric(ch) {
         return /^[a-z0-9]$/i.test(ch);
     }
 
-    // Left pointer
+    // Two pointers
     let i = 0;
-
-    // Right pointer
     let j = s.length - 1;
 
-    /**
-     * Keep checking until pointers cross
-     */
     while (i < j) {
 
-        /**
-         * Skip invalid characters from LEFT
-         *
-         * Example:
-         * "a,"
-         *     ^
-         * comma is ignored
-         */
-        while (i < j && !isAlphaNumeric(s[i])) {
-            i++;
-        }
+        // Skip special characters
+        while (i < j && !isAlphaNumeric(s[i])) i++;
+        while (i < j && !isAlphaNumeric(s[j])) j--;
 
-        /**
-         * Skip invalid characters from RIGHT
-         */
-        while (i < j && !isAlphaNumeric(s[j])) {
-            j--;
-        }
+        // Compare characters
+        if (s[i] !== s[j]) return false;
 
-        /**
-         * Compare characters
-         *
-         * If mismatch found,
-         * string is NOT palindrome
-         */
-        if (s[i] !== s[j]) {
-            return false;
-        }
-
-        // Move both pointers inward
         i++;
         j--;
     }
 
-    /**
-     * If loop completes,
-     * every character matched
-     */
     return true;
 };
 
-console.log(isPalindromeOptimized("A man, a plan, a canal: Panama")); // true
-console.log(isPalindromeOptimized("race a car"));                      // false
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car"));                      // false
 ```
 
 **Simple Explanation:** You and a friend stand at opposite ends of the sentence. You both walk toward each other, skipping spaces and punctuation. At each step, you compare your characters. If they ever differ, it's not a palindrome.
@@ -421,23 +362,19 @@ Example: `"abcabcbb"` → `3` (substring `"abc"`)
 
 ```javascript
 function longestSubstringBrute(s) {
-  let maxLen = 0;
-
-  // Try every possible substring
-  for (let i = 0; i < s.length; i++) {
-    const seen = new Set();
-    let len = 0;
-
-    for (let j = i; j < s.length; j++) {
-      if (seen.has(s[j])) break; // Duplicate found, stop
-      seen.add(s[j]);
-      len++;
+    let maxLen = 0;
+    for (let i = 0; i < s.length; i++) {
+        let map = new Map();
+        let len = 0;
+        for (let j = i; j < s.length; j++) {
+            if (map.has(s[j])) break;
+            map.set(s[j], true);
+            len++;
+        }
+        maxLen = Math.max(maxLen, len);
     }
 
-    maxLen = Math.max(maxLen, len);
-  }
-
-  return maxLen;
+    return maxLen;
 }
 
 console.log(longestSubstringBrute("abcabcbb")); // 3
@@ -448,19 +385,19 @@ console.log(longestSubstringBrute("bbbbb"));     // 1
 
 ```javascript
 function longestSubstringOptimized(s) {
-  const charIndex = new Map(); // Character → last seen index
+  const map = new Map(); // Character → last seen index
   let maxLen = 0;
-  let start = 0; // Start of current window
+  let left = 0; // left of current window
 
-  for (let end = 0; end < s.length; end++) {
-    // If character was seen and is within current window
-    if (charIndex.has(s[end]) && charIndex.get(s[end]) >= start) {
-      // Move start past the duplicate
-      start = charIndex.get(s[end]) + 1;
+  for (let right = 0; right < s.length; right++) {
+    // If s[right] was seen and is within current window
+    if (map.has(s[right]) && map.get(s[right]) >= left) {
+      // Move left pointer to right of the previous occurrence of s[right]
+      left = map.get(s[right]) + 1;
     }
-
-    charIndex.set(s[end], end); // Update last seen position
-    maxLen = Math.max(maxLen, end - start + 1); // Update max length
+    
+    map.set(s[right], right); // Update last seen position
+    maxLen = Math.max(maxLen, right - left + 1); // Update max length
   }
 
   return maxLen;
@@ -493,21 +430,35 @@ console.log(longestSubstringOptimized("pwwkew"));    // 3
 
 ```javascript
 function countVowelsConsonants(str) {
-  let vowels = 0;
-  let consonants = 0;
-  const vowelSet = new Set(['a', 'e', 'i', 'o', 'u']);
+    // Convert string to lowercase
+    str = str.toLowerCase();
 
-  for (const ch of str.toLowerCase()) {
-    if (ch >= 'a' && ch <= 'z') {
-      if (vowelSet.has(ch)) {
-        vowels++;
-      } else {
-        consonants++;
-      }
+    // Check if character is alphabet
+    function cleanStr(ch) {
+        return /^[a-z]$/.test(ch);
     }
-  }
 
-  return { vowels, consonants };
+    let vowels = 'aeiou';
+    let vow = 0;
+    let con = 0;
+
+    // Loop through each character
+    for(let i = 0; i < str.length; i++) {
+
+        // Ignore non-alphabet characters
+        if(!cleanStr(str[i])) continue;
+
+        // Count vowels
+        else if(vowels.includes(str[i])) vow++;
+
+        // Otherwise count consonants
+        else con++;
+    }
+
+    return {
+        vowels: vow,
+        consonants: con
+    };
 }
 
 console.log(countVowelsConsonants("Hello World"));

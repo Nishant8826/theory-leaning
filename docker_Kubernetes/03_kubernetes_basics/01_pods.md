@@ -28,8 +28,8 @@ Think of a Pod as a **Peapod** or a **Shared Apartment**.
 |  | (Main App)     |  | (Sidecar)      |  |
 |  | Port: 80       |  | Port: 8080     |  |
 |  +----------------+  +----------------+  |
-|          │                    │          |
-|          └───► Shared Volume ◄──┘          |
+|          │                      │        |
+|          └───► Shared Volume ◄──┘        |
 +------------------------------------------+
 ```
 
@@ -67,6 +67,16 @@ Let's create a Pod using a YAML definition file (declarative way).
        ports:
        - containerPort: 80
    ```
+
+   **YAML Breakdown:**
+   - **apiVersion: v1**: Core API version for Pods.
+   - **kind: Pod**: Tells Kubernetes to create a Pod resource.
+   - **metadata**: Contains the `name` (unique identifier) and `labels` (for organization).
+   - **spec**: Defines the desired state.
+     - **containers**: A list of containers to run.
+       - **image**: The Docker image to use (`nginx:alpine`).
+       - **containerPort**: The port the container listens on (80).
+
 2. Apply it to your cluster:
    ```bash
    kubectl apply -f pod.yaml
