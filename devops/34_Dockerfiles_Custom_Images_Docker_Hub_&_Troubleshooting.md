@@ -382,6 +382,15 @@ Successfully built 5e6f7a8b9c0d
 Successfully tagged my-first-image:latest
 ```
 
+> 💡 **How are these Layer IDs generated? (Are they random?)**
+> 
+> *Note: The sequential IDs in the output above (`1a2b...`, `2b3c...`) are just dummy placeholders for readability. Real IDs look like random strings (e.g., `7d9b5843b12a`), but they are **NOT random!***
+> 
+> 1. **Content Hashes:** Modern Docker uses a **content-addressable storage model**. The ID of a layer is a **SHA-256 cryptographic hash** of the exact files and changes inside that layer.
+> 2. **Dependent on Previous Layers:** The ID generated at each step (intermediate image ID) is a hash of a configuration JSON file. This JSON file lists the hashes of **all previous layers**. 
+> 
+> **Conclusion:** Every new layer ID is mathematically tied to the previous layers! If you change a previous layer, its hash changes, which causes a domino effect changing every layer ID after it. This is exactly how Docker determines when to use **Layer Caching**.
+
 ### The Build Context
 
 The `.` in `docker build -t name .` tells Docker: "The build context is the current directory." Docker sends ALL files in this directory to the Docker daemon for the build.
