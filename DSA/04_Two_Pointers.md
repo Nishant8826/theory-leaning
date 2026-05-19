@@ -311,9 +311,21 @@ function sortColorsBrute(arr) {
 
   // Fill the array
   let idx = 0;
-  while (count0-- > 0) arr[idx++] = 0;
-  while (count1-- > 0) arr[idx++] = 1;
-  while (count2-- > 0) arr[idx++] = 2;
+  while (count0 > 0){
+    arr[idx] = 0;
+    count0--;
+    idx++;
+  } 
+  while (count1 > 0){
+    arr[idx] = 1;
+    count1--;
+    idx++;
+  } 
+  while (count2 > 0){
+    arr[idx] = 2;
+    count2--;
+    idx++;
+  } 
 
   return arr;
 }
