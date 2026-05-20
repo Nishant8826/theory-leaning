@@ -856,4 +856,4 @@ terraform.tfvars
 ```
 
 
-← Previous: [`42_Terraform_&_Infrastructure_as_Code_(IaC).md`](42_Terraform_&_Infrastructure_as_Code_(IaC).md) | Next: [`44_Terraform_Day3_Modules_And_Remote_State.md`](44_Terraform_Day3_Modules_And_Remote_State.md) →
+← Previous: [`42_Terraform_&_Infrastructure_as_Code_(IaC).md`](42_Terraform_&_Infrastructure_as_Code_(IaC).md) | Next: [`44_Deploying_3-Tier_Architecture_on_AWS_using_Terraform_(IaC).md`](44_Deploying_3-Tier_Architecture_on_AWS_using_Terraform_(IaC).md) →
