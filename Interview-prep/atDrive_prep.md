@@ -1345,6 +1345,12 @@ In MySQL (specifically the default InnoDB engine), we can classify indexes into 
     *   Used for geographic spatial data types (coordinates, points, polygons).
     *   Uses R-Tree structures instead of standard B-Trees to handle multi-dimensional search coordinate lookups.
 
+> [!NOTE]
+> **Understanding the Difference & Connection between Q3 & Q4:**
+> *   **Q3 is about "Rules & Roles" (Functional Level):** How you declare the index in your database schema (e.g. Unique, Composite, Primary Key).
+> *   **Q4 is about "Physical Disk Storage" (Architectural Level):** How the InnoDB database engine physically arranges data bytes on your hard disk (Clustered vs. Non-Clustered).
+> *   **The Connection:** Your **Primary Key** (from Q3) physically dictates the data sorting on disk, automatically mapping to a **Clustered Index** (from Q4). All other indexes you create (Unique, Regular, Composite from Q3) are stored in separate helper tables as **Non-Clustered Indexes** (from Q4) pointing back to the primary key.
+
 ---
 
 ### Q4: What is the difference between a Clustered Index and a Non-Clustered Index?
