@@ -1346,4 +1346,4 @@ ansible --version
 
 ## Navigation Footer
 
-← Previous: [`45_Ansible_Configuration_Management_&_Automation.md`](45_Ansible_Configuration_Management_&_Automation.md) | Next: [`47_Installing_Ansible_on_Linux_Mac_&_Windows_+_First_Playbook_in_5_Minutes`](47_Installing_Ansible_on_Linux_Mac_&_Windows_+_First_Playbook_in_5_Minutes.md) →
+← Previous: [`46_Ansible_Playbooks_Roles_&_Tower.md`](46_Ansible_Playbooks_Roles_&_Tower.md) | Next: [`47_Python_for_DevOps_Automation.md`](47_Python_for_DevOps_Automation.md) →
