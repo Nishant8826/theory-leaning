@@ -1,5 +1,10 @@
 # 23 - Environment Variables 🔐
 
+> [!NOTE]
+> ### 💡 Topic Quick Overview (For Beginners)
+> - **What is it?** Environment variables are key-value configuration variables stored outside the application source code.
+> - **Why do we use it?** They keep sensitive credentials (like API keys) and configuration settings (like server URLs) secure and customizable across local, test, and production builds.
+> - **How does it work?** Define variables in `.env` files prefixed with `VITE_` (for Vite), and reference them in your code using `import.meta.env.VITE_MY_VARIABLE`.
 
 ---
 
@@ -235,14 +240,4 @@ When deploying, set env vars on the hosting platform — not in committed files:
 
 ---
 
-## 🎯 Practice Tasks
-
-1. Create a `.env` file for your Vite app with `VITE_API_URL`
-2. Create an axios instance in `services/api.js` that uses `VITE_API_URL`
-3. Create a `.env.development` (localhost URL) and `.env.production` (live URL)
-4. Add a "Dev Mode" banner that only shows when `import.meta.env.DEV` is true
-5. Create a `.env.example` file with all the variable names but empty values
-
----
-
-← Previous: [22_folder_structure.md](22_folder_structure.md) | Next: [24_build_deployment.md](24_build_deployment.md) →
+← Previous: [22_folder_structure.md](22_folder_structure.md) | Index: [00_Index.md](00_Index.md) | Next: [24_build_deployment.md](24_build_deployment.md) →

@@ -1,5 +1,10 @@
 # 07 - Event Handling 🖱️
 
+> [!NOTE]
+> ### 💡 Topic Quick Overview (For Beginners)
+> - **What is it?** Event handling in React is the process of capturing and responding to user actions (like clicks, keypresses, and form submissions).
+> - **Why do we use it?** It makes application interfaces interactive, allowing you to run code and update state in response to direct user feedback.
+> - **How does it work?** Pass event handler functions as props using camelCase naming (e.g., `onClick={handleClick}`), and prevent default browser behaviors with `e.preventDefault()`.
 
 ---
 
@@ -244,14 +249,4 @@ Use `e.stopPropagation()` to stop events from bubbling up.
 
 ---
 
-## 🎯 Practice Tasks
-
-1. Create a button that changes its own text when clicked (e.g., "Click Me" → "Clicked! ✅")
-2. Create a form with name + email inputs and an alert on submit (use `e.preventDefault()`)
-3. Build a color picker — clicking color buttons changes the background color of a div
-4. Build a hover card that shows a message when you hover over it (`onMouseEnter` / `onMouseLeave`)
-5. Create an input that detects Enter key and shows the typed value in an alert
-
----
-
-← Previous: [06_state.md](06_state.md) | Next: [08_conditional_rendering.md](08_conditional_rendering.md) →
+← Previous: [06_state.md](06_state.md) | Index: [00_Index.md](00_Index.md) | Next: [08_conditional_rendering.md](08_conditional_rendering.md) →

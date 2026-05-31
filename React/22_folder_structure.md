@@ -1,5 +1,10 @@
 # 22 - Folder Structure Best Practices 📁
 
+> [!NOTE]
+> ### 💡 Topic Quick Overview (For Beginners)
+> - **What is it?** Folder structure refers to organizing file layouts inside a project directory (e.g., separating components, hooks, assets, and pages).
+> - **Why do we use it?** As codebases grow, a disorganized structure makes files hard to find and collaborate on. A logical structure keeps the project scalable.
+> - **How does it work?** Group files by feature (e.g., `features/auth`, `features/cart`) or by file type (e.g., `components/`, `hooks/`, `pages/`).
 
 ---
 
@@ -257,14 +262,4 @@ import { ROUTES } from "../constants/routes";
 
 ---
 
-## 🎯 Practice Tasks
-
-1. Take your current project and organize it into `components/`, `pages/`, `hooks/`, `services/`
-2. Create a `services/userService.js` with functions for all user API operations
-3. Create an `index.js` in `components/` folder for clean barrel exports
-4. Create a `constants/routes.js` file and update all your route paths to use it
-5. Convert a "flat" folder structure into a feature-based structure for a small app
-
----
-
-← Previous: [21_performance_optimization.md](21_performance_optimization.md) | Next: [23_environment_variables.md](23_environment_variables.md) →
+← Previous: [21_performance_optimization.md](21_performance_optimization.md) | Index: [00_Index.md](00_Index.md) | Next: [23_environment_variables.md](23_environment_variables.md) →

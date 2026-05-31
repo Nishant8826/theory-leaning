@@ -1,5 +1,10 @@
 # 09 - Lists and Keys 📋
 
+> [!NOTE]
+> ### 💡 Topic Quick Overview (For Beginners)
+> - **What is it?** Lists and keys refer to rendering arrays of data as collections of UI elements, where each element is tagged with a unique `key` prop.
+> - **Why do we use it?** Keys help React's Virtual DOM identify which list items have been added, updated, or removed, avoiding UI rendering bugs and boosting rendering performance.
+> - **How does it work?** Use the `.map()` array method to iterate over data and return JSX elements, making sure the outermost returned tag contains a stable, unique `key` (like a database ID).
 
 ---
 
@@ -244,14 +249,4 @@ function FilteredList() {
 
 ---
 
-## 🎯 Practice Tasks
-
-1. Render a list of 5 countries with their capitals using `.map()`
-2. Render an array of students in a table (name, age, grade)
-3. Build a **filterable list** — filter by category (e.g., fruits, vegetables)
-4. Build a **searchable list** — type to filter items in real-time
-5. Build a list where you can click to remove an item (use `.filter()`)
-
----
-
-← Previous: [08_conditional_rendering.md](08_conditional_rendering.md) | Next: [10_forms.md](10_forms.md) →
+← Previous: [08_conditional_rendering.md](08_conditional_rendering.md) | Index: [00_Index.md](00_Index.md) | Next: [10_forms.md](10_forms.md) →

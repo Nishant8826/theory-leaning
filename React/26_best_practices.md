@@ -1,5 +1,10 @@
 # 26 - Best Practices & Clean Code 🧹
 
+> [!NOTE]
+> ### 💡 Topic Quick Overview (For Beginners)
+> - **What is it?** Best practices are industry-standard patterns for writing clean, secure, performant, and maintainable React applications.
+> - **Why do we use it?** They prevent technical debt, ensure code consistency across teams, and minimize runtime bugs.
+> - **How does it work?** Destructure props, write descriptive component names, avoid magic numbers, use early returns, and configure ESLint/Prettier linting.
 
 ---
 
@@ -366,14 +371,4 @@ npm install --save-dev prettier
 
 ---
 
-## 🎯 Practice Tasks
-
-1. Take a "bad" component you wrote earlier and refactor it — split into smaller components
-2. Install ESLint and Prettier in your project. Fix all the warnings
-3. Go through any component and replace all magic values with named constants
-4. Rewrite deeply nested `if/else` as early returns
-5. Find and extract any repeated logic into a custom hook
-
----
-
-← Previous: [25_react_vs_angular_vue.md](25_react_vs_angular_vue.md)
+← Previous: [25_react_vs_angular_vue.md](25_react_vs_angular_vue.md) | Index: [00_Index.md](00_Index.md) | Next: []() →

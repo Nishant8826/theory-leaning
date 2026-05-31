@@ -1,5 +1,10 @@
 # 04 - Components (Functional vs Class) 🧩
 
+> [!NOTE]
+> ### 💡 Topic Quick Overview (For Beginners)
+> - **What is it?** Components are modular, self-contained building blocks of a React user interface (like buttons, headers, or cards).
+> - **Why do we use it?** They enable code reusability, make codebases easier to maintain by separating concerns, and allow developers to build complex UIs from simple, testable pieces.
+> - **How does it work?** Define a JavaScript function that starts with a capital letter, return JSX from it, and render it using tag notation (e.g., `<MyComponent />`).
 
 ---
 
@@ -214,14 +219,4 @@ function App() {
 
 ---
 
-## 🎯 Practice Tasks
-
-1. Create a `Header` component that shows a website name and a navigation bar
-2. Create a `Card` component that shows a product name, image placeholder, and price
-3. Create an `App` that uses `Header` + 3 `Card` components
-4. Try making a `Button` component and reuse it in multiple places
-5. Refactor: Take any HTML page you have and convert it into React components
-
----
-
-← Previous: [03_jsx.md](03_jsx.md) | Next: [05_props.md](05_props.md) →
+← Previous: [03_jsx.md](03_jsx.md) | Index: [00_Index.md](00_Index.md) | Next: [05_props.md](05_props.md) →

@@ -1,5 +1,10 @@
 # 12 - useRef Hook 🎯
 
+> [!NOTE]
+> ### 💡 Topic Quick Overview (For Beginners)
+> - **What is it?** `useRef` is a hook that creates a mutable reference object whose `.current` property can store data that persists across renders.
+> - **Why do we use it?** Unlike state, changing a ref's value does *not* trigger a component re-render. It is also used to reference and interact directly with raw DOM elements.
+> - **How does it work?** Call `const myRef = useRef(initialValue)` and assign it to a JSX element's ref attribute (`<input ref={myRef} />`) to read or focus it directly.
 
 ---
 
@@ -222,14 +227,4 @@ const countRef = useRef(0);
 
 ---
 
-## 🎯 Practice Tasks
-
-1. Build an input that **auto-focuses** when the page loads
-2. Build a **stopwatch** (start, stop, reset) using `useRef` for the interval
-3. Build a "Go to Top" button that **smoothly scrolls** to the top of the page
-4. Display the **previous value** of a counter alongside the current value
-5. Build a video player component — use `useRef` to call `.play()` and `.pause()` on a `<video>` element
-
----
-
-← Previous: [11_useEffect.md](11_useEffect.md) | Next: [13_useMemo_useCallback.md](13_useMemo_useCallback.md) →
+← Previous: [11_useEffect.md](11_useEffect.md) | Index: [00_Index.md](00_Index.md) | Next: [13_useMemo_useCallback.md](13_useMemo_useCallback.md) →

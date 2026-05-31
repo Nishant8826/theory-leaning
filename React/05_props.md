@@ -1,5 +1,10 @@
 # 05 - Props 📦
 
+> [!NOTE]
+> ### 💡 Topic Quick Overview (For Beginners)
+> - **What is it?** Props (short for properties) are read-only arguments passed from a parent component down to its child components.
+> - **Why do we use it?** They allow components to be dynamic and reusable by customizing their data and configuration from the outside.
+> - **How does it work?** Pass props like HTML attributes (`<UserCard name="Nishant" />`) and access them inside the child function's argument list, usually via destructuring.
 
 ---
 
@@ -61,7 +66,7 @@ UserCard (Child) — receives and uses the props
 
 ---
 
-## 🔧 Using Props: Two Ways
+## 🔧 Using Props
 
 ### Way 1: Destructuring (Recommended ✅)
 ```jsx
@@ -198,14 +203,4 @@ function Card({ children, title }) {
 
 ---
 
-## 🎯 Practice Tasks
-
-1. Create a `MovieCard` component that accepts: `title`, `year`, `rating`, `genre` as props
-2. Render 4 different `MovieCard` components with different data
-3. Add a **default prop** for a `badge` that shows "New" if not provided
-4. Create a `Container` component that uses `children` prop to wrap any content
-5. Try passing a **function** as a prop — can you call it from inside the child?
-
----
-
-← Previous: [04_components.md](04_components.md) | Next: [06_state.md](06_state.md) →
+← Previous: [04_components.md](04_components.md) | Index: [00_Index.md](00_Index.md) | Next: [06_state.md](06_state.md) →

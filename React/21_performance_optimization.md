@@ -1,5 +1,10 @@
 # 21 - Performance Optimization 🚀
 
+> [!NOTE]
+> ### 💡 Topic Quick Overview (For Beginners)
+> - **What is it?** Performance optimization involves techniques to make React apps render faster, use less memory, and load instantly.
+> - **Why do we use it?** Large code bundles and excessive re-renders degrade user experience, especially on slower devices and network connections.
+> - **How does it work?** Use code-splitting with `React.lazy()` and `Suspense`, prevent redundant renders with `React.memo`, and analyze load bottlenecks using profiling tools.
 
 ---
 
@@ -268,14 +273,4 @@ useEffect(() => {
 
 ---
 
-## 🎯 Practice Tasks
-
-1. Wrap a component in `React.memo` and verify it stops re-rendering with React DevTools
-2. Use `React.lazy` and `Suspense` to lazy-load a heavy component like a Dashboard
-3. Install `react-window` and render a virtualized list of 5000 items
-4. Open React DevTools → Profiler → record interactions → identify slow components
-5. Implement debounced search (type in input → API called only after 500ms pause)
-
----
-
-← Previous: [20_custom_hooks.md](20_custom_hooks.md) | Next: [22_folder_structure.md](22_folder_structure.md) →
+← Previous: [20_custom_hooks.md](20_custom_hooks.md) | Index: [00_Index.md](00_Index.md) | Next: [22_folder_structure.md](22_folder_structure.md) →

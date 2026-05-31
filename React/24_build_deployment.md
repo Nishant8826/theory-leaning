@@ -1,5 +1,10 @@
 # 24 - Build & Deployment 🚀
 
+> [!NOTE]
+> ### 💡 Topic Quick Overview (For Beginners)
+> - **What is it?** Build and deployment is the process of compiling your React code into production-ready assets and hosting them on web servers.
+> - **Why do we use it?** Source code (JSX, modern JS, unminified assets) is too slow and raw for browsers. The build process creates optimized, minified bundles for live hosting.
+> - **How does it work?** Run `npm run build` to compile code into the `dist/` directory, then deploy that folder to hosts like Vercel, Netlify, or AWS.
 
 ---
 
@@ -262,14 +267,4 @@ Before deploying check these:
 
 ---
 
-## 🎯 Practice Tasks
-
-1. Run `npm run build` on your project. Check the `dist/` folder — how small is the bundle?
-2. Deploy your React app to **Vercel** — connect your GitHub repo and get a live URL!
-3. Set your `VITE_API_URL` environment variable in the Vercel dashboard
-4. Create a **Netlify** deployment and add the `_redirects` file for React Router support
-5. Set up a basic GitHub Actions workflow that runs `npm run build` on every push
-
----
-
-← Previous: [23_environment_variables.md](23_environment_variables.md) | Next: [25_react_vs_angular_vue.md](25_react_vs_angular_vue.md) →
+← Previous: [23_environment_variables.md](23_environment_variables.md) | Index: [00_Index.md](00_Index.md) | Next: [25_react_vs_angular_vue.md](25_react_vs_angular_vue.md) →

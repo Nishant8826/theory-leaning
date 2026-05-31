@@ -1,5 +1,10 @@
 # 18 - API Calls (fetch / axios) 🌐
 
+> [!NOTE]
+> ### 💡 Topic Quick Overview (For Beginners)
+> - **What is it?** API calls are network requests sent to external web servers (using `fetch` or libraries like `axios`) to send or retrieve data.
+> - **Why do we use it?** Most applications need dynamic data from a database or backend server. Network requests allow your app to load real-world content.
+> - **How does it work?** Perform the API call inside a `useEffect` hook, and store the result (along with loading and error states) in local component state.
 
 ---
 
@@ -279,14 +284,4 @@ function DataComponent() {
 
 ---
 
-## 🎯 Practice Tasks
-
-1. Fetch and display users from `https://jsonplaceholder.typicode.com/users`
-2. Fetch posts from `https://jsonplaceholder.typicode.com/posts` with loading + error states
-3. Implement a **POST** — add a new post when a form is submitted
-4. Build a **search that fetches** results from the API as you type (debounce it!)
-5. Create an `axiosInstance` file and use it instead of plain axios
-
----
-
-← Previous: [17_react_router.md](17_react_router.md) | Next: [19_error_handling.md](19_error_handling.md) →
+← Previous: [17_react_router.md](17_react_router.md) | Index: [00_Index.md](00_Index.md) | Next: [19_error_handling.md](19_error_handling.md) →

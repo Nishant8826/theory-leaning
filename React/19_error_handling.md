@@ -1,5 +1,10 @@
 # 19 - Error Handling in React ⚠️
 
+> [!NOTE]
+> ### 💡 Topic Quick Overview (For Beginners)
+> - **What is it?** Error handling in React involves catching runtime exceptions inside components to prevent the entire application from crashing.
+> - **Why do we use it?** A single JavaScript rendering error in one component shouldn't break the whole website. Catching errors allows you to show a fallback UI instead.
+> - **How does it work?** Wrap components in a class component acting as an Error Boundary implementing `getDerivedStateFromError` or `componentDidCatch`.
 
 ---
 
@@ -303,14 +308,4 @@ function App() {
 
 ---
 
-## 🎯 Practice Tasks
-
-1. Create an `ErrorBoundary` component and wrap your app with it. Trigger an error and see it catch!
-2. Fetch from a **fake broken URL** and show a friendly error message with a retry button
-3. Add **inline validation** to a form — show error messages under each field
-4. Handle **network errors** separately from API errors in axios
-5. Install `react-toastify` and show success/error toasts for CRUD operations
-
----
-
-← Previous: [18_api_calls.md](18_api_calls.md) | Next: [20_custom_hooks.md](20_custom_hooks.md) →
+← Previous: [18_api_calls.md](18_api_calls.md) | Index: [00_Index.md](00_Index.md) | Next: [20_custom_hooks.md](20_custom_hooks.md) →

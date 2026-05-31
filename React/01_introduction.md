@@ -1,5 +1,10 @@
 # 01 - Introduction to React ⚛️
 
+> [!NOTE]
+> ### 💡 Topic Quick Overview (For Beginners)
+> - **What is it?** React is a JavaScript library for building user interfaces (UIs) by composing small, reusable building blocks called components.
+> - **Why do we use it?** Vanilla JS requires manual, verbose DOM updates. React automates this by comparing a fast Virtual DOM with the real DOM and updating only what changed.
+> - **How does it work?** Declare components as JavaScript functions, return HTML-like JSX from them, and let React handle the updates when data changes.
 
 ---
 
@@ -120,26 +125,20 @@ This process is called **Reconciliation** and it makes React very fast!
 
 ---
 
-## 🎯 Practice Tasks
-
-1. Go to [react.dev](https://react.dev) and read the "Quick Start" page
-2. Visit a website you use daily. Try to identify what the "components" might be (navbar, card, sidebar, etc.)
-3. Write down: What problem do you think React solves compared to plain HTML + JS?
-4. Bookmark this folder — you'll be coming back to it a lot! 😄
-
----
-
 ## 🎤 Interview Questions
 
-**Q1: What is the Virtual DOM and how does it differ from the Real DOM?**
-**Answer:** The Virtual DOM is a lightweight memory representation of the Real DOM. React compares the new Virtual DOM with the old one (Diffing) and updates only the changed parts in the Real DOM (Reconciliation), making it much faster.
+> ### ❓ Q1: What is the Virtual DOM and how does it differ from the Real DOM?
+>
+> **Answer:** The Virtual DOM is a lightweight memory representation of the Real DOM. React compares the new Virtual DOM with the old one (Diffing) and updates only the changed parts in the Real DOM (Reconciliation), making it much faster.
 
-**Q2: What is the difference between a Library and a Framework? Why is React considered a library?**
-**Answer:** A framework (like Angular) dictates how you write the application and comes with built-in routing, HTTP modules, etc. React is a library because it only handles the UI (the View layer) and leaves routing and data management to other packages you choose.
+> ### ❓ Q2: What is the difference between a Library and a Framework? Why is React considered a library?
+>
+> **Answer:** A framework (like Angular) dictates how you write the application and comes with built-in routing, HTTP modules, etc. React is a library because it only handles the UI (the View layer) and leaves routing and data management to other packages you choose.
 
-**Q3: What are React Components?**
-**Answer:** Components are independent, reusable building blocks of a React application. They accept inputs (props) and return React elements describing what should appear on the screen.
+> ### ❓ Q3: What are React Components?
+>
+> **Answer:** Components are independent, reusable building blocks of a React application. They accept inputs (props) and return React elements describing what should appear on the screen.
 
 ---
 
-← Previous: []() | Next: [02_setup_react.md](02_setup_react.md) →
+← Previous: []() | Index: [00_Index.md](00_Index.md) | Next: [02_setup_react.md](02_setup_react.md) →

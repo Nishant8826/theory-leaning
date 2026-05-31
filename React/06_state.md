@@ -1,5 +1,10 @@
 # 06 - State 🔄
 
+> [!NOTE]
+> ### 💡 Topic Quick Overview (For Beginners)
+> - **What is it?** State is a component's private, local memory that holds data that can change over time.
+> - **Why do we use it?** Modifying standard variables doesn't alert React to update the page. State updates trigger React to automatically re-render the component and show the new data.
+> - **How does it work?** Import and call the `useState(initialValue)` hook, which returns the current state value and a function to update it (e.g., `const [count, setCount] = useState(0)`).
 
 ---
 
@@ -233,14 +238,4 @@ setCount(prev => prev + 1);  // works correctly!
 
 ---
 
-## 🎯 Practice Tasks
-
-1. Build a **counter** with increment, decrement, and reset buttons
-2. Build a **toggle** component (like a dark/light mode switch)
-3. Build an **input** that shows what you're typing in real-time below it
-4. Build a simple **Todo list** (add and remove todos)
-5. Build a **traffic light** component: clicking cycles through 🔴 → 🟡 → 🟢
-
----
-
-← Previous: [05_props.md](05_props.md) | Next: [07_event_handling.md](07_event_handling.md) →
+← Previous: [05_props.md](05_props.md) | Index: [00_Index.md](00_Index.md) | Next: [07_event_handling.md](07_event_handling.md) →

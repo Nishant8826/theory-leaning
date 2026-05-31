@@ -1,5 +1,10 @@
 # 08 - Conditional Rendering 🔀
 
+> [!NOTE]
+> ### 💡 Topic Quick Overview (For Beginners)
+> - **What is it?** Conditional rendering is the practice of displaying different UI layouts based on certain conditions or data states.
+> - **Why do we use it?** It allows applications to adapt dynamically (e.g., showing a login button instead of a dashboard if the user is logged out).
+> - **How does it work?** Use standard JavaScript control flows like ternary operators (`condition ? true : false`), logical `&&` short-circuiting, or `if/else` statements.
 
 ---
 
@@ -212,14 +217,4 @@ function Dashboard({ role }) {
 
 ---
 
-## 🎯 Practice Tasks
-
-1. Build a **Login page**: show "Login Form" if logged out, show "Dashboard" if logged in
-2. Build a **Notification Bell**: show a red dot only if there are unread notifications
-3. Build a **Role Badge**: Admin = 🛡️, User = 👤, Guest = 👋
-4. Build a **Loading screen**: show "Loading..." for 2 seconds, then show the content
-5. Show a **"No results found"** message using `&&` when a search returns empty
-
----
-
-← Previous: [07_event_handling.md](07_event_handling.md) | Next: [09_lists_and_keys.md](09_lists_and_keys.md) →
+← Previous: [07_event_handling.md](07_event_handling.md) | Index: [00_Index.md](00_Index.md) | Next: [09_lists_and_keys.md](09_lists_and_keys.md) →

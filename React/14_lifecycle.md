@@ -1,5 +1,10 @@
 # 14 - Component Lifecycle 🔄
 
+> [!NOTE]
+> ### 💡 Topic Quick Overview (For Beginners)
+> - **What is it?** Component lifecycle refers to the sequence of stages a React component goes through: mounting (creation), updating (re-rendering), and unmounting (destruction).
+> - **Why do we use it?** Understanding lifecycle is vital for timing actions correctly, such as fetching data when a page loads or clearing memory when a component leaves the screen.
+> - **How does it work?** In class components, use lifecycle methods (`componentDidMount`, `componentDidUpdate`, `componentWillUnmount`). In functional components, use `useEffect` configurations.
 
 ---
 
@@ -245,14 +250,4 @@ New useEffect runs
 
 ---
 
-## 🎯 Practice Tasks
-
-1. Create a component that logs "appeared" and "disappeared" to console on mount/unmount
-2. Create a parent that shows/hides a child with a button — watch the lifecycle logs
-3. Create a `UserProfile` that fetches new data when a `userId` prop changes
-4. Simulate a WebSocket by setting up a `setInterval` on mount and clearing it on unmount
-5. Build a page-view tracker: log "entered page" on mount, "left page" on unmount
-
----
-
-← Previous: [13_useMemo_useCallback.md](13_useMemo_useCallback.md) | Next: [15_lifting_state_up.md](15_lifting_state_up.md) →
+← Previous: [13_useMemo_useCallback.md](13_useMemo_useCallback.md) | Index: [00_Index.md](00_Index.md) | Next: [15_lifting_state_up.md](15_lifting_state_up.md) →

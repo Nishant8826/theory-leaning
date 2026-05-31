@@ -1,5 +1,10 @@
 # 13 - useMemo and useCallback ⚡
 
+> [!NOTE]
+> ### 💡 Topic Quick Overview (For Beginners)
+> - **What is it?** `useMemo` caches computed values, and `useCallback` caches function definitions across renders.
+> - **Why do we use it?** In React, object references and calculations are recreated on every render. Caching them prevents performance lag from expensive computations or unnecessary child re-renders.
+> - **How does it work?** Wrap computations in `useMemo(() => computeValue(a, b), [a, b])` and function declarations in `useCallback(() => doSomething(), [dep])`.
 
 ---
 
@@ -233,13 +238,4 @@ For most small/medium apps, they're **unnecessary** and add complexity!
 
 ---
 
-## 🎯 Practice Tasks
-
-1. Create a list of 1000 items. Use `useMemo` to filter them by a search term. Open console to see when re-filtering happens
-2. Use `useCallback` on a function passed to a child component to prevent unnecessary re-renders
-3. Try using React DevTools **Profiler** to measure render times before and after
-4. Build a cart with items. Use `useMemo` to calculate the total price only when items change
-
----
-
-← Previous: [12_useRef.md](12_useRef.md) | Next: [14_lifecycle.md](14_lifecycle.md) →
+← Previous: [12_useRef.md](12_useRef.md) | Index: [00_Index.md](00_Index.md) | Next: [14_lifecycle.md](14_lifecycle.md) →

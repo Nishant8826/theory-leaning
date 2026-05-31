@@ -1,5 +1,10 @@
 # 20 - Custom Hooks 🎣
 
+> [!NOTE]
+> ### 💡 Topic Quick Overview (For Beginners)
+> - **What is it?** Custom hooks are reusable JavaScript functions that encapsulate stateful logic using React's built-in hooks.
+> - **Why do we use it?** They allow you to share logic (like form handling, API fetching, or window resize listeners) across multiple components without duplicating code.
+> - **How does it work?** Write a function whose name starts with `use` (e.g., `useFetch`), write your hook logic inside it, and return the necessary state and helper functions.
 
 ---
 
@@ -310,14 +315,4 @@ src/
 
 ---
 
-## 🎯 Practice Tasks
-
-1. Create a `useFetch(url)` hook and use it in 3 different components
-2. Create a `useToggle(initialValue)` hook that returns `[value, toggle]`
-3. Create a `useForm(initialValues)` hook that handles form state and onChange
-4. Create a `useWindowSize()` hook and use it to show different layouts
-5. Create a `useOnClickOutside(ref, callback)` hook that closes a dropdown when clicking outside
-
----
-
-← Previous: [19_error_handling.md](19_error_handling.md) | Next: [21_performance_optimization.md](21_performance_optimization.md) →
+← Previous: [19_error_handling.md](19_error_handling.md) | Index: [00_Index.md](00_Index.md) | Next: [21_performance_optimization.md](21_performance_optimization.md) →

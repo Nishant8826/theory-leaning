@@ -1,5 +1,10 @@
 # 16 - Context API 🌐
 
+> [!NOTE]
+> ### 💡 Topic Quick Overview (For Beginners)
+> - **What is it?** The Context API is a built-in React feature that allows you to share state globally across the component tree without passing props manually at every level.
+> - **Why do we use it?** Deeply nested component trees suffer from "prop drilling" (passing props through components that don't need them), which bloats code and makes updates difficult.
+> - **How does it work?** Create a context (`createContext`), wrap parent components in a provider (`<MyContext.Provider value={value}>`), and consume the value in child components using `useContext(MyContext)`.
 
 ---
 
@@ -262,14 +267,4 @@ function App() {
 
 ---
 
-## 🎯 Practice Tasks
-
-1. Build a **theme toggle** (dark/light mode) using Context that applies to the whole app
-2. Build an **auth system** — login shows "Welcome, [Name]", logout shows "Login" button — using Context
-3. Build a **language switcher** (English/Hindi) using Context
-4. Create a **shopping cart context** that can be accessed from both a product page and a cart page
-5. Try using multiple contexts in the same app (theme + auth)
-
----
-
-← Previous: [15_lifting_state_up.md](15_lifting_state_up.md) | Next: [17_react_router.md](17_react_router.md) →
+← Previous: [15_lifting_state_up.md](15_lifting_state_up.md) | Index: [00_Index.md](00_Index.md) | Next: [17_react_router.md](17_react_router.md) →

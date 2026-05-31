@@ -1,5 +1,10 @@
 # 25 - React vs Angular vs Vue ⚔️
 
+> [!NOTE]
+> ### 💡 Topic Quick Overview (For Beginners)
+> - **What is it?** React is a UI library focused solely on the view layer, whereas Angular is a full-featured framework and Vue is a progressive hybrid framework.
+> - **Why do we use it?** Understanding these differences helps developers choose the best tool depending on project size, team expertise, and application complexity.
+> - **How does it work?** Compare features like learning curves, data-binding models, state management, and virtual vs real DOM implementations.
 
 ---
 
@@ -204,14 +209,4 @@ const count = ref(0)
 
 ---
 
-## 🎯 Practice Tasks
-
-1. Build the same simple counter app in React and Vue — notice the differences
-2. Read the official docs intro page for Angular — notice how much more complex it looks
-3. Research 5 companies in your city — which framework do they use? (Check LinkedIn/GitHub)
-4. Write down: given a choice, which would YOU pick for your next app and why?
-5. Read: [State of JS survey results](https://stateofjs.com) — see the popularity trends
-
----
-
-← Previous: [24_build_deployment.md](24_build_deployment.md) | Next: [26_best_practices.md](26_best_practices.md) →
+← Previous: [24_build_deployment.md](24_build_deployment.md) | Index: [00_Index.md](00_Index.md) | Next: [26_best_practices.md](26_best_practices.md) →

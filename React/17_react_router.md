@@ -1,5 +1,10 @@
 # 17 - React Router (Routing) 🗺️
 
+> [!NOTE]
+> ### 💡 Topic Quick Overview (For Beginners)
+> - **What is it?** React Router is a routing library that enables single-page applications (SPAs) to have multiple page views with distinct URLs.
+> - **Why do we use it?** By default, React applications run on a single HTML page. React Router updates the browser URL and swaps views dynamically without reloading the entire page.
+> - **How does it work?** Define page routes inside a `<Routes>` component mapping URLs to pages, navigate using the `<Link>` component, and extract parameters using hooks like `useParams`.
 
 ---
 
@@ -285,14 +290,4 @@ function DashboardLayout() {
 
 ---
 
-## 🎯 Practice Tasks
-
-1. Create a 3-page app: Home, About, Contact — with a working navbar
-2. Add a **Products** page with a list of products. Clicking one opens `/products/:id`
-3. Build a **404 Not Found** page using the `*` route
-4. Add a **protected route** — `/dashboard` only accessible when "logged in"
-5. Add `NavLink` to the navbar with highlighted active link styling
-
----
-
-← Previous: [16_context_api.md](16_context_api.md) | Next: [18_api_calls.md](18_api_calls.md) →
+← Previous: [16_context_api.md](16_context_api.md) | Index: [00_Index.md](00_Index.md) | Next: [18_api_calls.md](18_api_calls.md) →

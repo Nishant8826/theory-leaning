@@ -1,5 +1,10 @@
 # 15 - Lifting State Up ⬆️
 
+> [!NOTE]
+> ### 💡 Topic Quick Overview (For Beginners)
+> - **What is it?** Lifting state up is the practice of moving state from child components to their nearest common parent component.
+> - **Why do we use it?** In React, data flows downwards. To share and sync state between sibling components, their parent must manage the state and pass it down as props.
+> - **How does it work?** Declare the state in the parent component, then pass the state variable and a callback updater function down to the children as props.
 
 ---
 
@@ -227,14 +232,4 @@ Pass down the value (read) and the setter (write) as props
 
 ---
 
-## 🎯 Practice Tasks
-
-1. Build a **temperature converter** — type in Celsius and see Fahrenheit update (and vice versa)
-2. Build a **search + results** page — `SearchBar` and `ResultList` are siblings. Lift the query state
-3. Build a **tab system** — clicking a tab in `TabBar` shows content in `TabContent` (lift active tab)
-4. Build a **light switch** — two separate `LightSwitch` components that both control the same light
-5. Refactor your Todo app to have `AddTodo` and `TodoList` as separate components that share state via a parent
-
----
-
-← Previous: [14_lifecycle.md](14_lifecycle.md) | Next: [16_context_api.md](16_context_api.md) →
+← Previous: [14_lifecycle.md](14_lifecycle.md) | Index: [00_Index.md](00_Index.md) | Next: [16_context_api.md](16_context_api.md) →

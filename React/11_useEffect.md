@@ -1,5 +1,10 @@
 # 11 - useEffect Hook 🔁
 
+> [!NOTE]
+> ### 💡 Topic Quick Overview (For Beginners)
+> - **What is it?** `useEffect` is a React hook that lets you run side effects (actions outside React's control, like API calls, event subscriptions, or timers) in functional components.
+> - **Why do we use it?** Renders must remain pure to avoid bugs. Side effects must be isolated so they don't run on every single render and cause performance lags or infinite loops.
+> - **How does it work?** Call `useEffect` with a callback function and a dependency array. Return a cleanup function inside the callback to clear timers or subscriptions.
 
 ---
 
@@ -265,14 +270,4 @@ useEffect(() => {
 
 ---
 
-## 🎯 Practice Tasks
-
-1. Fetch users from `https://jsonplaceholder.typicode.com/users` and display them
-2. Build a **live clock** that shows time and updates every second
-3. Build a **scroll position tracker** that shows how far down the page you've scrolled
-4. Build a **debounced search** input (wait 500ms after user stops typing)
-5. Update the browser tab title dynamically based on what page you're "on"
-
----
-
-← Previous: [10_forms.md](10_forms.md) | Next: [12_useRef.md](12_useRef.md) →
+← Previous: [10_forms.md](10_forms.md) | Index: [00_Index.md](00_Index.md) | Next: [12_useRef.md](12_useRef.md) →

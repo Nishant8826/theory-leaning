@@ -1,5 +1,10 @@
 # 02 - Setting Up React ⚙️
 
+> [!NOTE]
+> ### 💡 Topic Quick Overview (For Beginners)
+> - **What is it?** React setup involves installing runtime tools (Node.js/npm) and scaffolding a project structure using modern build tools like Vite.
+> - **Why do we use it?** Browsers can't read JSX or modern modules directly. Build tools compile and bundle the files into optimized HTML, CSS, and JS that browsers can execute.
+> - **How does it work?** Run `npm create vite@latest` to scaffold the app, install dependencies, and start the development server using `npm run dev`.
 
 ---
 
@@ -164,14 +169,4 @@ Install these from the VS Code extension marketplace:
 
 ---
 
-## 🎯 Practice Tasks
-
-1. Install Node.js if you haven't already
-2. Create a new React app using Vite: `npm create vite@latest my-first-app -- --template react`
-3. Run the development server and open it in your browser
-4. Open `App.jsx` and change the text inside. Watch it update in real-time! (This is called **Hot Module Replacement**)
-5. Look at every file in `src/` and try to understand what each one does
-
----
-
-← Previous: [01_introduction.md](01_introduction.md) | Next: [03_jsx.md](03_jsx.md) →
+← Previous: [01_introduction.md](01_introduction.md) | Index: [00_Index.md](00_Index.md) | Next: [03_jsx.md](03_jsx.md) →
