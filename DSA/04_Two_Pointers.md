@@ -374,7 +374,7 @@ console.log(sortColorsOptimized([2, 0, 2, 1, 1, 0])); // [0, 0, 1, 1, 2, 2]
 
 ---
 
-### Question 4: Trapping Rain Water
+### Question 4: Trapping Rain Water --------
 
 **Practice Links:** [LeetCode #42](https://leetcode.com/problems/trapping-rain-water/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/trapping-rain-water-1587115621/1) | [InterviewBit](https://www.interviewbit.com/problems/trapping-rain-water/)
 

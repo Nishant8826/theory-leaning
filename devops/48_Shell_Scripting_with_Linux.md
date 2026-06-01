@@ -1623,4 +1623,4 @@ pipeline {
 
 ## Navigation Footer
 
-← Previous: [`47_Python_for_DevOps_Automation.md`](47_Python_for_DevOps_Automation.md) | Next: [`49_Monitoring_Tools.md`](49_Monitoring_Tools.md) →
+← Previous: [`47_Python_for_DevOps_Automation.md`](47_Python_for_DevOps_Automation.md) | Next: [`49_Prompt_Engineering_for_DevOps_&_AI.md`](49_Prompt_Engineering_for_DevOps_&_AI.md) →
