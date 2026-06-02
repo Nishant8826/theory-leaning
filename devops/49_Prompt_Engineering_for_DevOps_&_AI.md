@@ -1318,4 +1318,4 @@ Prompt: "Write Terraform to provision the AWS side of this ATS:
 
 ## Navigation Footer
 
-← Previous: [`48_Shell_Scripting_with_Linux.md`](48_Shell_Scripting_with_Linux.md) | Next: [`50_Prompt_Engineering_for_DevOps_&_AI.md`](50_Prompt_Engineering_for_DevOps_&_AI.md) →
+← Previous: [`48_Shell_Scripting_with_Linux.md`](48_Shell_Scripting_with_Linux.md) | Next: [`50_Multi-Cloud_ATS_App_(AWS_+_GCP)_&_Kubernetes_Concepts.md`](50_Multi-Cloud_ATS_App_(AWS_+_GCP)_&_Kubernetes_Concepts.md) →
