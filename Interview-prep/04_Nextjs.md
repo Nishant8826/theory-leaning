@@ -28,10 +28,59 @@ Next.js is a React framework for building full-stack web applications. You use R
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-- **React** is a JavaScript library for building user interfaces. It handles the view layer. You need to configure routing, bundling, and rendering strategies yourself.
-- **Next.js** is a framework built on top of React. It provides routing, server-side rendering, static site generation, and API routes out of the box.
+The fundamental difference is that **React is a library**, whereas **Next.js is a full-stack framework** built on top of React. 
 
-> 💡 **Interviewer Focus:** Library vs Framework distinction.
+In short: **React is the core UI engine; Next.js is the fully equipped car built around it.**
+
+---
+
+### 1. 🏗️ The "Library vs. Framework" Distinction (Inversion of Control)
+*   **React (Library):** *You* call the library. You choose and configure your own build tools (Vite, Webpack), routing (`react-router-dom`), state management (Redux, Zustand), and deployment setups. You have complete freedom, but must write massive amounts of boilerplate.
+*   **Next.js (Framework):** The framework calls *your* code. Next.js enforces structure (like file-system routing) and automatically manages compilation, bundling, server-side execution, and deployment optimizations out of the box.
+
+---
+
+### 2. 📊 Detailed Comparison Table
+
+| Feature | React (Vanilla Client-Side) | Next.js (Framework) |
+| :--- | :--- | :--- |
+| **Category** | JavaScript Library for UI. | Full-Stack React Framework. |
+| **Rendering** | **Client-Side Rendering (CSR)** only. The browser receives a blank HTML file and constructs the UI on the client. | **Pre-rendering:** Server-Side Rendering (SSR), Static Site Generation (SSG), ISR, and Server Components (RSC). |
+| **Routing** | None. Must install and configure third-party libraries like `react-router-dom`. | **File-System Routing:** Files added to the `app/` folder automatically become URL paths. |
+| **SEO** | Poor out-of-the-box (crawlers see a blank HTML shell initially). | Excellent (crawlers receive fully populated HTML generated on the server). |
+| **Backend / API** | Frontend only. Requires a separate backend server (Express, Django) for API endpoints. | **Server-Side API Routes:** Write backend API handlers (`/api/...`) inside the same repository. |
+| **Optimizations** | Manual (Webpack configurations, lazy loading code-splitting, custom image compressing). | Automatic (SWC compiler, code splitting, Image/Font/Script components, link prefetching). |
+
+---
+
+### 3. 🔍 Deep Dive into Routing and Rendering Differences
+
+#### **A. File-System Routing vs. Code Routing**
+*   In **React**, you define routes programmatically in JS files:
+    ```javascript
+    // React Router setup
+    <BrowserRouter>
+      <Routes>
+        <Route path="/about" element={<AboutPage />} />
+      </Routes>
+    </BrowserRouter>
+    ```
+*   In **Next.js (App Router)**, the folder structure determines the route. No routing code is written:
+    ```text
+    src/app/
+    ├── layout.js          # Shared shell UI
+    ├── page.js            # URL: /
+    └── about/
+        └── page.js        # URL: /about
+    ```
+
+#### **B. Rendering Pipeline & SEO**
+*   **React:** The server sends a single file `index.html` containing `<div id="root"></div>`. The user's browser runs a heavy JavaScript bundle to render the content. 
+*   **Next.js:** The server compiles the React components into static HTML. When the user visits, the browser receives populated HTML immediately (giving fast initial load time and perfect SEO indexing), then loads a small JS bundle to make the HTML interactive (a process called **Hydration**).
+
+---
+
+> 💡 **Interviewer Focus:** Explain the architectural difference (**Inversion of Control**). Contrast **Client-Side Rendering (CSR)** with Next.js's **Pre-rendering** (SSR/SSG), and discuss how **File-System Routing** and built-in full-stack capabilities (API routes) speed up development.
 </details>
 <hr/>
 
