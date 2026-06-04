@@ -553,7 +553,38 @@ The Next.js `Image` component (`next/image`) is an extension of the HTML `<img>`
 
 The `Link` component (`next/link`) is used for client-side navigation between pages. It pre-fetches pages in the background as they appear in the viewport, making transitions near-instant.
 
-> 💡 **Interviewer Focus:** Client-side navigation vs traditional anchor tags.
+#### 🔄 Navigation Flow & Lifecycle:
+
+```text
+[ Link Component ] ---> (1. Enters Viewport) ---> [ Intersection Observer ]
+                                                          |
+                                                          v (2. Background Prefetch)
+[ Router Cache ] <--- (3. Stores Payload & JS) <--- [ Next.js Server / CDN ]
+       |
+       v (4. User clicks Link)
+[ Intercept Click ] ---> (5. Prevent Hard Refresh)
+       |
+       v
+[ Cache Lookup ] ---(Hit)---> [ Render Immediately ] (6. Soft Navigation)
+       |
+    (Miss)
+       v
+[ Fetch from Server ]
+```
+
+1. **Viewport Detection:** In production, Next.js uses an `IntersectionObserver` to detect when a `<Link>` component enters the user's viewport.
+2. **Prefetching:** Once visible, Next.js automatically prefetches the target page in the background:
+   - *Static Routes:* Prefetches the entire route payload (React Server Component payload and JavaScript).
+   - *Dynamic Routes:* Prefetches up to the nearest layout segment.
+3. **Router Cache:** The prefetched payload is stored in the browser's in-memory Router Cache.
+4. **Soft Navigation:** When clicked, Next.js prevents a full page reload (`event.preventDefault()`). It reads the route payload from the cache (or fetches it on-demand if a miss), updates the URL via HTML5 history API (`pushState`), and performs a client-side transition.
+5. **Partial Render:** Only components within segments that changed are re-rendered; shared layouts (like navigation or sidebar) preserve their state and do not re-render.
+
+#### 💡 `<a>` vs `<Link>` Comparison:
+* **`<a>` tag:** Performs a hard navigation, causing a full page refresh. All React state is lost, and the browser re-downloads and re-executes all JS/CSS.
+* **`<Link>` component:** Performs a soft navigation, preserving React state and layout state. It only downloads the code and payload for the specific page segment being navigated to.
+
+> 💡 **Interviewer Focus:** Client-side navigation vs traditional anchor tags, background prefetching, and the in-memory Router Cache.
 </details>
 <hr/>
 
@@ -571,10 +602,37 @@ API routes provide a solution to build your API with Next.js. Any file inside th
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-- `pages` directory is the legacy routing system (Pages Router).
-- `app` directory is the new routing system introduced in Next.js 13 (App Router). It supports React Server Components, nested layouts, and streaming.
+The `app` directory (App Router) and the `pages` directory (Pages Router) represent a paradigm shift in how Next.js applications are structured, rendered, and optimized.
 
-> 💡 **Interviewer Focus:** Awareness of the modern Next.js features.
+#### 📊 Core Differences Comparison:
+
+| Feature | `pages` Directory (Pages Router) | `app` Directory (App Router) |
+| :--- | :--- | :--- |
+| **Routing Model** | **File-based**: Any file in `pages/` becomes a route (e.g., `pages/about.js` -> `/about`). | **Folder-based**: Folders define paths; a special `page.js` file is required to make it accessible (e.g., `app/about/page.js` -> `/about`). |
+| **Component Model** | Standard Client-side components. | **React Server Components (RSC)** by default. Opt-in to client interactivity using `"use client"`. |
+| **Layouts** | Global layout in `_app.js` or custom per-page wrapper logic. Shared layouts re-render on navigation. | **Nested Layouts** natively supported via `layout.js`. Shared layouts preserve state and do not re-render. |
+| **Data Fetching** | Page-level hooks only: `getStaticProps`, `getServerSideProps`, `getStaticPaths`. | Component-level fetching using standard `async/await` directly inside Server Components. |
+| **Streaming & Suspense** | Not supported out-of-the-box (waits for full page render before sending to client). | Built-in streaming and progressive loading via React Suspense and `loading.js`. |
+| **Metadata & SEO** | Managed manually using the `<Head>` component from `next/head`. | Native Metadata API (`export const metadata` or `generateMetadata()`). |
+| **Special File Conventions** | `_app.js`, `_document.js`, `404.js`, `500.js` | `layout.js`, `page.js`, `loading.js`, `error.js`, `not-found.js`, `template.js` |
+
+---
+
+#### 🔍 Deep-Dive Details:
+
+##### 1. Routing & Co-location
+* **Pages Router:** Every file in the directory is treated as a route. This prevents you from co-locating tests, styles, or components alongside the page file (they had to live in separate folders like `/components` or `/styles`).
+* **App Router:** Only `page.js` (or `route.js` for API endpoints) is mapped to the URL. You can freely co-locate other components, hooks, tests, or styling files in the same folder.
+
+##### 2. Rendering Paradigm (RSC vs CSR/SSR)
+* **Pages Router:** The entire page is bundled and shipped to the client, requiring hydration. Even if a component is purely static, its JS is shipped.
+* **App Router:** Runs components on the server first. Static components compile to pure HTML/JSON and ship **0 KB of client-side JavaScript**. Client-side JS is only shipped for components marked with `"use client"`.
+
+##### 3. Modern Data Fetching
+* **Pages Router:** You had to fetch all data at the top-level page block (`getStaticProps`) and drill props down to children.
+* **App Router:** You fetch data directly inside the component that needs it using standard `async/await`. Next.js extends the native `fetch` API to handle caching and revalidation automatically, rendering props drilling obsolete.
+
+> 💡 **Interviewer Focus:** Transition from client-first rendering to server-first architecture (RSC), native nested layouts, and component-level async data fetching.
 </details>
 <hr/>
 
@@ -611,9 +669,79 @@ You access the parameter via `useRouter` or from the `params` prop in the compon
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-If a page has dynamic routes and uses `getStaticProps`, it needs to define a list of paths to be statically generated at build time. `getStaticPaths` provides that list.
+When using **Static Site Generation (SSG)** (`getStaticProps`) on a **dynamic route** (e.g., `pages/posts/[id].js`), Next.js needs to pre-render the pages at build time. 
 
-> 💡 **Interviewer Focus:** Required for dynamic SSG in Pages Router.
+Because the route is dynamic, Next.js does not know how many posts you have (should it build `/posts/1`, `/posts/2`, or `/posts/999`?). **`getStaticPaths` provides Next.js with a list of all dynamic paths to pre-render during the build process.**
+
+---
+
+#### ⚙️ How It Works:
+
+1. **At Build Time:** Next.js runs `getStaticPaths`.
+2. **Path Resolution:** The function queries your database/API to fetch all possible route parameters (e.g., all post IDs).
+3. **Pre-rendering:** Next.js iterates over the returned path list and calls `getStaticProps` for each path, generating static HTML and JSON files.
+
+---
+
+#### 💻 Code Example:
+
+```javascript
+// pages/posts/[id].js
+
+// 1. Tell Next.js which paths to pre-render at build time
+export async function getStaticPaths() {
+  const res = await fetch('https://api.example.com/posts');
+  const posts = await res.json();
+
+  // Format required: { params: { id: '...' } }
+  const paths = posts.map((post) => ({
+    params: { id: post.id.toString() }, 
+  }));
+
+  return { 
+    paths, 
+    fallback: false // See fallback behaviors below
+  };
+}
+
+// 2. Fetch the data for a single page at build time
+export async function getStaticProps({ params }) {
+  const res = await fetch(`https://api.example.com/posts/${params.id}`);
+  const post = await res.json();
+
+  return { props: { post } };
+}
+
+export default function PostPage({ post }) {
+  return <h1>{post.title}</h1>;
+}
+```
+
+---
+
+#### 🔀 Fallback Behaviors (`fallback` key):
+
+* **`fallback: false`:** 
+  * If a user requests a path not returned by `getStaticPaths` (e.g., a new post created after the build), Next.js immediately returns a **404 page**.
+* **`fallback: true`:** 
+  * Next.js instantly serves a fallback/loading state (e.g., `router.isFallback === true`).
+  * In the background, Next.js generates the requested HTML on the server.
+  * Once finished, the browser swaps the loading state with the page content, and Next.js caches this page for future requests.
+* **`fallback: 'blocking'`:**
+  * The browser blocks/waits for the page to be rendered on the server (no loading state is shown; it behaves like SSR for the first load).
+  * Once rendered, the page is served and cached for all future visitors.
+
+---
+
+#### 🎨 Analogy: The Custom Print Shop
+* **Static page (`/about`):** A standard poster. You can print 100 copies in advance (at build time) because it is identical for everyone.
+* **Dynamic page (`/posts/[id]`):** Customized posters for different clients.
+  * **Without `getStaticPaths`:** You have no idea who your clients are, so you cannot print anything in advance.
+  * **With `getStaticPaths`:** You fetch your VIP client list (`getStaticPaths`) and pre-print posters for those clients.
+  * **`fallback: false`:** If a new client walks in, you refuse them service (404).
+  * **`fallback: 'blocking'`:** If a new client walks in, you ask them to wait a few minutes while you print their poster on demand, and save a copy for anyone else with that name.
+
+> 💡 **Interviewer Focus:** Dynamic SSG, the contract between `getStaticPaths` and `getStaticProps`, and the nuances of the three `fallback` behaviors (`false`, `true`, `'blocking'`).
 </details>
 <hr/>
 
@@ -621,9 +749,87 @@ If a page has dynamic routes and uses `getStaticProps`, it needs to define a lis
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-Middleware allows you to run code before a request is completed. Based on the incoming request, you can modify the response by rewriting, redirecting, modifying the request or response headers, or responding directly. It runs on the Edge.
+**Middleware** in Next.js allows you to run code **before** a request is completed. It intercepts the incoming HTTP request and can inspect, modify, or block it before it reaches the routing system (pages or APIs).
 
-> 💡 **Interviewer Focus:** Used for auth checks, bot protection, and localization.
+---
+
+#### 🌐 Execution & Placement (The Edge Runtime)
+Middleware runs on the **Edge Runtime** (lightweight Node.js subset APIs) close to the user's geographical location. This ensures extremely fast response times, enabling checks (like auth or geolocation) to happen in milliseconds before server latency is incurred.
+
+---
+
+#### 🔄 Request Lifecycle Flow:
+
+```text
+[ Browser Request ]
+        |
+        v
+[ Edge Middleware ]  <--- (Runs first: inspects cookies, headers, URL)
+        |
+        +------> [ Redirect ] ---------> (Sends 302/301 response immediately back to browser)
+        |
+        +------> [ Rewrite ] ----------> (Proxy: Internally changes page source, browser URL stays same)
+        |
+        +------> [ Block / Respond ] --> (Returns direct response, e.g. 401 JSON API response)
+        |
+        v [ Continue / Modify Headers ]
+[ Next.js Page / API Router ] ---> [ Response back to Browser ]
+```
+
+---
+
+#### 💻 Code Example:
+
+Create a `middleware.js` (or `.ts`) file in the **root** of your project (same level as `pages` or `app`).
+
+```javascript
+// middleware.js
+import { NextResponse } from 'next/server';
+
+export function middleware(request) {
+  const token = request.cookies.get('session-token')?.value;
+
+  // 1. Redirect if user is not authenticated and trying to access private dashboard
+  if (!token && request.nextUrl.pathname.startsWith('/dashboard')) {
+    return NextResponse.redirect(new URL('/login', request.url));
+  }
+
+  // 2. Add custom request headers (passed to server components/APIs)
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set('x-custom-header', 'hello-from-middleware');
+
+  return NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  });
+}
+
+// 3. Define matching paths (Which routes trigger this middleware)
+export const config = {
+  matcher: ['/dashboard/:path*', '/api/secure/:path*'],
+};
+```
+
+---
+
+#### 🛠️ 5 Common Actions in Middleware:
+
+1. **`NextResponse.next()`**: Allows the request to proceed to its target destination.
+2. **`NextResponse.redirect()`**: Redirects the client to another URL (changes the browser URL bar).
+3. **`NextResponse.rewrite()`**: Rewrites the destination path internally (displays target content while keeping the original URL in the browser bar - perfect for A/B testing).
+4. **Header Manipulation**: Appends custom request/response headers or cookies.
+5. **Direct Response**: Returns direct HTML/JSON (useful for rate-limiting or API blocking).
+
+---
+
+#### 🎨 Common Use Cases:
+* **Authentication/Authorization:** Checking token validity before hitting the server.
+* **Localization (i18n):** Detecting user language preferences from headers and redirecting to `/[locale]/`.
+* **A/B Testing:** Dynamically serving different buckets of code using internal rewrites.
+* **Security & Bot Protection:** Blocking suspicious traffic or setting custom security headers.
+
+> 💡 **Interviewer Focus:** Understanding the Edge Runtime execution, the differences between Redirect vs. Rewrite, and defining targeted routes using `matcher` config arrays.
 </details>
 <hr/>
 
