@@ -1403,4 +1403,4 @@ steps:
 
 ## Navigation Footer
 
-**Previous:** `50_ATS_Project_Kubernetes_Concepts.md` (50_ATS_Project_Kubernetes_Concepts) | **Next:** `52_[Next_Topic_Name].md` (52_Next_Topic_Name)
+← Previous: [`50_Multi-Cloud_ATS_App_(AWS_+_GCP)_&_Kubernetes_Concepts.md`](50_Multi-Cloud_ATS_App_(AWS_+_GCP)_&_Kubernetes_Concepts.md) | Next: [`52_Splunk_(Log_Analytics)_&_Docker_Compose.md`](52_Splunk_(Log_Analytics)_&_Docker_Compose.md) →

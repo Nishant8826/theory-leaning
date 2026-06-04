@@ -20,7 +20,48 @@ Next.js is a React framework for building full-stack web applications. You use R
 - **API Routes:** Easily create API endpoints.
 - **Performance:** Automatic image, font, and script optimizations.
 
-> 💡 **Interviewer Focus:** Understanding the difference between React (library) and Next.js (framework).
+---
+
+### 🛠️ **Deep Dive: Additional Features & Optimizations**
+
+While React is a library focused on the **View layer** (UI components), Next.js provides the complete application infrastructure. Here is a breakdown of the key features and optimizations Next.js handles for you:
+
+#### 1. **Advanced Routing Capabilities**
+* **File-System Routing:** No need to configure third-party routing libraries (e.g., `react-router-dom`). Next.js uses folders/files to define routes (`pages` or `app` directory).
+* **Nested Layouts:** Share UI (headers, sidebars) between pages without re-rendering, maintaining state.
+* **Specialized Routing (App Router):** 
+  * **Parallel Routes (`@slot`):** Render multiple pages in the same layout (e.g., dashboards, split-screens).
+  * **Intercepting Routes (`(..)folder`):** Load a route inline in a modal while keeping context (e.g., photo feeds).
+
+#### 2. **Flexible Rendering & Data Fetching Models**
+Next.js allows you to mix and match different rendering strategies on a per-route basis:
+* **Server-Side Rendering (SSR):** Renders HTML on the server for *every request*. Best for dynamic, user-specific data.
+* **Static Site Generation (SSG):** Generates pages as static HTML at *build time*. Extremely fast and CDN-cacheable.
+* **Incremental Static Regeneration (ISR):** Updates static pages in the background *after* building, without rebuilding the whole site.
+* **Client-Side Rendering (CSR):** Renders in the browser (standard React behavior, activated with `'use client'`).
+* **React Server Components (RSC):** Components render on the server, sending zero JS to the client. This reduces bundle size significantly.
+* **Partial Prerendering (PPR):** Combines static shells (served instantly) with dynamic components (streamed in as they finish loading).
+
+#### 3. **Automatic Optimizations (Performance)**
+* **Image Optimization (`next/image`):** 
+  * Automatically resizes and compresses images.
+  * Serves modern formats (WebP, AVIF).
+  * Implements lazy loading by default.
+  * Prevents Cumulative Layout Shift (CLS) by requiring explicit size/ratio declarations.
+* **Font Optimization (`next/font`):** Automatically downloads and self-hosts Google Fonts (or custom web fonts) at build time, eliminating external HTTP requests and layout shifts.
+* **Script Optimization (`next/script`):** Allows fine-grained control over when third-party scripts (like analytics) load using strategies like `lazyOnload` or `afterInteractive`.
+* **Link Prefetching (`next/link`):** Automatically prefetches route resources in the background when a link enters the user's viewport, making navigation near-instant.
+
+#### 4. **Modern Build Tooling**
+* **Rust-based Compilation:** Uses **SWC** (replacing Babel) and **Turbopack** (replacing Webpack) for extremely fast compilation, bundling, and hot-module reloading.
+* **Automatic Code Splitting:** Breaks the JavaScript bundles into page-specific chunks. Users only download the code needed for the page they are currently viewing.
+
+#### 5. **Full-Stack Capabilities**
+* **API Routes & Route Handlers:** Write backend code, connect to databases, and build API endpoints within the same project.
+* **Server Actions:** Submit forms and mutate server data directly from components without having to manually set up API routes.
+* **Edge Middleware:** Run lightweight, fast JS code at edge servers before a request is completed, enabling fast geolocation routing, authentication checks, and redirects.
+
+> 💡 **Interviewer Focus:** Understanding the difference between React (library) and Next.js (framework). Next.js provides the structural, performance, and server-side features needed to build production-ready applications, removing the need to configure them manually in a raw React project.
 </details>
 <hr/>
 
@@ -85,12 +126,63 @@ In short: **React is the core UI engine; Next.js is the fully equipped car built
 <hr/>
 
 ### ❓ Q3. **Explain Server-Side Rendering (SSR).**
-<details>
 <summary><b>👀 Show Answer</b></summary>
 
-In SSR, the HTML is generated on the server for **every request**. When a user requests a page, the server fetches data and renders the HTML, then sends it to the client. This is good for dynamic content that changes frequently.
+In **Server-Side Rendering (SSR)**, the HTML of the page is generated on the server for **every single request**. When a user navigates to a URL, the server fetches the necessary data, renders the complete HTML page, and sends it back to the client browser.
 
-> 💡 **Interviewer Focus:** Good for SEO and initial load speed for dynamic data.
+#### ⚙️ How it works:
+1. Browser requests a page.
+2. Server fetches data from APIs/Database.
+3. Server compiles React components into static HTML.
+4. Browser receives populated HTML (instantly readable by crawlers/users) and displays it.
+5. React **hydrates** (attaches event listeners to) the page to make it interactive.
+
+```text
+[ Browser ]                  [ Next.js Server ]            [ Database/API ]
+     |                              |                              |
+     |--- 1. Request Page --------->|                              |
+     |                              |--- 2. Fetch Data ----------->|
+     |                              |<-- 3. Return Data -----------|
+     |                              |                              |
+     |                              | [ Renders page HTML ]        |
+     |<-- 4. Sends HTML ------------|                              |
+     |                              |                              |
+     | [ Displays HTML (static) ]   |                              |
+     |<-- 5. Sends JS Bundle -------|                              |
+     |                              |                              |
+     | [ Hydration: page interactive]|                              |
+```
+
+#### 💻 Code Example:
+* **App Router (Server Component):**
+  ```javascript
+  // app/page.js
+  export default async function Page() {
+    // cache: 'no-store' forces dynamic rendering on every request
+    const res = await fetch('https://api.example.com/data', { cache: 'no-store' });
+    const data = await res.json();
+    
+    return <main><h1>SSR Page</h1><pre>{JSON.stringify(data)}</pre></main>;
+  }
+  ```
+* **Pages Router:**
+  ```javascript
+  // pages/index.js
+  export async function getServerSideProps() {
+    const res = await fetch('https://api.example.com/data');
+    const data = await res.json();
+    return { props: { data } };
+  }
+  
+  export default function Page({ data }) {
+    return <main><h1>SSR Page</h1><pre>{JSON.stringify(data)}</pre></main>;
+  }
+  ```
+
+* **Analogy:** Like a made-to-order restaurant. The server compiles the page fresh for every request.
+* **Industry Example:** A personalized user feed page (like Twitter/X or LinkedIn) or an e-commerce checkout page showing live stock availability and user-specific pricing.
+
+> 💡 **Interviewer Focus:** Good for SEO, secure data fetches (hides API keys on server), but increases Server Load and Time to First Byte (TTFB).
 </details>
 <hr/>
 
@@ -98,9 +190,69 @@ In SSR, the HTML is generated on the server for **every request**. When a user r
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-In SSG, the HTML is generated at **build time**. The HTML is then reused on each request. It can be cached by a CDN. This is the fastest rendering method but not ideal for data that changes constantly.
+In **Static Site Generation (SSG)**, the HTML of the page is generated once at **build time** (when you run `next build`). The pre-rendered HTML files are then stored and served from a Content Delivery Network (CDN), making them load almost instantly.
 
-> 💡 **Interviewer Focus:** Best performance, great for blogs or documentation.
+#### ⚙️ How it works:
+1. Developer runs the build process.
+2. Next.js fetches data and pre-renders components into static HTML/JSON files.
+3. Files are deployed to a CDN.
+4. When a user requests the page, the CDN serves the pre-built HTML instantly.
+
+**At Build Time:**
+```text
+[ Developer ]                [ Next.js Build Engine ]      [ Database/API ]
+     |                              |                              |
+     |--- Runs 'next build' ------->|                              |
+     |                              |--- 1. Fetch Data ----------->|
+     |                              |<-- 2. Return Data -----------|
+     |                              |                              |
+     |                              | [ Pre-renders static HTML ]  |
+     |                              | [ and JSON files ]           |
+```
+
+**At Request Time:**
+```text
+[ Browser ]                  [ CDN / Static Host ]
+     |                              |
+     |--- 1. Request Page --------->|
+     |<-- 2. Serves Pre-built HTML -| (Instant response)
+     |                              |
+     | [ Displays HTML (static) ]   |
+     |<-- 3. Serves JS Bundle ------|
+     |                              |
+     | [ Hydration: page interactive]|
+```
+
+#### 💻 Code Example:
+* **App Router (Static by default):**
+  ```javascript
+  // app/page.js
+  export default async function Page() {
+    // Next.js caches fetch requests by default (force-cache)
+    const res = await fetch('https://api.example.com/data');
+    const data = await res.json();
+    
+    return <main><h1>SSG Page</h1><pre>{JSON.stringify(data)}</pre></main>;
+  }
+  ```
+* **Pages Router:**
+  ```javascript
+  // pages/index.js
+  export async function getStaticProps() {
+    const res = await fetch('https://api.example.com/data');
+    const data = await res.json();
+    return { props: { data } };
+  }
+  
+  export default function Page({ data }) {
+    return <main><h1>SSG Page</h1><pre>{JSON.stringify(data)}</pre></main>;
+  }
+  ```
+
+* **Analogy:** Like buying pre-packaged food at the store. The page is built once during build time.
+* **Industry Example:** A company's marketing landing page, a public documentation site, or a privacy policy page that remains the same for all users and updates rarely.
+
+> 💡 **Interviewer Focus:** Fastest page-load times and great SEO, but requires a full site rebuild if any page content changes.
 </details>
 <hr/>
 
@@ -108,13 +260,267 @@ In SSG, the HTML is generated at **build time**. The HTML is then reused on each
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-In CSR, the server sends a minimal HTML file and the JavaScript bundle. The browser then executes the JS to render the page and fetch data. In Next.js, you get CSR by default if you don't use SSR or SSG methods (or by using `'use client'` in App Router).
+In **Client-Side Rendering (CSR)**, the server sends a minimal HTML shell (often just an empty `div`) and a large JavaScript bundle to the browser. The browser runs the JS to fetch data from APIs and construct the user interface dynamically.
 
-> 💡 **Interviewer Focus:** Good for user-specific dashboards that don't need SEO.
+In Next.js, you implement CSR by using the `'use client'` directive at the top of a component file, which tells the framework to bundle and execute it on the client side.
+
+#### ⚙️ How it works:
+1. Browser requests a page and gets an empty HTML file.
+2. Browser downloads and executes the JavaScript bundle.
+3. The React app runs, showing a loading state, and fetches data from the browser.
+4. React renders the final content into the DOM.
+
+```text
+[ Browser ]                  [ Next.js Server ]            [ Database/API ]
+     |                              |                              |
+     |--- 1. Request Page --------->|                              |
+     |<-- 2. Serves Empty HTML -----|                              |
+     |    & JS bundle               |                              |
+     |                              |                              |
+     | [ Displays empty/loading ]   |                              |
+     |                              |                              |
+     |--- 3. Fetch Data (Client-side)----------------------------->|
+     |<-- 4. Return Data JSON -------------------------------------|
+     |                              |                              |
+     | [ Renders UI on Client ]     |                              |
+```
+
+#### 💻 Code Example:
+* **App/Pages Router (React hooks):**
+  ```javascript
+  'use client'; // Required at top in App Router
+  
+  import { useState, useEffect } from 'react';
+  
+  export default function Page() {
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    
+    useEffect(() => {
+      fetch('https://api.example.com/data')
+        .then((res) => res.json())
+        .then((data) => {
+          setData(data);
+          setLoading(false);
+        });
+    }, []);
+    
+    if (loading) return <p>Loading...</p>;
+    return <main><h1>CSR Page</h1><pre>{JSON.stringify(data)}</pre></main>;
+  }
+  ```
+
+* **Analogy:** Like receiving a meal kit where you assemble/render the food in the browser.
+* **Industry Example:** A private user dashboard behind a login wall (like a Trello board or SaaS analytics dashboard) where search engine indexing (SEO) is not needed, and interactions are highly stateful.
+
+> 💡 **Interviewer Focus:** Poor SEO and slower initial page load, but rich and highly interactive user experience with zero server load after initial deployment.
 </details>
 <hr/>
 
-### ❓ Q6. **How does file-based routing work in Next.js?**
+### ❓ Q6. **Explain Incremental Static Regeneration (ISR).**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+**Incremental Static Regeneration (ISR)** allows developers to create or update static pages *after* the site has been built and deployed, without needing to rebuild the entire application. It combines the speed of SSG with the freshness of SSR.
+
+#### ⚙️ How it works:
+1. Page is built as static HTML (SSG) at build time.
+2. A client requests the page. If the page is requested *before* the revalidation period (e.g., 60 seconds), Next.js serves the cached static page.
+3. If requested *after* the revalidation period, the user still gets the cached page, but Next.js triggers a background page rebuild.
+4. Once built successfully, the cache is updated, and future users see the new page.
+
+```text
+[ Browser ]                  [ Next.js Server / Cache ]    [ Database/API ]
+     |                              |                              |
+     |--- 1. Request Page --------->|                              |
+     |                              | [ Checks cache validity ]    |
+     |<-- 2. Serves Cached HTML ----| (Instant response)           |
+     |                              |                              |
+     |                              |--- 3. Trigger rebuild ------>|
+     |                              |       (in background)        |
+     |                              |                              |
+     |                              |--- 4. Fetch Fresh Data ----->|
+     |                              |<-- 5. Return Fresh Data -----|
+     |                              |                              |
+     |                              | [ Re-renders static HTML & ] |
+     |                              | [ updates the Cache ]        |
+```
+
+#### 🛠️ Implementation & Code Example:
+* **App Router:** Export a `revalidate` config variable.
+  ```javascript
+  // app/page.js
+  export const revalidate = 60; // Revalidate this page every 60 seconds
+  
+  export default async function Page() {
+    const res = await fetch('https://api.example.com/data');
+    const data = await res.json();
+    return <main><h1>ISR Page</h1><pre>{JSON.stringify(data)}</pre></main>;
+  }
+  ```
+* **Pages Router:** Export `revalidate` prop from `getStaticProps`.
+  ```javascript
+  // pages/index.js
+  export async function getStaticProps() {
+    const res = await fetch('https://api.example.com/data');
+    const data = await res.json();
+    return { 
+      props: { data },
+      revalidate: 60, // Regenerate page in background after 60 seconds
+    };
+  }
+  
+  export default function Page({ data }) {
+    return <main><h1>ISR Page</h1><pre>{JSON.stringify(data)}</pre></main>;
+  }
+  ```
+
+* **Analogy:** Like a buffet. The food is pre-prepared, but the chef swaps out individual dishes in the background.
+* **Industry Example:** A massive e-commerce site (like target.com) with 10,000+ products. Instead of rebuilding the entire site when product details change, ISR allows you to automatically update a specific product's page in the background on demand.
+
+> 💡 **Interviewer Focus:** Solves the scale issue of SSG. Explain the "stale-while-revalidate" caching mechanism and how it reduces database/API load compared to SSR.
+</details>
+<hr/>
+
+### ❓ Q7. **What are React Server Components (RSC) vs. Client Components?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+With Next.js App Router, components are **Server Components (RSC)** by default. They can be explicitly defined as **Client Components** using the `'use client'` directive at the very top of the file.
+
+#### 📊 Differences Table:
+
+| Feature | Server Components (RSC) | Client Components |
+| :--- | :--- | :--- |
+| **Execution** | Executes only on the server. | Prerendered on server, hydrated/executed on client. |
+| **JS Bundle Size** | Ships **0 KB** of JS to the client. | Ships JavaScript bundle for execution. |
+| **Data Fetching** | Can fetch database data or use secure APIs directly. | Fetches data via standard client `fetch` / hooks. |
+| **React Hooks** | Cannot use hooks (`useState`, `useEffect`, etc.). | Can use all React state and lifecycle hooks. |
+| **Browser APIs** | No access to browser APIs (`window`, `localStorage`). | Has full access to browser APIs. |
+
+```text
+[ Browser ]                  [ Next.js Server ]            [ Database/API ]
+     |                              |                              |
+     |--- 1. Request Page --------->|                              |
+     |                              |--- 2. Fetch Data (Direct DB) ->|
+     |                              |<-- 3. Return Data -------------|
+     |                              |                              |
+     |                              | [ Renders RSCs to virtual ]  |
+     |                              | [ DOM JSON payload ]         |
+     |                              |                              |
+     |<-- 4. Sends HTML & RSC ------|                              |
+     |    payload (0 KB component JS)|                              |
+     |                              |                              |
+     | [ Displays page, downloads ] |                              |
+     | [ Client Comp JS only ]      |                              |
+```
+
+#### 💻 Code Example:
+* **ServerComponent.js (Default RSC):**
+  ```javascript
+  import ClientComponent from './ClientComponent';
+  
+  export default async function ServerComponent() {
+    // Fetch data securely and directly on the server without API routes
+    const users = await db.query('SELECT * FROM users'); 
+    
+    return (
+      <div>
+        <h1>Server Component (0 KB shipped JavaScript)</h1>
+        {/* Pass fetched server data to a Client Component */}
+        <ClientComponent initialUsers={users} />
+      </div>
+    );
+  }
+  ```
+* **ClientComponent.js (Client Component):**
+  ```javascript
+  'use client';
+  
+  import { useState } from 'react';
+  
+  export default function ClientComponent({ initialUsers }) {
+    const [likes, setLikes] = useState(0); // Interactive hooks allowed here
+    
+    return (
+      <div>
+        <button onClick={() => setLikes(likes + 1)}>Likes: {likes}</button>
+        <ul>
+          {initialUsers.map(user => <li key={user.id}>{user.name}</li>)}
+        </ul>
+      </div>
+    );
+  }
+  ```
+
+* **Analogy:** The server does the heavy lifting (e.g., fetching DB data) and sends only the final visual layout. The browser doesn't have to download or run JS to display it.
+* **Industry Example:** A content-heavy help desk page that uses heavy external packages (like a Markdown-to-HTML parser or a syntax highlighter). Using RSC keeps these packages on the server, saving megabytes of JS from being downloaded by the browser.
+
+> 💡 **Interviewer Focus:** RSCs are NOT a replacement for SSR. SSR is a rendering process; RSCs are a component architecture that reduces client-side JavaScript. They work together.
+</details>
+<hr/>
+
+### ❓ Q8. **Explain how Partial Prerendering (PPR) works in Next.js.**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+**Partial Prerendering (PPR)** is an optimization that allows you to combine static and dynamic rendering on the same route. Next.js prerenders the static shell of a page and leaves dynamic "holes" that are streamed in as they are generated on the server using React Suspense.
+
+#### ⚙️ How it works:
+1. When a user requests a page, the static HTML shell (navbars, grids) is served immediately from the CDN.
+2. The dynamic components (cart status, user recommendations) are executed on the server.
+3. The server streams the HTML for the dynamic components into the open HTTP response as soon as they finish rendering.
+
+```text
+[ Browser ]                  [ Next.js Server / CDN ]      [ Database/API ]
+     |                              |                              |
+     |--- 1. Request Page --------->|                              |
+     |<-- 2. Serves Pre-built HTML -|                              |
+     |    Static Shell (instantly)  |                              |
+     |                              |                              |
+     | [ Displays Nav/Layout ]      |                              |
+     |                              |--- 3. Fetch Dynamic Data --->| (streamed as they complete)
+     |                              |<-- 4. Return Data -----------|
+     |                              |                              |
+     |                              | [ Renders dynamic components ]|
+     |<-- 5. Streams HTML Chunks ---| (Progressive streaming)      |
+     |    (via Suspense boundary)   |                              |
+     |                              |                              |
+     | [ Dynamic components appear ]|                              |
+```
+
+#### 💻 Code Example:
+* **App Router with Suspense (PPR):**
+  ```javascript
+  import { Suspense } from 'react';
+  import StaticShellHeader from './StaticShellHeader';
+  import DynamicCartDetails from './DynamicCartDetails'; // contains async fetch
+  
+  export default function Page() {
+    return (
+      <main>
+        {/* Prerendered statically at build time & served instantly */}
+        <StaticShellHeader />
+        
+        {/* The Suspense fallback acts as a static shell boundary.
+            Everything inside Suspense is dynamically generated on-demand
+            and streamed over the wire once fetched. */}
+        <Suspense fallback={<div>Loading Cart...</div>}>
+          <DynamicCartDetails />
+        </Suspense>
+      </main>
+    );
+  }
+  ```
+
+* **Analogy:** Like walking into a fast-food joint where they hand you a cup for your drink instantly (static shell), while you wait a moment for the burger (dynamic components) to cook.
+* **Industry Example:** An Amazon-like product page. The page structure and description load instantly from a global CDN cache (static shell), while personalized recommendations and cart details stream in dynamically as they are fetched from databases.
+
+> 💡 **Interviewer Focus:** PPR provides the speed of static sites (SSG) with the personalization of server sites (SSR) in a single page. It is enabled using React `Suspense` boundaries.
+</details>
+<hr/>
+
+### ❓ Q9. **How does file-based routing work in Next.js?**
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -126,7 +532,7 @@ Next.js has a file-system based router.
 </details>
 <hr/>
 
-### ❓ Q7. **What is the `Image` component in Next.js?**
+### ❓ Q10. **What is the `Image` component in Next.js?**
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -139,7 +545,9 @@ The Next.js `Image` component (`next/image`) is an extension of the HTML `<img>`
 </details>
 <hr/>
 
-### ❓ Q8. **What is the purpose of the `Link` component?**
+## 🟡 Intermediate Level
+
+### ❓ Q11. **What is the purpose of the `Link` component?**
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -149,7 +557,7 @@ The `Link` component (`next/link`) is used for client-side navigation between pa
 </details>
 <hr/>
 
-### ❓ Q9. **What are API Routes in Next.js?**
+### ❓ Q12. **What are API Routes in Next.js?**
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -159,7 +567,7 @@ API routes provide a solution to build your API with Next.js. Any file inside th
 </details>
 <hr/>
 
-### ❓ Q10. **What is the difference between the `app` directory and the `pages` directory?**
+### ❓ Q13. **What is the difference between the `app` directory and the `pages` directory?**
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -170,20 +578,7 @@ API routes provide a solution to build your API with Next.js. Any file inside th
 </details>
 <hr/>
 
-## 🟡 Intermediate Level
-
-### ❓ Q11. **Explain Incremental Static Regeneration (ISR).**
-<details>
-<summary><b>👀 Show Answer</b></summary>
-
-ISR allows you to create or update static pages **after** you’ve built your site. You can use static-generation on a per-page basis, without needing to rebuild the entire site.
-In Pages Router, you use the `revalidate` prop in `getStaticProps`. In App Router, you use `fetch(..., { next: { revalidate: 60 } })`.
-
-> 💡 **Interviewer Focus:** Best of both worlds (SSG speed + dynamic updates).
-</details>
-<hr/>
-
-### ❓ Q12. **How do you fetch data in the App Router?**
+### ❓ Q14. **How do you fetch data in the App Router?**
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -199,18 +594,7 @@ async function Page() {
 </details>
 <hr/>
 
-### ❓ Q13. **What are Server Components vs Client Components in Next.js 13+?**
-<details>
-<summary><b>👀 Show Answer</b></summary>
-
-- **Server Components:** Render on the server. They don't send JS to the client, cannot use hooks (like `useState`), and can access backend resources directly. Default in the `app` directory.
-- **Client Components:** Render on the client. They use the `'use client'` directive at the top, can use hooks, and handle interactivity.
-
-> 💡 **Interviewer Focus:** Understanding the paradigm shift in React 18 / Next 13.
-</details>
-<hr/>
-
-### ❓ Q14. **How do you create dynamic routes in Next.js?**
+### ❓ Q15. **How do you create dynamic routes in Next.js?**
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -223,7 +607,7 @@ You access the parameter via `useRouter` or from the `params` prop in the compon
 </details>
 <hr/>
 
-### ❓ Q15. **What is the purpose of `getStaticPaths` in Pages Router?**
+### ❓ Q16. **What is the purpose of `getStaticPaths` in Pages Router?**
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -233,7 +617,7 @@ If a page has dynamic routes and uses `getStaticProps`, it needs to define a lis
 </details>
 <hr/>
 
-### ❓ Q16. **How does Middleware work in Next.js?**
+### ❓ Q17. **How does Middleware work in Next.js?**
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -243,7 +627,7 @@ Middleware allows you to run code before a request is completed. Based on the in
 </details>
 <hr/>
 
-### ❓ Q17. **What is "Streaming" in Next.js?**
+### ❓ Q18. **What is "Streaming" in Next.js?**
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -253,7 +637,7 @@ Streaming allows you to break down the page's HTML into smaller chunks and progr
 </details>
 <hr/>
 
-### ❓ Q18. **How do you handle SEO in the App Router?**
+### ❓ Q19. **How do you handle SEO in the App Router?**
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -266,7 +650,7 @@ export const metadata = { title: 'My Page' };
 </details>
 <hr/>
 
-### ❓ Q19. **What is the difference between `getServerSideProps` and `getStaticProps`?**
+### ❓ Q20. **What is the difference between `getServerSideProps` and `getStaticProps`?**
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -277,7 +661,7 @@ export const metadata = { title: 'My Page' };
 </details>
 <hr/>
 
-### ❓ Q20. **How do you optimize fonts in Next.js?**
+### ❓ Q21. **How do you optimize fonts in Next.js?**
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -289,7 +673,7 @@ Next.js includes built-in automatic font optimization. Using `next/font`, you ca
 
 ## 🔴 Advanced Level
 
-### ❓ Q21. **Explain the concept of "Edge Runtime" in Next.js.**
+### ❓ Q22. **Explain the concept of "Edge Runtime" in Next.js.**
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -299,7 +683,7 @@ The Edge Runtime is a subset of Node.js APIs that are lightweight and can run on
 </details>
 <hr/>
 
-### ❓ Q22. **How do you implement Server Actions in Next.js?**
+### ❓ Q23. **How do you implement Server Actions in Next.js?**
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -309,7 +693,7 @@ Server Actions are asynchronous functions that are executed on the server. They 
 </details>
 <hr/>
 
-### ❓ Q23. **What is "Parallel Routes" and when would you use them?**
+### ❓ Q24. **What is "Parallel Routes" and when would you use them?**
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -319,7 +703,7 @@ Parallel Routes allow you to simultaneously or conditionally render one or more 
 </details>
 <hr/>
 
-### ❓ Q24. **What is "Intercepting Routes"?**
+### ❓ Q25. **What is "Intercepting Routes"?**
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -329,7 +713,7 @@ Intercepting routes allows you to load a route within the current layout while k
 </details>
 <hr/>
 
-### ❓ Q25. **How does caching work in the App Router?**
+### ❓ Q26. **How does caching work in the App Router?**
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -343,7 +727,7 @@ Next.js has 4 levels of caching:
 </details>
 <hr/>
 
-### ❓ Q26. **How do you handle authentication in Middleware?**
+### ❓ Q27. **How do you handle authentication in Middleware?**
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -353,7 +737,7 @@ Read the session cookie or token from the request. Verify it (e.g., using a JWT 
 </details>
 <hr/>
 
-### ❓ Q27. **What are the limitations of React Server Components?**
+### ❓ Q28. **What are the limitations of React Server Components?**
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -365,7 +749,7 @@ Read the session cookie or token from the request. Verify it (e.g., using a JWT 
 </details>
 <hr/>
 
-### ❓ Q28. **How do you debug a Next.js application in production?**
+### ❓ Q29. **How do you debug a Next.js application in production?**
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -377,7 +761,7 @@ Use structured logging (sent to a log management service like Datadog or Axiom).
 
 ## 🟣 Expert Level
 
-### ❓ Q29. **Architect a strategy for migrating a large Pages Router application to the App Router.**
+### ❓ Q30. **Architect a strategy for migrating a large Pages Router application to the App Router.**
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -392,7 +776,7 @@ Use structured logging (sent to a log management service like Datadog or Axiom).
 </details>
 <hr/>
 
-### ❓ Q30. **How would you optimize a Next.js site to achieve a perfect 100 score on Lighthouse (Core Web Vitals)?**
+### ❓ Q31. **How would you optimize a Next.js site to achieve a perfect 100 score on Lighthouse (Core Web Vitals)?**
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -402,16 +786,6 @@ Use structured logging (sent to a log management service like Datadog or Axiom).
 4. **General:** Use dynamic imports for heavy components not needed on initial load. Ensure efficient caching.
 
 > 💡 **Interviewer Focus:** Practical knowledge of Core Web Vitals and Next.js optimization features.
-</details>
-<hr/>
-
-### ❓ Q31. **Explain how partial prerendering (PPR) works in Next.js.**
-<details>
-<summary><b>👀 Show Answer</b></summary>
-
-PPR allows you to combine static and dynamic rendering on the same page. The static parts of the page (like navigation and sidebar) are served instantly from the edge, while dynamic parts (like a personalized cart) are streamed in as they are generated on the server. It uses React Suspense to define the dynamic boundaries.
-
-> 💡 **Interviewer Focus:** This is experimental/cutting edge. Shows deep engagement with the framework's future.
 </details>
 <hr/>
 

@@ -1554,4 +1554,4 @@ pipeline {
 
 ## Navigation Footer
 
-← Previous: [`50_Multi-Cloud_ATS_App_(AWS_+_GCP)_&_Kubernetes_Concepts.md`](50_Multi-Cloud_ATS_App_(AWS_+_GCP)_&_Kubernetes_Concepts.md) | Next: [`51_Multi-Cloud_Comparison_(AWS_vs_GCP_vs_Azure)_&_Azure_DevOps.md`](51_Multi-Cloud_Comparison_(AWS_vs_GCP_vs_Azure)_&_Azure_DevOps.md) →
+← Previous: [`49_Prompt_Engineering_for_DevOps_&_AI.md`](49_Prompt_Engineering_for_DevOps_&_AI.md) | Next: [`51_Multi-Cloud_Comparison_(AWS_vs_GCP_vs_Azure)_&_Azure_DevOps.md`](51_Multi-Cloud_Comparison_(AWS_vs_GCP_vs_Azure)_&_Azure_DevOps.md) →
