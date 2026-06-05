@@ -1446,4 +1446,4 @@ index=nodeapp status>=500 earliest=-5m
 
 ## Navigation Footer
 
-← Previous: [`51_Multi-Cloud_Comparison_(AWS_vs_GCP_vs_Azure)_&_Azure_DevOps.md`](51_Multi-Cloud_Comparison_(AWS_vs_GCP_vs_Azure)_&_Azure_DevOps.md) | Next: [`53_Prometheus_Grafana_(Monitoring)_&_Docker_Compose.md`](53_Prometheus_Grafana_(Monitoring)_&_Docker_Compose.md) →
+← Previous: [`51_Multi-Cloud_Comparison_(AWS_vs_GCP_vs_Azure)_&_Azure_DevOps.md`](51_Multi-Cloud_Comparison_(AWS_vs_GCP_vs_Azure)_&_Azure_DevOps.md) | Next: [`53_Kafka_on_Kubernetes_using_Strimzi_Operator.md`](53_Kafka_on_Kubernetes_using_Strimzi_Operator.md) →
