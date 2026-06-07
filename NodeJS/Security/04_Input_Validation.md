@@ -69,7 +69,7 @@ In a robust Node.js application:
 
 ### 🔍 Code Example (Latest Node.js - Using Zod)
 ```javascript
-import { z } from 'zod';
+const { z } = require('zod');
 
 const userSchema = z.object({
   username: z.string().min(3).max(20).regex(/^[a-zA-Z0-9_]+$/),

@@ -52,7 +52,7 @@ Memory leaks occur when an object is no longer needed but is still reachable fro
 
 ### 🔍 Code Example (Latest Node.js - Creating and Finding a Leak)
 ```javascript
-import http from 'node:http';
+const http = require('node:http');
 
 // THE LEAK: Global array that never clears
 const leakStore = [];

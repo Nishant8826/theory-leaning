@@ -70,7 +70,7 @@ When a "Cache-Aside" request occurs:
 
 ### 🔍 Code Example (Latest Node.js - Redis Caching)
 ```javascript
-import { createClient } from 'redis';
+const { createClient } = require('redis');
 
 const redis = createClient({ url: 'redis://localhost:6379' });
 await redis.connect();

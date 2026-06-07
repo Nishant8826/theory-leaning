@@ -60,7 +60,7 @@ V8 uses a **Generational Garbage Collector**. It assumes that "most objects die 
 ### 🔍 Code Example (Latest Node.js - Forcing GC for Testing)
 ```javascript
 // Run with: node --expose-gc script.js
-import { inspect } from 'node:util';
+const { inspect } = require('node:util');
 
 function getMemoryUsage() {
   const usage = process.memoryUsage();

@@ -68,7 +68,7 @@ When using an MQ with Node.js:
 
 ### 🔍 Code Example (Latest Node.js - RabbitMQ Consumer)
 ```javascript
-import amqp from 'amqplib';
+const amqp = require('amqplib');
 
 async function consume() {
     const conn = await amqp.connect('amqp://localhost');

@@ -68,9 +68,9 @@ When you "pipe" a readable stream to a writable one, Node.js manages a complex d
 
 ### 🔍 Code Example (Latest Node.js)
 ```javascript
-import fs from 'node:fs';
-import zlib from 'node:zlib';
-import { pipeline } from 'node:stream/promises';
+const fs = require('node:fs');
+const zlib = require('node:zlib');
+const { pipeline } = require('node:stream/promises');
 
 // THE MODERN WAY: Using pipeline to handle errors and cleanup
 async function compressFile(input, output) {

@@ -71,7 +71,7 @@ When a REST request hits your Node.js server:
 
 ### 🔍 Code Example (Latest Node.js - Clean Architecture)
 ```javascript
-import express from 'express';
+const express = require('express');
 const router = express.Router();
 
 // Resource: Users

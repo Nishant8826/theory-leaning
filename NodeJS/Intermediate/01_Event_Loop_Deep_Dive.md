@@ -67,7 +67,7 @@ The sequence of execution follows a very strict hierarchy:
 
 ### 🔁 Execution Flow
 ```javascript
-import fs from 'node:fs';
+const fs = require('node:fs');
 
 setTimeout(() => console.log('Timer 1'), 0);
 setImmediate(() => console.log('Immediate 1'));

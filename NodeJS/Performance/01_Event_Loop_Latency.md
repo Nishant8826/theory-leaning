@@ -66,7 +66,7 @@ When the event loop is under high latency:
 
 ### 🔍 Code Example (Latest Node.js - Measuring Lag)
 ```javascript
-import { monitorEventLoopDelay } from 'node:perf_hooks';
+const { monitorEventLoopDelay } = require('node:perf_hooks');
 
 const h = monitorEventLoopDelay({ resolution: 10 });
 h.enable();

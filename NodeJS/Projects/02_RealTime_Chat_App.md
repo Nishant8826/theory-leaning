@@ -59,9 +59,9 @@ A real-time chat app is like **A Global Walkie-Talkie System**.
 
 ### 🔍 Code Example (Latest Node.js - Socket.IO Server with Redis)
 ```javascript
-import { Server } from 'socket.io';
-import { createAdapter } from '@socket.io/redis-adapter';
-import { createClient } from 'redis';
+const { Server } = require('socket.io');
+const { createAdapter } = require('@socket.io/redis-adapter');
+const { createClient } = require('redis');
 
 const io = new Server(3000);
 

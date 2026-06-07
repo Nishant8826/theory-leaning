@@ -74,7 +74,7 @@ In a Node.js/Express environment:
 ### 🔍 Code Example (Latest Node.js - Simple RBAC Middleware)
 ```javascript
 // middleware/authorize.js
-export const authorize = (...allowedRoles) => {
+exports.authorize = (...allowedRoles) => {
     return (req, res, next) => {
         if (!req.user) return res.status(401).send('Unauthorized');
         

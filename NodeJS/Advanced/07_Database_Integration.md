@@ -69,7 +69,7 @@ When you call `db.query()` in Node.js:
 
 ### 🔍 Code Example (Latest Node.js - Using Prisma)
 ```javascript
-import { PrismaClient } from '@prisma/client';
+const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
 

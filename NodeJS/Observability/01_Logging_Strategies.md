@@ -71,7 +71,7 @@ In a high-performance Node.js app:
 
 ### 🔍 Code Example (Latest Node.js - Using Pino)
 ```javascript
-import pino from 'pino';
+const pino = require('pino');
 
 // 1. Initialize Logger
 const logger = pino({

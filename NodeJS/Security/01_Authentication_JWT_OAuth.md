@@ -77,7 +77,7 @@ In a Node.js production environment:
 
 ### 🔍 Code Example (Latest Node.js - signing a JWT)
 ```javascript
-import jwt from 'jsonwebtoken';
+const jwt = require('jsonwebtoken');
 
 const SECRET = process.env.JWT_SECRET;
 

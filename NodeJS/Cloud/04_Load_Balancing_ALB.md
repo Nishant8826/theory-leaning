@@ -73,7 +73,7 @@ When an ALB is in place:
 
 ### 🔍 Code Example (Latest Node.js - Health Check Endpoint)
 ```javascript
-import express from 'express';
+const express = require('express');
 const app = express();
 
 // A simple health check for the ALB

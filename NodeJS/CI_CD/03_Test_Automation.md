@@ -70,8 +70,8 @@ When an automated test runs in Node.js:
 
 ### 🔍 Code Example (Latest Node.js - Integration Test with Supertest)
 ```javascript
-import request from 'supertest';
-import app from '../src/app.js'; // Your Express app
+const request = require('supertest');
+const app = require('../src/app.js'); // Your Express app
 
 describe('POST /api/login', () => {
   it('should return 200 and a token for valid credentials', async () => {

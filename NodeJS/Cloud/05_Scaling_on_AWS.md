@@ -79,7 +79,7 @@ When a scaling event occurs:
 // config.js
 // Always use environment variables for everything, 
 // as every scaled instance will have the same code but might need different configs.
-export const config = {
+exports.config = {
     dbHost: process.env.DB_HOST,
     redisHost: process.env.REDIS_HOST,
     instanceId: process.env.INSTANCE_ID || 'local'

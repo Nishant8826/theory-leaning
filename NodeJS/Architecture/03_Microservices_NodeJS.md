@@ -66,7 +66,7 @@ In a Node.js microservice environment, the "vibe" changes from a single file sys
 
 ### 🔍 Code Example (Latest Node.js - Simple Service Communication)
 ```javascript
-import axios from 'axios';
+const axios = require('axios');
 
 // Order Service calling Inventory Service
 async function checkInventory(productId) {

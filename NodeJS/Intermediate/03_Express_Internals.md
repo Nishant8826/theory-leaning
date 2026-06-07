@@ -83,7 +83,7 @@ app.get("/hello", (req, res) => {
 
 ### 🔍 Code Example (Latest Node.js)
 ```javascript
-import express from 'express';
+const express = require('express');
 
 const app = express();
 

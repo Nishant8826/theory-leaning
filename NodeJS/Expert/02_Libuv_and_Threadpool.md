@@ -58,8 +58,8 @@ Libuv provides two ways to do things asynchronously:
 
 ### 🔍 Code Example (Latest Node.js - Testing Pool Size)
 ```javascript
-import crypto from 'node:crypto';
-import { performance } from 'node:perf_hooks';
+const crypto = require('node:crypto');
+const { performance } = require('node:perf_hooks');
 
 // Default threadpool is 4. Running 5 heavy crypto tasks will show a bottleneck.
 // Try changing this: process.env.UV_THREADPOOL_SIZE = 8;

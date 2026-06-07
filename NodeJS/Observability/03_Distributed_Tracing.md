@@ -68,10 +68,10 @@ In a production Node.js environment:
 ### 🔍 Code Example (Latest Node.js - OpenTelemetry)
 ```javascript
 // instrumentation.js
-import { NodeSDK } from '@opentelemetry/sdk-node';
-import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
-import { ExpressInstrumentation } from '@opentelemetry/instrumentation-express';
-import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
+const { NodeSDK } = require('@opentelemetry/sdk-node');
+const { HttpInstrumentation } = require('@opentelemetry/instrumentation-http');
+const { ExpressInstrumentation } = require('@opentelemetry/instrumentation-express');
+const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-http');
 
 const sdk = new NodeSDK({
   traceExporter: new OTLPTraceExporter({ url: 'http://jaeger:4318/v1/traces' }),

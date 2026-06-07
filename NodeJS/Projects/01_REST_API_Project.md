@@ -63,7 +63,7 @@ By separating these, you can change the "Ingredients" (The DB) without teaching 
 ### 🔍 Code Example (Latest Node.js - Project Skeleton)
 ```javascript
 // src/services/userService.js
-export class UserService {
+exports.UserService = class UserService {
   constructor(userRepository) {
     this.userRepository = userRepository;
   }
@@ -75,7 +75,7 @@ export class UserService {
 }
 
 // src/controllers/userController.js
-export const register = async (req, res, next) => {
+exports.register = async (req, res, next) => {
   try {
     const service = new UserService(new UserRepository());
     const user = await service.registerUser(req.body);

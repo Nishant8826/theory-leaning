@@ -73,7 +73,7 @@ The lifecycle of a Node.js process follows a strict sequence:
 ### 🔍 Code Example (Latest Node.js)
 ```javascript
 // Demonstrating the bridge between JS and the OS via Node.js
-import fs from 'node:fs';
+const fs = require('node:fs');
 
 console.log("1. Start");
 

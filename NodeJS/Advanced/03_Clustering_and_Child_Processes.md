@@ -66,10 +66,10 @@ When you use the `cluster` module:
 
 ### 🔍 Code Example (Latest Node.js)
 ```javascript
-import cluster from 'node:cluster';
-import http from 'node:http';
-import { availableParallelism } from 'node:os';
-import process from 'node:process';
+const cluster = require('node:cluster');
+const http = require('node:http');
+const { availableParallelism } = require('node:os');
+const process = require('node:process');
 
 if (cluster.isPrimary) {
   const numCPUs = availableParallelism();

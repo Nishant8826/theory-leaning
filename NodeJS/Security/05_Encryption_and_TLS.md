@@ -72,7 +72,7 @@ In a Node.js application:
 
 ### 🔍 Code Example (Latest Node.js - Hashing with Argon2)
 ```javascript
-import argon2 from 'argon2';
+const argon2 = require('argon2');
 
 // 1. Hash a password
 const password = "my_secure_password";

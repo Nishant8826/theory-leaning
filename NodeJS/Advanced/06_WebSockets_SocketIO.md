@@ -65,7 +65,7 @@ When a WebSocket connection is active:
 
 ### 🔍 Code Example (Latest Node.js - Using `ws` library)
 ```javascript
-import { WebSocketServer } from 'ws';
+const { WebSocketServer } = require('ws');
 
 const wss = new WebSocketServer({ port: 8080 });
 

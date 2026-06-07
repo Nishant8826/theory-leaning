@@ -66,7 +66,7 @@ When a GraphQL query is executed:
 
 ### 🔍 Code Example (Latest Node.js - Solving N+1 with DataLoader)
 ```javascript
-import DataLoader from 'dataloader';
+const DataLoader = require('dataloader');
 
 // The function to batch fetch posts for multiple users in ONE query
 const batchPosts = async (userIds) => {

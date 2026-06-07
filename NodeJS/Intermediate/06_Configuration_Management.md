@@ -70,7 +70,7 @@ At runtime, `process.env` is just a plain old JavaScript object. When Node.js st
 ### 🔍 Code Example (Latest Node.js)
 ```javascript
 // config.js - Centralizing and Validating Configuration
-import 'dotenv/config'; // Load .env file automatically
+require('dotenv').config(); // Load .env file automatically
 
 const getEnv = (key, defaultValue = null) => {
     const value = process.env[key] || defaultValue;
@@ -80,7 +80,7 @@ const getEnv = (key, defaultValue = null) => {
     return value;
 };
 
-export const config = {
+exports.config = {
     port: parseInt(getEnv('PORT', '3000'), 10),
     dbUrl: getEnv('DATABASE_URL'),
     nodeEnv: getEnv('NODE_ENV', 'development'),

@@ -61,8 +61,8 @@ A microservices system is like **A Professional Orchestra**.
 
 ### 🔍 Code Example (Latest Node.js - gRPC Client Implementation)
 ```javascript
-import * as grpc from '@grpc/grpc-js';
-import * as protoLoader from '@grpc/proto-loader';
+const grpc = require('@grpc/grpc-js');
+const protoLoader = require('@grpc/proto-loader');
 
 // Load the shared contract
 const packageDefinition = protoLoader.loadSync('inventory.proto');
@@ -74,7 +74,7 @@ const client = new inventoryProto.InventoryService(
     grpc.credentials.createInsecure()
 );
 
-export const checkStock = (productId) => {
+exports.checkStock = (productId) => {
     return new Promise((resolve, reject) => {
         client.GetStock({ productId }, (err, response) => {
             if (err) reject(err);

@@ -68,19 +68,20 @@ Think of modules as **Isolated Scopes**. Variables defined in one module don't l
 
 ### 🔍 Code Example (Latest Node.js)
 ```javascript
-// ESM Approach (The modern standard)
+// CommonJS Approach
 // file: math.js
-export const add = (a, b) => a + b;
+exports.add = (a, b) => a + b;
 
 // file: app.js
-import { add } from './math.js';
+const { add } = require('./math.js');
 console.log(add(5, 5));
 
-// Dynamic Import (Async)
+// Dynamic Import (Conditional require in CommonJS)
 if (true) {
-    const { add } = await import('./math.js');
+    const { add } = require('./math.js');
     console.log("Dynamically loaded:", add(1, 1));
 }
+
 ```
 
 ---

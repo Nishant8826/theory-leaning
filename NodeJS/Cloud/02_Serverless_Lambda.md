@@ -72,7 +72,7 @@ When a Lambda function is invoked:
 ### 🔍 Code Example (Latest Node.js - Basic Handler)
 ```javascript
 // index.mjs (ESM is supported natively)
-export const handler = async (event, context) => {
+exports.handler = async (event, context) => {
     console.log("Event received:", JSON.stringify(event, null, 2));
     
     const name = event.queryStringParameters?.name || "World";

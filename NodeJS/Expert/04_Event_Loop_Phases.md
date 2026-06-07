@@ -65,7 +65,7 @@ The Event Loop in Node.js (implemented by Libuv) consists of 7 distinct phases. 
 
 ### 🔍 Code Example (Latest Node.js - Phase Behavior)
 ```javascript
-import fs from 'node:fs';
+const fs = require('node:fs');
 
 // Inside an I/O callback, setImmediate ALWAYS runs before setTimeout(0)
 fs.readFile(__filename, () => {

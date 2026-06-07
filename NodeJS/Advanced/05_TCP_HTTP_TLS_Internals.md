@@ -65,7 +65,7 @@ When a Node.js server is running:
 
 ### 🔍 Code Example (Latest Node.js - Raw TCP Server)
 ```javascript
-import net from 'node:net';
+const net = require('node:net');
 
 const server = net.createServer((socket) => {
     console.log('Client connected');

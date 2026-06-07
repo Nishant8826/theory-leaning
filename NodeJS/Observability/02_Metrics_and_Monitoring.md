@@ -75,8 +75,8 @@ In a Node.js monitoring setup:
 
 ### 🔍 Code Example (Latest Node.js - Using `prom-client`)
 ```javascript
-import client from 'prom-client';
-import express from 'express';
+const client = require('prom-client');
+const express = require('express');
 
 const app = express();
 

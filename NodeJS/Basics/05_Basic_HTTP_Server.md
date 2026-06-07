@@ -68,7 +68,7 @@ When you run a server, the following happens for every single request:
 
 ### 🔍 Code Example (Latest Node.js)
 ```javascript
-import http from 'node:http';
+const http = require('node:http');
 
 const server = http.createServer((req, res) => {
     // req: IncomingMessage (Readable Stream)

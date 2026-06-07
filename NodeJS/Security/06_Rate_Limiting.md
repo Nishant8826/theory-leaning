@@ -69,7 +69,7 @@ When a request hits a rate-limited Node.js route:
 
 ### 🔍 Code Example (Latest Node.js - Using `express-rate-limit`)
 ```javascript
-import rateLimit from 'express-rate-limit';
+const rateLimit = require('express-rate-limit');
 
 const apiLimiter = rateLimit({
 	windowMs: 15 * 60 * 1000, // 15 minutes

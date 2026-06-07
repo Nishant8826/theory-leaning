@@ -66,7 +66,7 @@ When an attack occurs:
 
 ### 🔍 Code Example (Latest Node.js - Prototype Pollution prevention)
 ```javascript
-import express from 'express';
+const express = require('express');
 const app = express();
 
 // VULNERABLE:

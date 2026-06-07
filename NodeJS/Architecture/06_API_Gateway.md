@@ -69,8 +69,8 @@ When an API Gateway receives a request:
 
 ### 🔍 Code Example (Latest Node.js - Simple Gateway with `http-proxy`)
 ```javascript
-import http from 'node:http';
-import httpProxy from 'http-proxy';
+const http = require('node:http');
+const httpProxy = require('http-proxy');
 
 const proxy = httpProxy.createProxyServer({});
 

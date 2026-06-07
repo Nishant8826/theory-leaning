@@ -75,7 +75,7 @@ async function loggingMiddleware(req, res, next) {
 
 ### 🔍 Code Example (Latest Node.js - Post-processing in Express)
 ```javascript
-import express from 'express';
+const express = require('express');
 
 const app = express();
 

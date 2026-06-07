@@ -74,7 +74,7 @@ start();
 ### 🔍 Code Example (Latest Node.js)
 ```javascript
 // Demonstrating the difference between synchronous blocking and async delegation
-import { performance } from 'node:perf_hooks';
+const { performance } = require('node:perf_hooks');
 
 function heavyTask() {
     const start = performance.now();

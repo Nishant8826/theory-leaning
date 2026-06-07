@@ -71,7 +71,7 @@ When an application scales horizontally:
 
 ### 🔍 Code Example (Latest Node.js - Graceful Shutdown)
 ```javascript
-import http from 'node:http';
+const http = require('node:http');
 
 const server = http.createServer((req, res) => {
     res.end('Hello');

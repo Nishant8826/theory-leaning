@@ -69,7 +69,7 @@ When you spawn a worker:
 ### 🔍 Code Example (Latest Node.js)
 ```javascript
 // main.js
-import { Worker } from 'node:worker_threads';
+const { Worker } = require('node:worker_threads');
 
 function runWorker(data) {
   return new Promise((resolve, reject) => {
@@ -86,7 +86,7 @@ const result = await runWorker({ num: 40 });
 console.log('Result from worker:', result);
 
 // worker.js
-import { parentPort, workerData } from 'node:worker_threads';
+const { parentPort, workerData } = require('node:worker_threads');
 
 // Heavy CPU task: Fibonacci
 function fib(n) {
