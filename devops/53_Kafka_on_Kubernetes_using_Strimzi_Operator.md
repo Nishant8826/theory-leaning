@@ -801,4 +801,4 @@ kubectl delete namespace kafka
 
 ## Navigation Footer
 
-← Previous: [`52_Splunk_(Log_Analytics)_&_Docker_Compose.md`](52_Splunk_(Log_Analytics)_&_Docker_Compose.md) | Next: [`54_Kafka_on_Kubernetes_using_Strimzi_Operator.md`](54_Kafka_on_Kubernetes_using_Strimzi_Operator.md) →
+← Previous: [`52_Splunk_(Log_Analytics)_&_Docker_Compose.md`](52_Splunk_(Log_Analytics)_&_Docker_Compose.md) | Next: [`54_Complete_CICD_Pipeline_Jenkins_+_Docker_+_AWS_(Node.js App).md`](54_Complete_CICD_Pipeline_Jenkins_+_Docker_+_AWS_(Node.js App).md) →
