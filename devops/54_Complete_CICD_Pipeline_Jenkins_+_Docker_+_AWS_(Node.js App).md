@@ -1131,4 +1131,4 @@ This Node.js + Jenkins + Docker + AWS project should be described as a core part
 
 ## Navigation Footer
 
-← Previous: [`53_Kafka_on_Kubernetes_using_Strimzi_Operator.md`](53_Kafka_on_Kubernetes_using_Strimzi_Operator.md) | Next: [`55_Ansible_Playbooks_(AWS_Setup_+_Docker).md`](55_Ansible_Playbooks_(AWS_Setup_+_Docker).md) →
+← Previous: [`53_Kafka_on_Kubernetes_using_Strimzi_Operator.md`](53_Kafka_on_Kubernetes_using_Strimzi_Operator.md) | Next: [`55_DevSecOps_Jenkins_+_Trivy_ SonarQube_on_AWS.md`](55_DevSecOps_Jenkins_+_Trivy_ SonarQube_on_AWS.md) →
