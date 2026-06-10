@@ -1177,4 +1177,4 @@ withAWS(credentials: 'aws-creds', region: 'ap-south-1') {
 
 ## Navigation Footer
 
-← Previous: [`54_Complete_CICD_Pipeline_Jenkins_+_Docker_+_AWS_(Node.js App).md`](54_Complete_CICD_Pipeline_Jenkins_+_Docker_+_AWS_(Node.js App).md) | Next: [`55_DevSecOps_Jenkins_+_Trivy_ SonarQube_on_AWS.md`](55_DevSecOps_Jenkins_+_Trivy_ SonarQube_on_AWS.md) →
+← Previous: [`54_Complete_CICD_Pipeline_Jenkins_+_Docker_+_AWS_(Node.js App).md`](54_Complete_CICD_Pipeline_Jenkins_+_Docker_+_AWS_(Node.js App).md) | Next: [`56_MLOps_FastAPI_Docker_AWS_EKS_(IT_Career_Prediction_System).md`](56_MLOps_FastAPI_Docker_AWS_EKS_(IT_Career_Prediction_System).md) →
