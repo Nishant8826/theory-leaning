@@ -1,6 +1,6 @@
 # Deployment & Scaling
 
-> 📌 **File:** 21_Deployment_And_Scaling.md | **Level:** SQL Expert → MongoDB
+> 📌 **File:** 22_Deployment_And_Scaling.md | **Level:** SQL Expert → MongoDB
 
 ---
 
@@ -189,23 +189,23 @@ mongosh -u admin -p 'strongAdminPassword123!' --authenticationDatabase admin
 ```
 ┌──────────────────────────────────────────────────────────────────┐
 │  MongoDB Security Hardening Checklist                            │
-├──────────────────────────────────────────────────────────────────┤
-│  ✅ Enable authentication (security.authorization: enabled)     │
-│  ✅ Create dedicated users per application/role                  │
-│  ✅ Use strong passwords (or SCRAM-SHA-256)                     │
-│  ✅ Bind to specific IPs (not 0.0.0.0 without firewall)        │
-│  ✅ Use TLS/SSL for connections                                  │
-│  ✅ Firewall: Only allow port 27017 from app servers            │
-│  ✅ Disable unused features (httpInterface, REST)                │
-│  ✅ Enable audit logging (Enterprise)                            │
-│  ✅ Use VPC/private networking (no public IP)                   │
-│  ✅ Keep MongoDB updated (security patches)                     │
-│  ✅ Enable encryption at rest (Enterprise or Atlas)             │
-├──────────────────────────────────────────────────────────────────┤
-│  SQL comparison: Same practices apply to PostgreSQL/MySQL.      │
-│  The difference: MongoDB has been historically deployed without │
-│  auth, leading to many data breaches. ALWAYS enable auth.       │
-└──────────────────────────────────────────────────────────────────┘
+│ ├──────────────────────────────────────────────────────────────────┤
+│  │  ✅ Enable authentication (security.authorization: enabled)     │
+│  │  ✅ Create dedicated users per application/role                  │
+│  │  ✅ Use strong passwords (or SCRAM-SHA-256)                     │
+│  │  ✅ Bind to specific IPs (not 0.0.0.0 without firewall)        │
+│  │  ✅ Use TLS/SSL for connections                                  │
+│  │  ✅ Firewall: Only allow port 27017 from app servers            │
+│  │  ✅ Disable unused features (httpInterface, REST)                │
+│  │  ✅ Enable audit logging (Enterprise)                            │
+│  │  ✅ Use VPC/private networking (no public IP)                   │
+│  │  ✅ Keep MongoDB updated (security patches)                     │
+│  │  ✅ Enable encryption at rest (Enterprise or Atlas)             │
+│ ├──────────────────────────────────────────────────────────────────┤
+│  │  SQL comparison: Same practices apply to PostgreSQL/MySQL.      │
+│  │  The difference: MongoDB has been historically deployed without │
+│  │  auth, leading to many data breaches. ALWAYS enable auth.       │
+│  └──────────────────────────────────────────────────────────────────┘
 ```
 
 ### AWS Security Group
@@ -669,7 +669,7 @@ mongotop --uri="mongodb://user:pass@host:27017" 5
 
 ---
 
-## Production Deployment Checklist
+## Production Readiness Checklist
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
@@ -761,3 +761,7 @@ Take your development setup and add:
 
 **Q5: MongoDB Atlas vs self-hosted — when to choose which?**
 > Atlas for: teams without dedicated DBAs, startups wanting fast deployment, applications needing global distribution, and when operational overhead needs to be minimized. Self-hosted for: strict data residency requirements, cost optimization at scale, full control over configuration, and compliance requirements that prevent cloud-managed databases.
+
+---
+
+Previous: [⬅️ Real-World Architecture](./21_Real_World_Architecture.md) | Index: [Home](./00_index.md) | Next: 🚫 *None*

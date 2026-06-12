@@ -1,6 +1,6 @@
 # Indexes
 
-> 📌 **File:** 10_Indexes.md | **Level:** SQL Expert → MongoDB
+> 📌 **File:** 11_Indexes.md | **Level:** SQL Expert → MongoDB
 
 ---
 
@@ -529,3 +529,7 @@ db.products.find({
 
 **Q5: When should you NOT create an index?**
 > When: (1) The field has very low cardinality (e.g., boolean — only 2 values). (2) The collection is small (< 1000 docs). (3) Write throughput is critical and reads are rare. (4) The field is rarely queried. (5) The query uses `$ne` or `$nin` which have poor index selectivity.
+
+---
+
+Previous: [⬅️ Projection & Pagination](./10_Projection_And_Pagination.md) | Index: [Home](./00_index.md) | Next: [Aggregation Framework ➡️](./12_Aggregation_Framework.md)

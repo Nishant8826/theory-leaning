@@ -1,6 +1,6 @@
 # $lookup & Relations
 
-> 📌 **File:** 12_Lookup_And_Relations.md | **Level:** SQL Expert → MongoDB
+> 📌 **File:** 13_Lookup_And_Relations.md | **Level:** SQL Expert → MongoDB
 
 ---
 
@@ -445,3 +445,7 @@ Write a Node.js function that fetches an order with full product details using a
 
 **Q5: Can you do a self-join in MongoDB?**
 > Yes, using `$lookup` with `from` pointing to the same collection. Example: finding employees and their managers when both are in the same collection. Use `$graphLookup` for recursive self-joins (like SQL's recursive CTE).
+
+---
+
+Previous: [⬅️ Aggregation Framework](./12_Aggregation_Framework.md) | Index: [Home](./00_index.md) | Next: [Embedding vs Referencing ➡️](./14_Embedding_Vs_Referencing.md)

@@ -1,6 +1,6 @@
 # BSON & Data Types
 
-> 📌 **File:** 03_BSON_And_Data_Types.md | **Level:** SQL Expert → MongoDB
+> 📌 **File:** 04_BSON_And_Data_Types.md | **Level:** SQL Expert → MongoDB
 
 ---
 
@@ -425,7 +425,7 @@ const result = await db.collection('products').aggregate([
 ```
 ┌──────────────────────────────────────────────────────────┐
 │  Type          │ Size    │ When to use                   │
-├──────────────────────────────────────────────────────────┤
+│ ├──────────────────────────────────────────────────────────┤
 │  Int32         │ 4 bytes │ Counters, small numbers       │
 │  Int64         │ 8 bytes │ Large counters, timestamps    │
 │  Double        │ 8 bytes │ Measurements, non-money       │
@@ -436,7 +436,7 @@ const result = await db.collection('products').aggregate([
 │  Date          │ 8 bytes │ Timestamps                    │
 │  Null          │ 0 bytes │ Explicit absence              │
 │  (missing)     │ 0 bytes │ Implicit absence              │
-├──────────────────────────────────────────────────────────┤
+│ ├──────────────────────────────────────────────────────────┤
 │  Tip: Int32 is 4 bytes vs Double's 8 bytes.             │
 │  For large collections, this matters.                    │
 │  1M docs × 10 number fields = 40MB (Int32) vs 80MB      │
@@ -564,5 +564,9 @@ Write queries to find:
 **Q4: What happens if the same field has different types across documents?**
 > MongoDB stores whatever you give it. Queries using comparison operators (`$gt`, `$lt`) only match documents with compatible types — strings and numbers are not compared. This is a common source of subtle bugs. Use schema validation to prevent type inconsistency.
 
-**Q5: How does BSON type ordering work?**
+**Q5: How do BSON type ordering work?**
 > BSON defines a comparison order: MinKey < Null < Numbers < Symbol < String < Object < Array < BinData < ObjectId < Boolean < Date < Timestamp < Regex < MaxKey. This matters for sorting and range queries across mixed-type fields.
+
+---
+
+Previous: [⬅️ Databases, Collections & Documents](./03_Databases_Collections_Documents.md) | Index: [Home](./00_index.md) | Next: [CRUD — Create ➡️](./05_CRUD_Create.md)

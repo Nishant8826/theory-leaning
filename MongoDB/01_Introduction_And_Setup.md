@@ -1,6 +1,6 @@
 # Introduction & Setup
 
-> 📌 **File:** 00_Introduction_And_Setup.md | **Level:** SQL Expert → MongoDB
+> 📌 **File:** 01_Introduction_And_Setup.md | **Level:** SQL Expert → MongoDB
 
 ---
 
@@ -18,7 +18,7 @@ MongoDB is a **document-oriented NoSQL database** that stores data as flexible J
 ```
 ┌──────────────────────────────────────────────────────┐
 │              SQL World → MongoDB World               │
-├──────────────────┬───────────────────────────────────┤
+│ ──────────────────┬───────────────────────────────────┤
 │  Database        │  Database                         │
 │  Table           │  Collection                       │
 │  Row             │  Document                         │
@@ -399,7 +399,7 @@ curl http://localhost:3000/api/products
 ```
 ┌─────────────────────────────────────────────────────────┐
 │                    SQL (PostgreSQL)                      │
-├─────────────────────────────────────────────────────────┤
+│ ─────────────────────────────────────────────────────────┤
 │  const pool = new Pool({                                │
 │    host: 'localhost',                                   │
 │    port: 5432,                                          │
@@ -408,17 +408,17 @@ curl http://localhost:3000/api/products
 │    password: 'secret'                                   │
 │  });                                                    │
 │  const res = await pool.query('SELECT * FROM products');│
-├─────────────────────────────────────────────────────────┤
+│ ├─────────────────────────────────────────────────────────┤
 │                    MongoDB (Native)                     │
-├─────────────────────────────────────────────────────────┤
+│ ├─────────────────────────────────────────────────────────┤
 │  const client = new MongoClient(uri);                   │
 │  await client.connect();                                │
 │  const db = client.db('ecommerce');                     │
 │  const res = await db.collection('products')            │
 │    .find({}).toArray();                                  │
-├─────────────────────────────────────────────────────────┤
+│ ├─────────────────────────────────────────────────────────┤
 │                    MongoDB (Mongoose)                   │
-├─────────────────────────────────────────────────────────┤
+│ ├─────────────────────────────────────────────────────────┤
 │  await mongoose.connect(uri);                           │
 │  const res = await Product.find({});                    │
 └─────────────────────────────────────────────────────────┘
@@ -429,3 +429,7 @@ curl http://localhost:3000/api/products
 ## What's Next?
 
 In the next file, we'll dive into the **mental model shift** from relational thinking to document thinking — the single most important concept you need to internalize before writing any MongoDB code.
+
+---
+
+Previous: 🚫 *None* | Index: [Home](./00_index.md) | Next: [SQL vs MongoDB — Mental Model ➡️](./02_SQL_Vs_MongoDB_Mental_Model.md)

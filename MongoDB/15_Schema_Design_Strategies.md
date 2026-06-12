@@ -1,6 +1,6 @@
 # Schema Design Strategies
 
-> 📌 **File:** 14_Schema_Design_Strategies.md | **Level:** SQL Expert → MongoDB
+> 📌 **File:** 15_Schema_Design_Strategies.md | **Level:** SQL Expert → MongoDB
 
 ---
 
@@ -467,3 +467,7 @@ Review this schema and identify problems:
 
 **Q5: How do you handle many-to-many relationships in MongoDB?**
 > Options: (1) Array of ObjectIds on one or both sides. (2) Junction collection (like SQL). (3) Embed denormalized data on one or both sides. Choice depends on array size and query patterns. For small M:N (user enrolled in courses), array of IDs works. For large M:N (users ↔ products liked), use a junction collection with compound index.
+
+---
+
+Previous: [⬅️ Embedding vs Referencing](./14_Embedding_Vs_Referencing.md) | Index: [Home](./00_index.md) | Next: [Transactions ➡️](./16_Transactions.md)

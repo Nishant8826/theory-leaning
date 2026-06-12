@@ -1,6 +1,6 @@
 # Transactions
 
-> 📌 **File:** 15_Transactions.md | **Level:** SQL Expert → MongoDB
+> 📌 **File:** 16_Transactions.md | **Level:** SQL Expert → MongoDB
 
 ---
 
@@ -544,3 +544,8 @@ Implement a `withRetry` wrapper that handles `TransientTransactionError` and `Un
 
 **Q5: Can MongoDB transactions span multiple databases?**
 > Yes, on replica sets (same `mongod`). On sharded clusters, transactions can span multiple shards within the same database. Cross-database transactions on sharded clusters have limitations. This is more restrictive than SQL's cross-database transactions.
+```
+
+---
+
+Previous: [⬅️ Schema Design Strategies](./15_Schema_Design_Strategies.md) | Index: [Home](./00_index.md) | Next: [Validation & Schema ➡️](./17_Validation_And_Schema.md)

@@ -1,6 +1,6 @@
 # Validation & Schema
 
-> 📌 **File:** 16_Validation_And_Schema.md | **Level:** SQL Expert → MongoDB
+> 📌 **File:** 17_Validation_And_Schema.md | **Level:** SQL Expert → MongoDB
 
 ---
 
@@ -529,3 +529,7 @@ Implement 3-layer validation for a user registration endpoint:
 
 **Q5: How do you handle schema migration in MongoDB vs SQL?**
 > SQL: `ALTER TABLE` — atomic, may lock table, requires downtime for large tables. MongoDB: No migration needed — old and new document shapes coexist. Use schemaVersion field, application normalizers, and gradual background migration. Zero downtime. Trade-off: application must handle multiple schema versions.
+
+---
+
+Previous: [⬅️ Transactions](./16_Transactions.md) | Index: [Home](./00_index.md) | Next: [Mongoose Deep Dive ➡️](./18_Mongoose_Deep_Dive.md)

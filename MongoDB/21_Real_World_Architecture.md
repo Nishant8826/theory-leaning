@@ -1,6 +1,6 @@
 # Real-World Architecture
 
-> 📌 **File:** 20_Real_World_Architecture.md | **Level:** SQL Expert → MongoDB
+> 📌 **File:** 21_Real_World_Architecture.md | **Level:** SQL Expert → MongoDB
 
 ---
 
@@ -688,3 +688,7 @@ Add to your API:
 
 **Q5: How do Change Streams compare to SQL triggers?**
 > SQL triggers run inside the database engine (synchronous, same transaction). Change Streams run in the application (asynchronous, after the write commits). Change Streams are more flexible (any language, WebSocket integration) but don't guarantee processing (app can restart). SQL triggers guarantee execution but are limited to SQL operations.
+
+---
+
+Previous: [⬅️ When to Use MongoDB vs SQL](./20_When_To_Use_MongoDB_Vs_SQL.md) | Index: [Home](./00_index.md) | Next: [Deployment & Scaling ➡️](./22_Deployment_And_Scaling.md)

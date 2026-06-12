@@ -1,6 +1,6 @@
 # CRUD — Delete
 
-> 📌 **File:** 07_CRUD_Delete.md | **Level:** SQL Expert → MongoDB
+> 📌 **File:** 08_CRUD_Delete.md | **Level:** SQL Expert → MongoDB
 
 ---
 
@@ -351,7 +351,7 @@ db.sessions.insertOne({
 ```
 ┌──────────────────────────────────────────────────────────┐
 │  Delete Operation                │ Performance           │
-├──────────────────────────────────┼───────────────────────┤
+│ ├──────────────────────────────────┼───────────────────────┤
 │  deleteOne by _id                │ ⚡ <1ms (index)       │
 │  deleteOne by indexed field      │ ⚡ <1ms (index)       │
 │  deleteOne by unindexed field    │ 🐌 Full scan          │
@@ -359,7 +359,7 @@ db.sessions.insertOne({
 │  deleteMany (1M docs)            │ ⚠️ Minutes + locks   │
 │  drop() entire collection        │ ⚡ <1ms (metadata)    │
 │  TTL auto-delete                 │ Background, 60s cycle │
-├──────────────────────────────────┴───────────────────────┤
+│ ├──────────────────────────────────┴───────────────────────┤
 │  Key insight: drop() is instant. deleteMany({}) is slow. │
 │  For full collection wipes, ALWAYS use drop().           │
 │                                                          │
@@ -450,3 +450,7 @@ Write a function that deletes a customer and cleans up all references:
 
 **Q5: How do you implement undo/restore for deleted documents?**
 > Options: (1) Soft deletes with `deletedAt` timestamp — easiest to restore. (2) Archive collection — `findOneAndDelete` followed by `insertOne` to an archive collection. (3) Change Streams — capture delete events in real-time and store in a separate collection. (4) Backup and point-in-time recovery.
+
+---
+
+Previous: [⬅️ CRUD — Update](./07_CRUD_Update.md) | Index: [Home](./00_index.md) | Next: [Query Operators ➡️](./09_Query_Operators.md)

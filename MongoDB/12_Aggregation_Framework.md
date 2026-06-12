@@ -1,6 +1,6 @@
 # Aggregation Framework
 
-> 📌 **File:** 11_Aggregation_Framework.md | **Level:** SQL Expert → MongoDB
+> 📌 **File:** 12_Aggregation_Framework.md | **Level:** SQL Expert → MongoDB
 
 ---
 
@@ -497,3 +497,7 @@ Build an aggregation that returns for each product category:
 
 **Q5: Can aggregation pipelines use indexes?**
 > Only `$match` and `$sort` when they are the FIRST stages (or immediately follow another `$match`). Later stages operate on intermediate results in memory. This is why pipeline ordering is crucial.
+
+---
+
+Previous: [⬅️ Indexes](./11_Indexes.md) | Index: [Home](./00_index.md) | Next: [$lookup & Relations ➡️](./13_Lookup_And_Relations.md)

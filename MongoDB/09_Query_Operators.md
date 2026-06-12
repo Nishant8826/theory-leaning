@@ -1,6 +1,6 @@
 # Query Operators
 
-> 📌 **File:** 08_Query_Operators.md | **Level:** SQL Expert → MongoDB
+> 📌 **File:** 09_Query_Operators.md | **Level:** SQL Expert → MongoDB
 
 ---
 
@@ -556,3 +556,7 @@ db.products.find({
 
 **Q5: Can you combine `$text` search with other query operators?**
 > Yes, but the `$text` query must be the first operator (it uses a text index). You can combine it with other filters: `{ $text: { $search: "laptop" }, price: { $gt: 100 } }`. However, you cannot use `$text` inside `$or` or `$elemMatch`, and you can only have ONE `$text` expression per query.
+
+---
+
+Previous: [⬅️ CRUD — Delete](./08_CRUD_Delete.md) | Index: [Home](./00_index.md) | Next: [Projection & Pagination ➡️](./10_Projection_And_Pagination.md)

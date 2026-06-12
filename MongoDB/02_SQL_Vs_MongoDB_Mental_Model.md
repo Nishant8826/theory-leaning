@@ -1,6 +1,6 @@
 # SQL vs MongoDB — Mental Model
 
-> 📌 **File:** 01_SQL_Vs_MongoDB_Mental_Model.md | **Level:** SQL Expert → MongoDB
+> 📌 **File:** 02_SQL_Vs_MongoDB_Mental_Model.md | **Level:** SQL Expert → MongoDB
 
 ---
 
@@ -24,7 +24,7 @@ In MongoDB, you think: *"What questions will the application ask? Store data the
 │   → Then figure out queries                                      │
 │                                                                  │
 │  Design FIRST, query LATER                                       │
-├──────────────────────────────────────────────────────────────────┤
+│ ├──────────────────────────────────────────────────────────────────┤
 │                  MONGODB THINKING (Query-Driven)                 │
 │                                                                  │
 │  "What does the APPLICATION NEED?"                               │
@@ -178,7 +178,7 @@ db.products.insertOne({ name: "T-Shirt", price: 29, sizes: ["S", "M", "L"], colo
 ```
 ┌──────────────────────────────────────────────────────────────┐
 │                    Storage Engine (WiredTiger)                │
-├──────────────────────────────────────────────────────────────┤
+│ ├──────────────────────────────────────────────────────────────┤
 │                                                              │
 │  Collection: products                                        │
 │  ┌─────────────────────────────────────┐                     │
@@ -386,12 +386,12 @@ db.orders.aggregate([
 
 | Scenario                              | SQL        | MongoDB     | Why                                |
 |---------------------------------------|------------|-------------|------------------------------------|
-| Read single entity + related data     | ⚡ Moderate | ⚡⚡ Fast    | Data locality, no JOINs            |
-| Complex reporting across entities     | ⚡⚡ Fast   | ⚡ Moderate  | SQL JOINs are optimized for this   |
-| Write-heavy with simple structure     | ⚡ Moderate | ⚡⚡ Fast    | No constraint checking overhead    |
-| Transactions across multiple entities | ⚡⚡ Fast   | ⚡ Slower    | Multi-doc transactions are costly  |
-| Schema evolution (ALTER TABLE)        | 🐌 Slow    | ⚡⚡ Instant | No migration needed                |
-| Full-text search                      | ⚡ Moderate | ⚡ Moderate  | Both have it; Elasticsearch wins   |
+| Read single entity + related data     | ? Moderate | ?? Fast    | Data locality, no JOINs            |
+| Complex reporting across entities     | ?? Fast   | ? Moderate  | SQL JOINs are optimized for this   |
+| Write-heavy with simple structure     | ? Moderate | ?? Fast    | No constraint checking overhead    |
+| Transactions across multiple entities | ?? Fast   | ? Slower    | Multi-doc transactions are costly  |
+| Schema evolution (ALTER TABLE)        | ? Slow    | ?? Instant | No migration needed                |
+| Full-text search                      | ? Moderate | ? Moderate  | Both have it; Elasticsearch wins   |
 
 ---
 
@@ -466,3 +466,7 @@ List 3 scenarios where SQL is clearly the better choice. Explain why using Mongo
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
+
+---
+
+Previous: [⬅️ Introduction & Setup](./01_Introduction_And_Setup.md) | Index: [Home](./00_index.md) | Next: [Databases, Collections & Documents ➡️](./03_Databases_Collections_Documents.md)

@@ -1,6 +1,6 @@
 # Embedding vs Referencing
 
-> 📌 **File:** 13_Embedding_Vs_Referencing.md | **Level:** SQL Expert → MongoDB
+> 📌 **File:** 14_Embedding_Vs_Referencing.md | **Level:** SQL Expert → MongoDB
 
 ---
 
@@ -474,7 +474,9 @@ db.users  // { _id, name, email, phone, preferences: { theme, lang } }
 
 ## Practice Exercises
 
-### Exercise 1: Schema Design Decision
+### Practice Exercises
+
+#### Exercise 1: Schema Design Decision
 
 For each scenario, decide: Embed or Reference? Justify your answer.
 
@@ -484,7 +486,7 @@ For each scenario, decide: Embed or Reference? Justify your answer.
 4. **Order ↔ Line Items** (max 50 items per order)
 5. **Chat Room ↔ Messages** (millions of messages)
 
-### Exercise 2: Hybrid Pattern
+#### Exercise 2: Hybrid Pattern
 
 Design a schema for a social media post that:
 - Shows author name and avatar (without extra query)
@@ -492,7 +494,7 @@ Design a schema for a social media post that:
 - Shows the 3 most recent comments with commenter names
 - Links to full comment list in separate collection
 
-### Exercise 3: Migration
+#### Exercise 3: Migration
 
 You have a fully normalized MongoDB schema (SQL-style). Redesign it for MongoDB. The current schema:
 - `users` (id, name, email)
@@ -520,3 +522,7 @@ Primary query: "Show a post with author info, comment count, like count, and lat
 
 **Q5: If you need to JOIN three collections frequently, should you use MongoDB?**
 > Probably not for that specific workload. Frequent multi-collection joins are a signal that the data is inherently relational. Options: (1) Redesign to embed more data. (2) Use $lookup for occasional queries. (3) Use SQL for that component (polyglot persistence). MongoDB shines when most reads are single-document.
+
+---
+
+Previous: [⬅️ $lookup & Relations](./13_Lookup_And_Relations.md) | Index: [Home](./00_index.md) | Next: [Schema Design Strategies ➡️](./15_Schema_Design_Strategies.md)

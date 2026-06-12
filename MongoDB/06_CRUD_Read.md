@@ -1,6 +1,6 @@
 # CRUD — Read
 
-> 📌 **File:** 05_CRUD_Read.md | **Level:** SQL Expert → MongoDB
+> 📌 **File:** 06_CRUD_Read.md | **Level:** SQL Expert → MongoDB
 
 ---
 
@@ -426,7 +426,7 @@ function ProductSearch() {
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │  Operation                  │ Without Index │ With Index    │
-├─────────────────────────────┼───────────────┼───────────────┤
+│ ├─────────────────────────────┼───────────────┼───────────────┤
 │  Find by _id                │ <1ms (hashed) │ <1ms          │
 │  Find by indexed field      │ Full scan     │ <1ms          │
 │  Find by unindexed field    │ Full scan     │ Full scan     │
@@ -434,7 +434,7 @@ function ProductSearch() {
 │  Regex (unanchored: /lap/)  │ Full scan     │ Full scan     │
 │  Sort (indexed field)       │ In-memory     │ Index order   │
 │  Sort (unindexed field)     │ In-memory     │ In-memory     │
-├─────────────────────────────┴───────────────┴───────────────┤
+│ ├─────────────────────────────┴───────────────┴───────────────┤
 │  ⚠️ In-memory sort has a 100MB limit. Exceeding it = error.│
 │  Always index fields you sort on.                           │
 └─────────────────────────────────────────────────────────────┘
@@ -557,3 +557,7 @@ Create a GET `/api/products/search` endpoint that supports:
 
 **Q5: How do you check if a query uses an index?**
 > Use `.explain("executionStats")`. Look for `winningPlan.stage: "IXSCAN"` (good, index scan) vs `"COLLSCAN"` (bad, full collection scan). Check `totalDocsExamined` vs `nReturned` — if ratio is high, the index isn't selective enough.
+
+---
+
+Previous: [⬅️ CRUD — Create](./05_CRUD_Create.md) | Index: [Home](./00_index.md) | Next: [CRUD — Update ➡️](./07_CRUD_Update.md)

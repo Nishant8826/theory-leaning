@@ -1,6 +1,6 @@
 # Performance Optimization
 
-> 📌 **File:** 18_Performance_Optimization.md | **Level:** SQL Expert → MongoDB
+> 📌 **File:** 19_Performance_Optimization.md | **Level:** SQL Expert → MongoDB
 
 ---
 
@@ -208,7 +208,7 @@ db.products.find(
 │  - Base64-encoded images (use GridFS or S3 instead)         │
 │  - Deeply nested objects with redundant data                 │
 │  - Not using projection (returning huge docs to client)     │
-│                                                              │
+│                                                             │
 │  SQL comparison: Row size is typically < 1KB.                │
 │  MongoDB documents can be 100x larger due to embedding.     │
 │  This is both a feature (data locality) and a risk.         │
@@ -220,23 +220,23 @@ db.products.find(
 ```
 ┌──────────────────────────────────────────────────────────────┐
 │  Working Set = Frequently accessed data + indexes           │
-│                                                              │
+│                                                             │
 │  If working set fits in RAM:                                │
 │  ├── All reads come from memory cache                       │
 │  ├── Latency: < 1ms                                         │
 │  └── Throughput: 100K+ ops/sec                              │
-│                                                              │
+│                                                             │
 │  If working set > RAM:                                      │
 │  ├── Reads go to disk (page faults)                         │
 │  ├── Latency: 5-50ms                                        │
 │  └── Throughput: drops dramatically                          │
-│                                                              │
+│                                                             │
 │  Monitor:                                                    │
 │  db.serverStatus().wiredTiger.cache                          │
 │  "bytes currently in the cache"                              │
 │  "maximum bytes configured"                                  │
 │  "pages read into cache" (should decrease over time)         │
-│                                                              │
+│                                                             │
 │  SQL equivalent:                                             │
 │  - PostgreSQL: shared_buffers + OS cache                     │
 │  - MySQL: innodb_buffer_pool_size                            │
@@ -406,6 +406,7 @@ db.orders.aggregate([
   // 5. $limit
   { $limit: 12 }
 ], { allowDiskUse: true })  // For large datasets that exceed 100MB RAM limit
+// Allows stages to spill to disk for large datasets
 ```
 
 ---
@@ -495,7 +496,6 @@ const analytics = await db.collection('orders')
 // NEAREST              → Lowest latency node
 
 // SQL equivalent: Read replicas
-// PostgreSQL: hot_standby_feedback, recovery_target_timeline
 ```
 
 ---
@@ -633,3 +633,8 @@ Add Redis caching to the product detail endpoint:
 
 **Q5: How do you handle the N+1 query problem with Mongoose populate?**
 > Mongoose batches populated queries (uses `$in`), so it's technically 2 queries instead of N+1. But for hot paths, avoid populate entirely — embed the needed data. For admin/reporting, populate is acceptable. For complex needs, use aggregation with `$lookup` for a single database call.
+```
+
+---
+
+Previous: [⬅️ Mongoose Deep Dive](./18_Mongoose_Deep_Dive.md) | Index: [Home](./00_index.md) | Next: [When to Use MongoDB vs SQL ➡️](./20_When_To_Use_MongoDB_Vs_SQL.md)

@@ -1,6 +1,6 @@
 # CRUD — Update
 
-> 📌 **File:** 06_CRUD_Update.md | **Level:** SQL Expert → MongoDB
+> 📌 **File:** 07_CRUD_Update.md | **Level:** SQL Expert → MongoDB
 
 ---
 
@@ -50,7 +50,7 @@ db.products.updateOne(
 ```
 ┌──────────────────────────────────────────────────────────────────┐
 │  MongoDB Update Operators — Things SQL Can't Do Natively        │
-├──────────────────────────────────────────────────────────────────┤
+│ ├──────────────────────────────────────────────────────────────────┤
 │  $set        → Set field value (closest to SQL UPDATE SET)      │
 │  $unset      → Remove a field entirely (no ALTER TABLE needed)  │
 │  $inc        → Atomic increment/decrement                       │
@@ -534,7 +534,7 @@ if (!result) {
 ```
 ┌──────────────────────────────────────────────────────────────┐
 │  Update Operation                │ Performance Impact        │
-├──────────────────────────────────┼───────────────────────────┤
+│ ├──────────────────────────────────┼───────────────────────────┤
 │  $set on indexed field           │ Index update required     │
 │  $set on non-indexed field       │ Fast — no index update    │
 │  $inc (counter)                  │ Very fast — in-place      │
@@ -543,14 +543,14 @@ if (!result) {
 │  $pull from large array          │ ⚠️ Slow — scan + shift   │
 │  updateMany on 1M docs           │ ⚠️ Slow — no bulk opt.    │
 │  replaceOne                      │ Rewrites full document    │
-├──────────────────────────────────┴───────────────────────────┤
+│ ├──────────────────────────────────┴───────────────────────────┤
 │  Key rule: $inc and $set on non-indexed, non-array fields   │
 │  are the fastest operations in MongoDB.                     │
 │                                                             │
 │  ⚠️ Document growth: If an update makes a document larger   │
 │  than its allocated space, WiredTiger moves it to a new     │
 │  location and updates all indexes. Avoid unbounded growth.  │
-└─────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -644,5 +644,9 @@ Build a `/api/products/:id/purchase` endpoint that:
 **Q4: What happens if you `$push` to a non-existent field?**
 > MongoDB creates the field as an array and pushes the value. Same as `$set` creating a field. No `ALTER TABLE` needed.
 
-**Q5: How does MongoDB handle concurrent updates to the same document?**
+**Q5: How do MongoDB handle concurrent updates to the same document?**
 > MongoDB uses document-level locking (WiredTiger storage engine). Concurrent updates to the SAME document are serialized. Concurrent updates to DIFFERENT documents execute in parallel. This is more granular than SQL's row-level locking because the "row" (document) contains related data that would be across multiple tables in SQL.
+
+---
+
+Previous: [⬅️ CRUD — Read](./06_CRUD_Read.md) | Index: [Home](./00_index.md) | Next: [CRUD — Delete ➡️](./08_CRUD_Delete.md)

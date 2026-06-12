@@ -1,6 +1,6 @@
 # Projection & Pagination
 
-> 📌 **File:** 09_Projection_And_Pagination.md | **Level:** SQL Expert → MongoDB
+> 📌 **File:** 10_Projection_And_Pagination.md | **Level:** SQL Expert → MongoDB
 
 ---
 
@@ -124,7 +124,7 @@ SQL has the same problem:
 OFFSET 1000000 LIMIT 10  → Also slow in SQL
 ```
 
-### Cursor-Based Pagination (Keyset)
+### Keyset-Based Pagination (Cursor)
 
 ```javascript
 // First page
@@ -406,3 +406,7 @@ db.products.find().skip(100000).limit(20)
 
 **Q5: How do you handle total count efficiently with cursor-based pagination?**
 > You typically don't. Cursor-based pagination returns `hasMore: true/false` instead of total count. Computing `countDocuments()` is expensive on large collections. Use `estimatedDocumentCount()` for approximate totals, or cache the count and refresh periodically.
+
+---
+
+Previous: [⬅️ Query Operators](./09_Query_Operators.md) | Index: [Home](./00_index.md) | Next: [Indexes ➡️](./11_Indexes.md)

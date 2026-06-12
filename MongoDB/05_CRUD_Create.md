@@ -1,6 +1,6 @@
 # CRUD — Create
 
-> 📌 **File:** 04_CRUD_Create.md | **Level:** SQL Expert → MongoDB
+> 📌 **File:** 05_CRUD_Create.md | **Level:** SQL Expert → MongoDB
 
 ---
 
@@ -108,7 +108,7 @@ Client                    MongoDB Server                    Storage
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │  Write Concern    │ SQL Equivalent        │ Speed │ Safety  │
-├───────────────────┼───────────────────────┼───────┼─────────┤
+│ ├───────────────────┼───────────────────────┼───────┼─────────┤
 │  { w: 0 }         │ Fire-and-forget       │ ⚡⚡⚡ │ ❌      │
 │  { w: 1 }         │ Commit (single node)  │ ⚡⚡  │ ⚡      │
 │  { w: "majority"} │ Sync replication      │ ⚡    │ ⚡⚡⚡  │
@@ -552,14 +552,14 @@ app.post('/api/orders', async (req, res) => {
 ```
 ┌───────────────────────────────────────────────────────────┐
 │  Operation              │ SQL (PG)    │ MongoDB           │
-├─────────────────────────┼─────────────┼───────────────────┤
+│ ├─────────────────────────┼─────────────┼───────────────────┤
 │  Single insert          │ ~0.5ms      │ ~0.3ms            │
 │  1000 inserts (loop)    │ ~500ms      │ ~150ms            │
 │  1000 inserts (batch)   │ ~15ms       │ ~10ms             │
 │  Insert with 5 indexes  │ ~2ms        │ ~1.5ms            │
 │  Insert with FK check   │ +0.5ms      │ N/A (no FK)       │
 │  Insert with validation │ ~0.5ms      │ ~0.5ms (if set)   │
-├─────────────────────────┴─────────────┴───────────────────┤
+│ ├─────────────────────────┴─────────────┴───────────────────┤
 │  Key insight: MongoDB is faster for inserts because:      │
 │  - No FK constraint checking                              │
 │  - No type coercion                                       │
@@ -670,3 +670,7 @@ Implement an upsert endpoint that:
 
 **Q5: What is write concern and how does it differ from SQL's commit?**
 > Write concern controls durability guarantees. `w: 1` = acknowledged by primary (similar to SQL commit). `w: "majority"` = acknowledged by majority of replica set (similar to synchronous replication). `w: 0` = fire-and-forget (no SQL equivalent). SQL's COMMIT is always durable (equivalent to `w: 1, j: true`).
+
+---
+
+Previous: [⬅️ BSON & Data Types](./04_BSON_And_Data_Types.md) | Index: [Home](./00_index.md) | Next: [CRUD — Read ➡️](./06_CRUD_Read.md)

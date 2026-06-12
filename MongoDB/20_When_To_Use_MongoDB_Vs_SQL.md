@@ -1,6 +1,6 @@
 # When to Use MongoDB vs SQL
 
-> 📌 **File:** 19_When_To_Use_MongoDB_Vs_SQL.md | **Level:** SQL Expert → MongoDB
+> 📌 **File:** 20_When_To_Use_MongoDB_Vs_SQL.md | **Level:** SQL Expert → MongoDB
 
 ---
 
@@ -497,3 +497,8 @@ Design the database architecture for a food delivery app (like UberEats):
 
 **Q5: What's the biggest mistake teams make when choosing between MongoDB and SQL?**
 > Choosing based on technology preference instead of access patterns. The question isn't "which is better?" but "which fits my specific data access patterns, consistency needs, and scaling requirements?" Many teams also make the mistake of choosing one database for everything instead of using polyglot persistence.
+```
+
+---
+
+Previous: [⬅️ Performance Optimization](./19_Performance_Optimization.md) | Index: [Home](./00_index.md) | Next: [Real-World Architecture ➡️](./21_Real_World_Architecture.md)

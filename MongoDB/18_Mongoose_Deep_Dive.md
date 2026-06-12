@@ -1,6 +1,6 @@
 # Mongoose Deep Dive
 
-> 📌 **File:** 17_Mongoose_Deep_Dive.md | **Level:** SQL Expert → MongoDB
+> 📌 **File:** 18_Mongoose_Deep_Dive.md | **Level:** SQL Expert → MongoDB
 
 ---
 
@@ -583,3 +583,8 @@ Write a benchmark that queries 1000 products with and without `.lean()`. Measure
 
 **Q5: Should you use `findByIdAndUpdate` or `findById` + `save`?**
 > `findByIdAndUpdate` is faster (one DB operation) but skips middleware and some validators (unless `runValidators: true`). `findById` + `save` runs all middleware and validators but requires two DB operations. Use `findByIdAndUpdate` for simple updates; use `find` + `save` when middleware must run.
+```
+
+---
+
+Previous: [⬅️ Validation & Schema](./17_Validation_And_Schema.md) | Index: [Home](./00_index.md) | Next: [Performance Optimization ➡️](./19_Performance_Optimization.md)

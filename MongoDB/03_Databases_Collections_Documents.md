@@ -1,6 +1,6 @@
 # Databases, Collections & Documents
 
-> 📌 **File:** 02_Databases_Collections_Documents.md | **Level:** SQL Expert → MongoDB
+> 📌 **File:** 03_Databases_Collections_Documents.md | **Level:** SQL Expert → MongoDB
 
 ---
 
@@ -18,7 +18,7 @@ The key difference: a SQL row is flat (columns are scalar values), while a Mongo
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                 SQL                  │       MongoDB         │
-├──────────────────────────────────────┼───────────────────────┤
+│ ──────────────────────────────────────┼───────────────────────┤
 │  CREATE DATABASE ecommerce;          │  use ecommerce        │
 │  DROP DATABASE ecommerce;            │  db.dropDatabase()    │
 │  CREATE TABLE products (...);        │  db.createCollection()│
@@ -581,12 +581,12 @@ Which of these documents will exceed the 16MB limit?
 ## Interview Q&A
 
 **Q1: What is a capped collection and when would you use it?**
-> A fixed-size collection that overwrites oldest documents when full. Used for logs, event streams, and caching. No SQL equivalent — similar to a circular buffer. You can't delete individual documents from a capped collection.
+> A capped collection is a fixed-size collection that overwrites oldest documents when full. Used for logs, event streams, and caching. No SQL equivalent — similar to a circular buffer. You can't delete individual documents from a capped collection.
 
 **Q2: Why is the 16MB document limit important for schema design?**
 > It forces you to think about unbounded arrays. If an array can grow indefinitely (messages, logs, reviews), you must use a separate collection with references. This is the primary constraint that drives embedding vs. referencing decisions.
 
-**Q3: How does MongoDB handle schema evolution compared to SQL?**
+**Q3: How do you handle schema migration in MongoDB vs SQL?**
 > In SQL, `ALTER TABLE` locks the table and rewrites rows. In MongoDB, you just start writing documents with the new shape. Old documents keep the old shape. Your application code handles both shapes (or you run a background migration script).
 
 **Q4: What happens if you insert a document without specifying `_id`?**
@@ -594,3 +594,7 @@ Which of these documents will exceed the 16MB limit?
 
 **Q5: Can two documents in the same collection have completely different fields?**
 > Yes. MongoDB is schema-flexible. But in production, you should use schema validation (MongoDB validator or Mongoose) to enforce consistency. "Schema-flexible" means you CAN have different shapes, not that you SHOULD.
+
+---
+
+Previous: [⬅️ SQL vs MongoDB — Mental Model](./02_SQL_Vs_MongoDB_Mental_Model.md) | Index: [Home](./00_index.md) | Next: [BSON & Data Types ➡️](./04_BSON_And_Data_Types.md)
