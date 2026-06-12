@@ -13,6 +13,7 @@
 | 03 | **React & Redux** | [View Prep Material](./03_React_Redux.md) | ✅ Completed |
 | 04 | **Next.js** | [View Prep Material](./04_Nextjs.md) | ✅ Completed |
 | 05 | **React Native** | [View Prep Material](./05_ReactNative.md) | ✅ Completed |
+| 06 | **Learning Saint Prep** | [View Prep Material](./learning_saint.md) | ✅ Completed |
 
 ---
 
