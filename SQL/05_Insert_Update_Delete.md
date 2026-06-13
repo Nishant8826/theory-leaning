@@ -257,10 +257,10 @@ DELETE FROM customers WHERE id = 1;
 
 ```js
 // ========== Node.js using mysql2/promise ==========
-const pool = require('./db');
+const db = require('./db');
 
 // INSERT
-const [result] = await pool.query(
+const [result] = await db.query(
   'INSERT INTO customers (name, email, phone) VALUES (?, ?, ?)',
   ['Nishant', 'n@test.com', '9876543210']
 );
@@ -268,7 +268,7 @@ console.log(result.insertId);      // 1 (auto-generated ID)
 console.log(result.affectedRows);  // 1
 
 // UPDATE
-const [result] = await pool.query(
+const [result] = await db.query(
   'UPDATE customers SET email = ? WHERE id = ?',
   ['new@test.com', 1]
 );
@@ -276,7 +276,7 @@ console.log(result.affectedRows);  // 1 (rows matched)
 console.log(result.changedRows);   // 1 (rows actually changed)
 
 // DELETE
-const [result] = await pool.query(
+const [result] = await db.query(
   'DELETE FROM customers WHERE id = ?',
   [1]
 );
@@ -288,7 +288,7 @@ const customers = [
   ['Sneha', 's@test.com', '2222222222'],
   ['Amit', 'a@test.com', '3333333333']
 ];
-const [result] = await pool.query(
+const [result] = await db.query(
   'INSERT INTO customers (name, email, phone) VALUES ?',
   [customers]  // Note: double array wrapping
 );
@@ -363,7 +363,7 @@ INSERT INTO products (name, description, price, stock, category_id, status) VALU
 ```js
 // Node.js + Express — Full CRUD API for products
 const express = require('express');
-const pool = require('./db');
+const db = require('./db');
 const router = express.Router();
 
 // ==========================================
@@ -378,14 +378,14 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ error: 'Name and price are required' });
     }
     
-    const [result] = await pool.query(
+    const [result] = await db.query(
       `INSERT INTO products (name, description, price, stock, category_id, status)
        VALUES (?, ?, ?, ?, ?, ?)`,
       [name, description || null, price, stock || 0, categoryId || null, status || 'draft']
     );
     
     // Fetch the created product (like Mongoose's { new: true })
-    const [rows] = await pool.query('SELECT * FROM products WHERE id = ?', [result.insertId]);
+    const [rows] = await db.query('SELECT * FROM products WHERE id = ?', [result.insertId]);
     
     res.status(201).json({
       message: 'Product created',
@@ -404,7 +404,7 @@ router.post('/', async (req, res) => {
 // ==========================================
 router.get('/', async (req, res) => {
   try {
-    const [products] = await pool.query(`
+    const [products] = await db.query(`
       SELECT p.*, c.name AS category_name
       FROM products p
       LEFT JOIN categories c ON p.category_id = c.id
@@ -422,7 +422,7 @@ router.get('/', async (req, res) => {
 // ==========================================
 router.get('/:id', async (req, res) => {
   try {
-    const [rows] = await pool.query(
+    const [rows] = await db.query(
       `SELECT p.*, c.name AS category_name
        FROM products p
        LEFT JOIN categories c ON p.category_id = c.id
@@ -447,7 +447,7 @@ router.put('/:id', async (req, res) => {
   try {
     const { name, description, price, stock, categoryId, status } = req.body;
     
-    const [result] = await pool.query(
+    const [result] = await db.query(
       `UPDATE products
        SET name = ?, description = ?, price = ?, stock = ?, category_id = ?, status = ?
        WHERE id = ?`,
@@ -459,7 +459,7 @@ router.put('/:id', async (req, res) => {
     }
     
     // Fetch updated product
-    const [rows] = await pool.query('SELECT * FROM products WHERE id = ?', [req.params.id]);
+    const [rows] = await db.query('SELECT * FROM products WHERE id = ?', [req.params.id]);
     
     res.json({
       message: 'Product updated',
@@ -476,13 +476,13 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   try {
     // Check if product exists first
-    const [rows] = await pool.query('SELECT * FROM products WHERE id = ?', [req.params.id]);
+    const [rows] = await db.query('SELECT * FROM products WHERE id = ?', [req.params.id]);
     
     if (rows.length === 0) {
       return res.status(404).json({ error: 'Product not found' });
     }
     
-    await pool.query('DELETE FROM products WHERE id = ?', [req.params.id]);
+    await db.query('DELETE FROM products WHERE id = ?', [req.params.id]);
     
     res.json({
       message: 'Product deleted',
@@ -643,41 +643,14 @@ DELETE FROM orders WHERE status = 'cancelled' LIMIT 100;
 -- Deletes at most 100 rows — prevents catastrophic mistakes
 ```
 
----
 
-## Practice Exercises
-
-### Easy (SQL)
-1. Insert 5 customers into the customers table
-2. Update customer with id=3 to change their email
-3. Delete customer with id=5
-4. Insert a product with NULL description (optional field)
-
-### Medium (SQL + Node.js)
-5. Build a complete CRUD API for customers with:
-   - POST /api/customers (create)
-   - GET /api/customers (list all)
-   - GET /api/customers/:id (get one)
-   - PUT /api/customers/:id (update)
-   - DELETE /api/customers/:id (delete)
-6. Add input validation to the POST route (check email format, required fields)
-7. Handle the `ER_DUP_ENTRY` error and return a user-friendly message
-
-### Hard (Full Stack)
-8. Build a product management dashboard:
-   - React form for creating/editing products
-   - Table showing all products with Edit/Delete buttons
-   - Confirmation dialog before delete
-   - Toast notifications for success/error
-   - Real-time stock update (decrease stock on order)
-9. Implement soft delete: Instead of actually deleting rows, add a `deleted_at` column and set it on delete. Modify all queries to exclude soft-deleted rows.
 
 ---
 
 ## Real-World Q&A
 
 **Q1:** In MongoDB, `updateOne()` returns `modifiedCount`. What's the MySQL equivalent?
-**A:** MySQL's `pool.query('UPDATE...')` returns a result object with `affectedRows` (rows that matched the WHERE clause) and `changedRows` (rows where data actually changed). The difference matters: if you UPDATE a row setting name='Ali' but it was already 'Ali', `affectedRows = 1` but `changedRows = 0`.
+**A:** MySQL's `db.query('UPDATE...')` returns a result object with `affectedRows` (rows that matched the WHERE clause) and `changedRows` (rows where data actually changed). The difference matters: if you UPDATE a row setting name='Ali' but it was already 'Ali', `affectedRows = 1` but `changedRows = 0`.
 
 **Q2:** How do I do an "upsert" in MySQL (insert if not exists, update if exists)?
 **A:** Use `INSERT ... ON DUPLICATE KEY UPDATE`: 
@@ -698,7 +671,7 @@ This requires a UNIQUE constraint on the column being checked. In Mongoose, this
 DELETE removes specific rows (or all if no WHERE), logs each deletion, can be rolled back, fires triggers, and doesn't reset AUTO_INCREMENT. TRUNCATE removes all rows instantly, can't be rolled back, doesn't fire triggers, and resets AUTO_INCREMENT. TRUNCATE is DDL (structural), DELETE is DML (data).
 
 **Q2: How do you prevent SQL injection in INSERT/UPDATE/DELETE?**
-Always use parameterized queries (prepared statements). In mysql2: `pool.query('INSERT INTO users (name) VALUES (?)', [userInput])`. The `?` placeholder ensures user input is never executed as SQL. Never concatenate user input into SQL strings: `'INSERT INTO users (name) VALUES ("' + userInput + '")'` is dangerous.
+Always use parameterized queries (prepared statements). In mysql2: `db.query('INSERT INTO users (name) VALUES (?)', [userInput])`. The `?` placeholder ensures user input is never executed as SQL. Never concatenate user input into SQL strings: `'INSERT INTO users (name) VALUES ("' + userInput + '")'` is dangerous.
 
 **Q3: What is the difference between `affectedRows` and `changedRows`?**
 `affectedRows` counts rows that matched the WHERE clause. `changedRows` counts rows where the data actually changed. Example: `UPDATE users SET name='Ali' WHERE id=1` — if user 1's name was already 'Ali', `affectedRows=1, changedRows=0`. If name was 'Bob', both are 1.

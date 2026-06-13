@@ -224,10 +224,10 @@ FROM products;
 
 ```js
 // ========== Node.js using mysql2/promise ==========
-const pool = require('./db');
+const db = require('./db');
 
 // Dashboard stats in one query
-const [stats] = await pool.query(`
+const [stats] = await db.query(`
   SELECT 
     COUNT(*) AS total_products,
     ROUND(SUM(price), 2) AS total_value,
@@ -323,7 +323,7 @@ WHERE DATE(order_date) = CURDATE();
 app.get('/api/dashboard', async (req, res) => {
   try {
     // Run all queries in parallel for speed
-    const [productStats] = await pool.query(`
+    const [productStats] = await db.query(`
       SELECT 
         COUNT(*) AS total_products,
         COUNT(CASE WHEN stock = 0 THEN 1 END) AS out_of_stock,
@@ -333,7 +333,7 @@ app.get('/api/dashboard', async (req, res) => {
       FROM products
     `);
 
-    const [orderStats] = await pool.query(`
+    const [orderStats] = await db.query(`
       SELECT 
         COUNT(*) AS total_orders,
         ROUND(COALESCE(SUM(total_amount), 0), 2) AS total_revenue,
@@ -343,14 +343,14 @@ app.get('/api/dashboard', async (req, res) => {
       FROM orders
     `);
 
-    const [customerStats] = await pool.query(`
+    const [customerStats] = await db.query(`
       SELECT 
         COUNT(*) AS total_customers,
         COUNT(CASE WHEN created_at > DATE_SUB(NOW(), INTERVAL 30 DAY) THEN 1 END) AS new_this_month
       FROM customers
     `);
 
-    const [todayStats] = await pool.query(`
+    const [todayStats] = await db.query(`
       SELECT 
         COUNT(*) AS orders_today,
         COALESCE(SUM(total_amount), 0) AS revenue_today
@@ -454,27 +454,7 @@ function Dashboard() {
 | Don't use COALESCE with SUM              | SUM returns NULL if no rows match (not 0)         |
 | Mix aggregate and non-aggregate columns  | Error or wrong results (must use GROUP BY)        |
 
----
 
-## Practice Exercises
-
-### Easy (SQL)
-1. Count the total number of customers
-2. Find the most expensive and cheapest product
-3. Calculate the total value of all products in stock (price × stock)
-4. Find the average price of products in the 'Electronics' category
-
-### Medium (SQL + Node.js)
-5. Build a `/api/stats` endpoint that returns product, order, and customer counts
-6. Write a query that counts products by stock level: out_of_stock, low (<10), normal (10-100), high (>100)
-7. Calculate the total revenue and order count for the current month
-
-### Hard (Full Stack)
-8. Build a complete admin dashboard with:
-   - KPI cards (revenue, orders, customers, products)
-   - Mini charts (daily revenue for last 7 days using aggregates)
-   - Real-time counters (auto-refresh every 30 seconds)
-9. Create a reports API that returns aggregate data for a date range (custom period)
 
 ---
 

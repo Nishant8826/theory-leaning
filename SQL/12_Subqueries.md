@@ -243,10 +243,10 @@ SELECT * FROM customers WHERE id IN (SELECT DISTINCT customer_id FROM orders);
 
 ```js
 // ========== Node.js using mysql2/promise ==========
-const pool = require('./db');
+const db = require('./db');
 
 // Products above average price
-const [aboveAvg] = await pool.query(`
+const [aboveAvg] = await db.query(`
   SELECT name, price,
     (SELECT ROUND(AVG(price), 2) FROM products) AS avg_price
   FROM products
@@ -255,7 +255,7 @@ const [aboveAvg] = await pool.query(`
 `);
 
 // Customers with no orders
-const [inactiveCustomers] = await pool.query(`
+const [inactiveCustomers] = await db.query(`
   SELECT c.id, c.name, c.email
   FROM customers c
   WHERE NOT EXISTS (
@@ -264,7 +264,7 @@ const [inactiveCustomers] = await pool.query(`
 `);
 
 // Customer stats using subqueries in SELECT
-const [customerStats] = await pool.query(`
+const [customerStats] = await db.query(`
   SELECT 
     c.name,
     c.email,
@@ -328,7 +328,7 @@ app.get('/api/products/:id/recommendations', async (req, res) => {
   try {
     const productId = req.params.id;
     
-    const [recommendations] = await pool.query(`
+    const [recommendations] = await db.query(`
       SELECT p.id, p.name, p.price, COUNT(*) AS co_purchase_count
       FROM products p
       JOIN order_items oi ON p.id = oi.product_id
@@ -407,23 +407,7 @@ SELECT * FROM customers c WHERE NOT EXISTS (
 );
 ```
 
----
 
-## Practice Exercises
-
-### Easy (SQL)
-1. Find the most expensive product using a subquery
-2. Find all products priced above the average
-3. Find customers who have placed at least one order (using IN subquery)
-
-### Medium (SQL + Node.js)
-4. Build an API that finds products that have never been ordered
-5. Write a query to find the second most expensive product using a subquery
-6. Get each customer's latest order using a correlated subquery
-
-### Hard (Full Stack)
-7. Build a "Customers Also Bought" recommendation engine using subqueries
-8. Implement a leaderboard: rank customers by total spending, show percentile using subqueries
 
 ---
 

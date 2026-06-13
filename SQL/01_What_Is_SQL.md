@@ -224,20 +224,20 @@ SELECT COUNT(*) FROM users;
 
 ```js
 // ========== Node.js using mysql2/promise ==========
-const pool = require('./db');
+const db = require('./db');
 
 // Get all users
-const [users] = await pool.query('SELECT * FROM users');
+const [users] = await db.query('SELECT * FROM users');
 
 // Get users older than 18
-const [adults] = await pool.query('SELECT * FROM users WHERE age >= ?', [18]);
+const [adults] = await db.query('SELECT * FROM users WHERE age >= ?', [18]);
 
 // Get one user by ID
-const [rows] = await pool.query('SELECT * FROM users WHERE id = ?', [1]);
+const [rows] = await db.query('SELECT * FROM users WHERE id = ?', [1]);
 const user = rows[0];  // First row (like findOne)
 
 // Count all users
-const [result] = await pool.query('SELECT COUNT(*) AS total FROM users');
+const [result] = await db.query('SELECT COUNT(*) AS total FROM users');
 const count = result[0].total;
 ```
 
@@ -284,7 +284,7 @@ LIMIT 20;
 // Node.js + Express using mysql2 (parameterized)
 app.get('/api/products', async (req, res) => {
   try {
-    const [products] = await pool.query(`
+    const [products] = await db.query(`
       SELECT p.id, p.name, p.price, c.name AS category
       FROM products p
       JOIN categories c ON p.category_id = c.id
@@ -376,27 +376,7 @@ function ProductList() {
 | Ignore SQL syntax rules                 | Spend hours debugging missing semicolons         |
 | Think MongoDB knowledge is enough       | Fail SQL-heavy interviews at 80% of companies   |
 
----
 
-## Practice Exercises
-
-### Easy (SQL Only)
-1. Write a SQL statement that returns today's date
-2. Write a SQL statement that adds two numbers: 100 + 200
-3. Write a comment in SQL (both single-line and multi-line)
-
-### Medium (SQL + Node.js)
-4. Write a Node.js route that runs `SELECT VERSION()` and returns the result as JSON
-5. Translate this Mongoose query to raw SQL: `User.find({ city: 'Mumbai' }).select('name email')`
-6. Write the SQL equivalent of `db.products.find().sort({ price: -1 }).limit(5)`
-
-### Hard (Full Stack)
-7. Create a React + Express app that:
-   - Has a text input where users can type a SQL query
-   - Sends the query to Express backend
-   - Displays the result in a table format
-   - (⚠️ This is for learning only — NEVER allow arbitrary SQL in production!)
-8. Compare the same query in MongoDB, raw SQL, and Sequelize — note the output format differences
 
 ---
 

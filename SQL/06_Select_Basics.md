@@ -268,27 +268,27 @@ SELECT name, price, price * stock AS total_value FROM products;
 
 ```js
 // ========== Node.js using mysql2/promise ==========
-const pool = require('./db');
+const db = require('./db');
 
 // Select all
-const [customers] = await pool.query('SELECT * FROM customers');
+const [customers] = await db.query('SELECT * FROM customers');
 
 // Select specific fields
-const [customers] = await pool.query('SELECT name, email FROM customers');
+const [customers] = await db.query('SELECT name, email FROM customers');
 
 // Select one by ID
-const [rows] = await pool.query('SELECT * FROM customers WHERE id = ?', [1]);
+const [rows] = await db.query('SELECT * FROM customers WHERE id = ?', [1]);
 const customer = rows[0]; // mysql2 always returns array
 
 // Distinct values
-const [cities] = await pool.query('SELECT DISTINCT city FROM customers');
+const [cities] = await db.query('SELECT DISTINCT city FROM customers');
 
 // Count
-const [result] = await pool.query('SELECT COUNT(*) AS total FROM customers');
+const [result] = await db.query('SELECT COUNT(*) AS total FROM customers');
 const count = result[0].total;
 
 // Computed columns
-const [products] = await pool.query(`
+const [products] = await db.query(`
   SELECT 
     name, 
     price, 
@@ -375,7 +375,7 @@ WHERE p.status = 'published';
 // Node.js + Express API
 app.get('/api/products/listing', async (req, res) => {
   try {
-    const [products] = await pool.query(`
+    const [products] = await db.query(`
       SELECT 
         p.id,
         p.name,
@@ -538,27 +538,7 @@ That's 40x less data! On a mobile connection, this is the difference
 between a 0.1s and 4s load time.
 ```
 
----
 
-## Practice Exercises
-
-### Easy (SQL)
-1. Select only the `name` and `price` from products
-2. Select all customers and add an alias "Customer Email" for the email column
-3. Get all unique statuses from the orders table
-4. Select products with a computed column `price_after_discount` (10% off)
-
-### Medium (SQL + Node.js)
-5. Write an Express route `/api/products/summary` that returns: name, price, gst (18%), final_price, stock_status (CASE)
-6. Create a `/api/stats` route using SELECT with COUNT, DISTINCT, and computed columns
-7. Implement field selection via query params: `/api/products?fields=name,price,stock`
-
-### Hard (Full Stack)
-8. Build a dynamic data table component in React:
-   - Column toggler (show/hide columns)
-   - Computed columns (total value = price × stock)
-   - Conditional cell coloring based on CASE expressions
-9. Create a SQL query builder UI where users select columns and see the generated SQL + results
 
 ---
 

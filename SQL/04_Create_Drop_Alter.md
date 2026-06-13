@@ -271,11 +271,11 @@ DROP TABLE customers;
 
 ```js
 // ========== Node.js using mysql2/promise ==========
-const pool = require('./db');
+const db = require('./db');
 
 // Create table
 async function createCustomersTable() {
-  await pool.query(`
+  await db.query(`
     CREATE TABLE IF NOT EXISTS customers (
       id INT AUTO_INCREMENT PRIMARY KEY,
       name VARCHAR(100) NOT NULL,
@@ -289,7 +289,7 @@ async function createCustomersTable() {
 // Alter table — add column
 async function addPhoneColumn() {
   try {
-    await pool.query('ALTER TABLE customers ADD COLUMN phone VARCHAR(15)');
+    await db.query('ALTER TABLE customers ADD COLUMN phone VARCHAR(15)');
     console.log('✅ Phone column added');
   } catch (error) {
     if (error.code === 'ER_DUP_FIELDNAME') {
@@ -302,13 +302,13 @@ async function addPhoneColumn() {
 
 // Drop table (with confirmation — good practice)
 async function dropTable(tableName) {
-  await pool.query(`DROP TABLE IF EXISTS ${tableName}`);
+  await db.query(`DROP TABLE IF EXISTS ${tableName}`);
   console.log(`✅ Table ${tableName} dropped`);
 }
 
 // Get table structure (like viewing your Mongoose schema)
 async function describeTable(tableName) {
-  const [columns] = await pool.query(`DESCRIBE ${tableName}`);
+  const [columns] = await db.query(`DESCRIBE ${tableName}`);
   console.table(columns);
   return columns;
 }
@@ -391,12 +391,12 @@ UPDATE customers SET loyalty_points = 100;  -- All existing customers get 100 po
 
 ```js
 // Node.js — Migration script
-const pool = require('./db');
+const db = require('./db');
 
 async function addLoyaltyPoints() {
   try {
     // Check if column already exists
-    const [columns] = await pool.query('DESCRIBE customers');
+    const [columns] = await db.query('DESCRIBE customers');
     const hasColumn = columns.some(col => col.Field === 'loyalty_points');
     
     if (hasColumn) {
@@ -405,14 +405,14 @@ async function addLoyaltyPoints() {
     }
     
     // Add the column
-    await pool.query(`
+    await db.query(`
       ALTER TABLE customers 
       ADD COLUMN loyalty_points INT UNSIGNED DEFAULT 0 AFTER email
     `);
     console.log('✅ loyalty_points column added');
     
     // Give existing customers 100 points
-    const [result] = await pool.query(
+    const [result] = await db.query(
       'UPDATE customers SET loyalty_points = 100'
     );
     console.log(`✅ Updated ${result.affectedRows} customers with 100 points`);
@@ -430,7 +430,7 @@ addLoyaltyPoints();
 app.patch('/api/customers/:id/loyalty', async (req, res) => {
   try {
     const { points } = req.body;
-    const [result] = await pool.query(
+    const [result] = await db.query(
       'UPDATE customers SET loyalty_points = loyalty_points + ? WHERE id = ?',
       [points, req.params.id]
     );
@@ -440,7 +440,7 @@ app.patch('/api/customers/:id/loyalty', async (req, res) => {
     }
     
     // Get updated customer
-    const [rows] = await pool.query(
+    const [rows] = await db.query(
       'SELECT id, name, loyalty_points FROM customers WHERE id = ?',
       [req.params.id]
     );
@@ -533,35 +533,7 @@ Solutions:
 4. MySQL 8.0+ has INSTANT ALTER for some operations
 ```
 
----
 
-## Practice Exercises
-
-### Easy (SQL)
-1. Create a table `employees` with columns: id, name, department, salary, hire_date
-2. Add a column `email` to the employees table
-3. Rename the `salary` column to `monthly_salary`
-4. Drop the employees table safely
-
-### Medium (SQL + Node.js)
-5. Write a Node.js migration script that:
-   - Creates all 5 e-commerce tables if they don't exist
-   - Checks `DESCRIBE` before running each CREATE
-   - Logs the result of each operation
-6. Write an Express route that accepts a table name and returns its column structure
-7. Write a migration that adds `updated_at` column to all tables that don't have it
-
-### Hard (Full Stack)
-8. Build a database migration system:
-   - Each migration is a numbered SQL file: `001_create_users.sql`, `002_add_phone.sql`
-   - Track applied migrations in a `migrations` table
-   - Express route: `POST /api/migrate` runs all pending migrations
-   - React UI shows migration status and has "Run Migrations" button
-9. Create a "Schema Designer" React app:
-   - Form to create new tables (specify columns, types, constraints)
-   - Calls Express API which runs `CREATE TABLE`
-   - Displays current schema for all tables
-   - Supports adding/dropping columns via ALTER TABLE
 
 ---
 

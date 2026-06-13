@@ -268,16 +268,16 @@ SELECT * FROM customers WHERE phone IS NOT NULL;
 
 ```js
 // ========== Node.js using mysql2/promise ==========
-const pool = require('./db');
+const db = require('./db');
 
 // Simple filter with parameterized query
-const [products] = await pool.query(
+const [products] = await db.query(
   'SELECT * FROM products WHERE category_id = ?',
   [1]
 );
 
 // Multiple conditions
-const [products] = await pool.query(
+const [products] = await db.query(
   `SELECT * FROM products
    WHERE price >= ? AND price <= ?
      AND status = ?
@@ -311,7 +311,7 @@ async function searchProducts(filters) {
     params.push(filters.status);
   }
 
-  const [products] = await pool.query(sql, params);
+  const [products] = await db.query(sql, params);
   return products;
 }
 ```
@@ -454,7 +454,7 @@ app.get('/api/products/search', async (req, res) => {
     sql += ' LIMIT ?';
     params.push(Number(limit) || 20);
     
-    const [products] = await pool.query(sql, params);
+    const [products] = await db.query(sql, params);
     
     res.json({ count: products.length, products });
   } catch (error) {
@@ -574,24 +574,7 @@ WHERE (category_id = 1 OR category_id = 2) AND price > 10000;
 -- Returns expensive products from either category
 ```
 
----
 
-## Practice Exercises
-
-### Easy (SQL)
-1. Select all products with price greater than 5000
-2. Select customers whose name starts with 'N'
-3. Select orders with status 'pending' or 'processing'
-4. Select products where stock is NULL
-
-### Medium (SQL + Node.js)
-5. Build a search API that accepts `?search=`, `?minPrice=`, `?maxPrice=` query params
-6. Write a query to find customers who registered in the last 30 days
-7. Find products that are published, in stock, and in the price range 1000-50000
-
-### Hard (Full Stack)
-8. Build a complete filter sidebar with: search box, price range slider, category checkboxes, sort dropdown, in-stock toggle — all connected to the search API
-9. Implement full-text search using MySQL's FULLTEXT index and `MATCH ... AGAINST` syntax
 
 ---
 

@@ -196,7 +196,7 @@ const stats = await Product.aggregate([
 ```js
 // ========== MySQL / mysql2 ==========
 // Schema (CREATE TABLE)
-await pool.query(`
+await db.query(`
   CREATE TABLE products (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(200) NOT NULL,
@@ -207,19 +207,19 @@ await pool.query(`
 `);
 
 // CRUD
-const [result] = await pool.query(
+const [result] = await db.query(
   'INSERT INTO products (name, price, category_id) VALUES (?, ?, ?)',
   ['iPhone', 79999, catId]
 );
-const [products] = await pool.query(
+const [products] = await db.query(
   'SELECT p.*, c.name AS category FROM products p JOIN categories c ON p.category_id = c.id WHERE p.price > ?',
   [10000]
 );
-await pool.query('UPDATE products SET price = ? WHERE id = ?', [69999, id]);
-await pool.query('DELETE FROM products WHERE id = ?', [id]);
+await db.query('UPDATE products SET price = ? WHERE id = ?', [69999, id]);
+await db.query('DELETE FROM products WHERE id = ?', [id]);
 
 // Aggregation
-const [stats] = await pool.query(`
+const [stats] = await db.query(`
   SELECT category_id, ROUND(AVG(price), 2) AS avg, COUNT(*) AS count
   FROM products GROUP BY category_id
 `);
@@ -256,7 +256,7 @@ const mysql = require('mysql2/promise');
 const mongoose = require('mongoose');
 
 // MySQL for structured, relational data
-const sqlPool = mysql.createPool({
+const sqlDb = mysql.createPool({
   host: 'localhost', user: 'root', password: 'root123', database: 'ecommerce'
 });
 
@@ -283,7 +283,7 @@ app.get('/api/products/:id', async (req, res) => {
   const productId = req.params.id;
   
   // Get product from MySQL (structured data)
-  const [products] = await sqlPool.query(
+  const [products] = await sqlDb.query(
     `SELECT p.*, c.name AS category FROM products p
      LEFT JOIN categories c ON p.category_id = c.id
      WHERE p.id = ?`,
@@ -415,23 +415,7 @@ function ProductPage({ productId }) {
 | MySQL for rapidly changing schemas       | Endless ALTER TABLE migrations                   |
 | Only know one database                   | Limited career options, wrong tool for half the jobs |
 
----
 
-## Practice Exercises
-
-### Easy
-1. List 5 use cases best suited for SQL and 5 for NoSQL
-2. Write the same CRUD operations in both MongoDB and MySQL
-3. Compare the output format of a JOIN (SQL) vs populate (Mongoose)
-
-### Medium
-4. Design a chat application schema in both MongoDB and MySQL — compare complexity
-5. Implement the same API endpoint using both databases and benchmark performance
-6. Convert a MongoDB embedded document design to a normalized SQL schema
-
-### Hard
-7. Build an app using polyglot persistence: MySQL for users/orders, MongoDB for analytics/logs
-8. Migrate a MongoDB collection to MySQL: transform embedded documents into normalized tables with data integrity preserved
 
 ---
 

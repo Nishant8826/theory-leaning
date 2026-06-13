@@ -210,10 +210,10 @@ SELECT * FROM product_listing WHERE price > 10000;
 
 ```js
 // ========== Node.js using mysql2/promise ==========
-const pool = require('./db');
+const db = require('./db');
 
 // Create the view (run once, usually in migration)
-await pool.query(`
+await db.query(`
   CREATE OR REPLACE VIEW product_listing AS
   SELECT 
     p.id, p.name, p.price, p.stock,
@@ -226,12 +226,12 @@ await pool.query(`
 
 // Now use the view in all API routes (clean and simple!)
 app.get('/api/products', async (req, res) => {
-  const [products] = await pool.query('SELECT * FROM product_listing');
+  const [products] = await db.query('SELECT * FROM product_listing');
   res.json(products);
 });
 
 app.get('/api/products/expensive', async (req, res) => {
-  const [products] = await pool.query(
+  const [products] = await db.query(
     'SELECT * FROM product_listing WHERE price > ? ORDER BY price DESC',
     [10000]
   );
@@ -312,14 +312,14 @@ GROUP BY o.id, o.total_amount, o.status, o.order_date;
 // Node.js + Express — Using views
 app.get('/api/admin/orders', async (req, res) => {
   // Admin sees all orders with customer details
-  const [orders] = await pool.query('SELECT * FROM admin_dashboard');
+  const [orders] = await db.query('SELECT * FROM admin_dashboard');
   res.json({ orders });
 });
 
 app.get('/api/my-orders', async (req, res) => {
   // Customer sees only their orders
   const customerId = req.user.id; // From auth middleware
-  const [orders] = await pool.query(
+  const [orders] = await db.query(
     `SELECT * FROM customer_order_view co
      JOIN orders o ON co.order_id = o.id
      WHERE o.customer_id = ?`,
@@ -392,23 +392,7 @@ function AdminOrders() {
 | Change table structure without views     | Must update every query that references the table |
 | Don't use views for reporting            | Reports break when schema changes                |
 
----
 
-## Practice Exercises
-
-### Easy (SQL)
-1. Create a view `active_products` that shows only published products with stock > 0
-2. Create a view `customer_list` that hides the password_hash column
-3. Query the view with additional WHERE and ORDER BY
-
-### Medium (SQL + Node.js)
-4. Create views for your e-commerce app: `product_listing`, `order_summary`, `customer_stats`
-5. Build Express routes that query views instead of writing complex JOINs
-6. Create a view that shows monthly revenue summary
-
-### Hard (Full Stack)
-7. Implement role-based views: admin sees all data, customer sees only their own
-8. Build a view management UI: create, modify, and drop views through the interface
 
 ---
 

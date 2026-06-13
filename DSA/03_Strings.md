@@ -158,7 +158,7 @@ var isPalindrome = function (s) {
     
     // Check if character is letter or number
     function isAlphaNumeric(ch) {
-        return /^[a-z0-9]$/i.test(ch);
+        return /^[a-z0-9]$/.test(ch);
     }
 
     // Two pointers

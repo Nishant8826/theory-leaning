@@ -359,7 +359,7 @@ DELIMITER ;
 // server.js
 const express = require('express');
 const cors = require('cors');
-const pool = require('./db');
+const db = require('./db');
 require('dotenv').config();
 
 const app = express();
@@ -392,7 +392,7 @@ app.get('/api/products', async (req, res) => {
     sql += ` ORDER BY ${sortMap[sort] || 'created_at DESC'} LIMIT ? OFFSET ?`;
     params.push(parseInt(limit), offset);
     
-    const [products] = await pool.query(sql, params);
+    const [products] = await db.query(sql, params);
     
     // Get total for pagination
     let countSql = 'SELECT COUNT(*) AS total FROM v_product_listing WHERE status = ?';
@@ -400,7 +400,7 @@ app.get('/api/products', async (req, res) => {
     if (search) { countSql += ' AND (name LIKE ? OR description LIKE ?)'; countParams.push(`%${search}%`, `%${search}%`); }
     if (category) { countSql += ' AND category_id = ?'; countParams.push(category); }
     
-    const [countResult] = await pool.query(countSql, countParams);
+    const [countResult] = await db.query(countSql, countParams);
     
     res.json({
       products,
@@ -422,12 +422,12 @@ app.post('/api/orders', async (req, res) => {
   try {
     const { customerId, items, shippingAddress, paymentMethod } = req.body;
     
-    await pool.query(
+    await db.query(
       'CALL sp_place_order(?, ?, ?, ?, @orderId, @total, @msg)',
       [customerId, JSON.stringify(items), shippingAddress, paymentMethod || 'cod']
     );
     
-    const [result] = await pool.query('SELECT @orderId AS orderId, @total AS total, @msg AS message');
+    const [result] = await db.query('SELECT @orderId AS orderId, @total AS total, @msg AS message');
     
     if (result[0].orderId) {
       res.status(201).json({
@@ -446,14 +446,14 @@ app.post('/api/orders', async (req, res) => {
 // Get Order Details
 app.get('/api/orders/:id', async (req, res) => {
   try {
-    const [orderRows] = await pool.query(
+    const [orderRows] = await db.query(
       `SELECT o.*, CONCAT(c.first_name, ' ', c.last_name) AS customer_name, c.email
        FROM orders o JOIN customers c ON o.customer_id = c.id WHERE o.id = ?`,
       [req.params.id]
     );
     if (orderRows.length === 0) return res.status(404).json({ error: 'Not found' });
     
-    const [items] = await pool.query(
+    const [items] = await db.query(
       `SELECT oi.*, p.name AS product_name, p.image_url
        FROM order_items oi JOIN products p ON oi.product_id = p.id
        WHERE oi.order_id = ?`,
@@ -470,20 +470,20 @@ app.get('/api/orders/:id', async (req, res) => {
 
 app.get('/api/dashboard', async (req, res) => {
   try {
-    const [stats] = await pool.query('SELECT * FROM v_dashboard');
+    const [stats] = await db.query('SELECT * FROM v_dashboard');
     
-    const [recentOrders] = await pool.query(
+    const [recentOrders] = await db.query(
       'SELECT * FROM v_order_summary ORDER BY order_date DESC LIMIT 5'
     );
     
-    const [monthlyRevenue] = await pool.query(`
+    const [monthlyRevenue] = await db.query(`
       SELECT DATE_FORMAT(order_date, '%Y-%m') AS month,
         COUNT(*) AS orders, ROUND(SUM(total_amount), 2) AS revenue
       FROM orders WHERE status != 'cancelled'
       GROUP BY month ORDER BY month DESC LIMIT 6
     `);
     
-    const [topProducts] = await pool.query(`
+    const [topProducts] = await db.query(`
       SELECT p.name, SUM(oi.quantity) AS sold, ROUND(SUM(oi.total_price), 2) AS revenue
       FROM order_items oi JOIN products p ON oi.product_id = p.id
       JOIN orders o ON oi.order_id = o.id WHERE o.status != 'cancelled'
@@ -560,20 +560,7 @@ function App() {
 | 17: Triggers           | Audit log, auto-calculate totals                |
 | 18: Normalization      | Fully normalized schema (3NF)                   |
 
----
 
-## Practice: Extend the Project
-
-1. **Authentication**: Add JWT-based auth with bcrypt password hashing
-2. **Cart System**: Store cart in MySQL (persistent cart) or localStorage
-3. **Payment Integration**: Add Razorpay/Stripe mock payment flow
-4. **Admin Panel**: CRUD for products, categories, and order management
-5. **Search**: Implement FULLTEXT search with relevance scoring
-6. **Reviews**: Add product reviews with rating aggregation
-7. **Coupons**: Discount codes with validation stored procedure
-8. **Email Notifications**: Trigger-based order confirmation emails
-9. **Analytics**: Build a full analytics dashboard with date range filters
-10. **API Documentation**: Add Swagger/OpenAPI documentation
 
 ---
 

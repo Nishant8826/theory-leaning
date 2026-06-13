@@ -235,7 +235,7 @@ SHOW CREATE PROCEDURE PlaceOrder;
 // ========== Express Controller (What You Know) ==========
 async function placeOrder(req, res) {
   const { customerId, productId, quantity } = req.body;
-  const connection = await pool.getConnection();
+  const connection = await db.getConnection();
   try {
     await connection.beginTransaction();
     // ... 4 queries ...
@@ -255,12 +255,12 @@ app.post('/api/orders', async (req, res) => {
   
   try {
     // One call replaces all the transaction logic!
-    await pool.query(
+    await db.query(
       'CALL PlaceOrder(?, ?, ?, @orderId, @msg)',
       [customerId, productId, quantity]
     );
     
-    const [result] = await pool.query('SELECT @orderId AS orderId, @msg AS message');
+    const [result] = await db.query('SELECT @orderId AS orderId, @msg AS message');
     
     if (result[0].orderId) {
       res.status(201).json({
@@ -355,7 +355,7 @@ app.get('/api/reports/monthly', async (req, res) => {
   
   try {
     // Procedure returns multiple result sets
-    const [results] = await pool.query('CALL MonthlySalesReport(?, ?)', [year, month]);
+    const [results] = await db.query('CALL MonthlySalesReport(?, ?)', [year, month]);
     
     res.json({
       period: `${year}-${String(month).padStart(2, '0')}`,
@@ -425,23 +425,7 @@ function MonthlyReport() {
 | Business logic only in Express           | Different apps may implement it differently      |
 | Don't use error handlers                 | Procedure crashes without cleanup                |
 
----
 
-## Practice Exercises
-
-### Easy (SQL)
-1. Create a procedure `GetCustomerById` that accepts a customer ID and returns their details
-2. Create a procedure `CountProducts` with an OUT parameter for the total count
-3. Call both procedures and verify the results
-
-### Medium (SQL + Node.js)
-4. Create and call the `PlaceOrder` procedure from an Express route
-5. Create a `CancelOrder` procedure that restores stock and updates status
-6. Create a `GetDashboardStats` procedure that returns multiple result sets
-
-### Hard (Full Stack)
-7. Build a reporting dashboard powered entirely by stored procedures
-8. Compare performance: raw queries vs stored procedure for 1000 order placements
 
 ---
 

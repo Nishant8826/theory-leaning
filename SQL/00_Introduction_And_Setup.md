@@ -238,7 +238,7 @@ require('dotenv').config();
 
 // A "pool" reuses connections instead of creating new ones each time
 // MongoDB does this automatically; in MySQL, we set it up explicitly
-const pool = mysql.createPool({
+const db = mysql.createPool({
   host: process.env.DB_HOST || 'localhost',
   user: process.env.DB_USER || 'root',
   password: process.env.DB_PASSWORD || 'root123',
@@ -254,7 +254,7 @@ const pool = mysql.createPool({
 // Test the connection (like mongoose connection event handlers)
 async function testConnection() {
   try {
-    const connection = await pool.getConnection();
+    const connection = await db.getConnection();
     console.log('✅ MySQL connected successfully!');
     console.log(`📦 Database: ${process.env.DB_NAME || 'ecommerce'}`);
     connection.release(); // Always release connections back to pool!
@@ -266,7 +266,7 @@ async function testConnection() {
 
 testConnection();
 
-module.exports = pool;
+module.exports = db;
 ```
 
 ### Create `.env` file
@@ -293,7 +293,7 @@ mongoose.connect('mongodb://localhost:27017/ecommerce')
 // ========== MYSQL (What you're learning) ==========
 const mysql = require('mysql2/promise');
 
-const pool = mysql.createPool({
+const db = mysql.createPool({
   host: 'localhost',
   user: 'root',
   password: 'root123',
@@ -301,7 +301,7 @@ const pool = mysql.createPool({
 });
 
 // Test connection
-const [rows] = await pool.query('SELECT 1');
+const [rows] = await db.query('SELECT 1');
 console.log('MySQL connected');
 ```
 
@@ -315,7 +315,7 @@ console.log('MySQL connected');
 // server.js — Express server with MySQL
 const express = require('express');
 const cors = require('cors');
-const pool = require('./db');
+const db = require('./db');
 require('dotenv').config();
 
 const app = express();
@@ -328,7 +328,7 @@ app.use(express.json()); // Like body-parser (you already know this)
 app.get('/api/health', async (req, res) => {
   try {
     // Run a simple query to check if DB is alive
-    const [rows] = await pool.query('SELECT VERSION() AS version, NOW() AS serverTime');
+    const [rows] = await db.query('SELECT VERSION() AS version, NOW() AS serverTime');
     
     res.json({
       status: 'ok',
@@ -350,7 +350,7 @@ app.get('/api/health', async (req, res) => {
 // =========================================
 app.get('/api/databases', async (req, res) => {
   try {
-    const [rows] = await pool.query('SHOW DATABASES');
+    const [rows] = await db.query('SHOW DATABASES');
     res.json({
       count: rows.length,
       databases: rows.map(row => row.Database)
@@ -365,7 +365,7 @@ app.get('/api/databases', async (req, res) => {
 // =========================================
 app.get('/api/tables', async (req, res) => {
   try {
-    const [rows] = await pool.query('SHOW TABLES');
+    const [rows] = await db.query('SHOW TABLES');
     res.json({
       database: 'ecommerce',
       tables: rows
@@ -381,10 +381,10 @@ app.get('/api/tables', async (req, res) => {
 app.get('/api/test/:id', async (req, res) => {
   try {
     // ❌ NEVER do this (SQL injection vulnerability):
-    // const [rows] = await pool.query(`SELECT * FROM users WHERE id = ${req.params.id}`);
+    // const [rows] = await db.query(`SELECT * FROM users WHERE id = ${req.params.id}`);
     
     // ✅ ALWAYS use parameterized queries:
-    const [rows] = await pool.query(
+    const [rows] = await db.query(
       'SELECT ? AS receivedId, NOW() AS timestamp',
       [req.params.id]
     );
@@ -512,27 +512,7 @@ testDB();
 | Don't set password for root            | Anyone can access your database                  |
 | Skip `.env` for credentials            | Passwords get committed to GitHub                |
 
----
 
-## Practice Exercises
-
-### Easy
-1. Install MySQL and run `SELECT VERSION();` in MySQL Workbench
-2. Create a database called `test_db` and then drop it
-3. Run `SHOW DATABASES` and identify the system databases
-
-### Medium
-4. Create the `db.js` connection pool and verify it works with `node db.js`
-5. Create an Express route that returns the current MySQL time using `SELECT NOW()`
-6. Modify the health check to also return the current database name using `SELECT DATABASE()`
-
-### Hard
-7. Create a full Express app with these routes:
-   - `GET /api/health` — returns MySQL version and status
-   - `GET /api/databases` — lists all databases
-   - `GET /api/time` — returns current server time
-   - `POST /api/query` — accepts a `{ query }` body and runs it (⚠️ development only!)
-8. Add error handling middleware that catches MySQL connection errors
 
 ---
 
@@ -555,13 +535,13 @@ testDB();
 MySQL is a relational database that stores data in structured tables with predefined schemas. MongoDB is a document database that stores flexible JSON-like documents. MySQL uses SQL for queries; MongoDB uses its own query language. MySQL enforces relationships through foreign keys; MongoDB embeds data or uses references.
 
 **Q2: How do you connect Node.js to MySQL?**
-Using the `mysql2/promise` package. You create a connection pool with `mysql.createPool({host, user, password, database})` and use `pool.query()` with async/await to execute queries. Always use parameterized queries to prevent SQL injection.
+Using the `mysql2/promise` package. You create a connection pool with `mysql.createPool({host, user, password, database})` and use `db.query()` with async/await to execute queries. Always use parameterized queries to prevent SQL injection.
 
 **Q3: What is a connection pool and why is it important?**
 A connection pool is a cache of database connections that can be reused. Instead of opening/closing connections for every query (expensive), the pool maintains a set of open connections. When a query needs to run, it borrows a connection from the pool and returns it when done. This dramatically improves performance under load.
 
 **Q4: What is SQL injection and how do you prevent it?**
-SQL injection is when an attacker inserts malicious SQL code through user input. For example, inputting `'; DROP TABLE users; --` could delete your entire table. Prevent it by ALWAYS using parameterized queries: `pool.query('SELECT * FROM users WHERE id = ?', [userId])`. Never concatenate user input into SQL strings.
+SQL injection is when an attacker inserts malicious SQL code through user input. For example, inputting `'; DROP TABLE users; --` could delete your entire table. Prevent it by ALWAYS using parameterized queries: `db.query('SELECT * FROM users WHERE id = ?', [userId])`. Never concatenate user input into SQL strings.
 
 **Q5: Compare `mysql2` vs Sequelize. When would you use each?**
 `mysql2` is a raw driver — you write SQL directly. Use it when you need full control, complex queries, or maximum performance. Sequelize is an ORM that generates SQL from JavaScript methods (like Mongoose for MongoDB). Use it when you want faster development, auto-migrations, and don't need complex SQL. In production, many teams use both: ORM for CRUD, raw SQL for reports and complex queries.

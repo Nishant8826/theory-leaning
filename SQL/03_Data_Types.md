@@ -242,10 +242,10 @@ CREATE TABLE products (
 
 ```js
 // ========== Node.js using mysql2/promise ==========
-const pool = require('./db');
+const db = require('./db');
 
 // Create products table
-await pool.query(`
+await db.query(`
   CREATE TABLE IF NOT EXISTS products (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(200) NOT NULL,
@@ -265,7 +265,7 @@ await pool.query(`
 `);
 
 // Insert with correct types
-await pool.query(`
+await db.query(`
   INSERT INTO products (name, price, stock, tags, metadata, category_id, status)
   VALUES (?, ?, ?, ?, ?, ?, ?)
 `, [
@@ -359,7 +359,7 @@ CREATE TABLE customers (
 ```js
 // Node.js + Express — Customer Registration API
 const bcrypt = require('bcrypt');
-const pool = require('./db');
+const db = require('./db');
 
 app.post('/api/customers/register', async (req, res) => {
   try {
@@ -369,7 +369,7 @@ app.post('/api/customers/register', async (req, res) => {
     const passwordHash = await bcrypt.hash(password, 10);
     
     // Parameterized query — prevents SQL injection
-    const [result] = await pool.query(`
+    const [result] = await db.query(`
       INSERT INTO customers (first_name, last_name, email, password_hash, phone, date_of_birth, gender)
       VALUES (?, ?, ?, ?, ?, ?, ?)
     `, [firstName, lastName, email, passwordHash, phone, dateOfBirth, gender]);
@@ -470,26 +470,7 @@ SELECT CAST(0.1 AS DECIMAL(10,2)) + CAST(0.2 AS DECIMAL(10,2));  -- Returns: 0.3
 
 This is the same problem as JavaScript's `0.1 + 0.2 === 0.30000000000000004`.
 
----
 
-## Practice Exercises
-
-### Easy (SQL)
-1. Create a table `students` with columns: `id` (INT), `name` (VARCHAR), `grade` (CHAR(1)), `gpa` (DECIMAL), `enrolled_date` (DATE)
-2. What's the difference between `CHAR(10)` and `VARCHAR(10)`? When would you use each?
-3. Create an ENUM column `status` with values: `active`, `inactive`, `suspended`
-
-### Medium (SQL + Node.js)
-4. Create the full `products` table using mysql2 with appropriate types for: name, price, description, stock, rating, is_active
-5. Write an Express POST route that inserts a product with all the correct data types
-6. Store product tags as JSON and write a query to find products that have a specific tag
-
-### Hard (Full Stack)
-7. Build a product creation form in React with:
-   - Input validation matching MySQL constraints (maxLength, number ranges)
-   - Proper `type` attributes on inputs (number, date, etc.)
-   - Error handling for MySQL type mismatches
-8. Create a data type comparison chart that queries `INFORMATION_SCHEMA.COLUMNS` and displays all columns, their types, and constraints for a given table
 
 ---
 

@@ -278,11 +278,11 @@ WHERE o.id = 1;
 
 ```js
 // ========== Node.js — Working with normalized data ==========
-const pool = require('./db');
+const db = require('./db');
 
 // The query gets data from 4 tables in 1 call (normalized but efficient)
 app.get('/api/orders/:id', async (req, res) => {
-  const [rows] = await pool.query(`
+  const [rows] = await db.query(`
     SELECT 
       o.id AS order_id,
       c.name AS customer,
@@ -378,10 +378,10 @@ DELETE FROM orders_flat WHERE order_id = 3;
 // Node.js — Demonstrating normalization benefits
 app.get('/api/demo/anomalies', async (req, res) => {
   // Normalized: update email in ONE place
-  await pool.query('UPDATE customers SET email = ? WHERE id = ?', ['newemail@test.com', 1]);
+  await db.query('UPDATE customers SET email = ? WHERE id = ?', ['newemail@test.com', 1]);
   
   // Now EVERY query that JOINs customers will see the new email
-  const [orders] = await pool.query(`
+  const [orders] = await db.query(`
     SELECT o.id, c.email FROM orders o
     JOIN customers c ON o.customer_id = c.id
     WHERE o.customer_id = 1
@@ -431,23 +431,7 @@ Keep normalized when:
 ✅ Multiple applications access the same database
 ```
 
----
 
-## Practice Exercises
-
-### Easy (SQL)
-1. Identify the normal form of a given table (provide examples)
-2. Normalize a flat `student_courses` table into 3NF
-3. Explain why `unit_price` in `order_items` is intentionally denormalized
-
-### Medium (SQL + Node.js)
-4. Take an unnormalized orders CSV and import it into properly normalized tables
-5. Write queries demonstrating update, insert, and delete anomalies
-6. Create a denormalized view on top of normalized tables for fast reads
-
-### Hard (Full Stack)
-7. Build a schema design tool that takes a flat table and suggests normalized tables
-8. Implement a migration that normalizes an existing denormalized table without data loss
 
 ---
 

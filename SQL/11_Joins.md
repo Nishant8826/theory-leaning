@@ -303,12 +303,12 @@ JOIN products p ON oi.product_id = p.id;
 
 ```js
 // ========== Node.js using mysql2/promise ==========
-const pool = require('./db');
+const db = require('./db');
 
 // Get order with all details (single query!)
 app.get('/api/orders/:id', async (req, res) => {
   try {
-    const [rows] = await pool.query(`
+    const [rows] = await db.query(`
       SELECT 
         o.id AS order_id,
         o.order_date,
@@ -426,7 +426,7 @@ ORDER BY o.order_date DESC;
 // Express API — Customer order history
 app.get('/api/customers/:id/orders', async (req, res) => {
   try {
-    const [orders] = await pool.query(`
+    const [orders] = await db.query(`
       SELECT 
         o.id AS order_id,
         o.order_date,
@@ -535,26 +535,7 @@ Total: 1 database call!
 JOINs solve the N+1 problem by design.
 ```
 
----
 
-## Practice Exercises
-
-### Easy (SQL)
-1. Write a query to get all products with their category names using INNER JOIN
-2. Get all customers and their order count using LEFT JOIN + GROUP BY
-3. Find orders that have no order items (using LEFT JOIN + WHERE IS NULL)
-
-### Medium (SQL + Node.js)
-4. Build a `/api/orders/:id` endpoint that returns order details with customer info and item list using JOINs
-5. Write a query that shows every customer and their total spending (including $0 for those with no orders)
-6. Get the top 5 best-selling products using JOINs with order_items
-
-### Hard (Full Stack)
-7. Build a complete order management page:
-   - List orders with customer names and product previews
-   - Click an order to see full details (customer, items, totals)
-   - Filter by status, date range, customer
-8. Implement a "Customers who bought X also bought Y" recommendation system using self-JOIN on order_items
 
 ---
 

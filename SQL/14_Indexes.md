@@ -246,24 +246,24 @@ EXPLAIN SELECT * FROM customers WHERE email = 'n@test.com';
 
 ```js
 // ========== Node.js using mysql2/promise ==========
-const pool = require('./db');
+const db = require('./db');
 
 // Create index
-await pool.query('CREATE INDEX idx_email ON customers(email)');
+await db.query('CREATE INDEX idx_email ON customers(email)');
 
 // Explain a query to check performance
-const [explanation] = await pool.query(
+const [explanation] = await db.query(
   'EXPLAIN SELECT * FROM products WHERE price > ? AND status = ?',
   [10000, 'published']
 );
 console.table(explanation);
 
 // Show all indexes on a table
-const [indexes] = await pool.query('SHOW INDEX FROM products');
+const [indexes] = await db.query('SHOW INDEX FROM products');
 console.table(indexes);
 
 // Fulltext search (after adding FULLTEXT index)
-const [results] = await pool.query(
+const [results] = await db.query(
   `SELECT *, MATCH(name, description) AGAINST(? IN BOOLEAN MODE) AS relevance
    FROM products
    WHERE MATCH(name, description) AGAINST(? IN BOOLEAN MODE)
@@ -347,11 +347,11 @@ app.get('/api/products/search', async (req, res) => {
     
     // Debug mode — return query plan
     if (explain === 'true') {
-      const [plan] = await pool.query('EXPLAIN ' + sql, params);
+      const [plan] = await db.query('EXPLAIN ' + sql, params);
       return res.json({ queryPlan: plan, sql });
     }
     
-    const [products] = await pool.query(sql, params);
+    const [products] = await db.query(sql, params);
     res.json({ count: products.length, products });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -361,7 +361,7 @@ app.get('/api/products/search', async (req, res) => {
 // Index management route (admin only)
 app.get('/api/admin/indexes/:table', async (req, res) => {
   try {
-    const [indexes] = await pool.query('SHOW INDEX FROM ??', [req.params.table]);
+    const [indexes] = await db.query('SHOW INDEX FROM ??', [req.params.table]);
     res.json({ table: req.params.table, indexes });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -464,26 +464,7 @@ Think of it like a phone book: sorted by last name, then first name.
 You can look up "Kumar" or "Kumar, Nishant" but NOT just "Nishant".
 ```
 
----
 
-## Practice Exercises
-
-### Easy (SQL)
-1. Create an index on the `email` column of the customers table
-2. Run EXPLAIN on a SELECT query and identify if an index is being used
-3. Show all indexes on the products table
-
-### Medium (SQL + Node.js)
-4. Add appropriate indexes to all foreign key columns in your e-commerce schema
-5. Write a fulltext search for products and build an Express route for it
-6. Create a `/api/admin/slow-queries` route that shows queries with type='ALL' using EXPLAIN
-
-### Hard (Full Stack)
-7. Build an index management dashboard:
-   - List all tables and their indexes
-   - Run EXPLAIN on custom queries
-   - Get recommendations for missing indexes
-8. Benchmark: insert 100,000 products and compare query times with and without indexes
 
 ---
 

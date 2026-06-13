@@ -282,10 +282,10 @@ HAVING order_count > 5;
 
 ```js
 // ========== Node.js using mysql2/promise ==========
-const pool = require('./db');
+const db = require('./db');
 
 // Products per category with category name
-const [categoryStats] = await pool.query(`
+const [categoryStats] = await db.query(`
   SELECT 
     c.name AS category,
     COUNT(*) AS product_count,
@@ -298,7 +298,7 @@ const [categoryStats] = await pool.query(`
 `);
 
 // Monthly revenue (parameterized year)
-const [monthlyRevenue] = await pool.query(`
+const [monthlyRevenue] = await db.query(`
   SELECT 
     DATE_FORMAT(order_date, '%Y-%m') AS month,
     COUNT(*) AS order_count,
@@ -382,7 +382,7 @@ app.get('/api/analytics/sales', async (req, res) => {
     const dateFormat = dateFormats[period] || dateFormats.month;
     
     // Revenue over time
-    const [revenueTimeline] = await pool.query(`
+    const [revenueTimeline] = await db.query(`
       SELECT 
         DATE_FORMAT(o.order_date, ?) AS period,
         COUNT(DISTINCT o.id) AS orders,
@@ -396,7 +396,7 @@ app.get('/api/analytics/sales', async (req, res) => {
     `, [dateFormat]);
     
     // Top selling products
-    const [topProducts] = await pool.query(`
+    const [topProducts] = await db.query(`
       SELECT 
         p.name,
         SUM(oi.quantity) AS units_sold,
@@ -411,7 +411,7 @@ app.get('/api/analytics/sales', async (req, res) => {
     `);
     
     // Category breakdown
-    const [categoryBreakdown] = await pool.query(`
+    const [categoryBreakdown] = await db.query(`
       SELECT 
         c.name AS category,
         COUNT(DISTINCT o.id) AS orders,
@@ -544,28 +544,7 @@ SELECT MAX(name), category_id, COUNT(*) FROM products GROUP BY category_id;
 SELECT category_id, COUNT(*) FROM products GROUP BY category_id;
 ```
 
----
 
-## Practice Exercises
-
-### Easy (SQL)
-1. Count the number of products in each category
-2. Find the total revenue for each order status (pending, shipped, delivered)
-3. Calculate the average product price per category
-4. Find the number of orders placed each month
-
-### Medium (SQL + Node.js)
-5. Build a `/api/analytics/categories` endpoint returning product count, avg price, and total value per category
-6. Find customers who have placed more than 3 orders using GROUP BY + HAVING
-7. Create a monthly revenue report for the current year
-
-### Hard (Full Stack)
-8. Build an analytics dashboard with:
-   - Revenue chart (group by month/week/day)
-   - Category breakdown pie chart data
-   - Top 10 customers by total spending
-   - Period selector (this week, this month, this year)
-9. Implement a "cohort analysis": group customers by registration month, then show their purchasing behavior over time
 
 ---
 

@@ -16,7 +16,7 @@ Classic example: Transferring money. Debit from Account A AND credit to Account 
 
 | MongoDB/Mongoose (You Know)                       | MySQL Transaction (You'll Learn)                |
 |---------------------------------------------------|-------------------------------------------------|
-| `const session = await mongoose.startSession()`   | `const conn = await pool.getConnection()`       |
+| `const session = await mongoose.startSession()`   | `const conn = await db.getConnection()`       |
 | `session.startTransaction()`                      | `await conn.beginTransaction()`                 |
 | `await Model.create([doc], { session })`          | `await conn.query('INSERT...', params)`         |
 | `await session.commitTransaction()`               | `await conn.commit()`                           |
@@ -236,11 +236,11 @@ COMMIT;
 
 ```js
 // ========== Node.js using mysql2/promise ==========
-const pool = require('./db');
+const db = require('./db');
 
 async function placeOrder(customerId, items) {
   // Get a connection from the pool (MUST use same connection for all queries)
-  const connection = await pool.getConnection();
+  const connection = await db.getConnection();
   
   try {
     // Start transaction
@@ -337,7 +337,7 @@ const result = await sequelize.transaction(async (t) => {
 ```js
 // Node.js + Express — Place Order API (with transaction)
 app.post('/api/orders', async (req, res) => {
-  const connection = await pool.getConnection();
+  const connection = await db.getConnection();
   
   try {
     const { customerId, items } = req.body;
@@ -478,23 +478,7 @@ function Checkout({ cart, customerId }) {
 | Don't use `FOR UPDATE` locks             | Race conditions in concurrent operations         |
 | Forget `connection.release()`            | Connection leak → app hangs after pool exhausted |
 
----
 
-## Practice Exercises
-
-### Easy (SQL)
-1. Write a transaction that inserts a customer and then their first order
-2. Write a transaction that transfers ₹500 from customer A to customer B (using a balance column)
-3. Practice ROLLBACK: start a transaction, insert a row, verify it exists, rollback, verify it's gone
-
-### Medium (SQL + Node.js)
-4. Implement the `placeOrder` function with full transaction support
-5. Add stock validation with `FOR UPDATE` to prevent race conditions
-6. Implement an order cancellation endpoint that reverses the order within a transaction (restore stock + update status)
-
-### Hard (Full Stack)
-7. Build a complete checkout flow with cart, order placement, and error handling
-8. Simulate 100 concurrent orders for the last item in stock — verify that only one succeeds with transactions
 
 ---
 
@@ -526,7 +510,7 @@ READ UNCOMMITTED (dirty reads possible), READ COMMITTED (reads only committed da
 COMMIT permanently saves all changes made in the current transaction. ROLLBACK undoes all changes since the last BEGIN/START TRANSACTION. After COMMIT, changes cannot be undone. After ROLLBACK, the database is exactly as it was before the transaction started.
 
 **Q5: How do you handle transactions in a connection pool scenario?**
-Always get a dedicated connection from the pool (`pool.getConnection()`), use that single connection for all transaction queries, and release it in a `finally` block. Never use `pool.query()` for transactions — it may use different connections for each query!
+Always get a dedicated connection from the pool (`db.getConnection()`), use that single connection for all transaction queries, and release it in a `finally` block. Never use `db.query()` for transactions — it may use different connections for each query!
 
 ---
 

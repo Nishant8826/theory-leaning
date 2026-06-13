@@ -202,15 +202,15 @@ SELECT COUNT(*) AS total FROM products;
 
 ```js
 // ========== Node.js using mysql2/promise ==========
-const pool = require('./db');
+const db = require('./db');
 
 // Sort by price ascending
-const [products] = await pool.query(
+const [products] = await db.query(
   'SELECT * FROM products ORDER BY price ASC'
 );
 
 // Top 5 most expensive
-const [top5] = await pool.query(
+const [top5] = await db.query(
   'SELECT * FROM products ORDER BY price DESC LIMIT 5'
 );
 
@@ -224,13 +224,13 @@ async function getProducts(page = 1, limit = 10, sortBy = 'created_at', order = 
   const sortOrder = order.toUpperCase() === 'ASC' ? 'ASC' : 'DESC';
   
   // Get paginated results
-  const [products] = await pool.query(
+  const [products] = await db.query(
     `SELECT * FROM products ORDER BY ${sortColumn} ${sortOrder} LIMIT ? OFFSET ?`,
     [limit, offset]
   );
   
   // Get total count for pagination metadata
-  const [countResult] = await pool.query('SELECT COUNT(*) AS total FROM products');
+  const [countResult] = await db.query('SELECT COUNT(*) AS total FROM products');
   const total = countResult[0].total;
   
   return {
@@ -327,7 +327,7 @@ app.get('/api/products', async (req, res) => {
     }
     
     // Get paginated results
-    const [products] = await pool.query(`
+    const [products] = await db.query(`
       SELECT p.id, p.name, p.price, p.stock, c.name AS category
       FROM products p
       LEFT JOIN categories c ON p.category_id = c.id
@@ -337,7 +337,7 @@ app.get('/api/products', async (req, res) => {
     `, [...params, limit, offset]);
     
     // Get total count
-    const [countResult] = await pool.query(
+    const [countResult] = await db.query(
       `SELECT COUNT(*) AS total FROM products p ${whereClause}`,
       params
     );
@@ -465,27 +465,7 @@ SELECT * FROM products WHERE id > 999990 ORDER BY id LIMIT 10;
 -- MySQL uses the index to jump directly to id 999990 ✅
 ```
 
----
 
-## Practice Exercises
-
-### Easy (SQL)
-1. Select all products sorted by price (cheapest first)
-2. Get the 3 most expensive products
-3. Get products on page 2 (10 per page), sorted by name
-
-### Medium (SQL + Node.js)
-4. Build a pagination API that returns `{ data, pagination }` with hasNext/hasPrev
-5. Implement cursor-based pagination using `WHERE id > ?` instead of OFFSET
-6. Add sort parameter validation (whitelist allowed columns)
-
-### Hard (Full Stack)
-7. Build a data table component with:
-   - Clickable column headers for sorting (toggle ASC/DESC)
-   - Page navigation (first, prev, next, last)
-   - Items per page selector (10, 25, 50, 100)
-   - "Showing 11-20 of 157" text
-8. Implement infinite scroll using cursor-based pagination
 
 ---
 

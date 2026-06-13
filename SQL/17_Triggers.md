@@ -300,7 +300,7 @@ END;
 
 ```js
 // ========== Node.js — Triggers work automatically! ==========
-const pool = require('./db');
+const db = require('./db');
 
 // Just do normal operations — triggers fire automatically
 app.post('/api/products', async (req, res) => {
@@ -312,14 +312,14 @@ app.post('/api/products', async (req, res) => {
     // 2. Fix negative stock to 0
     // 3. Capitalize the name
     
-    const [result] = await pool.query(
+    const [result] = await db.query(
       'INSERT INTO products (name, price, stock, category_id) VALUES (?, ?, ?, ?)',
       [name, price, stock, categoryId]
     );
     
     // The AFTER INSERT trigger automatically logs this to product_audit!
     
-    const [product] = await pool.query('SELECT * FROM products WHERE id = ?', [result.insertId]);
+    const [product] = await db.query('SELECT * FROM products WHERE id = ?', [result.insertId]);
     res.status(201).json(product[0]);
   } catch (error) {
     // If trigger SIGNAL'd an error, it'll be caught here
@@ -332,7 +332,7 @@ app.post('/api/products', async (req, res) => {
 
 // View audit log
 app.get('/api/products/:id/audit', async (req, res) => {
-  const [logs] = await pool.query(
+  const [logs] = await db.query(
     'SELECT * FROM product_audit WHERE product_id = ? ORDER BY changed_at DESC',
     [req.params.id]
   );
@@ -406,7 +406,7 @@ DELIMITER ;
 ```js
 // Express — Stock alerts API
 app.get('/api/admin/stock-alerts', async (req, res) => {
-  const [alerts] = await pool.query(`
+  const [alerts] = await db.query(`
     SELECT * FROM stock_alerts 
     WHERE resolved = FALSE 
     ORDER BY created_at DESC
@@ -415,7 +415,7 @@ app.get('/api/admin/stock-alerts', async (req, res) => {
 });
 
 app.patch('/api/admin/stock-alerts/:id/resolve', async (req, res) => {
-  await pool.query('UPDATE stock_alerts SET resolved = TRUE WHERE id = ?', [req.params.id]);
+  await db.query('UPDATE stock_alerts SET resolved = TRUE WHERE id = ?', [req.params.id]);
   res.json({ message: 'Alert resolved' });
 });
 ```
@@ -481,23 +481,7 @@ function StockAlerts() {
 | Don't know triggers exist                | Debug for hours wondering where data came from   |
 | Too many complex triggers                | Slow INSERT/UPDATE operations, hard to debug     |
 
----
 
-## Practice Exercises
-
-### Easy (SQL)
-1. Create a trigger that logs all new customer registrations to a `customer_audit` table
-2. Create a BEFORE INSERT trigger that prevents inserting products with price = 0
-3. Show all triggers for the products table
-
-### Medium (SQL + Node.js)
-4. Implement an audit log system with triggers for all CRUD operations on products
-5. Create a trigger that auto-calculates order totals when order items change
-6. Build an API that queries the audit log for a specific product's change history
-
-### Hard (Full Stack)
-7. Build a complete audit dashboard showing all database changes across all tables
-8. Implement a "soft delete" trigger that moves deleted records to an archive table instead of removing them
 
 ---
 

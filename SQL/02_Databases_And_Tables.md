@@ -247,13 +247,13 @@ CREATE TABLE customers (
 
 ```js
 // ========== Node.js using mysql2/promise ==========
-const pool = require('./db');
+const db = require('./db');
 
 // Create the database
-await pool.query('CREATE DATABASE IF NOT EXISTS ecommerce');
+await db.query('CREATE DATABASE IF NOT EXISTS ecommerce');
 
 // Create the customers table
-await pool.query(`
+await db.query(`
   CREATE TABLE IF NOT EXISTS customers (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -264,11 +264,11 @@ await pool.query(`
 `);
 
 // Check table structure
-const [columns] = await pool.query('DESCRIBE customers');
+const [columns] = await db.query('DESCRIBE customers');
 console.log(columns);
 
 // List all tables
-const [tables] = await pool.query('SHOW TABLES');
+const [tables] = await db.query('SHOW TABLES');
 console.log(tables);
 ```
 
@@ -377,12 +377,12 @@ CREATE TABLE IF NOT EXISTS order_items (
 ```js
 // Node.js — Database initialization script (run once)
 // initDb.js
-const pool = require('./db');
+const db = require('./db');
 
 async function initDatabase() {
   try {
     // Create categories table
-    await pool.query(`
+    await db.query(`
       CREATE TABLE IF NOT EXISTS categories (
         id INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(100) NOT NULL UNIQUE,
@@ -393,7 +393,7 @@ async function initDatabase() {
     console.log('✅ categories table created');
 
     // Create products table
-    await pool.query(`
+    await db.query(`
       CREATE TABLE IF NOT EXISTS products (
         id INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(200) NOT NULL,
@@ -409,7 +409,7 @@ async function initDatabase() {
     console.log('✅ products table created');
 
     // Create customers table
-    await pool.query(`
+    await db.query(`
       CREATE TABLE IF NOT EXISTS customers (
         id INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(100) NOT NULL,
@@ -422,7 +422,7 @@ async function initDatabase() {
     console.log('✅ customers table created');
 
     // Create orders table
-    await pool.query(`
+    await db.query(`
       CREATE TABLE IF NOT EXISTS orders (
         id INT AUTO_INCREMENT PRIMARY KEY,
         customer_id INT NOT NULL,
@@ -435,7 +435,7 @@ async function initDatabase() {
     console.log('✅ orders table created');
 
     // Create order_items table
-    await pool.query(`
+    await db.query(`
       CREATE TABLE IF NOT EXISTS order_items (
         id INT AUTO_INCREMENT PRIMARY KEY,
         order_id INT NOT NULL,
@@ -449,7 +449,7 @@ async function initDatabase() {
     console.log('✅ order_items table created');
 
     // Verify all tables
-    const [tables] = await pool.query('SHOW TABLES');
+    const [tables] = await db.query('SHOW TABLES');
     console.log('\n📋 All tables:', tables.map(t => Object.values(t)[0]));
     
   } catch (error) {
@@ -466,13 +466,13 @@ initDatabase();
 // Express route to list tables
 app.get('/api/schema', async (req, res) => {
   try {
-    const [tables] = await pool.query('SHOW TABLES');
+    const [tables] = await db.query('SHOW TABLES');
     const tableNames = tables.map(t => Object.values(t)[0]);
     
     // Get structure of each table
     const schema = {};
     for (const table of tableNames) {
-      const [columns] = await pool.query(`DESCRIBE ${table}`);
+      const [columns] = await db.query(`DESCRIBE ${table}`);
       schema[table] = columns;
     }
     
@@ -560,30 +560,7 @@ function DatabaseSchema() {
 | Forget FOREIGN KEY relationships       | Orphaned data, no referential integrity          |
 | Don't use UTF8MB4 charset             | Emojis and special characters break              |
 
----
 
-## Practice Exercises
-
-### Easy (SQL)
-1. Create a database called `test_shop` and verify it with `SHOW DATABASES`
-2. Switch to `test_shop` and create a table called `items` with columns: `id`, `name`, `price`
-3. Run `DESCRIBE items` and understand each column in the output
-4. Drop the `items` table, then drop the `test_shop` database
-
-### Medium (SQL + Node.js)
-5. Write a Node.js script that creates the `ecommerce` database and all 5 tables
-6. Create an Express route `GET /api/tables` that returns all table names in the database
-7. Create an Express route `GET /api/tables/:name` that returns the column structure of a specific table
-
-### Hard (Full Stack)
-8. Build a React UI that:
-   - Fetches and displays all tables in the database
-   - Click a table name to see its column structure
-   - Has a "Create Table" form that lets you specify columns and creates the table via API
-9. Create a database migration system:
-   - Version-numbered SQL files in a `migrations/` folder
-   - A script that runs pending migrations in order
-   - Track which migrations have been applied (hint: use a `migrations` table)
 
 ---
 
