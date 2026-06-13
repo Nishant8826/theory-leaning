@@ -420,42 +420,6 @@ app.patch('/api/admin/stock-alerts/:id/resolve', async (req, res) => {
 });
 ```
 
-```js
-// React — Stock Alert Dashboard
-function StockAlerts() {
-  const [alerts, setAlerts] = useState([]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      axios.get('/api/admin/stock-alerts').then(({ data }) => setAlerts(data.alerts));
-    }, 10000); // Check every 10 seconds
-    return () => clearInterval(interval);
-  }, []);
-
-  return (
-    <div>
-      <h2>⚠️ Stock Alerts ({alerts.length})</h2>
-      {alerts.map(alert => (
-        <div key={alert.id} style={{
-          padding: '12px', marginBottom: '8px', borderRadius: '8px',
-          backgroundColor: alert.alert_type === 'out_of_stock' ? '#ffdddd' : '#fff3cd'
-        }}>
-          <strong>{alert.product_name}</strong>
-          <span> — Stock: {alert.current_stock}</span>
-          <span style={{ fontWeight: 'bold', color: alert.alert_type === 'out_of_stock' ? 'red' : 'orange' }}>
-            {' '}{alert.alert_type === 'out_of_stock' ? '🔴 OUT OF STOCK' : '🟡 LOW STOCK'}
-          </span>
-          <button onClick={() => axios.patch(`/api/admin/stock-alerts/${alert.id}/resolve`)
-            .then(() => setAlerts(prev => prev.filter(a => a.id !== alert.id)))}>
-            Resolve
-          </button>
-        </div>
-      ))}
-    </div>
-  );
-}
-```
-
 **Output:**
 ```json
 {
@@ -487,20 +451,20 @@ function StockAlerts() {
 
 ## Interview Q&A
 
-**Q1: What is a trigger and when would you use one?**
-A trigger is stored SQL code that auto-executes on INSERT, UPDATE, or DELETE events. Use cases: audit logging, data validation, cascading updates, maintaining derived data, enforcing business rules at the database level. Like Mongoose pre/post middleware but at the database level.
+### ❓ Q1: What is a trigger and when would you use one?
+> **💡 Answer:** A trigger is stored SQL code that auto-executes on INSERT, UPDATE, or DELETE events. Use cases: audit logging, data validation, cascading updates, maintaining derived data, enforcing business rules at the database level. Like Mongoose pre/post middleware but at the database level.
 
-**Q2: What is the difference between BEFORE and AFTER triggers?**
-BEFORE: runs before the operation, can modify NEW values or prevent the operation (using SIGNAL). AFTER: runs after the operation, used for logging and cascading changes. BEFORE can set `NEW.column = value`; AFTER cannot modify the row.
+### ❓ Q2: What is the difference between BEFORE and AFTER triggers?
+> **💡 Answer:** BEFORE: runs before the operation, can modify NEW values or prevent the operation (using SIGNAL). AFTER: runs after the operation, used for logging and cascading changes. BEFORE can set `NEW.column = value`; AFTER cannot modify the row.
 
-**Q3: What are NEW and OLD in triggers?**
-NEW refers to the row being inserted/updated (new values). OLD refers to the existing row being updated/deleted (previous values). INSERT has only NEW, DELETE has only OLD, UPDATE has both. In Mongoose terms: `this` (new) and checking `isModified()` for changes.
+### ❓ Q3: What are NEW and OLD in triggers?
+> **💡 Answer:** NEW refers to the row being inserted/updated (new values). OLD refers to the existing row being updated/deleted (previous values). INSERT has only NEW, DELETE has only OLD, UPDATE has both. In Mongoose terms: `this` (new) and checking `isModified()` for changes.
 
-**Q4: Can a trigger call another trigger?**
-Yes — this is called cascading triggers. If trigger A on table X inserts into table Y, and table Y has its own trigger, it fires too. Be careful: cascading triggers can cause infinite loops and are hard to debug.
+### ❓ Q4: Can a trigger call another trigger?
+> **💡 Answer:** Yes — this is called cascading triggers. If trigger A on table X inserts into table Y, and table Y has its own trigger, it fires too. Be careful: cascading triggers can cause infinite loops and are hard to debug.
 
-**Q5: Should business logic be in triggers or application code?**
-Keep triggers simple: validation, audit logging, simple cascading. Complex business logic should stay in the application for testability, readability, and portability. Triggers are invisible to developers and hard to debug. Use them for rules that must be enforced regardless of which application accesses the database.
+### ❓ Q5: Should business logic be in triggers or application code?
+> **💡 Answer:** Keep triggers simple: validation, audit logging, simple cascading. Complex business logic should stay in the application for testability, readability, and portability. Triggers are invisible to developers and hard to debug. Use them for rules that must be enforced regardless of which application accesses the database.
 
 ---
 

@@ -483,57 +483,6 @@ app.get('/api/schema', async (req, res) => {
 });
 ```
 
-```js
-// React component — Display database schema
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-
-function DatabaseSchema() {
-  const [schema, setSchema] = useState(null);
-
-  useEffect(() => {
-    axios.get('/api/schema')
-      .then(({ data }) => setSchema(data))
-      .catch(err => console.error(err));
-  }, []);
-
-  if (!schema) return <p>Loading schema...</p>;
-
-  return (
-    <div>
-      <h2>Database: {schema.database}</h2>
-      {Object.entries(schema.tables).map(([tableName, columns]) => (
-        <div key={tableName}>
-          <h3>📋 {tableName}</h3>
-          <table border="1" cellPadding="8">
-            <thead>
-              <tr>
-                <th>Column</th>
-                <th>Type</th>
-                <th>Nullable</th>
-                <th>Key</th>
-                <th>Default</th>
-              </tr>
-            </thead>
-            <tbody>
-              {columns.map((col, i) => (
-                <tr key={i}>
-                  <td>{col.Field}</td>
-                  <td>{col.Type}</td>
-                  <td>{col.Null}</td>
-                  <td>{col.Key}</td>
-                  <td>{col.Default || 'NULL'}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ))}
-    </div>
-  );
-}
-```
-
 **Output (DESCRIBE customers):**
 ```
 +------------+--------------+------+-----+-------------------+-------------------+
@@ -566,33 +515,33 @@ function DatabaseSchema() {
 
 ## Real-World Q&A
 
-**Q1:** In MongoDB, collections are auto-created when I insert data. Why do I need to manually create tables in MySQL?
-**A:** Because MySQL enforces a schema. It needs to know the exact columns, their data types, and constraints BEFORE you insert data. This prevents inconsistent data. Think of it like TypeScript interfaces — you define the shape first, then the data must match.
+### ❓ Q1: In MongoDB, collections are auto-created when I insert data. Why do I need to manually create tables in MySQL?
+> **💡 Answer:** Because MySQL enforces a schema. It needs to know the exact columns, their data types, and constraints BEFORE you insert data. This prevents inconsistent data. Think of it like TypeScript interfaces — you define the shape first, then the data must match.
 
-**Q2:** What's the difference between DROP and TRUNCATE?
-**A:** `DROP TABLE users` deletes the table AND all its data — the table is gone completely. `TRUNCATE TABLE users` deletes all rows but keeps the table structure intact (like `db.users.deleteMany({})`). `DELETE FROM users` also deletes all rows but is slower because it logs each deletion for potential rollback.
+### ❓ Q2: What's the difference between DROP and TRUNCATE?
+> **💡 Answer:** `DROP TABLE users` deletes the table AND all its data — the table is gone completely. `TRUNCATE TABLE users` deletes all rows but keeps the table structure intact (like `db.users.deleteMany({})`). `DELETE FROM users` also deletes all rows but is slower because it logs each deletion for potential rollback.
 
-**Q3:** How do I add a new column to an existing table? In MongoDB, I just add a new field to my document.
-**A:** Use `ALTER TABLE`: `ALTER TABLE users ADD COLUMN age INT AFTER name;`. We'll cover this in detail in file 04. In MongoDB, there's no equivalent because fields are dynamic. In SQL, you must explicitly modify the table structure.
+### ❓ Q3: How do I add a new column to an existing table? In MongoDB, I just add a new field to my document.
+> **💡 Answer:** Use `ALTER TABLE`: `ALTER TABLE users ADD COLUMN age INT AFTER name;`. We'll cover this in detail in file 04. In MongoDB, there's no equivalent because fields are dynamic. In SQL, you must explicitly modify the table structure.
 
 ---
 
 ## Interview Q&A
 
-**Q1: What is the difference between a database and a table in MySQL?**
-A database is a container/namespace that holds related tables. A table is a structured set of data organized in rows and columns. A MySQL server can have multiple databases, and each database can have multiple tables. This is analogous to MongoDB where a database holds multiple collections.
+### ❓ Q1: What is the difference between a database and a table in MySQL?
+> **💡 Answer:** A database is a container/namespace that holds related tables. A table is a structured set of data organized in rows and columns. A MySQL server can have multiple databases, and each database can have multiple tables. This is analogous to MongoDB where a database holds multiple collections.
 
-**Q2: What is the difference between DROP, TRUNCATE, and DELETE?**
-DROP removes the entire table (structure + data). TRUNCATE removes all rows but keeps the table structure; it's fast because it doesn't log individual row deletions. DELETE removes specific rows (or all if no WHERE clause); it's slower but can be rolled back in a transaction and triggers ON DELETE events.
+### ❓ Q2: What is the difference between DROP, TRUNCATE, and DELETE?
+> **💡 Answer:** DROP removes the entire table (structure + data). TRUNCATE removes all rows but keeps the table structure; it's fast because it doesn't log individual row deletions. DELETE removes specific rows (or all if no WHERE clause); it's slower but can be rolled back in a transaction and triggers ON DELETE events.
 
-**Q3: What is AUTO_INCREMENT and how does it compare to MongoDB's _id?**
-AUTO_INCREMENT automatically generates a unique integer for each new row, incrementing by 1. MongoDB's `_id` is similar but uses ObjectId (a 12-byte unique identifier). AUTO_INCREMENT is sequential and predictable; ObjectId encodes timestamp, machine ID, and a counter, making it globally unique across distributed systems.
+### ❓ Q3: What is AUTO_INCREMENT and how does it compare to MongoDB's _id?
+> **💡 Answer:** AUTO_INCREMENT automatically generates a unique integer for each new row, incrementing by 1. MongoDB's `_id` is similar but uses ObjectId (a 12-byte unique identifier). AUTO_INCREMENT is sequential and predictable; ObjectId encodes timestamp, machine ID, and a counter, making it globally unique across distributed systems.
 
-**Q4: What are FOREIGN KEYS and why don't MongoDB collections have them?**
-Foreign keys create a link between two tables, ensuring that a value in one table must exist in another. For example, `orders.customer_id` must reference a valid `customers.id`. MongoDB doesn't have foreign keys because it uses embedded documents or manual references (`populate()` in Mongoose). SQL foreign keys are enforced by the database engine; MongoDB references are enforced by application code.
+### ❓ Q4: What are FOREIGN KEYS and why don't MongoDB collections have them?
+> **💡 Answer:** Foreign keys create a link between two tables, ensuring that a value in one table must exist in another. For example, `orders.customer_id` must reference a valid `customers.id`. MongoDB doesn't have foreign keys because it uses embedded documents or manual references (`populate()` in Mongoose). SQL foreign keys are enforced by the database engine; MongoDB references are enforced by application code.
 
-**Q5: You're designing a MySQL database for a social media app. What tables would you create and how would they relate?**
-Core tables: `users` (id, name, email), `posts` (id, user_id FK→users, content, created_at), `comments` (id, post_id FK→posts, user_id FK→users, text), `likes` (id, post_id FK→posts, user_id FK→users), `followers` (follower_id FK→users, following_id FK→users). The `likes` and `followers` tables are junction tables that represent many-to-many relationships. In MongoDB, you might embed comments in posts, but in SQL, each entity gets its own table.
+### ❓ Q5: You're designing a MySQL database for a social media app. What tables would you create and how would they relate?
+> **💡 Answer:** Core tables: `users` (id, name, email), `posts` (id, user_id FK→users, content, created_at), `comments` (id, post_id FK→posts, user_id FK→users, text), `likes` (id, post_id FK→posts, user_id FK→users), `followers` (follower_id FK→users, following_id FK→users). The `likes` and `followers` tables are junction tables that represent many-to-many relationships. In MongoDB, you might embed comments in posts, but in SQL, each entity gets its own table.
 
 ---
 

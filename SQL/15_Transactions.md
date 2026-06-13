@@ -412,43 +412,6 @@ app.post('/api/orders', async (req, res) => {
 });
 ```
 
-```js
-// React — Checkout Component
-function Checkout({ cart, customerId }) {
-  const [loading, setLoading] = useState(false);
-
-  const placeOrder = async () => {
-    setLoading(true);
-    try {
-      const items = cart.map(item => ({
-        productId: item.id,
-        quantity: item.quantity
-      }));
-      
-      const { data } = await axios.post('/api/orders', { customerId, items });
-      alert(`Order #${data.order.id} placed! Total: ₹${data.order.totalAmount}`);
-    } catch (error) {
-      alert(error.response?.data?.error || 'Order failed. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <div>
-      <h2>Your Cart</h2>
-      {cart.map(item => (
-        <div key={item.id}>{item.name} × {item.quantity} — ₹{item.price * item.quantity}</div>
-      ))}
-      <p><strong>Total: ₹{cart.reduce((sum, i) => sum + i.price * i.quantity, 0)}</strong></p>
-      <button onClick={placeOrder} disabled={loading}>
-        {loading ? 'Placing Order...' : 'Place Order'}
-      </button>
-    </div>
-  );
-}
-```
-
 **Output (Success):**
 ```json
 {
@@ -484,33 +447,33 @@ function Checkout({ cart, customerId }) {
 
 ## Real-World Q&A
 
-**Q1:** MongoDB doesn't need transactions for most operations because of embedded documents. Why does MySQL always need them?
-**A:** In MongoDB, updating an order with embedded items is a single document update — atomic by default. In MySQL, creating an order involves INSERT into `orders` + multiple INSERTs into `order_items` + UPDATE on `products` — multiple tables, multiple operations. Transactions tie them together.
+### ❓ Q1: MongoDB doesn't need transactions for most operations because of embedded documents. Why does MySQL always need them?
+> **💡 Answer:** In MongoDB, updating an order with embedded items is a single document update — atomic by default. In MySQL, creating an order involves INSERT into `orders` + multiple INSERTs into `order_items` + UPDATE on `products` — multiple tables, multiple operations. Transactions tie them together.
 
-**Q2:** What is `FOR UPDATE` and why is it important?
-**A:** `SELECT ... FOR UPDATE` locks the selected rows, preventing other transactions from modifying them until the current transaction commits or rolls back. Without it, two users could simultaneously read stock=1, both see it's sufficient, and both deduct — resulting in stock = -1.
+### ❓ Q2: What is `FOR UPDATE` and why is it important?
+> **💡 Answer:** `SELECT ... FOR UPDATE` locks the selected rows, preventing other transactions from modifying them until the current transaction commits or rolls back. Without it, two users could simultaneously read stock=1, both see it's sufficient, and both deduct — resulting in stock = -1.
 
-**Q3:** What happens if a transaction runs for too long?
-**A:** Long transactions hold locks, blocking other operations and potentially causing timeouts or deadlocks. MySQL has `innodb_lock_wait_timeout` (default 50 seconds). Keep transactions as short as possible — do prep work outside the transaction.
+### ❓ Q3: What happens if a transaction runs for too long?
+> **💡 Answer:** Long transactions hold locks, blocking other operations and potentially causing timeouts or deadlocks. MySQL has `innodb_lock_wait_timeout` (default 50 seconds). Keep transactions as short as possible — do prep work outside the transaction.
 
 ---
 
 ## Interview Q&A
 
-**Q1: What is a transaction? Explain ACID.**
-A transaction is a unit of work that groups multiple operations into an atomic unit. ACID: Atomicity (all or nothing), Consistency (valid state to valid state), Isolation (concurrent transactions don't interfere), Durability (committed data survives crashes).
+### ❓ Q1: What is a transaction? Explain ACID.
+> **💡 Answer:** A transaction is a unit of work that groups multiple operations into an atomic unit. ACID: Atomicity (all or nothing), Consistency (valid state to valid state), Isolation (concurrent transactions don't interfere), Durability (committed data survives crashes).
 
-**Q2: What is a deadlock and how do you prevent it?**
-A deadlock occurs when two transactions each hold a lock the other needs. Transaction A locks row 1, waits for row 2. Transaction B locks row 2, waits for row 1. Neither can proceed. MySQL detects deadlocks and rolls back one transaction. Prevention: always access tables/rows in the same order, keep transactions short, use appropriate isolation levels.
+### ❓ Q2: What is a deadlock and how do you prevent it?
+> **💡 Answer:** A deadlock occurs when two transactions each hold a lock the other needs. Transaction A locks row 1, waits for row 2. Transaction B locks row 2, waits for row 1. Neither can proceed. MySQL detects deadlocks and rolls back one transaction. Prevention: always access tables/rows in the same order, keep transactions short, use appropriate isolation levels.
 
-**Q3: What are isolation levels in MySQL?**
-READ UNCOMMITTED (dirty reads possible), READ COMMITTED (reads only committed data), REPEATABLE READ (default — consistent reads within transaction), SERIALIZABLE (full isolation, like single-threaded). Higher isolation = more correct but slower due to locking.
+### ❓ Q3: What are isolation levels in MySQL?
+> **💡 Answer:** READ UNCOMMITTED (dirty reads possible), READ COMMITTED (reads only committed data), REPEATABLE READ (default — consistent reads within transaction), SERIALIZABLE (full isolation, like single-threaded). Higher isolation = more correct but slower due to locking.
 
-**Q4: What is the difference between COMMIT and ROLLBACK?**
-COMMIT permanently saves all changes made in the current transaction. ROLLBACK undoes all changes since the last BEGIN/START TRANSACTION. After COMMIT, changes cannot be undone. After ROLLBACK, the database is exactly as it was before the transaction started.
+### ❓ Q4: What is the difference between COMMIT and ROLLBACK?
+> **💡 Answer:** COMMIT permanently saves all changes made in the current transaction. ROLLBACK undoes all changes since the last BEGIN/START TRANSACTION. After COMMIT, changes cannot be undone. After ROLLBACK, the database is exactly as it was before the transaction started.
 
-**Q5: How do you handle transactions in a connection pool scenario?**
-Always get a dedicated connection from the pool (`db.getConnection()`), use that single connection for all transaction queries, and release it in a `finally` block. Never use `db.query()` for transactions — it may use different connections for each query!
+### ❓ Q5: How do you handle transactions in a connection pool scenario?
+> **💡 Answer:** Always get a dedicated connection from the pool (`db.getConnection()`), use that single connection for all transaction queries, and release it in a `finally` block. Never use `db.query()` for transactions — it may use different connections for each query!
 
 ---
 

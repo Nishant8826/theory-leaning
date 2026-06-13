@@ -370,50 +370,6 @@ app.get('/api/dashboard', async (req, res) => {
 });
 ```
 
-```js
-// React — Dashboard Component
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-
-function Dashboard() {
-  const [stats, setStats] = useState(null);
-
-  useEffect(() => {
-    axios.get('/api/dashboard').then(({ data }) => setStats(data));
-  }, []);
-
-  if (!stats) return <p>Loading dashboard...</p>;
-
-  const cards = [
-    { title: 'Total Products', value: stats.products.total_products, color: '#3498db' },
-    { title: 'Total Revenue', value: `₹${stats.orders.total_revenue}`, color: '#2ecc71' },
-    { title: 'Total Orders', value: stats.orders.total_orders, color: '#e74c3c' },
-    { title: 'Total Customers', value: stats.customers.total_customers, color: '#f39c12' },
-    { title: 'Avg Order Value', value: `₹${stats.orders.avg_order_value}`, color: '#9b59b6' },
-    { title: 'Revenue Today', value: `₹${stats.today.revenue_today}`, color: '#1abc9c' },
-    { title: 'Pending Orders', value: stats.orders.pending_orders, color: '#e67e22' },
-    { title: 'Out of Stock', value: stats.products.out_of_stock, color: '#e74c3c' }
-  ];
-
-  return (
-    <div>
-      <h1>Admin Dashboard</h1>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>
-        {cards.map((card, i) => (
-          <div key={i} style={{
-            backgroundColor: card.color, color: 'white',
-            padding: '20px', borderRadius: '8px', textAlign: 'center'
-          }}>
-            <h3>{card.title}</h3>
-            <p style={{ fontSize: '24px', fontWeight: 'bold' }}>{card.value}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-```
-
 **Output:**
 ```json
 {
@@ -460,33 +416,33 @@ function Dashboard() {
 
 ## Real-World Q&A
 
-**Q1:** In MongoDB, I use `countDocuments()` which is simple. Why is SQL COUNT more confusing with COUNT(*) vs COUNT(column)?
-**A:** `COUNT(*)` counts all rows regardless of NULL values — like `countDocuments()`. `COUNT(column)` counts only non-NULL values in that column. `COUNT(DISTINCT column)` counts unique non-NULL values. MongoDB's `countDocuments()` is always equivalent to `COUNT(*)`.
+### ❓ Q1: In MongoDB, I use `countDocuments()` which is simple. Why is SQL COUNT more confusing with COUNT(*) vs COUNT(column)?
+> **💡 Answer:** `COUNT(*)` counts all rows regardless of NULL values — like `countDocuments()`. `COUNT(column)` counts only non-NULL values in that column. `COUNT(DISTINCT column)` counts unique non-NULL values. MongoDB's `countDocuments()` is always equivalent to `COUNT(*)`.
 
-**Q2:** Why does SUM return NULL instead of 0 when no rows match?
-**A:** SQL aggregates return NULL when operating on an empty set (no rows). This is by design — NULL means "no data to aggregate." Use `COALESCE(SUM(amount), 0)` to convert NULL to 0. It's a common gotcha that breaks JavaScript code: `null + 100 = 100` in JS but `NULL + 100 = NULL` in SQL.
+### ❓ Q2: Why does SUM return NULL instead of 0 when no rows match?
+> **💡 Answer:** SQL aggregates return NULL when operating on an empty set (no rows). This is by design — NULL means "no data to aggregate." Use `COALESCE(SUM(amount), 0)` to convert NULL to 0. It's a common gotcha that breaks JavaScript code: `null + 100 = 100` in JS but `NULL + 100 = NULL` in SQL.
 
-**Q3:** Should I calculate averages in SQL or JavaScript?
-**A:** Always in SQL. The database processes millions of rows and returns a single number. Fetching all rows to JavaScript and calling `.reduce()` transfers massive data and is orders of magnitude slower.
+### ❓ Q3: Should I calculate averages in SQL or JavaScript?
+> **💡 Answer:** Always in SQL. The database processes millions of rows and returns a single number. Fetching all rows to JavaScript and calling `.reduce()` transfers massive data and is orders of magnitude slower.
 
 ---
 
 ## Interview Q&A
 
-**Q1: What is the difference between COUNT(*), COUNT(column), and COUNT(DISTINCT column)?**
-COUNT(*) counts all rows including those with NULLs. COUNT(column) counts only rows where that column is not NULL. COUNT(DISTINCT column) counts unique non-NULL values. Example: with values [1, 2, 2, NULL], COUNT(*)=4, COUNT(col)=3, COUNT(DISTINCT col)=2.
+### ❓ Q1: What is the difference between COUNT(*), COUNT(column), and COUNT(DISTINCT column)?
+> **💡 Answer:** COUNT(*) counts all rows including those with NULLs. COUNT(column) counts only rows where that column is not NULL. COUNT(DISTINCT column) counts unique non-NULL values. Example: with values [1, 2, 2, NULL], COUNT(*)=4, COUNT(col)=3, COUNT(DISTINCT col)=2.
 
-**Q2: What does SUM return when there are no matching rows?**
-NULL, not 0. Use `COALESCE(SUM(column), 0)` to get 0 instead. This applies to AVG, MIN, and MAX too — they all return NULL for empty sets. COUNT is the exception — COUNT(*) returns 0 for empty sets.
+### ❓ Q2: What does SUM return when there are no matching rows?
+> **💡 Answer:** NULL, not 0. Use `COALESCE(SUM(column), 0)` to get 0 instead. This applies to AVG, MIN, and MAX too — they all return NULL for empty sets. COUNT is the exception — COUNT(*) returns 0 for empty sets.
 
-**Q3: Can you use WHERE with aggregate functions?**
-No. WHERE filters rows BEFORE aggregation. To filter based on aggregate results, use HAVING (after GROUP BY). Example: `WHERE price > 100` works, but `WHERE AVG(price) > 100` is invalid. Use `HAVING AVG(price) > 100` instead.
+### ❓ Q3: Can you use WHERE with aggregate functions?
+> **💡 Answer:** No. WHERE filters rows BEFORE aggregation. To filter based on aggregate results, use HAVING (after GROUP BY). Example: `WHERE price > 100` works, but `WHERE AVG(price) > 100` is invalid. Use `HAVING AVG(price) > 100` instead.
 
-**Q4: Write a query to find the second highest price in the products table.**
-`SELECT MAX(price) FROM products WHERE price < (SELECT MAX(price) FROM products);` Or: `SELECT DISTINCT price FROM products ORDER BY price DESC LIMIT 1 OFFSET 1;`
+### ❓ Q4: Write a query to find the second highest price in the products table?
+> **💡 Answer:** `SELECT MAX(price) FROM products WHERE price < (SELECT MAX(price) FROM products);` Or: `SELECT DISTINCT price FROM products ORDER BY price DESC LIMIT 1 OFFSET 1;`
 
-**Q5: How would you get a running total (cumulative sum) in SQL?**
-Using window functions: `SELECT name, price, SUM(price) OVER (ORDER BY id) AS running_total FROM products;` Window functions (OVER clause) perform calculations across rows related to the current row without collapsing them — like aggregates but preserving individual rows.
+### ❓ Q5: How would you get a running total (cumulative sum) in SQL?
+> **💡 Answer:** Using window functions: `SELECT name, price, SUM(price) OVER (ORDER BY id) AS running_total FROM products;` Window functions (OVER clause) perform calculations across rows related to the current row without collapsing them — like aggregates but preserving individual rows.
 
 ---
 

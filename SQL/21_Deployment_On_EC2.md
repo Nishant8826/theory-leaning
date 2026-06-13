@@ -6,7 +6,7 @@
 
 ## What is it?
 
-This guide walks you through deploying the complete ShopSQL application (Node.js + MySQL + React) on an **AWS EC2 instance** running Ubuntu. By the end, your e-commerce API will be live on the internet with a proper domain, SSL certificate, and production-grade setup.
+This guide walks you through deploying the complete ShopSQL backend application (Node.js + MySQL) on an **AWS EC2 instance** running Ubuntu. By the end, your e-commerce API will be live on the internet with a proper domain, SSL certificate, and production-grade setup.
 
 ---
 
@@ -18,7 +18,7 @@ If you've deployed a MERN app before, the process is almost identical:
 |----------------------------------------|-----------------------------------------|
 | MongoDB Atlas (cloud DB)               | MySQL on EC2 (self-managed)             |
 | `npm start` or PM2                     | Same — PM2 for Node.js                 |
-| Nginx reverse proxy                    | Same — Nginx for Express + React       |
+| Nginx reverse proxy                    | Same — Nginx for Express               |
 | `.env` for MONGO_URI                   | `.env` for DB_HOST, DB_USER, DB_PASSWORD|
 | `certbot` for SSL                      | Same — Certbot for HTTPS               |
 
@@ -32,11 +32,11 @@ If you've deployed a MERN app before, the process is almost identical:
 │                                                              │
 │  ┌─────────────────────────────────────────────────────────┐ │
 │  │                    Nginx (:80, :443)                     │ │
-│  │  ┌──────────────────┐  ┌──────────────────────────────┐ │ │
-│  │  │ React Build      │  │ Reverse Proxy                │ │ │
-│  │  │ (Static Files)   │  │ /api/* → localhost:5000      │ │ │
-│  │  │ / → index.html   │  │                              │ │ │
-│  │  └──────────────────┘  └──────────────────────────────┘ │ │
+│  │  ┌────────────────────────────────────────────────────┐ │ │
+│  │  │ Reverse Proxy                                      │ │ │
+│  │  │ / → localhost:5000                                 │ │ │
+│  │  │                                                    │ │ │
+│  │  └────────────────────────────────────────────────────┘ │ │
 │  └─────────────────────────────────────────────────────────┘ │
 │                              │                               │
 │  ┌──────────────────┐  ┌────┴───────────────┐               │
@@ -318,36 +318,7 @@ curl http://localhost:5000/api/health
 
 ---
 
-## Step 6: Deploy Frontend
-
-### Build React App
-
-```bash
-cd /var/www/shopsql
-
-# Clone frontend (or it's in the same repo)
-git clone https://github.com/yourusername/shopsql-frontend.git frontend
-cd frontend
-
-# Install dependencies
-npm install
-
-# Set API URL for production
-echo "VITE_API_URL=https://yourdomain.com/api" > .env.production
-# or for Create React App:
-echo "REACT_APP_API_URL=https://yourdomain.com/api" > .env.production
-
-# Build for production
-npm run build
-
-# Copy build to Nginx directory
-sudo cp -r dist /var/www/shopsql/frontend-build
-# For CRA: sudo cp -r build /var/www/shopsql/frontend-build
-```
-
----
-
-## Step 7: Install and Configure Nginx
+## Step 6: Install and Configure Nginx
 
 ```bash
 # Install Nginx
@@ -368,13 +339,9 @@ server {
     server_name yourdomain.com www.yourdomain.com;
     # For testing without domain, use: server_name _;
 
-    # React frontend (static files)
-    root /var/www/shopsql/frontend-build;
-    index index.html;
-
     # API reverse proxy
-    location /api/ {
-        proxy_pass http://localhost:5000/api/;
+    location / {
+        proxy_pass http://localhost:5000;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
@@ -383,11 +350,6 @@ server {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_cache_bypass $http_upgrade;
-    }
-
-    # React Router support (SPA fallback)
-    location / {
-        try_files $uri $uri/ /index.html;
     }
 
     # Security headers
@@ -420,13 +382,13 @@ sudo systemctl restart nginx
 
 ```bash
 # From your local machine, visit:
-# http://13.235.xx.xx       → React app
-# http://13.235.xx.xx/api/health → API response
+# http://13.235.xx.xx/api/products   → Fetch published products
+# http://13.235.xx.xx/api/health     → API health response
 ```
 
 ---
 
-## Step 8: Domain Setup
+## Step 7: Domain Setup
 
 ```
 1. Buy a domain (Namecheap, GoDaddy, Route53)
@@ -445,7 +407,7 @@ sudo systemctl restart nginx
 
 ---
 
-## Step 9: SSL Certificate (HTTPS)
+## Step 8: SSL Certificate (HTTPS)
 
 ```bash
 # Install Certbot
@@ -473,7 +435,7 @@ curl https://yourdomain.com/api/health
 
 ---
 
-## Step 10: Security Best Practices
+## Step 9: Security Best Practices
 
 ### Firewall (UFW)
 
@@ -516,7 +478,7 @@ chmod 600 /var/www/shopsql/backend/.env
 
 ---
 
-## Step 11: Database Backups
+## Step 10: Database Backups
 
 ### Automated MySQL Backups
 
@@ -575,7 +537,7 @@ mysql -u shopsql_user -p ecommerce < /opt/backups/mysql/ecommerce_20240115.sql
 
 ---
 
-## Step 12: Monitoring and Maintenance
+## Step 11: Monitoring and Maintenance
 
 ### Monitor with PM2
 
@@ -608,7 +570,7 @@ curl -s http://localhost:5000/api/health | python3 -m json.tool
 
 ---
 
-## Step 13: Scaling Basics
+## Step 12: Scaling Basics
 
 ```
 Vertical Scaling (Scale Up):
@@ -685,15 +647,9 @@ Application:
 ☐ PM2 running the app
 ☐ PM2 startup configured (auto-restart)
 
-Frontend:
-☐ Production build created (npm run build)
-☐ Build copied to Nginx directory
-☐ API URL points to production domain
-
 Nginx:
 ☐ Site config created
-☐ Reverse proxy configured (/api → :5000)
-☐ Static files served (React build)
+☐ Reverse proxy configured (/ → :5000)
 ☐ Default site removed
 ☐ Config tested (nginx -t)
 
@@ -726,7 +682,6 @@ Backup & Monitoring:
 | `ECONNREFUSED` on port 3306             | MySQL not running: `sudo systemctl start mysql`  |
 | `Access denied for user 'root'`         | Use `sudo mysql` or check password               |
 | Nginx 502 Bad Gateway                    | PM2 app crashed: `pm2 logs`, `pm2 restart all`   |
-| React routes show 404                    | Add `try_files` fallback in Nginx config         |
 | SSL cert not working                     | Check DNS propagation, run `certbot` again        |
 | MySQL eating too much RAM                | Tune `innodb_buffer_pool_size` in my.cnf         |
 | PM2 app not starting on reboot          | Run `pm2 startup` and `pm2 save`                 |
@@ -749,20 +704,20 @@ Backup & Monitoring:
 
 ## Interview Q&A
 
-**Q1: How would you deploy a Node.js + MySQL application?**
-Use a cloud instance (EC2). Install Node.js, MySQL, Nginx, PM2. Configure MySQL with a non-root user. Use PM2 for process management. Use Nginx as reverse proxy (API) and static file server (React). Add SSL via Certbot. Set up backups and monitoring.
+### ❓ Q1: How would you deploy a Node.js + MySQL application?
+> **💡 Answer:** Use a cloud instance (EC2). Install Node.js, MySQL, Nginx, PM2. Configure MySQL with a non-root user. Use PM2 for process management. Use Nginx as reverse proxy to the Node.js app. Add SSL via Certbot. Set up backups and monitoring.
 
-**Q2: Why use Nginx in front of Node.js?**
-Nginx handles: static file serving (much faster than Node), SSL termination, load balancing, request buffering, gzip compression, rate limiting, and DDoS protection. Node.js should only handle application logic.
+### ❓ Q2: Why use Nginx in front of Node.js?
+> **💡 Answer:** Nginx handles: static file serving (much faster than Node), SSL termination, load balancing, request buffering, gzip compression, rate limiting, and DDoS protection. Node.js should only handle application logic.
 
-**Q3: How do you keep MySQL secure in production?**
-Run `mysql_secure_installation`, use a non-root user for the app, bind to localhost only, use strong passwords, enable SSL for MySQL connections, keep MySQL updated, set up regular backups, and monitor slow query logs.
+### ❓ Q3: How do you keep MySQL secure in production?
+> **💡 Answer:** Run `mysql_secure_installation`, use a non-root user for the app, bind to localhost only, use strong passwords, enable SSL for MySQL connections, keep MySQL updated, set up regular backups, and monitor slow query logs.
 
-**Q4: What is PM2 and why use it?**
-PM2 is a production process manager for Node.js. It provides: auto-restart on crash, cluster mode (multi-core), log management, startup scripts (auto-start on reboot), monitoring (CPU/memory), and zero-downtime reloads.
+### ❓ Q4: What is PM2 and why use it?
+> **💡 Answer:** PM2 is a production process manager for Node.js. It provides: auto-restart on crash, cluster mode (multi-core), log management, startup scripts (auto-start on reboot), monitoring (CPU/memory), and zero-downtime reloads.
 
-**Q5: You need to scale your MySQL-backed app. What are your options?**
-Vertical: bigger instance (more RAM/CPU). Read replicas: put reads on replicas, writes on primary. Caching: Redis/Memcached for frequent queries. Query optimization: indexes, query rewrites. Use managed database (AWS RDS) for automated backups, patches, failover. Application-level: connection pooling, query result caching, pagination.
+### ❓ Q5: You need to scale your MySQL-backed app. What are your options?
+> **💡 Answer:** Vertical: bigger instance (more RAM/CPU). Read replicas: put reads on replicas, writes on primary. Caching: Redis/Memcached for frequent queries. Query optimization: indexes, query rewrites. Use managed database (AWS RDS) for automated backups, patches, failover. Application-level: connection pooling, query result caching, pagination.
 
 ---
 

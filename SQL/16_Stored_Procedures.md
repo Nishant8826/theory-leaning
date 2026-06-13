@@ -369,42 +369,6 @@ app.get('/api/reports/monthly', async (req, res) => {
 });
 ```
 
-```js
-// React — Monthly Report Component
-function MonthlyReport() {
-  const [report, setReport] = useState(null);
-  const [year, setYear] = useState(new Date().getFullYear());
-  const [month, setMonth] = useState(new Date().getMonth() + 1);
-
-  const loadReport = () => {
-    axios.get(`/api/reports/monthly?year=${year}&month=${month}`)
-      .then(({ data }) => setReport(data));
-  };
-
-  useEffect(loadReport, [year, month]);
-
-  if (!report) return <p>Loading report...</p>;
-
-  return (
-    <div>
-      <h1>Sales Report: {report.period}</h1>
-      
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>
-        <div><h3>Orders</h3><p>{report.summary.total_orders}</p></div>
-        <div><h3>Customers</h3><p>{report.summary.unique_customers}</p></div>
-        <div><h3>Revenue</h3><p>₹{report.summary.total_revenue}</p></div>
-        <div><h3>Avg Order</h3><p>₹{report.summary.avg_order_value}</p></div>
-      </div>
-      
-      <h2>Top Products</h2>
-      {report.topProducts.map((p, i) => (
-        <div key={i}>#{i+1} {p.name} — {p.units_sold} sold — ₹{p.revenue}</div>
-      ))}
-    </div>
-  );
-}
-```
-
 **Output:**
 ```json
 {
@@ -431,20 +395,20 @@ function MonthlyReport() {
 
 ## Interview Q&A
 
-**Q1: What is a stored procedure and what are its advantages?**
-A stored procedure is a precompiled set of SQL statements stored in the database. Advantages: reduced network traffic, consistent business logic, security (EXECUTE permission only), performance (precompiled execution plan), and code reuse.
+### ❓ Q1: What is a stored procedure and what are its advantages?
+> **💡 Answer:** A stored procedure is a precompiled set of SQL statements stored in the database. Advantages: reduced network traffic, consistent business logic, security (EXECUTE permission only), performance (precompiled execution plan), and code reuse.
 
-**Q2: What is the difference between a stored procedure and a function?**
-Procedure: called with CALL, can have IN/OUT/INOUT parameters, can return multiple result sets, can use DML (INSERT/UPDATE/DELETE). Function: called in SQL expressions, MUST return a single value, can be used in SELECT/WHERE, generally read-only.
+### ❓ Q2: What is the difference between a stored procedure and a function?
+> **💡 Answer:** Procedure: called with CALL, can have IN/OUT/INOUT parameters, can return multiple result sets, can use DML (INSERT/UPDATE/DELETE). Function: called in SQL expressions, MUST return a single value, can be used in SELECT/WHERE, generally read-only.
 
-**Q3: Should business logic be in the application or in stored procedures?**
-Hybrid approach is best. Use procedures for: data-intensive operations, transactions, shared logic across apps. Use application code for: HTTP handling, authentication, complex business rules, testing (procedures are harder to unit test). Most modern apps lean toward application-side logic with raw SQL or ORMs.
+### ❓ Q3: Should business logic be in the application or in stored procedures?
+> **💡 Answer:** Hybrid approach is best. Use procedures for: data-intensive operations, transactions, shared logic across apps. Use application code for: HTTP handling, authentication, complex business rules, testing (procedures are harder to unit test). Most modern apps lean toward application-side logic with raw SQL or ORMs.
 
-**Q4: What are the disadvantages of stored procedures?**
-Hard to version control (not in git by default), difficult to debug, database-specific (not portable), harder to test, can become complex and unmaintainable, less familiar to JavaScript developers.
+### ❓ Q4: What are the disadvantages of stored procedures?
+> **💡 Answer:** Hard to version control (not in git by default), difficult to debug, database-specific (not portable), harder to test, can become complex and unmaintainable, less familiar to JavaScript developers.
 
-**Q5: How do you handle errors in stored procedures?**
-Use `DECLARE ... HANDLER`: `DECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN ROLLBACK; SET p_error = 'Error occurred'; END;`. EXIT handler stops procedure, CONTINUE handler continues. Check `SQLSTATE` for specific error types.
+### ❓ Q5: How do you handle errors in stored procedures?
+> **💡 Answer:** Use `DECLARE ... HANDLER`: `DECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN ROLLBACK; SET p_error = 'Error occurred'; END;`. EXIT handler stops procedure, CONTINUE handler continues. Check `SQLSTATE` for specific error types.
 
 ---
 

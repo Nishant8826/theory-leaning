@@ -6,7 +6,7 @@
 
 ## What is it?
 
-SELECT is the most-used SQL command. It retrieves data from tables — the SQL equivalent of Mongoose's `.find()`, `.findOne()`, and `.select()`. Every time your React app fetches data from an API, there's a SELECT query behind it.
+SELECT is the most-used SQL command. It retrieves data from tables — the SQL equivalent of Mongoose's `.find()`, `.findOne()`, and `.select()`. Every time your frontend application fetches data from an API, there's a SELECT query behind it.
 
 SELECT is part of DQL (Data Query Language) — the only command that reads data without modifying it.
 
@@ -431,63 +431,6 @@ app.get('/api/products/listing', async (req, res) => {
 });
 ```
 
-```js
-// React Component
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-
-function ProductListing() {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    axios.get('/api/products/listing')
-      .then(({ data }) => setProducts(data.products))
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  }, []);
-
-  if (loading) return <p>Loading...</p>;
-
-  return (
-    <div>
-      <h2>Products ({products.length})</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Price</th>
-            <th>GST</th>
-            <th>Total</th>
-            <th>Stock</th>
-            <th>Status</th>
-            <th>Category</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.map(p => (
-            <tr key={p.id}>
-              <td>{p.name}</td>
-              <td>₹{p.price}</td>
-              <td>₹{p.gst_amount}</td>
-              <td>₹{p.price_with_gst}</td>
-              <td>{p.stock}</td>
-              <td style={{ 
-                color: p.stock_status === 'Out of Stock' ? 'red' : 
-                       p.stock_status === 'Low Stock' ? 'orange' : 'green'
-              }}>
-                {p.stock_status}
-              </td>
-              <td>{p.category}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-```
-
 **Output:**
 ```json
 {
@@ -544,33 +487,33 @@ between a 0.1s and 4s load time.
 
 ## Real-World Q&A
 
-**Q1:** In Mongoose, I use `.select('-password')` to exclude fields. What's the MySQL equivalent?
-**A:** MySQL doesn't have a built-in "exclude" syntax. You must list all columns you want. For APIs, define a constant with "safe" columns: `const SAFE_COLS = 'id, name, email, phone'` and use it in queries. Or use a view: `CREATE VIEW safe_users AS SELECT id, name, email FROM users;`
+### ❓ Q1: In Mongoose, I use `.select('-password')` to exclude fields. What's the MySQL equivalent?
+> **💡 Answer:** MySQL doesn't have a built-in "exclude" syntax. You must list all columns you want. For APIs, define a constant with "safe" columns: `const SAFE_COLS = 'id, name, email, phone'` and use it in queries. Or use a view: `CREATE VIEW safe_users AS SELECT id, name, email FROM users;`
 
-**Q2:** Why does mysql2 always return an array even for one row?
-**A:** Because SELECT can return 0, 1, or many rows. mysql2 always returns `[rows, fields]` where `rows` is an array. For single-row queries, access `rows[0]`. In Mongoose, `findOne()` returns a single document — this is a convenience method that SQL drivers don't provide.
+### ❓ Q2: Why does mysql2 always return an array even for one row?
+> **💡 Answer:** Because SELECT can return 0, 1, or many rows. mysql2 always returns `[rows, fields]` where `rows` is an array. For single-row queries, access `rows[0]`. In Mongoose, `findOne()` returns a single document — this is a convenience method that SQL drivers don't provide.
 
-**Q3:** Should I compute values in SQL (CASE, calculations) or in JavaScript?
-**A:** In SQL when possible. The database is optimized for data operations and returns exactly what the frontend needs. Computing in JS means: (1) Transferring extra data over the network, (2) Processing on the Node.js server instead of the database, (3) Doing it per-request instead of once. Exception: Complex business logic is better in JS for readability.
+### ❓ Q3: Should I compute values in SQL (CASE, calculations) or in JavaScript?
+> **💡 Answer:** In SQL when possible. The database is optimized for data operations and returns exactly what the frontend needs. Computing in JS means: (1) Transferring extra data over the network, (2) Processing on the Node.js server instead of the database, (3) Doing it per-request instead of once. Exception: Complex business logic is better in JS for readability.
 
 ---
 
 ## Interview Q&A
 
-**Q1: What is the difference between SELECT * and SELECT specific columns?**
-SELECT * retrieves all columns; SELECT with specific columns retrieves only named ones. SELECT * is convenient for development but bad for production: it transfers unnecessary data, breaks if columns are added/removed, and prevents index-only scans. Always select only the columns you need.
+### ❓ Q1: What is the difference between SELECT * and SELECT specific columns?
+> **💡 Answer:** SELECT * retrieves all columns; SELECT with specific columns retrieves only named ones. SELECT * is convenient for development but bad for production: it transfers unnecessary data, breaks if columns are added/removed, and prevents index-only scans. Always select only the columns you need.
 
-**Q2: What does SELECT DISTINCT do?**
-DISTINCT eliminates duplicate rows from the result set. `SELECT DISTINCT city FROM users` returns each unique city once. It applies to the entire row when multiple columns are listed: `SELECT DISTINCT city, state` returns unique city+state combinations.
+### ❓ Q2: What does SELECT DISTINCT do?
+> **💡 Answer:** DISTINCT eliminates duplicate rows from the result set. `SELECT DISTINCT city FROM users` returns each unique city once. It applies to the entire row when multiple columns are listed: `SELECT DISTINCT city, state` returns unique city+state combinations.
 
-**Q3: What is the purpose of column aliases (AS)?**
-Aliases rename columns in the output without changing the table. Uses: (1) Give readable names to computed columns: `price * 1.18 AS price_with_gst`, (2) Shorten long column names, (3) Resolve naming conflicts in JOINs: `c.name AS customer_name, p.name AS product_name`.
+### ❓ Q3: What is the purpose of column aliases (AS)?
+> **💡 Answer:** Aliases rename columns in the output without changing the table. Uses: (1) Give readable names to computed columns: `price * 1.18 AS price_with_gst`, (2) Shorten long column names, (3) Resolve naming conflicts in JOINs: `c.name AS customer_name, p.name AS product_name`.
 
-**Q4: Explain the CASE expression in SQL with a real-world example.**
-CASE is SQL's equivalent of if-else or switch. Example: categorizing products by price range: `CASE WHEN price > 50000 THEN 'Premium' WHEN price > 10000 THEN 'Mid' ELSE 'Budget' END AS category`. It works inside SELECT, WHERE, ORDER BY, and UPDATE SET clauses.
+### ❓ Q4: Explain the CASE expression in SQL with a real-world example.
+> **💡 Answer:** CASE is SQL's equivalent of if-else or switch. Example: categorizing products by price range: `CASE WHEN price > 50000 THEN 'Premium' WHEN price > 10000 THEN 'Mid' ELSE 'Budget' END AS category`. It works inside SELECT, WHERE, ORDER BY, and UPDATE SET clauses.
 
-**Q5: How would you write a query that shows NULL values as a default string?**
-Use `IFNULL(column, 'default')` or `COALESCE(col1, col2, 'default')`. IFNULL takes exactly 2 arguments and returns the second if the first is NULL. COALESCE takes N arguments and returns the first non-NULL value. In JavaScript terms: IFNULL is like `col ?? 'default'`; COALESCE is like `col1 ?? col2 ?? 'default'`.
+### ❓ Q5: How would you write a query that shows NULL values as a default string?
+> **💡 Answer:** Use `IFNULL(column, 'default')` or `COALESCE(col1, col2, 'default')`. IFNULL takes exactly 2 arguments and returns the second if the first is NULL. COALESCE takes N arguments and returns the first non-NULL value. In JavaScript terms: IFNULL is like `col ?? 'default'`; COALESCE is like `col1 ?? col2 ?? 'default'`.
 
 ---
 

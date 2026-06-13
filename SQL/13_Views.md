@@ -329,41 +329,6 @@ app.get('/api/my-orders', async (req, res) => {
 });
 ```
 
-```js
-// React — Admin Dashboard using view
-function AdminOrders() {
-  const [orders, setOrders] = useState([]);
-
-  useEffect(() => {
-    axios.get('/api/admin/orders').then(({ data }) => setOrders(data.orders));
-  }, []);
-
-  return (
-    <table>
-      <thead>
-        <tr>
-          <th>Order ID</th><th>Customer</th><th>Email</th>
-          <th>Products</th><th>Items</th><th>Total</th><th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        {orders.map(o => (
-          <tr key={o.order_id}>
-            <td>#{o.order_id}</td>
-            <td>{o.customer}</td>
-            <td>{o.email}</td>
-            <td>{o.products}</td>
-            <td>{o.total_items}</td>
-            <td>₹{o.total_amount}</td>
-            <td>{o.status}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
-}
-```
-
 **Output:**
 ```json
 {
@@ -398,33 +363,33 @@ function AdminOrders() {
 
 ## Real-World Q&A
 
-**Q1:** Are views slow because they run the query every time?
-**A:** Regular views re-execute on every access, but MySQL's optimizer often merges the view query with your outer query for good performance. For truly expensive queries, use **materialized views** (MySQL doesn't support natively — simulate with a table + scheduled refresh).
+### ❓ Q1: Are views slow because they run the query every time?
+> **💡 Answer:** Regular views re-execute on every access, but MySQL's optimizer often merges the view query with your outer query for good performance. For truly expensive queries, use **materialized views** (MySQL doesn't support natively — simulate with a table + scheduled refresh).
 
-**Q2:** Can I INSERT/UPDATE/DELETE through a view?
-**A:** Yes, for simple views (single table, no aggregates, no GROUP BY). Complex views with JOINs are usually read-only. This is a key difference from MongoDB where you always write to the base collection.
+### ❓ Q2: Can I INSERT/UPDATE/DELETE through a view?
+> **💡 Answer:** Yes, for simple views (single table, no aggregates, no GROUP BY). Complex views with JOINs are usually read-only. This is a key difference from MongoDB where you always write to the base collection.
 
-**Q3:** When should I use a view vs a stored procedure?
-**A:** Views are best for read-only queries that shape data (like SELECT statements). Stored procedures are for operations with logic, parameters, variables, and flow control (IF/ELSE, loops). Views = data shaping, Procedures = business logic.
+### ❓ Q3: When should I use a view vs a stored procedure?
+> **💡 Answer:** Views are best for read-only queries that shape data (like SELECT statements). Stored procedures are for operations with logic, parameters, variables, and flow control (IF/ELSE, loops). Views = data shaping, Procedures = business logic.
 
 ---
 
 ## Interview Q&A
 
-**Q1: What is a view and what are its advantages?**
-A view is a virtual table based on a stored SELECT query. Advantages: simplifies complex queries, provides security by hiding columns, ensures consistency across the application, and enables abstraction (change underlying query without changing application code).
+### ❓ Q1: What is a view and what are its advantages?
+> **💡 Answer:** A view is a virtual table based on a stored SELECT query. Advantages: simplifies complex queries, provides security by hiding columns, ensures consistency across the application, and enables abstraction (change underlying query without changing application code).
 
-**Q2: What is the difference between a view and a table?**
-A table stores actual data on disk. A view stores only the query definition — data is computed on access. Tables can be INSERT/UPDATE/DELETE directly. Most views are read-only (especially complex ones). Tables use storage; views use negligible storage.
+### ❓ Q2: What is the difference between a view and a table?
+> **💡 Answer:** A table stores actual data on disk. A view stores only the query definition — data is computed on access. Tables can be INSERT/UPDATE/DELETE directly. Most views are read-only (especially complex ones). Tables use storage; views use negligible storage.
 
-**Q3: Can you create an index on a view?**
-In MySQL, no. Views don't store data, so indexes don't apply. Index the underlying base tables instead to improve view performance. Some databases (SQL Server) support indexed/materialized views.
+### ❓ Q3: Can you create an index on a view?
+> **💡 Answer:** In MySQL, no. Views don't store data, so indexes don't apply. Index the underlying base tables instead to improve view performance. Some databases (SQL Server) support indexed/materialized views.
 
-**Q4: What is a materialized view?**
-A materialized view stores the query result physically on disk (like a cached table). It provides fast reads but needs periodic refresh to stay current. MySQL doesn't support them natively — simulate by creating a table and refreshing it with a scheduled event or cron job.
+### ❓ Q4: What is a materialized view?
+> **💡 Answer:** A materialized view stores the query result physically on disk (like a cached table). It provides fast reads but needs periodic refresh to stay current. MySQL doesn't support them natively — simulate by creating a table and refreshing it with a scheduled event or cron job.
 
-**Q5: Can views be nested (view built on another view)?**
-Yes, you can build views on top of other views. However, deep nesting makes debugging harder and can cause performance issues because MySQL merges and runs all underlying queries. Keep nesting to 2-3 levels maximum.
+### ❓ Q5: Can views be nested (view built on another view)?
+> **💡 Answer:** Yes, you can build views on top of other views. However, deep nesting makes debugging harder and can cause performance issues because MySQL merges and runs all underlying queries. Keep nesting to 2-3 levels maximum.
 
 ---
 

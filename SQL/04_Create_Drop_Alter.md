@@ -452,46 +452,6 @@ app.patch('/api/customers/:id/loyalty', async (req, res) => {
 });
 ```
 
-```js
-// React — Display and update loyalty points
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-
-function LoyaltyDashboard({ customerId }) {
-  const [customer, setCustomer] = useState(null);
-  const [points, setPoints] = useState(0);
-
-  useEffect(() => {
-    axios.get(`/api/customers/${customerId}`)
-      .then(({ data }) => setCustomer(data));
-  }, [customerId]);
-
-  const addPoints = async () => {
-    const { data } = await axios.patch(`/api/customers/${customerId}/loyalty`, {
-      points: parseInt(points)
-    });
-    setCustomer(data);
-    setPoints(0);
-  };
-
-  if (!customer) return <p>Loading...</p>;
-
-  return (
-    <div>
-      <h2>{customer.name}</h2>
-      <p>Loyalty Points: <strong>{customer.loyalty_points}</strong></p>
-      <input 
-        type="number" 
-        value={points} 
-        onChange={e => setPoints(e.target.value)}
-        placeholder="Points to add"
-      />
-      <button onClick={addPoints}>Add Points</button>
-    </div>
-  );
-}
-```
-
 **Output:**
 ```json
 {
@@ -539,33 +499,33 @@ Solutions:
 
 ## Real-World Q&A
 
-**Q1:** In MongoDB, I never worry about schema changes. Why is ALTER TABLE such a big deal in MySQL?
-**A:** Because ALTER TABLE physically restructures the data on disk. If your table has 50 million rows, MySQL has to read every row, apply the change, and write it back. During this time, the table is locked. This is why production schema changes are planned carefully, often using tools like `pt-online-schema-change` that do it gradually without locking.
+### ❓ Q1: In MongoDB, I never worry about schema changes. Why is ALTER TABLE such a big deal in MySQL?
+> **💡 Answer:** Because ALTER TABLE physically restructures the data on disk. If your table has 50 million rows, MySQL has to read every row, apply the change, and write it back. During this time, the table is locked. This is why production schema changes are planned carefully, often using tools like `pt-online-schema-change` that do it gradually without locking.
 
-**Q2:** What happens if I DROP a FOREIGN KEY referenced by another table?
-**A:** You'll get an error: `Cannot drop table 'categories' referenced by a foreign key constraint`. You must drop the dependent table first (or the foreign key constraint). This is actually a safety feature — it prevents you from accidentally breaking relationships.
+### ❓ Q2: What happens if I DROP a FOREIGN KEY referenced by another table?
+> **💡 Answer:** You'll get an error: `Cannot drop table 'categories' referenced by a foreign key constraint`. You must drop the dependent table first (or the foreign key constraint). This is actually a safety feature — it prevents you from accidentally breaking relationships.
 
-**Q3:** Can I undo a DROP TABLE?
-**A:** No. There is no `UNDO` in SQL. Once you DROP a table, it's gone forever unless you have a backup. This is why you should ALWAYS have database backups. In production, use `DROP TABLE IF EXISTS` and test in a staging environment first.
+### ❓ Q3: Can I undo a DROP TABLE?
+> **💡 Answer:** No. There is no `UNDO` in SQL. Once you DROP a table, it's gone forever unless you have a backup. This is why you should ALWAYS have database backups. In production, use `DROP TABLE IF EXISTS` and test in a staging environment first.
 
 ---
 
 ## Interview Q&A
 
-**Q1: What is DDL? Give examples.**
-DDL (Data Definition Language) includes commands that define or modify database structure: CREATE (creates databases, tables, indexes), ALTER (modifies existing tables), DROP (deletes tables/databases), TRUNCATE (removes all rows). DDL commands auto-commit — they cannot be rolled back.
+### ❓ Q1: What is DDL? Give examples.
+> **💡 Answer:** DDL (Data Definition Language) includes commands that define or modify database structure: CREATE (creates databases, tables, indexes), ALTER (modifies existing tables), DROP (deletes tables/databases), TRUNCATE (removes all rows). DDL commands auto-commit — they cannot be rolled back.
 
-**Q2: What is the difference between DROP, TRUNCATE, and DELETE?**
-DROP removes the table completely (structure + data). TRUNCATE removes all rows but keeps the table structure; it resets AUTO_INCREMENT and is faster because it deallocates pages without logging individual row deletions. DELETE removes specific rows (with WHERE) or all rows; it's logged, can be rolled back, and doesn't reset AUTO_INCREMENT.
+### ❓ Q2: What is the difference between DROP, TRUNCATE, and DELETE?
+> **💡 Answer:** DROP removes the table completely (structure + data). TRUNCATE removes all rows but keeps the table structure; it resets AUTO_INCREMENT and is faster because it deallocates pages without logging individual row deletions. DELETE removes specific rows (with WHERE) or all rows; it's logged, can be rolled back, and doesn't reset AUTO_INCREMENT.
 
-**Q3: What are constraints in MySQL? Name the types.**
-Constraints are rules enforced on columns: NOT NULL (must have a value), UNIQUE (no duplicates), PRIMARY KEY (NOT NULL + UNIQUE, identifies each row), FOREIGN KEY (links to another table), CHECK (validates values, e.g., price >= 0), DEFAULT (sets default value). In Mongoose, these are like `required`, `unique`, `ref`, `validate`, and `default`.
+### ❓ Q3: What are constraints in MySQL? Name the types.
+> **💡 Answer:** Constraints are rules enforced on columns: NOT NULL (must have a value), UNIQUE (no duplicates), PRIMARY KEY (NOT NULL + UNIQUE, identifies each row), FOREIGN KEY (links to another table), CHECK (validates values, e.g., price >= 0), DEFAULT (sets default value). In Mongoose, these are like `required`, `unique`, `ref`, `validate`, and `default`.
 
-**Q4: How does ON DELETE CASCADE work with FOREIGN KEYS?**
-When you define a foreign key with `ON DELETE CASCADE`, deleting a row in the parent table automatically deletes all related rows in the child table. Example: `FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE` — deleting a customer also deletes all their orders. Other options: SET NULL (sets FK to NULL), RESTRICT (prevents deletion), NO ACTION (same as RESTRICT).
+### ❓ Q4: How does ON DELETE CASCADE work with FOREIGN KEYS?
+> **💡 Answer:** When you define a foreign key with `ON DELETE CASCADE`, deleting a row in the parent table automatically deletes all related rows in the child table. Example: `FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE` — deleting a customer also deletes all their orders. Other options: SET NULL (sets FK to NULL), RESTRICT (prevents deletion), NO ACTION (same as RESTRICT).
 
-**Q5: In production, a table with 100 million rows needs a new column. How would you approach this?**
-Direct ALTER TABLE would lock the table for a long time. Solutions: (1) Use MySQL 8.0+ INSTANT algorithm: `ALTER TABLE t ADD COLUMN col INT, ALGORITHM=INSTANT` for operations that support it. (2) Use pt-online-schema-change or gh-ost — these create a shadow table, copy data gradually, then swap. (3) Add with a default migration window during low traffic. (4) Consider blue-green deployment: add column to replica, swap primary. Always test on a staging environment first.
+### ❓ Q5: In production, a table with 100 million rows needs a new column. How would you approach this?
+> **💡 Answer:** Direct ALTER TABLE would lock the table for a long time. Solutions: (1) Use MySQL 8.0+ INSTANT algorithm: `ALTER TABLE t ADD COLUMN col INT, ALGORITHM=INSTANT` for operations that support it. (2) Use pt-online-schema-change or gh-ost — these create a shadow table, copy data gradually, then swap. (3) Add with a default migration window during low traffic. (4) Consider blue-green deployment: add column to replica, swap primary. Always test on a staging environment first.
 
 ---
 

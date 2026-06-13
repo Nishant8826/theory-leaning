@@ -337,50 +337,6 @@ app.post('/api/products/:id/reviews', async (req, res) => {
 });
 ```
 
-```js
-// React — Product page with data from both databases
-function ProductPage({ productId }) {
-  const [product, setProduct] = useState(null);
-  const [reviews, setReviews] = useState([]);
-  const [stats, setStats] = useState(null);
-
-  useEffect(() => {
-    axios.get(`/api/products/${productId}`).then(({ data }) => {
-      setProduct(data.product);      // From MySQL
-      setReviews(data.reviews);      // From MongoDB
-      setStats(data.reviewStats);    // From MongoDB
-    });
-  }, [productId]);
-
-  if (!product) return <p>Loading...</p>;
-
-  return (
-    <div>
-      <h1>{product.name}</h1>
-      <p>₹{product.price} | Category: {product.category}</p>
-      <p>Stock: {product.stock}</p>
-      
-      {stats && (
-        <div>
-          <h3>Reviews ({stats.totalReviews})</h3>
-          <p>Average Rating: {'⭐'.repeat(Math.round(stats.avgRating))} ({stats.avgRating.toFixed(1)})</p>
-        </div>
-      )}
-      
-      {reviews.map(review => (
-        <div key={review._id} style={{ borderBottom: '1px solid #ddd', padding: '12px 0' }}>
-          <strong>{'⭐'.repeat(review.rating)}</strong>
-          <h4>{review.title}</h4>
-          <p>{review.body}</p>
-          {review.pros.length > 0 && <p>👍 Pros: {review.pros.join(', ')}</p>}
-          {review.cons.length > 0 && <p>👎 Cons: {review.cons.join(', ')}</p>}
-        </div>
-      ))}
-    </div>
-  );
-}
-```
-
 **Output:**
 ```json
 {
@@ -421,20 +377,20 @@ function ProductPage({ productId }) {
 
 ## Interview Q&A
 
-**Q1: When would you choose SQL over NoSQL?**
-When you need: strong data integrity (foreign keys, constraints), complex multi-table queries (JOINs), ACID transactions (financial, e-commerce), structured and predictable data, complex reporting/analytics. SQL is the default choice for most business applications.
+### ❓ Q1: When would you choose SQL over NoSQL?
+> **💡 Answer:** When you need: strong data integrity (foreign keys, constraints), complex multi-table queries (JOINs), ACID transactions (financial, e-commerce), structured and predictable data, complex reporting/analytics. SQL is the default choice for most business applications.
 
-**Q2: When would you choose NoSQL over SQL?**
-When you need: flexible/evolving schemas (CMS, IoT), horizontal scaling (millions of concurrent users), high write throughput (logs, social feeds), hierarchical/nested data (deeply nested documents), rapid prototyping without upfront schema design.
+### ❓ Q2: When would you choose NoSQL over SQL?
+> **💡 Answer:** When you need: flexible/evolving schemas (CMS, IoT), horizontal scaling (millions of concurrent users), high write throughput (logs, social feeds), hierarchical/nested data (deeply nested documents), rapid prototyping without upfront schema design.
 
-**Q3: What is polyglot persistence?**
-Using multiple database types in a single application, choosing the best one for each use case. Example: MySQL for users/orders, MongoDB for product reviews/chat, Redis for caching/sessions, Elasticsearch for search. Complex to manage but optimal for large applications.
+### ❓ Q3: What is polyglot persistence?
+> **💡 Answer:** Using multiple database types in a single application, choosing the best one for each use case. Example: MySQL for users/orders, MongoDB for product reviews/chat, Redis for caching/sessions, Elasticsearch for search. Complex to manage but optimal for large applications.
 
-**Q4: Can you use JOINs in MongoDB?**
-Yes, using `$lookup` in the aggregation pipeline, but it's less performant than SQL JOINs. MongoDB is designed for denormalized data where JOINs aren't needed. Mongoose's `populate()` sends separate queries (N+1 problem). If you find yourself needing many JOINs, a SQL database might be a better fit.
+### ❓ Q4: Can you use JOINs in MongoDB?
+> **💡 Answer:** Yes, using `$lookup` in the aggregation pipeline, but it's less performant than SQL JOINs. MongoDB is designed for denormalized data where JOINs aren't needed. Mongoose's `populate()` sends separate queries (N+1 problem). If you find yourself needing many JOINs, a SQL database might be a better fit.
 
-**Q5: "MongoDB is faster than MySQL." True or false?**
-It depends on the use case. MongoDB is faster for simple reads of embedded documents (single document fetch vs multi-table JOIN). MySQL is faster for complex queries, aggregations, and filtered searches using indexes. Performance depends on: schema design, indexing, query patterns, data size, and access patterns. Neither is universally faster.
+### ❓ Q5: "MongoDB is faster than MySQL." True or false?
+> **💡 Answer:** It depends on the use case. MongoDB is faster for simple reads of embedded documents (single document fetch vs multi-table JOIN). MySQL is faster for complex queries, aggregations, and filtered searches using indexes. Performance depends on: schema design, indexing, query patterns, data size, and access patterns. Neither is universally faster.
 
 ---
 

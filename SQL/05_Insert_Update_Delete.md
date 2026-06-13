@@ -502,95 +502,6 @@ router.delete('/:id', async (req, res) => {
 module.exports = router;
 ```
 
-```js
-// React — Product Management Component
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-
-function ProductManager() {
-  const [products, setProducts] = useState([]);
-  const [form, setForm] = useState({ name: '', price: '', stock: '' });
-  const [editId, setEditId] = useState(null);
-
-  const fetchProducts = async () => {
-    const { data } = await axios.get('/api/products');
-    setProducts(data.products);
-  };
-
-  useEffect(() => { fetchProducts(); }, []);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      if (editId) {
-        await axios.put(`/api/products/${editId}`, form);
-      } else {
-        await axios.post('/api/products', form);
-      }
-      setForm({ name: '', price: '', stock: '' });
-      setEditId(null);
-      fetchProducts();
-    } catch (error) {
-      alert(error.response?.data?.error || 'Operation failed');
-    }
-  };
-
-  const handleDelete = async (id) => {
-    if (!window.confirm('Delete this product?')) return;
-    try {
-      await axios.delete(`/api/products/${id}`);
-      fetchProducts();
-    } catch (error) {
-      alert(error.response?.data?.error || 'Delete failed');
-    }
-  };
-
-  const handleEdit = (product) => {
-    setForm({ name: product.name, price: product.price, stock: product.stock });
-    setEditId(product.id);
-  };
-
-  return (
-    <div>
-      <h2>Product Manager</h2>
-      
-      <form onSubmit={handleSubmit}>
-        <input placeholder="Name" value={form.name}
-          onChange={e => setForm({...form, name: e.target.value})} />
-        <input type="number" placeholder="Price" value={form.price}
-          onChange={e => setForm({...form, price: e.target.value})} />
-        <input type="number" placeholder="Stock" value={form.stock}
-          onChange={e => setForm({...form, stock: e.target.value})} />
-        <button type="submit">{editId ? 'Update' : 'Create'}</button>
-        {editId && <button type="button" onClick={() => setEditId(null)}>Cancel</button>}
-      </form>
-
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th><th>Name</th><th>Price</th><th>Stock</th><th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.map(p => (
-            <tr key={p.id}>
-              <td>{p.id}</td>
-              <td>{p.name}</td>
-              <td>₹{p.price}</td>
-              <td>{p.stock}</td>
-              <td>
-                <button onClick={() => handleEdit(p)}>Edit</button>
-                <button onClick={() => handleDelete(p.id)}>Delete</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-```
-
 **Output (POST /api/products):**
 ```json
 {
@@ -649,38 +560,38 @@ DELETE FROM orders WHERE status = 'cancelled' LIMIT 100;
 
 ## Real-World Q&A
 
-**Q1:** In MongoDB, `updateOne()` returns `modifiedCount`. What's the MySQL equivalent?
-**A:** MySQL's `db.query('UPDATE...')` returns a result object with `affectedRows` (rows that matched the WHERE clause) and `changedRows` (rows where data actually changed). The difference matters: if you UPDATE a row setting name='Ali' but it was already 'Ali', `affectedRows = 1` but `changedRows = 0`.
+### ❓ Q1: In MongoDB, `updateOne()` returns `modifiedCount`. What's the MySQL equivalent?
+> **💡 Answer:** MySQL's `db.query('UPDATE...')` returns a result object with `affectedRows` (rows that matched the WHERE clause) and `changedRows` (rows where data actually changed). The difference matters: if you UPDATE a row setting name='Ali' but it was already 'Ali', `affectedRows = 1` but `changedRows = 0`.
 
-**Q2:** How do I do an "upsert" in MySQL (insert if not exists, update if exists)?
-**A:** Use `INSERT ... ON DUPLICATE KEY UPDATE`: 
+### ❓ Q2: How do I do an "upsert" in MySQL (insert if not exists, update if exists)?
+> **💡 Answer:** Use `INSERT ... ON DUPLICATE KEY UPDATE`: 
 ```sql
 INSERT INTO products (name, price) VALUES ('iPhone', 79999)
 ON DUPLICATE KEY UPDATE price = 79999;
 ```
 This requires a UNIQUE constraint on the column being checked. In Mongoose, this is like `Model.findOneAndUpdate({...}, {...}, { upsert: true })`.
 
-**Q3:** What happens to AUTO_INCREMENT id when I delete a row?
-**A:** The ID is NOT reused. If you insert ids 1,2,3 and delete id=2, the next insert will be id=4, not id=2. This is by design — IDs should be permanently unique. If you TRUNCATE the table, AUTO_INCREMENT resets to 1.
+### ❓ Q3: What happens to AUTO_INCREMENT id when I delete a row?
+> **💡 Answer:** The ID is NOT reused. If you insert ids 1,2,3 and delete id=2, the next insert will be id=4, not id=2. This is by design — IDs should be permanently unique. If you TRUNCATE the table, AUTO_INCREMENT resets to 1.
 
 ---
 
 ## Interview Q&A
 
-**Q1: What is the difference between DELETE and TRUNCATE?**
-DELETE removes specific rows (or all if no WHERE), logs each deletion, can be rolled back, fires triggers, and doesn't reset AUTO_INCREMENT. TRUNCATE removes all rows instantly, can't be rolled back, doesn't fire triggers, and resets AUTO_INCREMENT. TRUNCATE is DDL (structural), DELETE is DML (data).
+### ❓ Q1: What is the difference between DELETE and TRUNCATE?
+> **💡 Answer:** DELETE removes specific rows (or all if no WHERE), logs each deletion, can be rolled back, fires triggers, and doesn't reset AUTO_INCREMENT. TRUNCATE removes all rows instantly, can't be rolled back, doesn't fire triggers, and resets AUTO_INCREMENT. TRUNCATE is DDL (structural), DELETE is DML (data).
 
-**Q2: How do you prevent SQL injection in INSERT/UPDATE/DELETE?**
-Always use parameterized queries (prepared statements). In mysql2: `db.query('INSERT INTO users (name) VALUES (?)', [userInput])`. The `?` placeholder ensures user input is never executed as SQL. Never concatenate user input into SQL strings: `'INSERT INTO users (name) VALUES ("' + userInput + '")'` is dangerous.
+### ❓ Q2: How do you prevent SQL injection in INSERT/UPDATE/DELETE?
+> **💡 Answer:** Always use parameterized queries (prepared statements). In mysql2: `db.query('INSERT INTO users (name) VALUES (?)', [userInput])`. The `?` placeholder ensures user input is never executed as SQL. Never concatenate user input into SQL strings: `'INSERT INTO users (name) VALUES ("' + userInput + '")'` is dangerous.
 
-**Q3: What is the difference between `affectedRows` and `changedRows`?**
-`affectedRows` counts rows that matched the WHERE clause. `changedRows` counts rows where the data actually changed. Example: `UPDATE users SET name='Ali' WHERE id=1` — if user 1's name was already 'Ali', `affectedRows=1, changedRows=0`. If name was 'Bob', both are 1.
+### ❓ Q3: What is the difference between `affectedRows` and `changedRows`?
+> **💡 Answer:** `affectedRows` counts rows that matched the WHERE clause. `changedRows` counts rows where the data actually changed. Example: `UPDATE users SET name='Ali' WHERE id=1` — if user 1's name was already 'Ali', `affectedRows=1, changedRows=0`. If name was 'Bob', both are 1.
 
-**Q4: How would you implement a "soft delete" in MySQL?**
-Add a `deleted_at TIMESTAMP NULL DEFAULT NULL` column. Instead of DELETE, run UPDATE: `UPDATE users SET deleted_at = NOW() WHERE id = ?`. All SELECT queries add `WHERE deleted_at IS NULL`. Create a view for convenience: `CREATE VIEW active_users AS SELECT * FROM users WHERE deleted_at IS NULL`. To permanently delete: run actual DELETE later.
+### ❓ Q4: How would you implement a "soft delete" in MySQL?
+> **💡 Answer:** Add an `is_deleted` flag column (e.g., `is_deleted BOOLEAN DEFAULT FALSE`). Instead of DELETE, run UPDATE: `UPDATE users SET is_deleted = TRUE WHERE id = ?`. All SELECT queries add `WHERE is_deleted = FALSE`. Create a view for convenience: `CREATE VIEW active_users AS SELECT * FROM users WHERE is_deleted = FALSE`. To permanently delete: run actual DELETE later.
 
-**Q5: A user calls your API to delete their account, but they have orders. What happens?**
-If there's a FOREIGN KEY constraint on `orders.customer_id → customers.id`, the delete fails with `ER_ROW_IS_REFERENCED_2`. Solutions depend on business logic: (1) `ON DELETE CASCADE` — delete customer AND their orders (usually bad). (2) `ON DELETE SET NULL` — keep orders but set customer_id to NULL. (3) Soft delete — mark customer as deleted but keep data. (4) Delete orders first, then customer. Best practice: soft delete + data anonymization (GDPR compliance).
+### ❓ Q5: A user calls your API to delete their account, but they have orders. What happens?
+> **💡 Answer:** If there's a FOREIGN KEY constraint on `orders.customer_id → customers.id`, the delete fails with `ER_ROW_IS_REFERENCED_2`. To handle this, implement soft delete logic: set `is_deleted = TRUE` on the customer record. This deactivates the account and avoids foreign key errors while keeping their historical order data intact for reporting (often combined with data anonymization for GDPR compliance).
 
 ---
 

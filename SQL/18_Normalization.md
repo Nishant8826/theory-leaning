@@ -437,20 +437,20 @@ Keep normalized when:
 
 ## Interview Q&A
 
-**Q1: What is normalization and what are the normal forms?**
-Normalization organizes data to reduce redundancy and improve integrity. 1NF: atomic values, no repeating groups. 2NF: 1NF + no partial dependencies on composite key. 3NF: 2NF + no transitive dependencies (non-key columns don't depend on other non-key columns). BCNF: stricter 3NF. Most apps target 3NF.
+### ❓ Q1: What is normalization and what are the normal forms?
+> **💡 Answer:** Normalization organizes data to reduce redundancy and improve integrity. 1NF: atomic values, no repeating groups. 2NF: 1NF + no partial dependencies on composite key. 3NF: 2NF + no transitive dependencies (non-key columns don't depend on other non-key columns). BCNF: stricter 3NF. Most apps target 3NF.
 
-**Q2: What is denormalization and when would you use it?**
-Denormalization intentionally adds redundancy for read performance. Use when: read-heavy workloads, complex JOINs are too slow, data rarely changes. Example: storing product name in order_items alongside product_id. Trade-off: faster reads but harder updates and risk of inconsistency.
+### ❓ Q2: What is denormalization and when would you use it?
+> **💡 Answer:** Denormalization intentionally adds redundancy for read performance. Use when: read-heavy workloads, complex JOINs are too slow, data rarely changes. Example: storing product name in order_items alongside product_id. Trade-off: faster reads but harder updates and risk of inconsistency.
 
-**Q3: Explain the three types of data anomalies.**
-Insert anomaly: can't add data without unrelated data (can't add customer without an order). Update anomaly: must update duplicate data in multiple places (change email in every order row). Delete anomaly: losing data when deleting other data (deleting last order loses customer info). Normalization eliminates all three.
+### ❓ Q3: Explain the three types of data anomalies.
+> **💡 Answer:** Insert anomaly: can't add data without unrelated data (can't add customer without an order). Update anomaly: must update duplicate data in multiple places (change email in every order row). Delete anomaly: losing data when deleting other data (deleting last order loses customer info). Normalization eliminates all three.
 
-**Q4: What is the difference between 2NF and 3NF?**
-2NF eliminates partial dependencies: in a table with composite key (A, B), every non-key column must depend on BOTH A and B together, not just A or B alone. 3NF eliminates transitive dependencies: non-key columns must depend directly on the primary key, not through another non-key column. Example: city depends on zip_code, which depends on customer_id — city should be in a separate zip_codes table.
+### ❓ Q4: What is the difference between 2NF and 3NF?
+> **💡 Answer:** 2NF eliminates partial dependencies: in a table with composite key (A, B), every non-key column must depend on BOTH A and B together, not just A or B alone. 3NF eliminates transitive dependencies: non-key columns must depend directly on the primary key, not through another non-key column. Example: city depends on zip_code, which depends on customer_id — city should be in a separate zip_codes table.
 
-**Q5: In MongoDB, we use embedded documents. How does that relate to normalization?**
-Embedded documents are denormalized by design — data is duplicated for read performance. In SQL, the same data would live in separate tables (normalized) and be JOINed. MongoDB trades consistency for speed; SQL trades speed for consistency. The best approach depends on read/write patterns, data change frequency, and consistency requirements.
+### ❓ Q5: In MongoDB, we use embedded documents. How does that relate to normalization?
+> **💡 Answer:** Embedded documents are denormalized by design — data is duplicated for read performance. In SQL, the same data would live in separate tables (normalized) and be JOINed. MongoDB trades consistency for speed; SQL trades speed for consistency. The best approach depends on read/write patterns, data change frequency, and consistency requirements.
 
 ---
 

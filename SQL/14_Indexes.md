@@ -369,52 +369,6 @@ app.get('/api/admin/indexes/:table', async (req, res) => {
 });
 ```
 
-```js
-// React — Query analyzer component
-function QueryAnalyzer() {
-  const [query, setQuery] = useState('');
-  const [plan, setPlan] = useState(null);
-
-  const analyze = async () => {
-    const { data } = await axios.get(`/api/products/search?q=${query}&explain=true`);
-    setPlan(data.queryPlan);
-  };
-
-  return (
-    <div>
-      <h2>Query Performance Analyzer</h2>
-      <input value={query} onChange={e => setQuery(e.target.value)}
-        placeholder="Search products..." />
-      <button onClick={analyze}>Analyze</button>
-      
-      {plan && (
-        <table>
-          <thead>
-            <tr>
-              <th>Type</th><th>Table</th><th>Key</th>
-              <th>Rows Scanned</th><th>Extra</th>
-            </tr>
-          </thead>
-          <tbody>
-            {plan.map((row, i) => (
-              <tr key={i} style={{
-                backgroundColor: row.type === 'ALL' ? '#ffcccc' : '#ccffcc'
-              }}>
-                <td>{row.type}</td>
-                <td>{row.table}</td>
-                <td>{row.key || '❌ NONE'}</td>
-                <td>{row.rows}</td>
-                <td>{row.Extra}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-    </div>
-  );
-}
-```
-
 **Output (EXPLAIN):**
 ```json
 {
@@ -470,33 +424,33 @@ You can look up "Kumar" or "Kumar, Nishant" but NOT just "Nishant".
 
 ## Real-World Q&A
 
-**Q1:** In MongoDB, `_id` is auto-indexed. What about MySQL?
-**A:** The PRIMARY KEY column is auto-indexed (clustered index). UNIQUE columns are also auto-indexed. But foreign keys (`customer_id`, `category_id`) are NOT auto-indexed in MySQL — you must add them manually! This is a common optimization miss.
+### ❓ Q1: In MongoDB, `_id` is auto-indexed. What about MySQL?
+> **💡 Answer:** The PRIMARY KEY column is auto-indexed (clustered index). UNIQUE columns are also auto-indexed. But foreign keys (`customer_id`, `category_id`) are NOT auto-indexed in MySQL — you must add them manually! This is a common optimization miss.
 
-**Q2:** How many indexes should a table have?
-**A:** No fixed rule, but guidelines: Index every foreign key column. Index columns frequently used in WHERE, JOIN ON, and ORDER BY. Don't index columns with low cardinality (e.g., boolean/status with only 2-3 values). A typical table might have 3-7 indexes. Monitor and adjust based on EXPLAIN results.
+### ❓ Q2: How many indexes should a table have?
+> **💡 Answer:** No fixed rule, but guidelines: Index every foreign key column. Index columns frequently used in WHERE, JOIN ON, and ORDER BY. Don't index columns with low cardinality (e.g., boolean/status with only 2-3 values). A typical table might have 3-7 indexes. Monitor and adjust based on EXPLAIN results.
 
-**Q3:** Does having an index guarantee MySQL will use it?
-**A:** No! MySQL's optimizer decides whether to use an index based on cardinality, data distribution, and query structure. If an index would return >30% of the table rows, MySQL may prefer a full table scan. Use EXPLAIN to verify.
+### ❓ Q3: Does having an index guarantee MySQL will use it?
+> **💡 Answer:** No! MySQL's optimizer decides whether to use an index based on cardinality, data distribution, and query structure. If an index would return >30% of the table rows, MySQL may prefer a full table scan. Use EXPLAIN to verify.
 
 ---
 
 ## Interview Q&A
 
-**Q1: What is an index and why is it important?**
-An index is a data structure (B-tree) that allows the database to find rows quickly without scanning the entire table. Like a book's index — instead of reading every page, you look up the topic and go directly to the page. Indexes are crucial for performance; a query on 1M rows can go from seconds to milliseconds.
+### ❓ Q1: What is an index and why is it important?
+> **💡 Answer:** An index is a data structure (B-tree) that allows the database to find rows quickly without scanning the entire table. Like a book's index — instead of reading every page, you look up the topic and go directly to the page. Indexes are crucial for performance; a query on 1M rows can go from seconds to milliseconds.
 
-**Q2: What are the disadvantages of indexes?**
-(1) Extra storage space. (2) Slower INSERT/UPDATE/DELETE because indexes must be updated. (3) Index maintenance overhead. The tradeoff: faster reads vs slower writes. For read-heavy apps (most web apps), the tradeoff is worth it.
+### ❓ Q2: What are the disadvantages of indexes?
+> **💡 Answer:** (1) Extra storage space. (2) Slower INSERT/UPDATE/DELETE because indexes must be updated. (3) Index maintenance overhead. The tradeoff: faster reads vs slower writes. For read-heavy apps (most web apps), the tradeoff is worth it.
 
-**Q3: What is a composite index and how does the leftmost prefix rule work?**
-A composite index is on multiple columns: `INDEX(a, b, c)`. The leftmost prefix rule means the index can be used for queries on (a), (a,b), or (a,b,c) but NOT (b), (c), or (b,c) alone. Column order matters — put the most selective (highest cardinality) column first.
+### ❓ Q3: What is a composite index and how does the leftmost prefix rule work?
+> **💡 Answer:** A composite index is on multiple columns: `INDEX(a, b, c)`. The leftmost prefix rule means the index can be used for queries on (a), (a,b), or (a,b,c) but NOT (b), (c), or (b,c) alone. Column order matters — put the most selective (highest cardinality) column first.
 
-**Q4: What is the difference between clustered and non-clustered indexes?**
-Clustered index: the table data is physically ordered by this index. MySQL's PRIMARY KEY is the clustered index — only one per table. Non-clustered index: a separate structure that points to the actual rows. You can have multiple non-clustered indexes. Think: clustered = the book itself (ordered by chapters), non-clustered = the book's back index.
+### ❓ Q4: What is the difference between clustered and non-clustered indexes?
+> **💡 Answer:** Clustered index: the table data is physically ordered by this index. MySQL's PRIMARY KEY is the clustered index — only one per table. Non-clustered index: a separate structure that points to the actual rows. You can have multiple non-clustered indexes. Think: clustered = the book itself (ordered by chapters), non-clustered = the book's back index.
 
-**Q5: How would you find and fix slow queries in a production MySQL database?**
-(1) Enable slow query log: `SET GLOBAL slow_query_log = 'ON'`. (2) Check queries with `EXPLAIN`. (3) Look for type=ALL (full scan) and key=NULL. (4) Add indexes on columns in WHERE, JOIN, ORDER BY. (5) Monitor with `SHOW PROCESSLIST`. (6) Use tools like `pt-query-digest`. (7) Consider query rewrites, denormalization, or caching for genuinely complex queries.
+### ❓ Q5: How would you find and fix slow queries in a production MySQL database?
+> **💡 Answer:** (1) Enable slow query log: `SET GLOBAL slow_query_log = 'ON'`. (2) Check queries with `EXPLAIN`. (3) Look for type=ALL (full scan) and key=NULL. (4) Add indexes on columns in WHERE, JOIN, ORDER BY. (5) Monitor with `SHOW PROCESSLIST`. (6) Use tools like `pt-query-digest`. (7) Consider query rewrites, denormalization, or caching for genuinely complex queries.
 
 ---
 

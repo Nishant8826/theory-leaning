@@ -314,45 +314,6 @@ app.get('/api/products', async (req, res) => {
 });
 ```
 
-```js
-// React Component using Axios
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-
-function ProductList() {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchProducts() {
-      try {
-        const { data } = await axios.get('/api/products');
-        setProducts(data.products);
-      } catch (error) {
-        console.error('Failed to fetch products:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchProducts();
-  }, []);
-
-  if (loading) return <p>Loading products...</p>;
-
-  return (
-    <div className="product-grid">
-      {products.map(product => (
-        <div key={product.id} className="product-card">
-          <h3>{product.name}</h3>
-          <p>₹{product.price}</p>
-          <span>{product.category}</span>
-        </div>
-      ))}
-    </div>
-  );
-}
-```
-
 **Output:**
 ```json
 {
@@ -382,33 +343,33 @@ function ProductList() {
 
 ## Real-World Q&A
 
-**Q1:** If SQL and MongoDB both store data, why do most companies prefer SQL?
-**A:** SQL databases enforce data integrity through schemas, constraints, and relationships. When you're dealing with financial data, user accounts, or inventory — you CANNOT afford inconsistent data. MongoDB is great for flexibility, but SQL guarantees that every row follows the rules.
+### ❓ Q1: If SQL and MongoDB both store data, why do most companies prefer SQL?
+> **💡 Answer:** SQL databases enforce data integrity through schemas, constraints, and relationships. When you're dealing with financial data, user accounts, or inventory — you CANNOT afford inconsistent data. MongoDB is great for flexibility, but SQL guarantees that every row follows the rules.
 
-**Q2:** Can I use SQL and MongoDB together in one app?
-**A:** Absolutely! Many apps use both. For example: MySQL for user accounts and transactions (needs strict consistency), MongoDB for chat messages and logs (needs flexibility and speed). This is called **polyglot persistence**.
+### ❓ Q2: Can I use SQL and MongoDB together in one app?
+> **💡 Answer:** Absolutely! Many apps use both. For example: MySQL for user accounts and transactions (needs strict consistency), MongoDB for chat messages and logs (needs flexibility and speed). This is called **polyglot persistence**.
 
-**Q3:** Is SQL harder than MongoDB queries?
-**A:** Different, not harder. SQL is actually more readable — it reads like English: `SELECT name FROM users WHERE age > 18 ORDER BY name`. MongoDB's JSON-based queries can be harder to read for complex operations like JOINs (which require `$lookup` in MongoDB but are native in SQL).
+### ❓ Q3: Is SQL harder than MongoDB queries?
+> **💡 Answer:** Different, not harder. SQL is actually more readable — it reads like English: `SELECT name FROM users WHERE age > 18 ORDER BY name`. MongoDB's JSON-based queries can be harder to read for complex operations like JOINs (which require `$lookup` in MongoDB but are native in SQL).
 
 ---
 
 ## Interview Q&A
 
-**Q1: What is SQL?**
-SQL stands for Structured Query Language. It's the standard language for managing and querying relational databases. It allows you to create, read, update, and delete data (CRUD), define database schemas, control access, and manage transactions.
+### ❓ Q1: What is SQL?
+> **💡 Answer:** SQL stands for Structured Query Language. It's the standard language for managing and querying relational databases. It allows you to create, read, update, and delete data (CRUD), define database schemas, control access, and manage transactions.
 
-**Q2: What are the different types of SQL commands?**
-DDL (Data Definition Language): CREATE, ALTER, DROP — defines structure. DML (Data Manipulation Language): INSERT, UPDATE, DELETE — modifies data. DQL (Data Query Language): SELECT — reads data. DCL (Data Control Language): GRANT, REVOKE — manages permissions. TCL (Transaction Control Language): COMMIT, ROLLBACK — manages transactions.
+### ❓ Q2: What are the different types of SQL commands?
+> **💡 Answer:** DDL (Data Definition Language): CREATE, ALTER, DROP — defines structure. DML (Data Manipulation Language): INSERT, UPDATE, DELETE — modifies data. DQL (Data Query Language): SELECT — reads data. DCL (Data Control Language): GRANT, REVOKE — manages permissions. TCL (Transaction Control Language): COMMIT, ROLLBACK — manages transactions.
 
-**Q3: What is the difference between SQL and MySQL?**
-SQL is a language (like JavaScript). MySQL is a database management system that uses SQL (like Node.js runs JavaScript). Other DBMS that use SQL include PostgreSQL, Oracle, SQL Server, and SQLite. Each has slight syntax differences but the core SQL is the same.
+### ❓ Q3: What is the difference between SQL and MySQL?
+> **💡 Answer:** SQL is a language (like JavaScript). MySQL is a database management system that uses SQL (like Node.js runs JavaScript). Other DBMS that use SQL include PostgreSQL, Oracle, SQL Server, and SQLite. Each has slight syntax differences but the core SQL is the same.
 
-**Q4: How is querying data different in SQL vs MongoDB?**
-SQL uses declarative text-based queries: `SELECT * FROM users WHERE age > 18`. MongoDB uses method chaining with JSON objects: `db.users.find({ age: { $gt: 18 } })`. SQL has powerful built-in JOINs for combining tables; MongoDB uses `$lookup` (aggregate pipeline) or application-level joins via `populate()` in Mongoose.
+### ❓ Q4: How is querying data different in SQL vs MongoDB?
+> **💡 Answer:** SQL uses declarative text-based queries: `SELECT * FROM users WHERE age > 18`. MongoDB uses method chaining with JSON objects: `db.users.find({ age: { $gt: 18 } })`. SQL has powerful built-in JOINs for combining tables; MongoDB uses `$lookup` (aggregate pipeline) or application-level joins via `populate()` in Mongoose.
 
-**Q5: If you have an existing MERN app and need to migrate from MongoDB to MySQL, what are the key challenges?**
-Schema design: MongoDB's nested documents must be normalized into separate tables. Relationships: Embedded arrays become junction/join tables. Queries: All Mongoose queries must be rewritten as SQL. Data migration: Documents must be transformed into flat rows. Transactions: MongoDB's multi-document transactions work differently than SQL transactions. ORMs like Sequelize can ease the transition by providing a Mongoose-like API.
+### ❓ Q5: If you have an existing MERN app and need to migrate from MongoDB to MySQL, what are the key challenges?
+> **💡 Answer:** Schema design: MongoDB's nested documents must be normalized into separate tables. Relationships: Embedded arrays become junction/join tables. Queries: All Mongoose queries must be rewritten as SQL. Data migration: Documents must be transformed into flat rows. Transactions: MongoDB's multi-document transactions work differently than SQL transactions. ORMs like Sequelize can ease the transition by providing a Mongoose-like API.
 
 ---
 

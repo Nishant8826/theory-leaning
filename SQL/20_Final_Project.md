@@ -6,7 +6,7 @@
 
 ## What is it?
 
-This is your capstone project — a full-stack **E-Commerce REST API** built with Node.js, Express, MySQL (mysql2/promise), and React. It brings together EVERY concept from the tutorial: tables, relationships, CRUD, JOINs, aggregations, transactions, indexes, views, stored procedures, and triggers.
+This is your capstone project — a full-stack **E-Commerce REST API** built with Node.js, Express, and MySQL (mysql2/promise). It brings together EVERY concept from the tutorial: tables, relationships, CRUD, JOINs, aggregations, transactions, indexes, views, stored procedures, and triggers.
 
 ---
 
@@ -19,7 +19,7 @@ This is your capstone project — a full-stack **E-Commerce REST API** built wit
 │                         ShopSQL                                 │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  Frontend (React)           Backend (Express)      Database     │
+│  API Client (Web/Postman)   Backend (Express)      Database     │
 │  ┌───────────────┐         ┌──────────────┐       ┌──────────┐│
 │  │ Product List  │────────▶│ GET /products│──────▶│ products ││
 │  │ Cart          │────────▶│ POST /orders │──────▶│ orders   ││
@@ -29,7 +29,7 @@ This is your capstone project — a full-stack **E-Commerce REST API** built wit
 │  │ Dashboard     │────────▶│ GET /stats   │──────▶│ views    ││
 │  └───────────────┘         └──────────────┘       └──────────┘│
 │                                                                 │
-│  Port: 3000                Port: 5000              Port: 3306  │
+│                            Port: 5000              Port: 3306  │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -498,42 +498,6 @@ app.get('/api/dashboard', async (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
-```
-
----
-
-## Step 7: React Frontend (Key Components)
-
-```js
-// App.js — Main application with routing
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import ProductList from './components/ProductList';
-import ProductDetail from './components/ProductDetail';
-import Cart from './components/Cart';
-import Checkout from './components/Checkout';
-import OrderHistory from './components/OrderHistory';
-import Dashboard from './components/Dashboard';
-
-function App() {
-  return (
-    <BrowserRouter>
-      <nav>
-        <a href="/">Shop</a>
-        <a href="/cart">Cart</a>
-        <a href="/orders">Orders</a>
-        <a href="/admin">Dashboard</a>
-      </nav>
-      <Routes>
-        <Route path="/" element={<ProductList />} />
-        <Route path="/products/:id" element={<ProductDetail />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/orders" element={<OrderHistory />} />
-        <Route path="/admin" element={<Dashboard />} />
-      </Routes>
-    </BrowserRouter>
-  );
-}
 ```
 
 ---

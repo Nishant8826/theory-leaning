@@ -387,53 +387,6 @@ app.post('/api/customers/register', async (req, res) => {
 });
 ```
 
-```js
-// React Registration Form
-import { useState } from 'react';
-import axios from 'axios';
-
-function RegisterForm() {
-  const [form, setForm] = useState({
-    firstName: '', lastName: '', email: '',
-    password: '', phone: '', dateOfBirth: '', gender: ''
-  });
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const { data } = await axios.post('/api/customers/register', form);
-      alert(`Registered! Customer ID: ${data.customerId}`);
-    } catch (error) {
-      alert(error.response?.data?.error || 'Registration failed');
-    }
-  };
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <input placeholder="First Name" maxLength={50}
-        onChange={e => setForm({...form, firstName: e.target.value})} />
-      <input placeholder="Last Name" maxLength={50}
-        onChange={e => setForm({...form, lastName: e.target.value})} />
-      <input type="email" placeholder="Email" maxLength={150}
-        onChange={e => setForm({...form, email: e.target.value})} />
-      <input type="password" placeholder="Password"
-        onChange={e => setForm({...form, password: e.target.value})} />
-      <input placeholder="Phone" maxLength={15}
-        onChange={e => setForm({...form, phone: e.target.value})} />
-      <input type="date"
-        onChange={e => setForm({...form, dateOfBirth: e.target.value})} />
-      <select onChange={e => setForm({...form, gender: e.target.value})}>
-        <option value="">Select Gender</option>
-        <option value="male">Male</option>
-        <option value="female">Female</option>
-        <option value="other">Other</option>
-      </select>
-      <button type="submit">Register</button>
-    </form>
-  );
-}
-```
-
 **Output:**
 ```json
 {
@@ -476,33 +429,33 @@ This is the same problem as JavaScript's `0.1 + 0.2 === 0.30000000000000004`.
 
 ## Real-World Q&A
 
-**Q1:** In Mongoose, I just use `Number` for everything. Why does MySQL have so many number types?
-**A:** Storage and performance. A `TINYINT` uses 1 byte per row, `BIGINT` uses 8 bytes. With 10 million rows, that's the difference between 10 MB and 80 MB just for one column. Also, MySQL enforces ranges — `TINYINT` won't accept 999, preventing bad data.
+### ❓ Q1: In Mongoose, I just use `Number` for everything. Why does MySQL have so many number types?
+> **💡 Answer:** Storage and performance. A `TINYINT` uses 1 byte per row, `BIGINT` uses 8 bytes. With 10 million rows, that's the difference between 10 MB and 80 MB just for one column. Also, MySQL enforces ranges — `TINYINT` won't accept 999, preventing bad data.
 
-**Q2:** Should I use `JSON` columns to store arrays and objects like MongoDB?
-**A:** Use JSON sparingly. It's useful for flexible metadata but don't abuse it. If you're querying by JSON fields frequently, extract them into separate columns or tables. SQL databases are optimized for structured columns, not JSON parsing. If you find yourself using JSON for everything, you might as well stay with MongoDB.
+### ❓ Q2: Should I use `JSON` columns to store arrays and objects like MongoDB?
+> **💡 Answer:** Use JSON sparingly. It's useful for flexible metadata but don't abuse it. If you're querying by JSON fields frequently, extract them into separate columns or tables. SQL databases are optimized for structured columns, not JSON parsing. If you find yourself using JSON for everything, you might as well stay with MongoDB.
 
-**Q3:** What data type should I use for passwords?
-**A:** NEVER store plain-text passwords. Store bcrypt hashes which are always exactly 60 characters. Use `CHAR(60)` — not `VARCHAR` — because CHAR is faster for fixed-length data. The predictable length also serves as a sanity check that the hash was generated correctly.
+### ❓ Q3: What data type should I use for passwords?
+> **💡 Answer:** NEVER store plain-text passwords. Store bcrypt hashes which are always exactly 60 characters. Use `CHAR(60)` — not `VARCHAR` — because CHAR is faster for fixed-length data. The predictable length also serves as a sanity check that the hash was generated correctly.
 
 ---
 
 ## Interview Q&A
 
-**Q1: What is the difference between CHAR and VARCHAR?**
-CHAR is fixed-length: `CHAR(10)` always stores exactly 10 characters, padding with spaces if needed. VARCHAR is variable-length: `VARCHAR(10)` stores only the characters used (plus 1-2 bytes for length). Use CHAR for fixed-length data (country codes, PINs), VARCHAR for variable-length data (names, emails). CHAR is slightly faster for fixed-length data due to predictable storage.
+### ❓ Q1: What is the difference between CHAR and VARCHAR?
+> **💡 Answer:** CHAR is fixed-length: `CHAR(10)` always stores exactly 10 characters, padding with spaces if needed. VARCHAR is variable-length: `VARCHAR(10)` stores only the characters used (plus 1-2 bytes for length). Use CHAR for fixed-length data (country codes, PINs), VARCHAR for variable-length data (names, emails). CHAR is slightly faster for fixed-length data due to predictable storage.
 
-**Q2: Why should you use DECIMAL instead of FLOAT for monetary values?**
-FLOAT uses binary floating-point representation which cannot exactly represent many decimal fractions (like 0.1). This leads to rounding errors in calculations. DECIMAL stores exact decimal values, making it essential for financial calculations where precision matters. Example: `0.1 + 0.2 = 0.3` with DECIMAL, but `0.30000001` with FLOAT.
+### ❓ Q2: Why should you use DECIMAL instead of FLOAT for monetary values?
+> **💡 Answer:** FLOAT uses binary floating-point representation which cannot exactly represent many decimal fractions (like 0.1). This leads to rounding errors in calculations. DECIMAL stores exact decimal values, making it essential for financial calculations where precision matters. Example: `0.1 + 0.2 = 0.3` with DECIMAL, but `0.30000001` with FLOAT.
 
-**Q3: What is the difference between DATETIME and TIMESTAMP?**
-Both store date and time. TIMESTAMP stores in UTC and converts to the session timezone on retrieval (good for global apps). DATETIME stores the exact value with no conversion (good for fixed dates like birthdays). TIMESTAMP range is 1970-2038; DATETIME range is 1000-9999. TIMESTAMP uses 4 bytes; DATETIME uses 8 bytes.
+### ❓ Q3: What is the difference between DATETIME and TIMESTAMP?
+> **💡 Answer:** Both store date and time. TIMESTAMP stores in UTC and converts to the session timezone on retrieval (good for global apps). DATETIME stores the exact value with no conversion (good for fixed dates like birthdays). TIMESTAMP range is 1970-2038; DATETIME range is 1000-9999. TIMESTAMP uses 4 bytes; DATETIME uses 8 bytes.
 
-**Q4: How would you store a list of tags for a product in MySQL?**
-Three approaches: (1) JSON column: `tags JSON` — stores `["tag1","tag2"]`, simple but hard to query. (2) Separate tags table with a junction table: `product_tags(product_id, tag_id)` — normalized, queryable, best practice. (3) Comma-separated string: `tags VARCHAR(500)` — worst approach, impossible to query efficiently.
+### ❓ Q4: How would you store a list of tags for a product in MySQL?
+> **💡 Answer:** Three approaches: (1) JSON column: `tags JSON` — stores `["tag1","tag2"]`, simple but hard to query. (2) Separate tags table with a junction table: `product_tags(product_id, tag_id)` — normalized, queryable, best practice. (3) Comma-separated string: `tags VARCHAR(500)` — worst approach, impossible to query efficiently.
 
-**Q5: A column defined as `INT UNSIGNED` can store values from 0 to 4,294,967,295. When would you use this over a regular `INT`?**
-When the column should never have negative values — like `age`, `quantity`, `price` (in whole numbers), or `views_count`. The UNSIGNED modifier doubles the positive range by eliminating negative values. However, be careful with operations that could produce negative results (e.g., subtraction) — they'll cause errors with UNSIGNED columns.
+### ❓ Q5: A column defined as `INT UNSIGNED` can store values from 0 to 4,294,967,295. When would you use this over a regular `INT`?
+> **💡 Answer:** When the column should never have negative values — like `age`, `quantity`, `price` (in whole numbers), or `views_count`. The UNSIGNED modifier doubles the positive range by eliminating negative values. However, be careful with operations that could produce negative results (e.g., subtraction) — they'll cause errors with UNSIGNED columns.
 
 ---
 

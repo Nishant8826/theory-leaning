@@ -433,66 +433,6 @@ app.get('/api/analytics/sales', async (req, res) => {
 });
 ```
 
-```js
-// React — Sales Analytics Component
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-
-function SalesAnalytics() {
-  const [data, setData] = useState(null);
-  const [period, setPeriod] = useState('month');
-
-  useEffect(() => {
-    axios.get(`/api/analytics/sales?period=${period}`)
-      .then(({ data }) => setData(data));
-  }, [period]);
-
-  if (!data) return <p>Loading analytics...</p>;
-
-  return (
-    <div>
-      <h1>Sales Analytics</h1>
-      
-      <select value={period} onChange={e => setPeriod(e.target.value)}>
-        <option value="day">Daily</option>
-        <option value="week">Weekly</option>
-        <option value="month">Monthly</option>
-        <option value="year">Yearly</option>
-      </select>
-
-      <h2>Revenue Timeline</h2>
-      <table>
-        <thead>
-          <tr><th>Period</th><th>Orders</th><th>Revenue</th><th>Avg Order</th></tr>
-        </thead>
-        <tbody>
-          {data.revenueTimeline.map((r, i) => (
-            <tr key={i}>
-              <td>{r.period}</td><td>{r.orders}</td>
-              <td>₹{r.revenue}</td><td>₹{r.avg_order_value}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <h2>Top Products</h2>
-      {data.topProducts.map((p, i) => (
-        <div key={i}>
-          <strong>#{i + 1}</strong> {p.name} — {p.units_sold} sold — ₹{p.revenue}
-        </div>
-      ))}
-
-      <h2>Category Breakdown</h2>
-      {data.categoryBreakdown.map((c, i) => (
-        <div key={i}>
-          <strong>{c.category}</strong>: {c.orders} orders, ₹{c.revenue} revenue
-        </div>
-      ))}
-    </div>
-  );
-}
-```
-
 **Output:**
 ```json
 {
@@ -550,33 +490,33 @@ SELECT category_id, COUNT(*) FROM products GROUP BY category_id;
 
 ## Real-World Q&A
 
-**Q1:** In MongoDB's aggregation pipeline, I can use `$match` both before and after `$group`. What's the SQL equivalent?
-**A:** `WHERE` is `$match` before grouping (filters individual rows). `HAVING` is `$match` after grouping (filters aggregated groups). Example: `WHERE status = 'active'` filters rows, `HAVING COUNT(*) > 5` filters groups.
+### ❓ Q1: In MongoDB's aggregation pipeline, I can use `$match` both before and after `$group`. What's the SQL equivalent?
+> **💡 Answer:** `WHERE` is `$match` before grouping (filters individual rows). `HAVING` is `$match` after grouping (filters aggregated groups). Example: `WHERE status = 'active'` filters rows, `HAVING COUNT(*) > 5` filters groups.
 
-**Q2:** Can I GROUP BY a computed column or alias?
-**A:** In MySQL, yes! You can `GROUP BY YEAR(order_date)` or even `GROUP BY 1` (first SELECT column). You can also use column aliases in GROUP BY and HAVING in MySQL (this doesn't work in all databases).
+### ❓ Q2: Can I GROUP BY a computed column or alias?
+> **💡 Answer:** In MySQL, yes! You can `GROUP BY YEAR(order_date)` or even `GROUP BY 1` (first SELECT column). You can also use column aliases in GROUP BY and HAVING in MySQL (this doesn't work in all databases).
 
-**Q3:** What's the performance impact of GROUP BY?
-**A:** GROUP BY creates temporary result sets and can be expensive on large tables. Adding an index on the GROUP BY column helps significantly. For very large datasets, consider materialized views or pre-aggregated summary tables that are updated periodically.
+### ❓ Q3: What's the performance impact of GROUP BY?
+> **💡 Answer:** GROUP BY creates temporary result sets and can be expensive on large tables. Adding an index on the GROUP BY column helps significantly. For very large datasets, consider materialized views or pre-aggregated summary tables that are updated periodically.
 
 ---
 
 ## Interview Q&A
 
-**Q1: What is the difference between WHERE and HAVING?**
-WHERE filters individual rows before grouping. HAVING filters groups after aggregation. WHERE cannot use aggregate functions; HAVING can. Example: `WHERE price > 100` is valid; `WHERE COUNT(*) > 5` is invalid (use HAVING instead). Both can coexist: `WHERE status='active' GROUP BY cat HAVING COUNT(*)>5`.
+### ❓ Q1: What is the difference between WHERE and HAVING?
+> **💡 Answer:** WHERE filters individual rows before grouping. HAVING filters groups after aggregation. WHERE cannot use aggregate functions; HAVING can. Example: `WHERE price > 100` is valid; `WHERE COUNT(*) > 5` is invalid (use HAVING instead). Both can coexist: `WHERE status='active' GROUP BY cat HAVING COUNT(*)>5`.
 
-**Q2: Can you use GROUP BY without aggregate functions?**
-Yes — it acts like SELECT DISTINCT. `SELECT city FROM customers GROUP BY city` is equivalent to `SELECT DISTINCT city FROM customers`. However, using DISTINCT is more readable for this purpose.
+### ❓ Q2: Can you use GROUP BY without aggregate functions?
+> **💡 Answer:** Yes — it acts like SELECT DISTINCT. `SELECT city FROM customers GROUP BY city` is equivalent to `SELECT DISTINCT city FROM customers`. However, using DISTINCT is more readable for this purpose.
 
-**Q3: What is GROUP BY WITH ROLLUP?**
-ROLLUP adds summary rows (subtotals and grand total) to GROUP BY results. `GROUP BY category WITH ROLLUP` adds an extra row with NULL for category that shows the grand total. It's like adding a "Total" row at the bottom of a spreadsheet.
+### ❓ Q3: What is GROUP BY WITH ROLLUP?
+> **💡 Answer:** ROLLUP adds summary rows (subtotals and grand total) to GROUP BY results. `GROUP BY category WITH ROLLUP` adds an extra row with NULL for category that shows the grand total. It's like adding a "Total" row at the bottom of a spreadsheet.
 
-**Q4: Write a query to find duplicate emails in a customers table.**
-`SELECT email, COUNT(*) AS count FROM customers GROUP BY email HAVING COUNT(*) > 1;` This groups by email, counts occurrences, and filters for groups with more than one occurrence — i.e., duplicates.
+### ❓ Q4: Write a query to find duplicate emails in a customers table.
+> **💡 Answer:** `SELECT email, COUNT(*) AS count FROM customers GROUP BY email HAVING COUNT(*) > 1;` This groups by email, counts occurrences, and filters for groups with more than one occurrence — i.e., duplicates.
 
-**Q5: How would you get the top 3 customers by total spending?**
-`SELECT c.name, SUM(o.total_amount) AS total_spent FROM customers c JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.name ORDER BY total_spent DESC LIMIT 3;` This joins customers with orders, groups by customer, sums their spending, sorts descending, and takes top 3.
+### ❓ Q5: How would you get the top 3 customers by total spending?
+> **💡 Answer:** `SELECT c.name, SUM(o.total_amount) AS total_spent FROM customers c JOIN orders o ON c.id = o.customer_id GROUP BY c.id, c.name ORDER BY total_spent DESC LIMIT 3;` This joins customers with orders, groups by customer, sums their spending, sorts descending, and takes top 3.
 
 ---
 

@@ -518,33 +518,33 @@ testDB();
 
 ## Real-World Q&A
 
-**Q1:** I'm getting `ECONNREFUSED` when connecting to MySQL from Node.js. What's wrong?
-**A:** MySQL server isn't running. Check Windows Services (`services.msc`) → find `MySQL80` → Start it. Also verify the port (3306) and credentials in your `.env` file.
+### ❓ Q1: I'm getting `ECONNREFUSED` when connecting to MySQL from Node.js. What's wrong?
+> **💡 Answer:** MySQL server isn't running. Check Windows Services (`services.msc`) → find `MySQL80` → Start it. Also verify the port (3306) and credentials in your `.env` file.
 
-**Q2:** Should I use `mysql` or `mysql2` package?
-**A:** Always use `mysql2`. It's faster, supports Promises natively (`mysql2/promise`), and is actively maintained. The original `mysql` package is outdated.
+### ❓ Q2: Should I use `mysql` or `mysql2` package?
+> **💡 Answer:** Always use `mysql2`. It's faster, supports Promises natively (`mysql2/promise`), and is actively maintained. The original `mysql` package is outdated.
 
-**Q3:** Why use a connection pool instead of a single connection?
-**A:** Same reason MongoDB uses connection pooling internally — if 100 users hit your API simultaneously, a single connection would queue all requests. A pool of 10 connections can handle 10 queries in parallel. It's like having 10 checkout lanes instead of 1.
+### ❓ Q3: Why use a connection pool instead of a single connection?
+> **💡 Answer:** Same reason MongoDB uses connection pooling internally — if 100 users hit your API simultaneously, a single connection would queue all requests. A pool of 10 connections can handle 10 queries in parallel. It's like having 10 checkout lanes instead of 1.
 
 ---
 
 ## Interview Q&A
 
-**Q1: What is MySQL and how does it differ from MongoDB?**
-MySQL is a relational database that stores data in structured tables with predefined schemas. MongoDB is a document database that stores flexible JSON-like documents. MySQL uses SQL for queries; MongoDB uses its own query language. MySQL enforces relationships through foreign keys; MongoDB embeds data or uses references.
+### ❓ Q1: What is MySQL and how does it differ from MongoDB?
+> **💡 Answer:** MySQL is a relational database that stores data in structured tables with predefined schemas. MongoDB is a document database that stores flexible JSON-like documents. MySQL uses SQL for queries; MongoDB uses its own query language. MySQL enforces relationships through foreign keys; MongoDB embeds data or uses references.
 
-**Q2: How do you connect Node.js to MySQL?**
-Using the `mysql2/promise` package. You create a connection pool with `mysql.createPool({host, user, password, database})` and use `db.query()` with async/await to execute queries. Always use parameterized queries to prevent SQL injection.
+### ❓ Q2: How do you connect Node.js to MySQL?
+> **💡 Answer:** Using the `mysql2/promise` package. You create a connection pool with `mysql.createPool({host, user, password, database})` and use `db.query()` with async/await to execute queries. Always use parameterized queries to prevent SQL injection.
 
-**Q3: What is a connection pool and why is it important?**
-A connection pool is a cache of database connections that can be reused. Instead of opening/closing connections for every query (expensive), the pool maintains a set of open connections. When a query needs to run, it borrows a connection from the pool and returns it when done. This dramatically improves performance under load.
+### ❓ Q3: What is a connection pool and why is it important?
+> **💡 Answer:** A connection pool is a cache of database connections that can be reused. Instead of opening/closing connections for every query (expensive), the pool maintains a set of open connections. When a query needs to run, it borrows a connection from the pool and returns it when done. This dramatically improves performance under load.
 
-**Q4: What is SQL injection and how do you prevent it?**
-SQL injection is when an attacker inserts malicious SQL code through user input. For example, inputting `'; DROP TABLE users; --` could delete your entire table. Prevent it by ALWAYS using parameterized queries: `db.query('SELECT * FROM users WHERE id = ?', [userId])`. Never concatenate user input into SQL strings.
+### ❓ Q4: What is SQL injection and how do you prevent it?
+> **💡 Answer:** SQL injection is when an attacker inserts malicious SQL code through user input. For example, inputting `'; DROP TABLE users; --` could delete your entire table. Prevent it by ALWAYS using parameterized queries: `db.query('SELECT * FROM users WHERE id = ?', [userId])`. Never concatenate user input into SQL strings.
 
-**Q5: Compare `mysql2` vs Sequelize. When would you use each?**
-`mysql2` is a raw driver — you write SQL directly. Use it when you need full control, complex queries, or maximum performance. Sequelize is an ORM that generates SQL from JavaScript methods (like Mongoose for MongoDB). Use it when you want faster development, auto-migrations, and don't need complex SQL. In production, many teams use both: ORM for CRUD, raw SQL for reports and complex queries.
+### ❓ Q5: Compare `mysql2` vs Sequelize. When would you use each?
+> **💡 Answer:** `mysql2` is a raw driver — you write SQL directly. Use it when you need full control, complex queries, or maximum performance. Sequelize is an ORM that generates SQL from JavaScript methods (like Mongoose for MongoDB). Use it when you want faster development, auto-migrations, and don't need complex SQL. In production, many teams use both: ORM for CRUD, raw SQL for reports and complex queries.
 
 ---
 

@@ -348,30 +348,6 @@ app.get('/api/products/:id/recommendations', async (req, res) => {
 });
 ```
 
-```js
-// React Component
-function ProductRecommendations({ productId }) {
-  const [recs, setRecs] = useState([]);
-
-  useEffect(() => {
-    axios.get(`/api/products/${productId}/recommendations`)
-      .then(({ data }) => setRecs(data.recommendations));
-  }, [productId]);
-
-  return (
-    <div>
-      <h3>Frequently Bought Together</h3>
-      {recs.map(p => (
-        <div key={p.id}>
-          <strong>{p.name}</strong> — ₹{p.price}
-          <small> ({p.co_purchase_count} co-purchases)</small>
-        </div>
-      ))}
-    </div>
-  );
-}
-```
-
 **Output:**
 ```json
 {
@@ -413,33 +389,33 @@ SELECT * FROM customers c WHERE NOT EXISTS (
 
 ## Real-World Q&A
 
-**Q1:** When should I use a subquery vs a JOIN?
-**A:** Use JOINs when you need columns from both tables. Use subqueries when you need a value/list from one table to filter another. JOINs are usually faster for related-data retrieval. Subqueries are cleaner for "find rows where condition depends on aggregate of another table."
+### ❓ Q1: When should I use a subquery vs a JOIN?
+> **💡 Answer:** Use JOINs when you need columns from both tables. Use subqueries when you need a value/list from one table to filter another. JOINs are usually faster for related-data retrieval. Subqueries are cleaner for "find rows where condition depends on aggregate of another table."
 
-**Q2:** Are correlated subqueries always slow?
-**A:** They run once per outer row, so they can be O(n²). But MySQL's optimizer can sometimes convert them to JOINs. For small tables, the difference is negligible. For large tables, rewrite as a JOIN if possible.
+### ❓ Q2: Are correlated subqueries always slow?
+> **💡 Answer:** They run once per outer row, so they can be O(n²). But MySQL's optimizer can sometimes convert them to JOINs. For small tables, the difference is negligible. For large tables, rewrite as a JOIN if possible.
 
-**Q3:** Can I nest subqueries inside subqueries?
-**A:** Yes, MySQL supports deep nesting. But deeply nested subqueries are hard to read and optimize. If you go beyond 2 levels deep, consider using CTEs (`WITH` clause) or temporary tables for clarity.
+### ❓ Q3: Can I nest subqueries inside subqueries?
+> **💡 Answer:** Yes, MySQL supports deep nesting. But deeply nested subqueries are hard to read and optimize. If you go beyond 2 levels deep, consider using CTEs (`WITH` clause) or temporary tables for clarity.
 
 ---
 
 ## Interview Q&A
 
-**Q1: What is a subquery? Give types.**
-A subquery is a query nested inside another SQL statement. Types: Scalar (returns single value), Row (returns single row), Table/Derived (returns result set, used in FROM), Correlated (references outer query, runs per row), Non-correlated (independent, runs once).
+### ❓ Q1: What is a subquery? Give types.
+> **💡 Answer:** A subquery is a query nested inside another SQL statement. Types: Scalar (returns single value), Row (returns single row), Table/Derived (returns result set, used in FROM), Correlated (references outer query, runs per row), Non-correlated (independent, runs once).
 
-**Q2: What is the difference between a correlated and non-correlated subquery?**
-Non-correlated: independent of outer query, executes once, result is reused. Example: `WHERE price > (SELECT AVG(price) FROM products)`. Correlated: references outer query columns, executes once per outer row. Example: `WHERE price > (SELECT AVG(price) FROM products p2 WHERE p2.category_id = p.category_id)`. Correlated is slower but more powerful.
+### ❓ Q2: What is the difference between a correlated and non-correlated subquery?
+> **💡 Answer:** Non-correlated: independent of outer query, executes once, result is reused. Example: `WHERE price > (SELECT AVG(price) FROM products)`. Correlated: references outer query columns, executes once per outer row. Example: `WHERE price > (SELECT AVG(price) FROM products p2 WHERE p2.category_id = p.category_id)`. Correlated is slower but more powerful.
 
-**Q3: When would you choose EXISTS over IN?**
-EXISTS is better when checking for existence in large tables (stops at first match). IN is better for small lists. EXISTS handles NULLs correctly; NOT IN with NULLs can return empty results unexpectedly. Rule of thumb: use EXISTS for correlated checks, IN for value lists.
+### ❓ Q3: When would you choose EXISTS over IN?
+> **💡 Answer:** EXISTS is better when checking for existence in large tables (stops at first match). IN is better for small lists. EXISTS handles NULLs correctly; NOT IN with NULLs can return empty results unexpectedly. Rule of thumb: use EXISTS for correlated checks, IN for value lists.
 
-**Q4: Write a query to find the Nth highest salary.**
-`SELECT DISTINCT salary FROM employees e1 WHERE N-1 = (SELECT COUNT(DISTINCT salary) FROM employees e2 WHERE e2.salary > e1.salary);` Or simpler: `SELECT DISTINCT salary FROM employees ORDER BY salary DESC LIMIT 1 OFFSET N-1;`
+### ❓ Q4: Write a query to find the Nth highest salary.
+> **💡 Answer:** `SELECT DISTINCT salary FROM employees e1 WHERE N-1 = (SELECT COUNT(DISTINCT salary) FROM employees e2 WHERE e2.salary > e1.salary);` Or simpler: `SELECT DISTINCT salary FROM employees ORDER BY salary DESC LIMIT 1 OFFSET N-1;`
 
-**Q5: Can a subquery in SELECT return multiple rows?**
-No — a scalar subquery in SELECT must return exactly one value. `SELECT (SELECT name FROM products)` would error if products has multiple rows. Use `LIMIT 1` or ensure the subquery filters to one row.
+### ❓ Q5: Can a subquery in SELECT return multiple rows?
+> **💡 Answer:** No — a scalar subquery in SELECT must return exactly one value. `SELECT (SELECT name FROM products)` would error if products has multiple rows. Use `LIMIT 1` or ensure the subquery filters to one row.
 
 ---
 

@@ -360,63 +360,6 @@ app.get('/api/products', async (req, res) => {
 });
 ```
 
-```js
-// React — Paginated Product List
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-
-function PaginatedProducts() {
-  const [products, setProducts] = useState([]);
-  const [pagination, setPagination] = useState({});
-  const [page, setPage] = useState(1);
-  const [sortBy, setSortBy] = useState('created_at');
-  const [order, setOrder] = useState('DESC');
-
-  useEffect(() => {
-    axios.get(`/api/products?page=${page}&limit=10&sortBy=${sortBy}&order=${order}`)
-      .then(({ data }) => {
-        setProducts(data.products);
-        setPagination(data.pagination);
-      });
-  }, [page, sortBy, order]);
-
-  return (
-    <div>
-      {/* Sort Controls */}
-      <div>
-        <select value={sortBy} onChange={e => { setSortBy(e.target.value); setPage(1); }}>
-          <option value="created_at">Newest</option>
-          <option value="price">Price</option>
-          <option value="name">Name</option>
-        </select>
-        <button onClick={() => setOrder(o => o === 'ASC' ? 'DESC' : 'ASC')}>
-          {order === 'ASC' ? '↑' : '↓'}
-        </button>
-      </div>
-
-      {/* Product List */}
-      {products.map(p => (
-        <div key={p.id}>
-          <strong>{p.name}</strong> — ₹{p.price} ({p.category})
-        </div>
-      ))}
-
-      {/* Pagination Controls */}
-      <div>
-        <button disabled={!pagination.hasPrev} onClick={() => setPage(p => p - 1)}>
-          ← Previous
-        </button>
-        <span> Page {pagination.page} of {pagination.totalPages} </span>
-        <button disabled={!pagination.hasNext} onClick={() => setPage(p => p + 1)}>
-          Next →
-        </button>
-      </div>
-      <p>Total: {pagination.total} products</p>
-    </div>
-  );
-}
-```
-
 **Output:**
 ```json
 {
@@ -471,33 +414,33 @@ SELECT * FROM products WHERE id > 999990 ORDER BY id LIMIT 10;
 
 ## Real-World Q&A
 
-**Q1:** In Mongoose, `.sort('-createdAt')` is simple. Why is SQL ORDER BY more verbose?
-**A:** SQL is explicit by design. `ORDER BY created_at DESC` clearly states the direction. The verbosity helps readability in complex queries with multiple sort columns. The trade-off is clarity over brevity.
+### ❓ Q1: In Mongoose, `.sort('-createdAt')` is simple. Why is SQL ORDER BY more verbose?
+> **💡 Answer:** SQL is explicit by design. `ORDER BY created_at DESC` clearly states the direction. The verbosity helps readability in complex queries with multiple sort columns. The trade-off is clarity over brevity.
 
-**Q2:** What's the performance difference between OFFSET-based and cursor-based pagination?
-**A:** OFFSET 100000 means MySQL scans 100,010 rows and discards 100,000. Cursor-based (`WHERE id > last_id LIMIT 10`) jumps directly to the right spot using the index — constant time regardless of page number. For large datasets (>10K pages), always use cursor-based.
+### ❓ Q2: What's the performance difference between OFFSET-based and cursor-based pagination?
+> **💡 Answer:** OFFSET 100000 means MySQL scans 100,010 rows and discards 100,000. Cursor-based (`WHERE id > last_id LIMIT 10`) jumps directly to the right spot using the index — constant time regardless of page number. For large datasets (>10K pages), always use cursor-based.
 
-**Q3:** Can I sort by a computed/alias column?
-**A:** Yes! `SELECT price * stock AS total_value FROM products ORDER BY total_value DESC` works. MySQL evaluates the alias in ORDER BY. However, you CANNOT use aliases in WHERE (because WHERE runs before SELECT).
+### ❓ Q3: Can I sort by a computed/alias column?
+> **💡 Answer:** Yes! `SELECT price * stock AS total_value FROM products ORDER BY total_value DESC` works. MySQL evaluates the alias in ORDER BY. However, you CANNOT use aliases in WHERE (because WHERE runs before SELECT).
 
 ---
 
 ## Interview Q&A
 
-**Q1: What is the difference between LIMIT and FETCH FIRST?**
-LIMIT is MySQL-specific syntax. FETCH FIRST is the ANSI SQL standard (`SELECT * FROM products FETCH FIRST 10 ROWS ONLY`). Both limit result rows. MySQL supports LIMIT; PostgreSQL and Oracle support FETCH FIRST. For portability, know both.
+### ❓ Q1: What is the difference between LIMIT and FETCH FIRST?
+> **💡 Answer:** LIMIT is MySQL-specific syntax. FETCH FIRST is the ANSI SQL standard (`SELECT * FROM products FETCH FIRST 10 ROWS ONLY`). Both limit result rows. MySQL supports LIMIT; PostgreSQL and Oracle support FETCH FIRST. For portability, know both.
 
-**Q2: Explain OFFSET-based vs cursor-based pagination.**
-OFFSET-based: `LIMIT 10 OFFSET 1000` — simple but slow for large offsets because the DB scans and discards rows. Cursor-based: `WHERE id > 1000 LIMIT 10` — uses indexes, constant performance. Tradeoff: cursor-based can't jump to arbitrary pages, only next/previous.
+### ❓ Q2: Explain OFFSET-based vs cursor-based pagination.
+> **💡 Answer:** OFFSET-based: `LIMIT 10 OFFSET 1000` — simple but slow for large offsets because the DB scans and discards rows. Cursor-based: `WHERE id > 1000 LIMIT 10` — uses indexes, constant performance. Tradeoff: cursor-based can't jump to arbitrary pages, only next/previous.
 
-**Q3: What happens if ORDER BY is not specified? Is the result order guaranteed?**
-No! Without ORDER BY, MySQL returns rows in an undefined order that may vary between executions. It often follows insertion order or index order, but this is NOT guaranteed. Always use ORDER BY if order matters.
+### ❓ Q3: What happens if ORDER BY is not specified? Is the result order guaranteed?
+> **💡 Answer:** No! Without ORDER BY, MySQL returns rows in an undefined order that may vary between executions. It often follows insertion order or index order, but this is NOT guaranteed. Always use ORDER BY if order matters.
 
-**Q4: Can you ORDER BY a column not in the SELECT list?**
-Yes. `SELECT name FROM products ORDER BY price DESC` is valid — products are sorted by price even though price isn't displayed. Exception: when using DISTINCT, you can only ORDER BY columns in the SELECT list.
+### ❓ Q4: Can you ORDER BY a column not in the SELECT list?
+> **💡 Answer:** Yes. `SELECT name FROM products ORDER BY price DESC` is valid — products are sorted by price even though price isn't displayed. Exception: when using DISTINCT, you can only ORDER BY columns in the SELECT list.
 
-**Q5: How would you get the Nth highest salary without using LIMIT?**
-Using a subquery: `SELECT DISTINCT salary FROM employees e1 WHERE N-1 = (SELECT COUNT(DISTINCT salary) FROM employees e2 WHERE e2.salary > e1.salary)`. With LIMIT: `SELECT DISTINCT salary FROM employees ORDER BY salary DESC LIMIT 1 OFFSET N-1`. The LIMIT approach is simpler and faster.
+### ❓ Q5: How would you get the Nth highest salary without using LIMIT?
+> **💡 Answer:** Using a subquery: `SELECT DISTINCT salary FROM employees e1 WHERE N-1 = (SELECT COUNT(DISTINCT salary) FROM employees e2 WHERE e2.salary > e1.salary)`. With LIMIT: `SELECT DISTINCT salary FROM employees ORDER BY salary DESC LIMIT 1 OFFSET N-1`. The LIMIT approach is simpler and faster.
 
 ---
 

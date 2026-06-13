@@ -449,49 +449,6 @@ app.get('/api/customers/:id/orders', async (req, res) => {
 });
 ```
 
-```js
-// React — Order History Component
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-
-function OrderHistory({ customerId }) {
-  const [orders, setOrders] = useState([]);
-
-  useEffect(() => {
-    axios.get(`/api/customers/${customerId}/orders`)
-      .then(({ data }) => setOrders(data.orders));
-  }, [customerId]);
-
-  const statusColors = {
-    pending: '#f39c12', processing: '#3498db',
-    shipped: '#9b59b6', delivered: '#2ecc71', cancelled: '#e74c3c'
-  };
-
-  return (
-    <div>
-      <h2>Order History</h2>
-      {orders.length === 0 ? <p>No orders yet.</p> : (
-        orders.map(order => (
-          <div key={order.order_id} style={{
-            border: '1px solid #ddd', padding: '16px', marginBottom: '12px', borderRadius: '8px'
-          }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <strong>Order #{order.order_id}</strong>
-              <span style={{ color: statusColors[order.status], fontWeight: 'bold' }}>
-                {order.status.toUpperCase()}
-              </span>
-            </div>
-            <p>Date: {new Date(order.order_date).toLocaleDateString()}</p>
-            <p>Items: {order.products} ({order.total_items} items)</p>
-            <p><strong>Total: ₹{order.total_amount}</strong></p>
-          </div>
-        ))
-      )}
-    </div>
-  );
-}
-```
-
 **Output:**
 ```json
 {
@@ -541,33 +498,33 @@ JOINs solve the N+1 problem by design.
 
 ## Real-World Q&A
 
-**Q1:** Mongoose's `populate()` does multiple queries behind the scenes. Are SQL JOINs faster?
-**A:** Yes, significantly. `populate()` sends N+1 queries to MongoDB. A SQL JOIN runs as a single query with the database engine optimizing the join algorithm (hash join, merge join, nested loop). For 100 orders with customer data: Mongoose = 101 queries, SQL = 1 query.
+### ❓ Q1: Mongoose's `populate()` does multiple queries behind the scenes. Are SQL JOINs faster?
+> **💡 Answer:** Yes, significantly. `populate()` sends N+1 queries to MongoDB. A SQL JOIN runs as a single query with the database engine optimizing the join algorithm (hash join, merge join, nested loop). For 100 orders with customer data: Mongoose = 101 queries, SQL = 1 query.
 
-**Q2:** When should I use LEFT JOIN vs INNER JOIN?
-**A:** Use INNER JOIN when you only want rows that have matches in both tables (e.g., orders with customers). Use LEFT JOIN when you want ALL rows from the left table, even without matches (e.g., all customers, including those with 0 orders). In API development, LEFT JOIN is safer because it doesn't silently drop data.
+### ❓ Q2: When should I use LEFT JOIN vs INNER JOIN?
+> **💡 Answer:** Use INNER JOIN when you only want rows that have matches in both tables (e.g., orders with customers). Use LEFT JOIN when you want ALL rows from the left table, even without matches (e.g., all customers, including those with 0 orders). In API development, LEFT JOIN is safer because it doesn't silently drop data.
 
-**Q3:** Can I JOIN more than 2 tables?
-**A:** Yes! You can chain as many JOINs as needed. The e-commerce query joining orders → customers → order_items → products → categories uses 4 JOINs. Each JOIN adds more data. Performance degrades with many JOINs on large tables — use indexes on all FK columns.
+### ❓ Q3: Can I JOIN more than 2 tables?
+> **💡 Answer:** Yes! You can chain as many JOINs as needed. The e-commerce query joining orders → customers → order_items → products → categories uses 4 JOINs. Each JOIN adds more data. Performance degrades with many JOINs on large tables — use indexes on all FK columns.
 
 ---
 
 ## Interview Q&A
 
-**Q1: Explain the different types of JOINs with examples.**
-INNER JOIN returns only matching rows from both tables. LEFT JOIN returns all rows from the left table plus matching from right (NULLs for non-matching). RIGHT JOIN is the opposite. FULL OUTER JOIN returns all rows from both tables (MySQL doesn't support it natively — use UNION of LEFT and RIGHT JOIN). CROSS JOIN returns the Cartesian product.
+### ❓ Q1: Explain the different types of JOINs with examples.
+> **💡 Answer:** INNER JOIN returns only matching rows from both tables. LEFT JOIN returns all rows from the left table plus matching from right (NULLs for non-matching). RIGHT JOIN is the opposite. FULL OUTER JOIN returns all rows from both tables (MySQL doesn't support it natively — use UNION of LEFT and RIGHT JOIN). CROSS JOIN returns the Cartesian product.
 
-**Q2: What is the N+1 query problem and how do JOINs solve it?**
-N+1 occurs when you query a list (1 query) then query related data for each item (N queries). Example: 100 orders + 100 customer lookups = 101 queries. A JOIN solves this with a single query: `SELECT * FROM orders JOIN customers ON...`. In Mongoose, `populate()` causes N+1; in SQL, JOINs are the default solution.
+### ❓ Q2: What is the N+1 query problem and how do JOINs solve it?
+> **💡 Answer:** N+1 occurs when you query a list (1 query) then query related data for each item (N queries). Example: 100 orders + 100 customer lookups = 101 queries. A JOIN solves this with a single query: `SELECT * FROM orders JOIN customers ON...`. In Mongoose, `populate()` causes N+1; in SQL, JOINs are the default solution.
 
-**Q3: Write a query to find customers who have never placed an order.**
-`SELECT c.* FROM customers c LEFT JOIN orders o ON c.id = o.customer_id WHERE o.id IS NULL;` LEFT JOIN includes all customers, and WHERE IS NULL filters to only those without matching orders.
+### ❓ Q3: Write a query to find customers who have never placed an order.
+> **💡 Answer:** `SELECT c.* FROM customers c LEFT JOIN orders o ON c.id = o.customer_id WHERE o.id IS NULL;` LEFT JOIN includes all customers, and WHERE IS NULL filters to only those without matching orders.
 
-**Q4: What happens if you forget the ON clause in a JOIN?**
-Without ON, it becomes a CROSS JOIN (Cartesian product): every row from table A combines with every row from table B. 1000 customers × 1000 orders = 1,000,000 rows! Always specify the join condition.
+### ❓ Q4: What happens if you forget the ON clause in a JOIN?
+> **💡 Answer:** Without ON, it becomes a CROSS JOIN (Cartesian product): every row from table A combines with every row from table B. 1000 customers × 1000 orders = 1,000,000 rows! Always specify the join condition.
 
-**Q5: How would you optimize a slow JOIN query?**
-(1) Add indexes on all columns used in ON conditions (foreign keys). (2) Select only needed columns instead of SELECT *. (3) Add WHERE conditions to filter early. (4) Use EXPLAIN to see the query plan. (5) For very large tables, consider denormalization or materialized views. (6) Ensure the join order is optimal (MySQL usually optimizes this automatically).
+### ❓ Q5: How would you optimize a slow JOIN query?
+> **💡 Answer:** (1) Add indexes on all columns used in ON conditions (foreign keys). (2) Select only needed columns instead of SELECT *. (3) Add WHERE conditions to filter early. (4) Use EXPLAIN to see the query plan. (5) For very large tables, consider denormalization or materialized views. (6) Ensure the join order is optimal (MySQL usually optimizes this automatically).
 
 ---
 
