@@ -1,6 +1,6 @@
 # Data Types
 
-> 📌 **File:** `03_Data_Types.md` | **Level:** Beginner → MERN Developer
+> 📌 **File:** `04_Data_Types.md` | **Level:** Beginner → MERN Developer
 
 ---
 
@@ -459,5 +459,5 @@ This is the same problem as JavaScript's `0.1 + 0.2 === 0.30000000000000004`.
 
 ---
 
-| [← Previous: Databases & Tables](./02_Databases_And_Tables.md) | [Next: Create, Drop & Alter →](./04_Create_Drop_Alter.md) |
-|---|---|
+| [← Previous: Databases & Tables](./03_Databases_And_Tables.md) | [Index](./00_index.md) | [Next: Create, Drop & Alter →](./05_Create_Drop_Alter.md) |
+|---|---|---|

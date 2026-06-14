@@ -1,6 +1,6 @@
 # Normalization
 
-> 📌 **File:** `18_Normalization.md` | **Level:** Beginner → MERN Developer
+> 📌 **File:** `19_Normalization.md` | **Level:** Beginner → MERN Developer
 
 ---
 
@@ -454,5 +454,5 @@ Keep normalized when:
 
 ---
 
-| [← Previous: Triggers](./17_Triggers.md) | [Next: SQL vs NoSQL →](./19_SQL_Vs_NoSQL.md) |
-|---|---|
+| [← Previous: Triggers](./18_Triggers.md) | [Index](./00_index.md) | [Next: SQL vs NoSQL →](./20_SQL_Vs_NoSQL.md) |
+|---|---|---|

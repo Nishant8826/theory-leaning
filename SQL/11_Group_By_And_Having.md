@@ -1,6 +1,6 @@
 # Group By And Having
 
-> 📌 **File:** `10_Group_By_And_Having.md` | **Level:** Beginner → MERN Developer
+> 📌 **File:** `11_Group_By_And_Having.md` | **Level:** Beginner → MERN Developer
 
 ---
 
@@ -520,5 +520,5 @@ SELECT category_id, COUNT(*) FROM products GROUP BY category_id;
 
 ---
 
-| [← Previous: Aggregate Functions](./09_Aggregate_Functions.md) | [Next: Joins →](./11_Joins.md) |
-|---|---|
+| [← Previous: Aggregate Functions](./10_Aggregate_Functions.md) | [Index](./00_index.md) | [Next: Joins →](./12_Joins.md) |
+|---|---|---|

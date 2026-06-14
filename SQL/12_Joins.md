@@ -1,6 +1,6 @@
 # Joins
 
-> 📌 **File:** `11_Joins.md` | **Level:** Beginner → MERN Developer
+> 📌 **File:** `12_Joins.md` | **Level:** Beginner → MERN Developer
 
 ---
 
@@ -528,5 +528,5 @@ JOINs solve the N+1 problem by design.
 
 ---
 
-| [← Previous: Group By & Having](./10_Group_By_And_Having.md) | [Next: Subqueries →](./12_Subqueries.md) |
-|---|---|
+| [← Previous: Group By & Having](./11_Group_By_And_Having.md) | [Index](./00_index.md) | [Next: Subqueries →](./13_Subqueries.md) |
+|---|---|---|

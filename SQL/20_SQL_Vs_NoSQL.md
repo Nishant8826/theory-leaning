@@ -1,6 +1,6 @@
 # SQL Vs NoSQL
 
-> 📌 **File:** `19_SQL_Vs_NoSQL.md` | **Level:** Beginner → MERN Developer
+> 📌 **File:** `20_SQL_Vs_NoSQL.md` | **Level:** Beginner → MERN Developer
 
 ---
 
@@ -394,5 +394,5 @@ app.post('/api/products/:id/reviews', async (req, res) => {
 
 ---
 
-| [← Previous: Normalization](./18_Normalization.md) | [Next: Final Project →](./20_Final_Project.md) |
-|---|---|
+| [← Previous: Normalization](./19_Normalization.md) | [Index](./00_index.md) | [Next: Final Project →](./21_Final_Project.md) |
+|---|---|---|

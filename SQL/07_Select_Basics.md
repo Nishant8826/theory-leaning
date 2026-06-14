@@ -1,6 +1,6 @@
 # SELECT Basics
 
-> 📌 **File:** `06_Select_Basics.md` | **Level:** Beginner → MERN Developer
+> 📌 **File:** `07_Select_Basics.md` | **Level:** Beginner → MERN Developer
 
 ---
 
@@ -517,5 +517,5 @@ between a 0.1s and 4s load time.
 
 ---
 
-| [← Previous: Insert, Update & Delete](./05_Insert_Update_Delete.md) | [Next: WHERE Clause & Filters →](./07_Where_Clause_And_Filters.md) |
-|---|---|
+| [← Previous: Insert, Update & Delete](./06_Insert_Update_Delete.md) | [Index](./00_index.md) | [Next: WHERE Clause & Filters →](./08_Where_Clause_And_Filters.md) |
+|---|---|---|

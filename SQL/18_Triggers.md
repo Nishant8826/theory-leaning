@@ -1,6 +1,6 @@
 # Triggers
 
-> 📌 **File:** `17_Triggers.md` | **Level:** Beginner → MERN Developer
+> 📌 **File:** `18_Triggers.md` | **Level:** Beginner → MERN Developer
 
 ---
 
@@ -468,5 +468,5 @@ app.patch('/api/admin/stock-alerts/:id/resolve', async (req, res) => {
 
 ---
 
-| [← Previous: Stored Procedures](./16_Stored_Procedures.md) | [Next: Normalization →](./18_Normalization.md) |
-|---|---|
+| [← Previous: Stored Procedures](./17_Stored_Procedures.md) | [Index](./00_index.md) | [Next: Normalization →](./19_Normalization.md) |
+|---|---|---|

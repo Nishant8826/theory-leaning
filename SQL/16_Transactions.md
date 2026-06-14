@@ -1,6 +1,6 @@
 # Transactions
 
-> 📌 **File:** `15_Transactions.md` | **Level:** Beginner → MERN Developer
+> 📌 **File:** `16_Transactions.md` | **Level:** Beginner → MERN Developer
 
 ---
 
@@ -477,5 +477,5 @@ app.post('/api/orders', async (req, res) => {
 
 ---
 
-| [← Previous: Indexes](./14_Indexes.md) | [Next: Stored Procedures →](./16_Stored_Procedures.md) |
-|---|---|
+| [← Previous: Indexes](./15_Indexes.md) | [Index](./00_index.md) | [Next: Stored Procedures →](./17_Stored_Procedures.md) |
+|---|---|---|

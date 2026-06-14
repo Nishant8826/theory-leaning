@@ -1,6 +1,6 @@
 # Create, Drop & Alter
 
-> 📌 **File:** `04_Create_Drop_Alter.md` | **Level:** Beginner → MERN Developer
+> 📌 **File:** `05_Create_Drop_Alter.md` | **Level:** Beginner → MERN Developer
 
 ---
 
@@ -529,5 +529,5 @@ Solutions:
 
 ---
 
-| [← Previous: Data Types](./03_Data_Types.md) | [Next: Insert, Update & Delete →](./05_Insert_Update_Delete.md) |
-|---|---|
+| [← Previous: Data Types](./04_Data_Types.md) | [Index](./00_index.md) | [Next: Insert, Update & Delete →](./06_Insert_Update_Delete.md) |
+|---|---|---|

@@ -1,6 +1,6 @@
 # Indexes
 
-> 📌 **File:** `14_Indexes.md` | **Level:** Beginner → MERN Developer
+> 📌 **File:** `15_Indexes.md` | **Level:** Beginner → MERN Developer
 
 ---
 
@@ -454,5 +454,5 @@ You can look up "Kumar" or "Kumar, Nishant" but NOT just "Nishant".
 
 ---
 
-| [← Previous: Views](./13_Views.md) | [Next: Transactions →](./15_Transactions.md) |
-|---|---|
+| [← Previous: Views](./14_Views.md) | [Index](./00_index.md) | [Next: Transactions →](./16_Transactions.md) |
+|---|---|---|

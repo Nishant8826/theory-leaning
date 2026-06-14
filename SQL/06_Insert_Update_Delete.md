@@ -1,6 +1,6 @@
 # Insert, Update & Delete
 
-> 📌 **File:** `05_Insert_Update_Delete.md` | **Level:** Beginner → MERN Developer
+> 📌 **File:** `06_Insert_Update_Delete.md` | **Level:** Beginner → MERN Developer
 
 ---
 
@@ -595,5 +595,5 @@ This requires a UNIQUE constraint on the column being checked. In Mongoose, this
 
 ---
 
-| [← Previous: Create, Drop & Alter](./04_Create_Drop_Alter.md) | [Next: SELECT Basics →](./06_Select_Basics.md) |
-|---|---|
+| [← Previous: Create, Drop & Alter](./05_Create_Drop_Alter.md) | [Index](./00_index.md) | [Next: SELECT Basics →](./07_Select_Basics.md) |
+|---|---|---|

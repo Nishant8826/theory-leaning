@@ -1,6 +1,6 @@
 # Stored Procedures
 
-> 📌 **File:** `16_Stored_Procedures.md` | **Level:** Beginner → MERN Developer
+> 📌 **File:** `17_Stored_Procedures.md` | **Level:** Beginner → MERN Developer
 
 ---
 
@@ -412,5 +412,5 @@ app.get('/api/reports/monthly', async (req, res) => {
 
 ---
 
-| [← Previous: Transactions](./15_Transactions.md) | [Next: Triggers →](./17_Triggers.md) |
-|---|---|
+| [← Previous: Transactions](./16_Transactions.md) | [Index](./00_index.md) | [Next: Triggers →](./18_Triggers.md) |
+|---|---|---|

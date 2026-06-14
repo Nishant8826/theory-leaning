@@ -1,6 +1,6 @@
 # What Is SQL?
 
-> 📌 **File:** `01_What_Is_SQL.md` | **Level:** Beginner → MERN Developer
+> 📌 **File:** `02_What_Is_SQL.md` | **Level:** Beginner → MERN Developer
 
 ---
 
@@ -373,5 +373,5 @@ app.get('/api/products', async (req, res) => {
 
 ---
 
-| [← Previous: Introduction & Setup](./00_Introduction_And_Setup.md) | [Next: Databases & Tables →](./02_Databases_And_Tables.md) |
-|---|---|
+| [← Previous: Introduction & Setup](./01_Introduction_And_Setup.md) | [Index](./00_index.md) | [Next: Databases & Tables →](./03_Databases_And_Tables.md) |
+|---|---|---|

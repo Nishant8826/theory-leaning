@@ -1,6 +1,6 @@
 # Aggregate Functions
 
-> 📌 **File:** `09_Aggregate_Functions.md` | **Level:** Beginner → MERN Developer
+> 📌 **File:** `10_Aggregate_Functions.md` | **Level:** Beginner → MERN Developer
 
 ---
 
@@ -446,5 +446,5 @@ app.get('/api/dashboard', async (req, res) => {
 
 ---
 
-| [← Previous: Sorting & Limiting](./08_Sorting_And_Limiting.md) | [Next: Group By & Having →](./10_Group_By_And_Having.md) |
-|---|---|
+| [← Previous: Sorting & Limiting](./09_Sorting_And_Limiting.md) | [Index](./00_index.md) | [Next: Group By & Having →](./11_Group_By_And_Having.md) |
+|---|---|---|

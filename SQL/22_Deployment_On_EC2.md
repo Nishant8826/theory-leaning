@@ -1,6 +1,6 @@
 # Deployment On EC2
 
-> 📌 **File:** `21_Deployment_On_EC2.md` | **Level:** Beginner → MERN Developer
+> 📌 **File:** `22_Deployment_On_EC2.md` | **Level:** Beginner → MERN Developer
 
 ---
 
@@ -721,8 +721,8 @@ Backup & Monitoring:
 
 ---
 
-| [← Previous: Final Project](./20_Final_Project.md) | **🎉 Congratulations! Tutorial Complete!** |
-|---|---|
+| [← Previous: Final Project](./21_Final_Project.md) | [Index](./00_index.md) | **🎉 Congratulations! Tutorial Complete!** |
+|---|---|---|
 
 ---
 

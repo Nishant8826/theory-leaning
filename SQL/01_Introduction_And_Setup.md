@@ -1,6 +1,6 @@
 # Introduction & Setup
 
-> 📌 **File:** `00_Introduction_And_Setup.md` | **Level:** Beginner → MERN Developer
+> 📌 **File:** `01_Introduction_And_Setup.md` | **Level:** Beginner → MERN Developer
 
 ---
 
@@ -548,5 +548,5 @@ testDB();
 
 ---
 
-| | [Next: What Is SQL →](./01_What_Is_SQL.md) |
+| [Index](./00_index.md) | [Next: What Is SQL →](./02_What_Is_SQL.md) |
 |---|---|

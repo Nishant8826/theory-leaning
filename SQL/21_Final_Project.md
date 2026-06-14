@@ -1,6 +1,6 @@
 # Final Project
 
-> 📌 **File:** `20_Final_Project.md` | **Level:** Beginner → MERN Developer
+> 📌 **File:** `21_Final_Project.md` | **Level:** Beginner → MERN Developer
 
 ---
 
@@ -528,5 +528,5 @@ app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
 
 ---
 
-| [← Previous: SQL vs NoSQL](./19_SQL_Vs_NoSQL.md) | [Next: Deployment on EC2 →](./21_Deployment_On_EC2.md) |
-|---|---|
+| [← Previous: SQL vs NoSQL](./20_SQL_Vs_NoSQL.md) | [Index](./00_index.md) | [Next: Deployment on EC2 →](./22_Deployment_On_EC2.md) |
+|---|---|---|

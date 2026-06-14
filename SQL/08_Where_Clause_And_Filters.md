@@ -1,6 +1,6 @@
 # WHERE Clause And Filters
 
-> 📌 **File:** `07_Where_Clause_And_Filters.md` | **Level:** Beginner → MERN Developer
+> 📌 **File:** `08_Where_Clause_And_Filters.md` | **Level:** Beginner → MERN Developer
 
 ---
 
@@ -568,5 +568,5 @@ WHERE (category_id = 1 OR category_id = 2) AND price > 10000;
 
 ---
 
-| [← Previous: SELECT Basics](./06_Select_Basics.md) | [Next: Sorting & Limiting →](./08_Sorting_And_Limiting.md) |
-|---|---|
+| [← Previous: SELECT Basics](./07_Select_Basics.md) | [Index](./00_index.md) | [Next: Sorting & Limiting →](./09_Sorting_And_Limiting.md) |
+|---|---|---|

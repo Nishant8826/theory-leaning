@@ -1,6 +1,6 @@
 # Views
 
-> 📌 **File:** `13_Views.md` | **Level:** Beginner → MERN Developer
+> 📌 **File:** `14_Views.md` | **Level:** Beginner → MERN Developer
 
 ---
 
@@ -393,5 +393,5 @@ app.get('/api/my-orders', async (req, res) => {
 
 ---
 
-| [← Previous: Subqueries](./12_Subqueries.md) | [Next: Indexes →](./14_Indexes.md) |
-|---|---|
+| [← Previous: Subqueries](./13_Subqueries.md) | [Index](./00_index.md) | [Next: Indexes →](./15_Indexes.md) |
+|---|---|---|

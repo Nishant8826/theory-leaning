@@ -1,6 +1,6 @@
 # Databases And Tables
 
-> 📌 **File:** `02_Databases_And_Tables.md` | **Level:** Beginner → MERN Developer
+> 📌 **File:** `03_Databases_And_Tables.md` | **Level:** Beginner → MERN Developer
 
 ---
 
@@ -545,5 +545,5 @@ app.get('/api/schema', async (req, res) => {
 
 ---
 
-| [← Previous: What Is SQL](./01_What_Is_SQL.md) | [Next: Data Types →](./03_Data_Types.md) |
-|---|---|
+| [← Previous: What Is SQL](./02_What_Is_SQL.md) | [Index](./00_index.md) | [Next: Data Types →](./04_Data_Types.md) |
+|---|---|---|

@@ -1,6 +1,6 @@
 # Sorting And Limiting
 
-> 📌 **File:** `08_Sorting_And_Limiting.md` | **Level:** Beginner → MERN Developer
+> 📌 **File:** `09_Sorting_And_Limiting.md` | **Level:** Beginner → MERN Developer
 
 ---
 
@@ -45,9 +45,42 @@ Page 3: LIMIT 10 OFFSET 20  → Rows 21-30
 
 Formula: OFFSET = (page - 1) × limit
 
+Example (Direct Jump to Page 7 with Limit 10):
+OFFSET = (7 - 1) × 10 = 60  → Skips first 60 rows, returns rows 61-70
+
 In Mongoose: .skip((page - 1) * limit).limit(limit)
 In MySQL:    LIMIT limit OFFSET (page - 1) * limit
 ```
+
+### Cursor-Based Pagination (Keyset Pagination)
+
+Instead of skipping a specific number of rows, cursor-based pagination uses a unique, sequential column (usually an indexed column like `id` or `created_at`) from the last row of the current page as a "cursor" to fetch the next page.
+
+#### How it works:
+* **Page 1:** Fetch the first 10 items.
+  ```sql
+  SELECT * FROM products ORDER BY id ASC LIMIT 10;
+  -- Returns items with IDs 1 to 10. Last seen ID (cursor) is 10.
+  ```
+* **Page 2:** Query the next 10 items starting *after* the cursor.
+  ```sql
+  SELECT * FROM products WHERE id > 10 ORDER BY id ASC LIMIT 10;
+  -- Returns items with IDs 11 to 20. Last seen ID (cursor) is 20.
+  ```
+* **Page 3:** Query the next 10 items starting *after* the new cursor.
+  ```sql
+  SELECT * FROM products WHERE id > 20 ORDER BY id ASC LIMIT 10;
+  -- Returns items with IDs 21 to 30.
+  ```
+
+#### Comparison: Offset vs. Cursor
+
+| Feature | Offset-Based Pagination | Cursor-Based Pagination |
+| :--- | :--- | :--- |
+| **Database Query** | `LIMIT 10 OFFSET 20` | `WHERE id > 20 LIMIT 10` |
+| **Direct Jump** | **Yes** (e.g., jump directly to Page 7) | **No** (only Next / Prev relative navigation) |
+| **Performance** | Slows down as page numbers increase | Fast, constant time $O(\log N)$ using index |
+| **Real-time Drift** | **Prone to bugs** (items shift, causing duplicates/skips on page change) | **Stable** (new items don't shift existing cursors; perfect for infinite scroll) |
 
 ---
 
@@ -284,26 +317,26 @@ const { count, rows: products } = await Product.findAndCountAll({
 
 ### Scenario: Paginated product listing with sorting
 
+#### Option A: Offset-Based Pagination (Standard Page Navigation)
+
+Best for dashboard tables where users need to jump to specific page numbers (e.g., page 5, page 10).
+
 ```sql
--- SQL: Products with pagination and sorting
-SELECT 
-  p.id, p.name, p.price, p.stock,
-  c.name AS category
+-- SQL: Fetch Page 1 (products 1-10)
+SELECT p.id, p.name, p.price, p.stock, c.name AS category
 FROM products p
 LEFT JOIN categories c ON p.category_id = c.id
 WHERE p.status = 'published'
-ORDER BY p.price ASC
+ORDER BY p.created_at DESC
 LIMIT 10 OFFSET 0;
 
--- Total count for pagination
-SELECT COUNT(*) AS total 
-FROM products 
-WHERE status = 'published';
+-- SQL: Total count required to calculate total pages on frontend
+SELECT COUNT(*) AS total FROM products WHERE status = 'published';
 ```
 
 ```js
-// Node.js + Express — Paginated Products API
-app.get('/api/products', async (req, res) => {
+// Node.js + Express — Offset-Based Paginated Products API
+app.get('/api/products/offset', async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = Math.min(parseInt(req.query.limit) || 10, 100); // Max 100
@@ -317,7 +350,6 @@ app.get('/api/products', async (req, res) => {
     const sortColumn = allowedSorts[sortBy] || 'p.created_at';
     const sortOrder = order.toUpperCase() === 'ASC' ? 'ASC' : 'DESC';
     
-    // Build WHERE clause
     let whereClause = "WHERE p.status = 'published'";
     const params = [];
     
@@ -360,22 +392,74 @@ app.get('/api/products', async (req, res) => {
 });
 ```
 
-**Output:**
-```json
-{
-  "products": [
-    { "id": 4, "name": "The Alchemist", "price": "299.00", "stock": 500, "category": "Books" },
-    { "id": 3, "name": "Levi's Jeans", "price": "2499.00", "stock": 200, "category": "Clothing" }
-  ],
-  "pagination": {
-    "page": 1,
-    "limit": 10,
-    "total": 5,
-    "totalPages": 1,
-    "hasNext": false,
-    "hasPrev": false
+#### Option B: Cursor-Based Pagination (Infinite Scroll / Feeds)
+
+Best for feeds (like Instagram/Twitter) or infinite-scroll lists where items are loaded continuously and data shifts could occur.
+
+```sql
+-- SQL: Fetch Page 1 (No cursor yet, starts from the top)
+SELECT p.id, p.name, p.price, p.stock, c.name AS category
+FROM products p
+LEFT JOIN categories c ON p.category_id = c.id
+WHERE p.status = 'published'
+ORDER BY p.id ASC
+LIMIT 10;
+
+-- SQL: Fetch Page 2 (Pass the last ID from Page 1 as the cursor, e.g., cursor = 10)
+SELECT p.id, p.name, p.price, p.stock, c.name AS category
+FROM products p
+LEFT JOIN categories c ON p.category_id = c.id
+WHERE p.status = 'published' AND p.id > 10
+ORDER BY p.id ASC
+LIMIT 10;
+```
+
+```js
+// Node.js + Express — Cursor-Based Paginated Products API
+app.get('/api/products/cursor', async (req, res) => {
+  try {
+    const limit = Math.min(parseInt(req.query.limit) || 10, 100);
+    const cursor = req.query.cursor; // Last seen product ID from the previous page
+    const search = req.query.search || '';
+    
+    let whereClause = "WHERE p.status = 'published'";
+    const params = [];
+    
+    if (search) {
+      whereClause += ' AND (p.name LIKE ? OR p.description LIKE ?)';
+      params.push(`%${search}%`, `%${search}%`);
+    }
+    
+    if (cursor) {
+      whereClause += ' AND p.id > ?';
+      params.push(parseInt(cursor));
+    }
+    
+    // Get results sorted by a unique, indexed column (id)
+    const [products] = await db.query(`
+      SELECT p.id, p.name, p.price, p.stock, c.name AS category
+      FROM products p
+      LEFT JOIN categories c ON p.category_id = c.id
+      ${whereClause}
+      ORDER BY p.id ASC
+      LIMIT ?
+    `, [...params, limit]);
+    
+    // Determine the next cursor (the ID of the last item in the current batch)
+    const nextCursor = products.length > 0 ? products[products.length - 1].id : null;
+    
+    res.json({
+      products,
+      pagination: {
+        limit,
+        nextCursor,
+        hasNext: products.length === limit // If we returned fewer items than limit, we reached the end
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
-}
+});
 ```
 
 ---
@@ -439,10 +523,25 @@ SELECT * FROM products WHERE id > 999990 ORDER BY id LIMIT 10;
 ### ❓ Q4: Can you ORDER BY a column not in the SELECT list?
 > **💡 Answer:** Yes. `SELECT name FROM products ORDER BY price DESC` is valid — products are sorted by price even though price isn't displayed. Exception: when using DISTINCT, you can only ORDER BY columns in the SELECT list.
 
-### ❓ Q5: How would you get the Nth highest salary without using LIMIT?
-> **💡 Answer:** Using a subquery: `SELECT DISTINCT salary FROM employees e1 WHERE N-1 = (SELECT COUNT(DISTINCT salary) FROM employees e2 WHERE e2.salary > e1.salary)`. With LIMIT: `SELECT DISTINCT salary FROM employees ORDER BY salary DESC LIMIT 1 OFFSET N-1`. The LIMIT approach is simpler and faster.
+### ❓ Q5: How would you get the Nth highest salary using LIMIT?
+> **💡 Answer:**
+> Sort the unique salaries in descending order, limit the result to 1, and offset by `N - 1`.
+> 
+> **SQL Query (e.g., to get the 3rd highest salary, so N = 3):**
+> ```sql
+> SELECT DISTINCT salary 
+> FROM employees 
+> ORDER BY salary DESC 
+> LIMIT 1 OFFSET 2; -- Offset is N-1 (3-1 = 2)
+> ```
+> 
+> **How it works:**
+> 1. `DISTINCT salary`: Removes duplicate salaries so we rank unique amounts.
+> 2. `ORDER BY salary DESC`: Sorts unique salaries from highest to lowest.
+> 3. `LIMIT 1`: Tells the database to return only 1 row.
+> 4. `OFFSET 2`: Skips the first 2 highest salaries (1st and 2nd), landing directly on the 3rd.
 
 ---
 
-| [← Previous: WHERE Clause & Filters](./07_Where_Clause_And_Filters.md) | [Next: Aggregate Functions →](./09_Aggregate_Functions.md) |
-|---|---|
+| [← Previous: WHERE Clause & Filters](./08_Where_Clause_And_Filters.md) | [Index](./00_index.md) | [Next: Aggregate Functions →](./10_Aggregate_Functions.md) |
+|---|---|---|

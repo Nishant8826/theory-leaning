@@ -1,6 +1,6 @@
 # Subqueries
 
-> 📌 **File:** `12_Subqueries.md` | **Level:** Beginner → MERN Developer
+> 📌 **File:** `13_Subqueries.md` | **Level:** Beginner → MERN Developer
 
 ---
 
@@ -419,5 +419,5 @@ SELECT * FROM customers c WHERE NOT EXISTS (
 
 ---
 
-| [← Previous: Joins](./11_Joins.md) | [Next: Views →](./13_Views.md) |
-|---|---|
+| [← Previous: Joins](./12_Joins.md) | [Index](./00_index.md) | [Next: Views →](./14_Views.md) |
+|---|---|---|
