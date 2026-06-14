@@ -82,15 +82,15 @@ SQL Architecture:                    NoSQL Architecture:
 ┌──────────────────────┐            ┌──────────────────────┐
 │  MySQL Server        │            │  MongoDB Server      │
 │  ┌────────────────┐  │            │  ┌────────────────┐  │
-│  │ Database        │  │            │  │ Database        │  │
-│  │  ┌──────────┐  │  │            │  │  ┌──────────┐  │  │
-│  │  │ Table     │  │  │            │  │  │Collection│  │  │
-│  │  │ (rows)    │  │  │            │  │  │(documents│  │  │
-│  │  └──────────┘  │  │            │  │  └──────────┘  │  │
-│  │  ┌──────────┐  │  │            │  │  Documents can │  │
-│  │  │ Table     │  │  │            │  │  be different  │  │
-│  │  │ (JOINs)  │  │  │            │  │  shapes!       │  │
-│  │  └──────────┘  │  │            │  └────────────────┘  │
+│  │ Database       │  │            │  │ Database       │  │
+│  │  ┌───────────┐ │  │            │  │  ┌─────────────┐  │  
+│  │  │ Table     │ │  │            │  │  │Collection   │  │
+│  │  │ (rows)    │ │  │            │  │  │(documents)  │  │
+│  │  └───────────┘ │  │            │  │  └─────────────┘  │  
+│  │  ┌───────────┐ │  │            │  │  Documents can │  │
+│  │  │ Table     │ │  │            │  │  be different  │  │
+│  │  │ (JOINs)   │ │  │            │  │  shapes!       │  │
+│  │  └───────────┘ │  │            │  └────────────────┘  │
 │  └────────────────┘  │            └──────────────────────┘
 │  Fixed schema        │            Flexible schema
 │  ACID transactions   │            Horizontal scaling

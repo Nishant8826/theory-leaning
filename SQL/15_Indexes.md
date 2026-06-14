@@ -78,6 +78,127 @@ With Index on email:
   instead of 1,000,000!
 ```
 
+### Types of Indexes Explained
+
+To optimize queries effectively, you must choose the right type of index:
+
+#### 1. Primary Key Index (Clustered Index)
+* **What it is:** The physical table data on disk is physically sorted and stored in the order of the Primary Key. Because table records can only be stored in one physical order, there is **only one clustered index** per table.
+* **How it works:** When you query by the Primary Key, MySQL doesn't look up pointers — it lands directly on the actual row data.
+* **MERN Parallel:** Matches the automatically generated `_id` index in MongoDB.
+* **SQL Query Syntax:**
+  ```sql
+  -- Defined during table creation:
+  CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100)
+  );
+  -- Or added to an existing table:
+  ALTER TABLE users ADD PRIMARY KEY (id);
+
+  -- How to query (utilizes Clustered Index):
+  SELECT * FROM users WHERE id = 42;
+  ```
+
+#### 2. Unique Index
+* **What it is:** A non-clustered index that enforces a uniqueness constraint. It prevents duplicate values from being inserted.
+* **How it works:** Before inserting a row, MySQL checks the B-tree. If the key exists, it rejects the insert with a duplicate key error.
+* **MERN Parallel:** Matches the `{ unique: true }` option on Mongoose fields.
+* **SQL Query Syntax:**
+  ```sql
+  -- Create Unique Index:
+  CREATE UNIQUE INDEX idx_unique_email ON customers(email);
+
+  -- How to query (utilizes Unique Index):
+  SELECT * FROM customers WHERE email = 'n@test.com';
+  ```
+
+#### 3. Single-Column (Regular) Index
+* **What it is:** A standard non-clustered index on a single column (e.g. `status` or `price`). It contains a sorted list of column values, and each entry points back to the Primary Key of the matching row.
+* **How it works:** MySQL searches the B-tree to find the column value, gets the Primary Key ID, and then uses that ID to fetch the actual row (called a "Key Lookup" or "Bookmark Lookup").
+* **MERN Parallel:** Matches `schema.index({ status: 1 })`.
+* **SQL Query Syntax:**
+  ```sql
+  -- Create Regular Index:
+  CREATE INDEX idx_status ON orders(status);
+
+  -- How to query (utilizes Single-Column Index):
+  SELECT * FROM orders WHERE status = 'pending';
+  ```
+
+#### 4. Composite (Compound) Index
+* **What it is:** An index built on multiple columns in a specific order, e.g., `INDEX (category_id, price)`.
+* **The Leftmost Prefix Rule:** The order of columns in the index declaration is critical. An index on `(A, B, C)` can only be used if the query filters by:
+  * `WHERE A = ...`
+  * `WHERE A = ... AND B = ...`
+  * `WHERE A = ... AND B = ... AND C = ...`
+  * *It CANNOT be used for `WHERE B = ...` or `WHERE C = ...` because the leftmost column `A` is missing.*
+* **MERN Parallel:** Matches compound indexes like `schema.index({ category_id: 1, price: 1 })`.
+* **SQL Query Syntax:**
+  ```sql
+  -- Create Composite Index:
+  CREATE INDEX idx_cat_price ON products(category_id, price);
+
+  -- How to query (utilizes Composite Index):
+  -- 1. Querying by leftmost column only (Uses Index):
+  SELECT * FROM products WHERE category_id = 5;
+
+  -- 2. Querying by leftmost + second column (Uses Index):
+  SELECT * FROM products WHERE category_id = 5 AND price > 1500;
+
+  -- ❌ Querying by second column only (Does NOT use this index - leftmost prefix violation!):
+  SELECT * FROM products WHERE price > 1500;
+  ```
+
+#### 5. Full-Text Index (`FULLTEXT`)
+* **What it is:** Specifically designed for searching large blocks of natural language text. Instead of storing the exact string value, it builds an "inverted index" mapping words to rows.
+* **How it works:** Rather than using slow wildcard filters (`LIKE '%query%'`), you run `MATCH(name, desc) AGAINST('query')`. This is incredibly fast and supports search rankings.
+* **MERN Parallel:** Matches MongoDB’s `{ name: 'text' }` text indexing capabilities.
+* **SQL Query Syntax:**
+  ```sql
+  -- Create FULLTEXT Index:
+  ALTER TABLE products ADD FULLTEXT INDEX ft_name_desc (name, description);
+
+  -- How to query (utilizes FULLTEXT Index):
+  SELECT * FROM products 
+  WHERE MATCH(name, description) AGAINST('iphone' IN BOOLEAN MODE);
+  ```
+
+#### 6. Prefix (Partial) Index
+* **What it is:** An index built only on the first $N$ characters of a long string column (like a `VARCHAR(500)` or `TEXT`).
+* **Why it matters:** Indexing long strings wastes massive disk space and RAM. Creating a prefix index like `INDEX idx_desc (description(20))` index only the first 20 characters, which is usually selective enough to find rows while keeping the index size tiny.
+* **SQL Query Syntax:**
+  ```sql
+  -- Create Prefix Index:
+  CREATE INDEX idx_name_prefix ON users(name(20)); -- Index only first 20 characters
+
+  -- How to query (utilizes Prefix Index):
+  SELECT * FROM users WHERE name LIKE 'Nish%';
+  ```
+
+#### 7. Spatial Index
+* **What it is:** Built for geometric/geographic data coordinates (`POINT`, `POLYGON`, etc.).
+* **Why it matters:** Enables location-based queries (e.g. "find properties within 5 miles"). Uses R-tree indexing structure.
+* **SQL Query Syntax:**
+  ```sql
+  -- Create Table with SPATIAL Index (spatial columns must be NOT NULL):
+  CREATE TABLE stores (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    coordinates POINT NOT NULL,
+    SPATIAL INDEX idx_location (coordinates)
+  );
+
+  -- How to query (utilizes Spatial Index for bounding box search):
+  SELECT * FROM stores 
+  WHERE MBRContains(ST_GeomFromText('POLYGON((0 0, 0 10, 10 10, 10 0, 0 0))'), coordinates);
+
+  -- How to query (finds nearest store within a sphere distance):
+  SELECT id, name, ST_Distance_Sphere(coordinates, ST_GeomFromText('POINT(77.2090 28.6139)')) AS distance_meters
+  FROM stores
+  ORDER BY distance_meters ASC;
+  ```
+
 ---
 
 ## Visual Diagram

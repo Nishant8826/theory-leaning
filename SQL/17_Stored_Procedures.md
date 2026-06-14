@@ -52,6 +52,26 @@ App → Query 4 → DB → Result          DB internally runs:
 
 ---
 
+## Stored Procedure vs. View — The Key Differences
+
+Since both are saved database structures, developers often confuse their purposes. Here is a side-by-side comparison:
+
+| Feature | View | Stored Procedure |
+| :--- | :--- | :--- |
+| **What it is** | A virtual table based on a saved `SELECT` query. | A precompiled set of SQL statements (like a function). |
+| **Purpose** | Simplifies complex queries, hides columns, and exposes clean data. | Encapsulates complex business logic, workflows, and database updates. |
+| **Operations Allowed** | Primarily read-only. Cannot contain standalone `INSERT/UPDATE/DELETE` logic. | Fully supports read, write, update, delete, and schema modifications. |
+| **Parameters** | ❌ Cannot accept arguments (must filter with `WHERE` *after* querying it). | ✅ Accepts inputs and returns outputs (`IN`, `OUT`, `INOUT`). |
+| **How to run** | Used directly in the `FROM` or `JOIN` clause of a query: `SELECT * FROM my_view`. | Executed explicitly using a CALL statement: `CALL my_procedure()`. |
+| **Programming logic** | ❌ No loops, variables, conditionals (`IF-ELSE`), or error handling. | ✅ Fully supports variables, conditionals, loops, and error handlers. |
+| **Transactions** | ❌ Cannot contain or control transaction blocks. | ✅ Fully supports transaction statements (`START TRANSACTION`, `COMMIT`, `ROLLBACK`). |
+
+### Quick Rule of Thumb:
+* **Use a View** when you need to **read** data in a specific structure or simplify a multi-table `JOIN` query (e.g., `SELECT * FROM active_customer_orders`).
+* **Use a Stored Procedure** when you need to **write or process** data, run transactions, or execute a series of dependent SQL steps internally on the database.
+
+---
+
 ## Visual Diagram
 
 ```

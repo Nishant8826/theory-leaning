@@ -102,7 +102,20 @@ INNER JOIN: (only customers WITH orders)
 │ Rahul   │ 299      │ shipped │
 └─────────┴──────────┴─────────┘
 
-LEFT JOIN: (all customers, even without orders)
+```
+
+**JSON API Response:**
+```json
+[
+  { "name": "Nishant", "total": "79999.00", "status": "shipped" },
+  { "name": "Nishant", "total": "2499.00", "status": "pending" },
+  { "name": "Rahul", "total": "299.00", "status": "shipped" }
+]
+```
+
+#### LEFT JOIN: (all customers, even without orders)
+
+```
 ┌─────────┬──────────┬─────────┐
 │ name    │ total    │ status  │  ← ALL customers included
 ├─────────┼──────────┼─────────┤  ← Priya and Sneha show NULL
@@ -112,6 +125,18 @@ LEFT JOIN: (all customers, even without orders)
 │ Rahul   │ 299      │ shipped │
 │ Sneha   │ NULL     │ NULL    │  ← No orders → NULL
 └─────────┴──────────┴─────────┘
+
+```
+
+**JSON API Response:**
+```json
+[
+  { "name": "Nishant", "total": "79999.00", "status": "shipped" },
+  { "name": "Nishant", "total": "2499.00", "status": "pending" },
+  { "name": "Priya", "total": null, "status": null },
+  { "name": "Rahul", "total": "299.00", "status": "shipped" },
+  { "name": "Sneha", "total": null, "status": null }
+]
 ```
 
 ### E-Commerce Schema Relationships
@@ -490,7 +515,42 @@ Query 1: SELECT ... FROM orders JOIN customers ON ...
 Total: 1 database call!
 
 JOINs solve the N+1 problem by design.
+
+⚠️ WARNING: The N+1 query problem is an APPLICATION logic flaw, not a database limitation.
+
+#### ❌ The Problem (Node.js Query-in-Loop):
+Even in MySQL, if you fetch orders and then query inside a loop for customer details, you force 101 database calls for 100 orders:
+```js
+// 1 query to get all orders
+const [orders] = await db.query('SELECT * FROM orders');
+
+for (const order of orders) {
+  // 100 queries in a loop (total 101 queries!)
+  const [[customer]] = await db.query(
+    'SELECT * FROM customers WHERE id = ?', 
+    [order.customer_id]
+  );
+  order.customer = customer;
+}
 ```
+
+#### ✅ The Solution (Node.js single query with JOIN):
+Combine the tables at the database level and fetch all matching records in a single database roundtrip:
+```js
+// Exactly 1 query total!
+const [ordersWithCustomers] = await db.query(`
+  SELECT 
+    o.id AS order_id, 
+    o.total_amount, 
+    o.created_at, 
+    c.name AS customer_name, 
+    c.email AS customer_email
+  FROM orders o
+  INNER JOIN customers c ON o.customer_id = c.id
+`);
+```
+By writing `JOIN` statements, the database engine executes the correlation internally and returns the combined rows instantly.
+
 
 
 
