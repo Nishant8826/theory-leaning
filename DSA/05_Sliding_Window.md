@@ -32,7 +32,7 @@ Think of calculating a **7-day moving average** of temperatures. Instead of addi
 
 ### Problem: Maximum Sum of K Consecutive Elements
 
-**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/max-sum-subarray-of-size-k5313/1) | [InterviewBit](https://www.interviewbit.com/problems/subarray-with-given-sum/)
+**Practice Links:** <a href="https://www.geeksforgeeks.org/problems/max-sum-subarray-of-size-k5313/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/subarray-with-given-sum/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 Given an array of integers and a number `k`, find the maximum sum of `k` consecutive elements.
 
@@ -121,7 +121,7 @@ console.log(maxSumOptimized([2, 3, 4, 1, 5], 2));     // 7
 
 ### Question 1: Minimum Size Subarray Sum
 
-**Practice Links:** [LeetCode #209](https://leetcode.com/problems/minimum-size-subarray-sum/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/smallest-subarray-with-sum-greater-than-x5649/1) | [InterviewBit](https://www.interviewbit.com/problems/subarray-with-given-sum/)
+**Practice Links:** <a href="https://leetcode.com/problems/minimum-size-subarray-sum/" target="_blank" rel="noopener noreferrer">LeetCode #209</a> | <a href="https://www.geeksforgeeks.org/problems/smallest-subarray-with-sum-greater-than-x5649/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/subarray-with-given-sum/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** Find the smallest contiguous subarray whose sum is ≥ target. Return its length, or 0 if no such subarray.
 
@@ -190,7 +190,7 @@ console.log(minSubArrayLenOptimized(15, [1, 2, 3, 4, 5]));    // 5
 
 ### Question 2: Longest Substring with At Most K Distinct Characters
 
-**Practice Links:** [LeetCode #340](https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/longest-k-unique-characters-substring0853/1)
+**Practice Links:** <a href="https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters/" target="_blank" rel="noopener noreferrer">LeetCode #340</a> | <a href="https://www.geeksforgeeks.org/problems/longest-k-unique-characters-substring0853/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 **Problem Statement:** Find the length of the longest substring with at most `k` distinct characters.
 
@@ -271,7 +271,7 @@ console.log(longestWithKDistinctOptimized("aabacbebebe", 3)); // 7
 
 ### Question 3: Maximum of All Subarrays of Size K
 
-**Practice Links:** [LeetCode #239](https://leetcode.com/problems/sliding-window-maximum/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/maximum-of-all-subarrays-of-size-k3101/1) | [InterviewBit](https://www.interviewbit.com/problems/sliding-window-maximum/)
+**Practice Links:** <a href="https://leetcode.com/problems/sliding-window-maximum/" target="_blank" rel="noopener noreferrer">LeetCode #239</a> | <a href="https://www.geeksforgeeks.org/problems/maximum-of-all-subarrays-of-size-k3101/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/sliding-window-maximum/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** Given an array and integer `k`, find the maximum element in every contiguous subarray of size `k`.
 
@@ -345,7 +345,7 @@ console.log(maxOfSubarraysOptimized([1, 3, -1, -3, 5, 3, 6, 7], 3));
 
 ### Question 4: Count Number of Nice Subarrays
 
-**Practice Links:** [LeetCode #1248](https://leetcode.com/problems/count-number-of-nice-subarrays/) | [CodeChef](https://www.codechef.com/problems/SUBARRAY)
+**Practice Links:** <a href="https://leetcode.com/problems/count-number-of-nice-subarrays/" target="_blank" rel="noopener noreferrer">LeetCode #1248</a> | <a href="https://www.codechef.com/problems/SUBARRAY" target="_blank" rel="noopener noreferrer">CodeChef</a>
 
 **Problem Statement:** Given an array and integer `k`, find the count of subarrays with exactly `k` odd numbers.
 
@@ -420,7 +420,7 @@ console.log(countNiceSubarraysOptimized([2, 4, 6], 1));         // 0
 
 ### Problem 1: Average of All Subarrays of Size K
 
-**Practice Links:** [LeetCode #643](https://leetcode.com/problems/maximum-average-subarray-i/)
+**Practice Links:** <a href="https://leetcode.com/problems/maximum-average-subarray-i/" target="_blank" rel="noopener noreferrer">LeetCode #643</a>
 
 **Problem Statement:** Find the average of all contiguous subarrays of size `k`.
 
@@ -455,7 +455,7 @@ console.log(averageOfSubarrays([1, 3, 2, 6, -1, 4, 1, 8, 2], 5));
 
 ### Problem 2: Maximum Consecutive Ones After Flipping K Zeros
 
-**Practice Links:** [LeetCode #1004](https://leetcode.com/problems/max-consecutive-ones-iii/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/maximize-number-of-1s0642/1) | [InterviewBit](https://www.interviewbit.com/problems/max-continuous-series-of-1s/)
+**Practice Links:** <a href="https://leetcode.com/problems/max-consecutive-ones-iii/" target="_blank" rel="noopener noreferrer">LeetCode #1004</a> | <a href="https://www.geeksforgeeks.org/problems/maximize-number-of-1s0642/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/max-continuous-series-of-1s/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** Given a binary array and `k`, find the longest stretch of 1s if you can flip at most `k` zeros to 1s.
 
@@ -494,7 +494,7 @@ console.log(longestOnes([0, 0, 1, 1, 0, 0, 1, 1, 1, 0], 3)); // 9
 
 ### Problem 3: Fruit Into Baskets
 
-**Practice Links:** [LeetCode #904](https://leetcode.com/problems/fruit-into-baskets/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/fruit-into-baskets-1663137462/1)
+**Practice Links:** <a href="https://leetcode.com/problems/fruit-into-baskets/" target="_blank" rel="noopener noreferrer">LeetCode #904</a> | <a href="https://www.geeksforgeeks.org/problems/fruit-into-baskets-1663137462/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 **Problem Statement:** You have a row of fruit trees. Each tree has a type. You carry 2 baskets, each can hold one type. Find the maximum number of fruits you can collect in a contiguous section using only 2 baskets.
 
@@ -536,7 +536,7 @@ console.log(totalFruit([1, 2, 3, 2, 2])); // 4
 
 ### Problem 4: Find All Anagrams in a String
 
-**Practice Links:** [LeetCode #438](https://leetcode.com/problems/find-all-anagrams-in-a-string/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/count-occurences-of-anagrams6222/1) | [InterviewBit](https://www.interviewbit.com/problems/anagrams/)
+**Practice Links:** <a href="https://leetcode.com/problems/find-all-anagrams-in-a-string/" target="_blank" rel="noopener noreferrer">LeetCode #438</a> | <a href="https://www.geeksforgeeks.org/problems/count-occurences-of-anagrams6222/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/anagrams/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** Find all start indices in string `s` where an anagram of string `p` begins.
 

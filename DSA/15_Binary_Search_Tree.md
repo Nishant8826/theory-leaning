@@ -43,7 +43,7 @@ Think of a **phone book** organized as a tree. Each page says: "names before me 
 
 ### Problem: Search in BST
 
-**Practice Links:** [LeetCode #700](https://leetcode.com/problems/search-in-a-binary-search-tree/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/search-a-node-in-bst/1)
+**Practice Links:** <a href="https://leetcode.com/problems/search-in-a-binary-search-tree/" target="_blank" rel="noopener noreferrer">LeetCode #700</a> | <a href="https://www.geeksforgeeks.org/problems/search-a-node-in-bst/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 ```javascript
 class TreeNode {
@@ -80,7 +80,7 @@ function searchBrute(root, target) {
 
 ### BST Search — Use the BST Property
 
-**Practice Links:** [LeetCode #700](https://leetcode.com/problems/search-in-a-binary-search-tree/)
+**Practice Links:** <a href="https://leetcode.com/problems/search-in-a-binary-search-tree/" target="_blank" rel="noopener noreferrer">LeetCode #700</a>
 
 ```javascript
 // Optimized: Use BST property — O(log n) for balanced tree
@@ -99,7 +99,7 @@ function searchBST(root, target) {
 
 ### BST Insert
 
-**Practice Links:** [LeetCode #701](https://leetcode.com/problems/insert-into-a-binary-search-tree/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/insert-a-node-in-bst/1)
+**Practice Links:** <a href="https://leetcode.com/problems/insert-into-a-binary-search-tree/" target="_blank" rel="noopener noreferrer">LeetCode #701</a> | <a href="https://www.geeksforgeeks.org/problems/insert-a-node-in-bst/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 ```javascript
 function insertBST(root, val) {
@@ -123,7 +123,7 @@ let root = null;
 
 ### BST Delete
 
-**Practice Links:** [LeetCode #450](https://leetcode.com/problems/delete-node-in-a-bst/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/delete-a-node-from-bst/1)
+**Practice Links:** <a href="https://leetcode.com/problems/delete-node-in-a-bst/" target="_blank" rel="noopener noreferrer">LeetCode #450</a> | <a href="https://www.geeksforgeeks.org/problems/delete-a-node-from-bst/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 ```javascript
 function deleteBST(root, key) {
@@ -167,7 +167,7 @@ function deleteBST(root, key) {
 
 ### Question 1: Validate Binary Search Tree
 
-**Practice Links:** [LeetCode #98](https://leetcode.com/problems/validate-binary-search-tree/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/check-for-bst/1) | [InterviewBit](https://www.interviewbit.com/problems/valid-binary-search-tree/)
+**Practice Links:** <a href="https://leetcode.com/problems/validate-binary-search-tree/" target="_blank" rel="noopener noreferrer">LeetCode #98</a> | <a href="https://www.geeksforgeeks.org/problems/check-for-bst/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/valid-binary-search-tree/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** Check if a binary tree is a valid BST.
 
@@ -211,7 +211,7 @@ function isValidBST(root, min = -Infinity, max = Infinity) {
 
 ### Question 2: Lowest Common Ancestor in BST
 
-**Practice Links:** [LeetCode #235](https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/lowest-common-ancestor-in-a-bst/1) | [InterviewBit](https://www.interviewbit.com/problems/least-common-ancestor/)
+**Practice Links:** <a href="https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/" target="_blank" rel="noopener noreferrer">LeetCode #235</a> | <a href="https://www.geeksforgeeks.org/problems/lowest-common-ancestor-in-a-bst/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/least-common-ancestor/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** Find the lowest common ancestor (LCA) of two nodes in a BST.
 
@@ -273,7 +273,7 @@ function lcaOptimized(root, p, q) {
 
 ### Question 3: Kth Smallest Element in BST
 
-**Practice Links:** [LeetCode #230](https://leetcode.com/problems/kth-smallest-element-in-a-bst/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/find-k-th-smallest-element-in-bst/1) | [InterviewBit](https://www.interviewbit.com/problems/kth-smallest-element-in-tree/)
+**Practice Links:** <a href="https://leetcode.com/problems/kth-smallest-element-in-a-bst/" target="_blank" rel="noopener noreferrer">LeetCode #230</a> | <a href="https://www.geeksforgeeks.org/problems/find-k-th-smallest-element-in-bst/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/kth-smallest-element-in-tree/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** Find the kth smallest element in a BST.
 
@@ -341,7 +341,7 @@ function kthSmallestOptimized(root, k) {
 
 ### Problem 1: Convert Sorted Array to Balanced BST
 
-**Practice Links:** [LeetCode #108](https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/array-to-bst4443/1) | [InterviewBit](https://www.interviewbit.com/problems/sorted-array-to-balanced-bst/)
+**Practice Links:** <a href="https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/" target="_blank" rel="noopener noreferrer">LeetCode #108</a> | <a href="https://www.geeksforgeeks.org/problems/array-to-bst4443/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/sorted-array-to-balanced-bst/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 ```javascript
 function sortedArrayToBST(nums) {
@@ -368,7 +368,7 @@ const bst = sortedArrayToBST([1, 2, 3, 4, 5, 6, 7]);
 
 ### Problem 2: BST Iterator
 
-**Practice Links:** [LeetCode #173](https://leetcode.com/problems/binary-search-tree-iterator/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/bst-iterator/1) | [InterviewBit](https://www.interviewbit.com/problems/bst-iterator/)
+**Practice Links:** <a href="https://leetcode.com/problems/binary-search-tree-iterator/" target="_blank" rel="noopener noreferrer">LeetCode #173</a> | <a href="https://www.geeksforgeeks.org/problems/bst-iterator/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/bst-iterator/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 ```javascript
 class BSTIterator {
@@ -404,7 +404,7 @@ class BSTIterator {
 
 ### Problem 3: Two Sum in BST
 
-**Practice Links:** [LeetCode #653](https://leetcode.com/problems/two-sum-iv-input-is-a-bst/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/find-a-pair-with-given-target-in-bst/1) | [InterviewBit](https://www.interviewbit.com/problems/2sum-binary-tree/)
+**Practice Links:** <a href="https://leetcode.com/problems/two-sum-iv-input-is-a-bst/" target="_blank" rel="noopener noreferrer">LeetCode #653</a> | <a href="https://www.geeksforgeeks.org/problems/find-a-pair-with-given-target-in-bst/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/2sum-binary-tree/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 ```javascript
 function findTarget(root, k) {

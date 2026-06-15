@@ -32,7 +32,7 @@ Greedy works when the problem has:
 
 ### Problem: Activity Selection (Maximum Non-Overlapping Intervals)
 
-**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/activity-selection-1587115620/1)
+**Practice Links:** <a href="https://www.geeksforgeeks.org/problems/activity-selection-1587115620/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 ```javascript
 // Brute Force: Try all subsets, find the largest non-overlapping set
@@ -113,7 +113,7 @@ By always choosing the activity that **ends earliest**, we leave the most room f
 
 ### Question 1: Jump Game
 
-**Practice Links:** [LeetCode #55](https://leetcode.com/problems/jump-game/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/jump-game/1) | [InterviewBit](https://www.interviewbit.com/problems/jump-game-array/)
+**Practice Links:** <a href="https://leetcode.com/problems/jump-game/" target="_blank" rel="noopener noreferrer">LeetCode #55</a> | <a href="https://www.geeksforgeeks.org/problems/jump-game/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/jump-game-array/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** Given an array where each element is the maximum jump length, determine if you can reach the last index.
 
@@ -175,7 +175,7 @@ console.log(canJumpGreedy([3, 2, 1, 0, 4])); // false
 
 ### Question 2: Minimum Number of Coins
 
-**Practice Links:** [LeetCode #322](https://leetcode.com/problems/coin-change/) (DP version) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/number-of-coins1824/1)
+**Practice Links:** <a href="https://leetcode.com/problems/coin-change/" target="_blank" rel="noopener noreferrer">LeetCode #322</a> (DP version) | <a href="https://www.geeksforgeeks.org/problems/number-of-coins1824/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 **Problem Statement:** Given coin denominations and a target amount, find the minimum coins needed.
 
@@ -226,7 +226,7 @@ console.log(minCoinsGreedy([1, 5, 10, 25], 63)); // 6 (25+25+10+1+1+1)
 
 ### Question 3: Fractional Knapsack
 
-**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/fractional-knapsack-1587115620/1)
+**Practice Links:** <a href="https://www.geeksforgeeks.org/problems/fractional-knapsack-1587115620/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 **Problem Statement:** Given items with weights and values, maximize value in a knapsack of capacity W. You can take fractions of items.
 
@@ -272,7 +272,7 @@ console.log(fractionalKnapsack(items, 50)); // 240
 
 ### Question 4: Non-Overlapping Intervals (Minimum Removals)
 
-**Practice Links:** [LeetCode #435](https://leetcode.com/problems/non-overlapping-intervals/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/non-overlapping-intervals/1)
+**Practice Links:** <a href="https://leetcode.com/problems/non-overlapping-intervals/" target="_blank" rel="noopener noreferrer">LeetCode #435</a> | <a href="https://www.geeksforgeeks.org/problems/non-overlapping-intervals/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 **Problem Statement:** Find the minimum number of intervals to remove to make the rest non-overlapping.
 
@@ -308,7 +308,7 @@ console.log(eraseOverlapIntervals([[1,2],[1,2],[1,2]]));       // 2
 
 ### Problem 1: Assign Cookies
 
-**Practice Links:** [LeetCode #455](https://leetcode.com/problems/assign-cookies/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/assign-cookies/1)
+**Practice Links:** <a href="https://leetcode.com/problems/assign-cookies/" target="_blank" rel="noopener noreferrer">LeetCode #455</a> | <a href="https://www.geeksforgeeks.org/problems/assign-cookies/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 ```javascript
 function findContentChildren(children, cookies) {
@@ -339,7 +339,7 @@ console.log(findContentChildren([1, 2], [1, 2, 3]));    // 2
 
 ### Problem 2: Gas Station
 
-**Practice Links:** [LeetCode #134](https://leetcode.com/problems/gas-station/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/gas-station/1) | [InterviewBit](https://www.interviewbit.com/problems/gas-station/)
+**Practice Links:** <a href="https://leetcode.com/problems/gas-station/" target="_blank" rel="noopener noreferrer">LeetCode #134</a> | <a href="https://www.geeksforgeeks.org/problems/gas-station/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/gas-station/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 ```javascript
 function canCompleteCircuit(gas, cost) {
@@ -380,7 +380,7 @@ console.log(canCompleteCircuit([2,3,4], [3,4,3]));           // -1
 
 ### Problem 3: Task Scheduler
 
-**Practice Links:** [LeetCode #621](https://leetcode.com/problems/task-scheduler/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/task-scheduler/1)
+**Practice Links:** <a href="https://leetcode.com/problems/task-scheduler/" target="_blank" rel="noopener noreferrer">LeetCode #621</a> | <a href="https://www.geeksforgeeks.org/problems/task-scheduler/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 ```javascript
 function leastInterval(tasks, n) {

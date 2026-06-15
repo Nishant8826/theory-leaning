@@ -58,7 +58,7 @@ Think of a **phone tree menu**: "Press 1 for sales, 2 for support..." At each st
 
 ### Problem: Implement Autocomplete
 
-**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/trie-insert-and-search0651/1)
+**Practice Links:** <a href="https://www.geeksforgeeks.org/problems/trie-insert-and-search0651/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 ```javascript
 // Brute Force: Store words in array, filter by prefix
@@ -178,7 +178,7 @@ console.log(trie.autocomplete("app"));  // ["app", "apple", "application"]
 
 ### Question 1: Implement Trie (LeetCode 208)
 
-**Practice Links:** [LeetCode #208](https://leetcode.com/problems/implement-trie-prefix-tree/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/trie-insert-and-search0651/1)
+**Practice Links:** <a href="https://leetcode.com/problems/implement-trie-prefix-tree/" target="_blank" rel="noopener noreferrer">LeetCode #208</a> | <a href="https://www.geeksforgeeks.org/problems/trie-insert-and-search0651/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 **Problem Statement:** Implement a trie with insert, search, and startsWith methods.
 
@@ -213,7 +213,7 @@ class TrieBrute {
 
 ### Question 2: Word Search II
 
-**Practice Links:** [LeetCode #212](https://leetcode.com/problems/word-search-ii/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/word-search-ii/1)
+**Practice Links:** <a href="https://leetcode.com/problems/word-search-ii/" target="_blank" rel="noopener noreferrer">LeetCode #212</a> | <a href="https://www.geeksforgeeks.org/problems/word-search-ii/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 **Problem Statement:** Given a 2D board and a list of words, find all words that exist in the board.
 
@@ -324,7 +324,7 @@ console.log(findWordsOptimized(board, ["oath","pea","eat","rain"]));
 
 ### Question 3: Design Add and Search Words (with wildcards)
 
-**Practice Links:** [LeetCode #211](https://leetcode.com/problems/design-add-and-search-words-data-structure/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/add-and-search-word/1)
+**Practice Links:** <a href="https://leetcode.com/problems/design-add-and-search-words-data-structure/" target="_blank" rel="noopener noreferrer">LeetCode #211</a> | <a href="https://www.geeksforgeeks.org/problems/add-and-search-word/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 **Problem Statement:** Design a data structure supporting addWord and search (where `.` matches any character).
 
@@ -397,7 +397,7 @@ console.log(dict.search("b.."));  // true
 
 ### Problem 1: Longest Common Prefix Using Trie
 
-**Practice Links:** [LeetCode #14](https://leetcode.com/problems/longest-common-prefix/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/longest-common-prefix-in-an-array5129/1) | [InterviewBit](https://www.interviewbit.com/problems/longest-common-prefix/)
+**Practice Links:** <a href="https://leetcode.com/problems/longest-common-prefix/" target="_blank" rel="noopener noreferrer">LeetCode #14</a> | <a href="https://www.geeksforgeeks.org/problems/longest-common-prefix-in-an-array5129/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/longest-common-prefix/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 ```javascript
 function longestCommonPrefix(words) {
@@ -440,7 +440,7 @@ console.log(longestCommonPrefix(["dog","car","race"]));       // ""
 
 ### Problem 2: Replace Words with Root
 
-**Practice Links:** [LeetCode #648](https://leetcode.com/problems/replace-words/)
+**Practice Links:** <a href="https://leetcode.com/problems/replace-words/" target="_blank" rel="noopener noreferrer">LeetCode #648</a>
 
 ```javascript
 function replaceWords(dictionary, sentence) {
@@ -489,7 +489,7 @@ console.log(replaceWords(["cat","bat","rat"], "the cattle was rattled by the bat
 
 ### Problem 3: Count Distinct Substrings
 
-**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/count-of-distinct-substrings/1)
+**Practice Links:** <a href="https://www.geeksforgeeks.org/problems/count-of-distinct-substrings/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 ```javascript
 function countDistinctSubstrings(s) {

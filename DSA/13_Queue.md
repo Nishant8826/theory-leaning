@@ -39,7 +39,7 @@ A queue is like a **drive-through**. Cars line up, the first car gets served fir
 
 ### Queue Implementation Using Array
 
-**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/implement-queue-using-array/1)
+**Practice Links:** <a href="https://www.geeksforgeeks.org/problems/implement-queue-using-array/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 ```javascript
 // Simple Queue using array (brute force — shift is O(n))
@@ -86,7 +86,7 @@ console.log(q.front());   // 2
 
 ### Queue Using Object (O(1) Dequeue)
 
-**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/implement-queue-using-array/1) (using object instead of array)
+**Practice Links:** <a href="https://www.geeksforgeeks.org/problems/implement-queue-using-array/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> (using object instead of array)
 
 ```javascript
 class Queue {
@@ -146,7 +146,7 @@ console.log(q.size());    // 1
 
 ### Question 1: Implement Stack Using Queues
 
-**Practice Links:** [LeetCode #225](https://leetcode.com/problems/implement-stack-using-queues/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/stack-using-two-queues/1)
+**Practice Links:** <a href="https://leetcode.com/problems/implement-stack-using-queues/" target="_blank" rel="noopener noreferrer">LeetCode #225</a> | <a href="https://www.geeksforgeeks.org/problems/stack-using-two-queues/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 **Problem Statement:** Implement a stack using only queue operations.
 
@@ -209,7 +209,7 @@ class StackUsingQueues {
 
 ### Question 2: First Non-Repeating Character in a Stream
 
-**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/first-non-repeating-character-in-a-stream1216/1) | [InterviewBit](https://www.interviewbit.com/problems/first-non-repeating-character-in-a-stream/)
+**Practice Links:** <a href="https://www.geeksforgeeks.org/problems/first-non-repeating-character-in-a-stream1216/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/first-non-repeating-character-in-a-stream/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** Given a stream of characters, find the first non-repeating character at each step.
 
@@ -279,7 +279,7 @@ console.log(firstNonRepeatingOptimized("aabcbcd"));
 
 ### Question 3: Rotting Oranges (BFS)
 
-**Practice Links:** [LeetCode #994](https://leetcode.com/problems/rotting-oranges/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/rotten-oranges2536/1)
+**Practice Links:** <a href="https://leetcode.com/problems/rotting-oranges/" target="_blank" rel="noopener noreferrer">LeetCode #994</a> | <a href="https://www.geeksforgeeks.org/problems/rotten-oranges2536/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 **Problem Statement:** In a grid, fresh oranges (1) rot if adjacent to rotten ones (2). Find the minimum time for all oranges to rot, or -1 if impossible.
 
@@ -385,7 +385,7 @@ console.log(rottingOrangesOptimized([[2,1,1],[1,1,0],[0,1,1]])); // 4
 
 ### Problem 1: Circular Queue Implementation
 
-**Practice Links:** [LeetCode #622](https://leetcode.com/problems/design-circular-queue/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/circular-queue-implementation/1)
+**Practice Links:** <a href="https://leetcode.com/problems/design-circular-queue/" target="_blank" rel="noopener noreferrer">LeetCode #622</a> | <a href="https://www.geeksforgeeks.org/problems/circular-queue-implementation/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 ```javascript
 class CircularQueue {
@@ -436,7 +436,7 @@ console.log(cq.front());    // 2
 
 ### Problem 2: Number of Recent Calls
 
-**Practice Links:** [LeetCode #933](https://leetcode.com/problems/number-of-recent-calls/)
+**Practice Links:** <a href="https://leetcode.com/problems/number-of-recent-calls/" target="_blank" rel="noopener noreferrer">LeetCode #933</a>
 
 ```javascript
 class RecentCounter {
@@ -469,7 +469,7 @@ console.log(rc.ping(3002)); // 3
 
 ### Problem 3: Generate Binary Numbers from 1 to N
 
-**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/generate-binary-numbers-1587115620/1)
+**Practice Links:** <a href="https://www.geeksforgeeks.org/problems/generate-binary-numbers-1587115620/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 ```javascript
 function generateBinary(n) {

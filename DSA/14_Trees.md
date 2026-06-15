@@ -60,7 +60,7 @@ A **binary tree** is a tree where each node has **at most 2 children** (left and
 
 ### Tree Node and Traversals
 
-**Practice Links:** [LeetCode #94](https://leetcode.com/problems/binary-tree-inorder-traversal/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/inorder-traversal/1) | [InterviewBit](https://www.interviewbit.com/problems/inorder-traversal/)
+**Practice Links:** <a href="https://leetcode.com/problems/binary-tree-inorder-traversal/" target="_blank" rel="noopener noreferrer">LeetCode #94</a> | <a href="https://www.geeksforgeeks.org/problems/inorder-traversal/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/inorder-traversal/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 ```javascript
 class TreeNode {
@@ -112,7 +112,7 @@ console.log(postorder(root)); // [4, 5, 2, 3, 1]
 
 ### Level Order Traversal (BFS) — Using Queue
 
-**Practice Links:** [LeetCode #102](https://leetcode.com/problems/binary-tree-level-order-traversal/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/level-order-traversal/1) | [InterviewBit](https://www.interviewbit.com/problems/level-order-traversal/)
+**Practice Links:** <a href="https://leetcode.com/problems/binary-tree-level-order-traversal/" target="_blank" rel="noopener noreferrer">LeetCode #102</a> | <a href="https://www.geeksforgeeks.org/problems/level-order-traversal/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/level-order-traversal/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 ```javascript
 function levelOrder(root) {
@@ -144,7 +144,7 @@ console.log(levelOrder(root)); // [[1], [2, 3], [4, 5]]
 
 ### Iterative Inorder Traversal (Using Stack)
 
-**Practice Links:** [LeetCode #94](https://leetcode.com/problems/binary-tree-inorder-traversal/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/inorder-traversal/1) (Iterative)
+**Practice Links:** <a href="https://leetcode.com/problems/binary-tree-inorder-traversal/" target="_blank" rel="noopener noreferrer">LeetCode #94</a> | <a href="https://www.geeksforgeeks.org/problems/inorder-traversal/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> (Iterative)
 
 ```javascript
 function inorderIterative(root) {
@@ -184,7 +184,7 @@ console.log(inorderIterative(root)); // [4, 2, 5, 1, 3]
 
 ### Question 1: Maximum Depth of Binary Tree
 
-**Practice Links:** [LeetCode #104](https://leetcode.com/problems/maximum-depth-of-binary-tree/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/height-of-binary-tree/1) | [InterviewBit](https://www.interviewbit.com/problems/max-depth-of-binary-tree/)
+**Practice Links:** <a href="https://leetcode.com/problems/maximum-depth-of-binary-tree/" target="_blank" rel="noopener noreferrer">LeetCode #104</a> | <a href="https://www.geeksforgeeks.org/problems/height-of-binary-tree/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/max-depth-of-binary-tree/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** Find the maximum depth (height) of a binary tree.
 
@@ -239,7 +239,7 @@ console.log(maxDepthDFS(root)); // 3
 
 ### Question 2: Invert Binary Tree
 
-**Practice Links:** [LeetCode #226](https://leetcode.com/problems/invert-binary-tree/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/mirror-tree/1) | [InterviewBit](https://www.interviewbit.com/problems/invert-the-binary-tree/)
+**Practice Links:** <a href="https://leetcode.com/problems/invert-binary-tree/" target="_blank" rel="noopener noreferrer">LeetCode #226</a> | <a href="https://www.geeksforgeeks.org/problems/mirror-tree/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/invert-the-binary-tree/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** Mirror a binary tree — swap every left and right child.
 
@@ -295,7 +295,7 @@ function invertDFS(root) {
 
 ### Question 3: Check if Two Trees are Identical
 
-**Practice Links:** [LeetCode #100](https://leetcode.com/problems/same-tree/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/determine-if-two-trees-are-identical/1) | [InterviewBit](https://www.interviewbit.com/problems/identical-binary-trees/)
+**Practice Links:** <a href="https://leetcode.com/problems/same-tree/" target="_blank" rel="noopener noreferrer">LeetCode #100</a> | <a href="https://www.geeksforgeeks.org/problems/determine-if-two-trees-are-identical/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/identical-binary-trees/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** Check if two binary trees are structurally identical with the same values.
 
@@ -331,7 +331,7 @@ function isSameTree(p, q) {
 
 ### Question 4: Diameter of Binary Tree
 
-**Practice Links:** [LeetCode #543](https://leetcode.com/problems/diameter-of-binary-tree/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/diameter-of-binary-tree/1)
+**Practice Links:** <a href="https://leetcode.com/problems/diameter-of-binary-tree/" target="_blank" rel="noopener noreferrer">LeetCode #543</a> | <a href="https://www.geeksforgeeks.org/problems/diameter-of-binary-tree/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 **Problem Statement:** Find the diameter — the longest path between any two nodes (not necessarily through the root).
 
@@ -398,7 +398,7 @@ console.log(diameterOptimized(root)); // 3
 
 ### Problem 1: Check if Tree is Symmetric
 
-**Practice Links:** [LeetCode #101](https://leetcode.com/problems/symmetric-tree/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/symmetric-tree/1) | [InterviewBit](https://www.interviewbit.com/problems/symmetric-binary-tree/)
+**Practice Links:** <a href="https://leetcode.com/problems/symmetric-tree/" target="_blank" rel="noopener noreferrer">LeetCode #101</a> | <a href="https://www.geeksforgeeks.org/problems/symmetric-tree/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/symmetric-binary-tree/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 ```javascript
 function isSymmetric(root) {
@@ -424,7 +424,7 @@ function isSymmetric(root) {
 
 ### Problem 2: Path Sum
 
-**Practice Links:** [LeetCode #112](https://leetcode.com/problems/path-sum/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/path-sum/1) | [InterviewBit](https://www.interviewbit.com/problems/path-sum/)
+**Practice Links:** <a href="https://leetcode.com/problems/path-sum/" target="_blank" rel="noopener noreferrer">LeetCode #112</a> | <a href="https://www.geeksforgeeks.org/problems/path-sum/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/path-sum/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** Check if any root-to-leaf path sums to a target.
 
@@ -459,7 +459,7 @@ function hasPathSum(root, target) {
 
 ### Problem 3: Count Good Nodes
 
-**Practice Links:** [LeetCode #1448](https://leetcode.com/problems/count-good-nodes-in-binary-tree/)
+**Practice Links:** <a href="https://leetcode.com/problems/count-good-nodes-in-binary-tree/" target="_blank" rel="noopener noreferrer">LeetCode #1448</a>
 
 **Problem Statement:** A node is "good" if no node on the path from root to it has a greater value.
 

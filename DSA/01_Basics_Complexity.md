@@ -57,7 +57,7 @@ Think of it like **searching for a friend's house**:
 
 ### Problem: Find if a number exists in an array
 
-**Practice Links:** [LeetCode #704](https://leetcode.com/problems/binary-search/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/binary-search-1587115620/1) | [InterviewBit](https://www.interviewbit.com/problems/binary-search/)
+**Practice Links:** <a href="https://leetcode.com/problems/binary-search/" target="_blank" rel="noopener noreferrer">LeetCode #704</a> | <a href="https://www.geeksforgeeks.org/problems/binary-search-1587115620/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/binary-search/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 The simplest approach — check every single element.
 
@@ -461,7 +461,7 @@ console.log(reverseInPlace(myArr)); // [5, 4, 3, 2, 1]
 
 ### Problem 1: Sum of All Elements in an Array
 
-**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/sum-of-array-elements2502/1)
+**Practice Links:** <a href="https://www.geeksforgeeks.org/problems/sum-of-array-elements2502/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 **Problem Statement:** Given an array of numbers, find the sum of all elements.
 
@@ -499,7 +499,7 @@ console.log(sumArray([-1, 0, 1]));        // 0
 
 ### Problem 2: Find the Maximum Element
 
-**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/find-minimum-and-maximum-element-in-an-array4428/1)
+**Practice Links:** <a href="https://www.geeksforgeeks.org/problems/find-minimum-and-maximum-element-in-an-array4428/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 **Problem Statement:** Given an array, find the largest number.
 
@@ -541,7 +541,7 @@ console.log(findMax([42]));                // 42
 
 ### Problem 3: Count Occurrences of a Target
 
-**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/number-of-occurrence2259/1)
+**Practice Links:** <a href="https://www.geeksforgeeks.org/problems/number-of-occurrence2259/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 **Problem Statement:** Given an array and a target value, count how many times the target appears.
 
@@ -581,7 +581,7 @@ console.log(countOccurrences([1, 2, 3], 7));              // 0
 
 ### Problem 4: Check if Array is Sorted
 
-**Practice Links:** [LeetCode #1752](https://leetcode.com/problems/check-if-array-is-sorted-and-rotated/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/check-if-array-is-sorted0515/1)
+**Practice Links:** <a href="https://leetcode.com/problems/check-if-array-is-sorted-and-rotated/" target="_blank" rel="noopener noreferrer">LeetCode #1752</a> | <a href="https://www.geeksforgeeks.org/problems/check-if-array-is-sorted0515/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 **Problem Statement:** Given an array, check if it is sorted in non-decreasing order.
 
@@ -619,7 +619,7 @@ console.log(isSorted([1]));                // true
 
 ### Problem 5: Fibonacci — Understand Exponential vs Linear Complexity
 
-**Practice Links:** [LeetCode #509](https://leetcode.com/problems/fibonacci-number/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/nth-fibonacci-number1335/1) | [InterviewBit](https://www.interviewbit.com/problems/fibonacci-number/)
+**Practice Links:** <a href="https://leetcode.com/problems/fibonacci-number/" target="_blank" rel="noopener noreferrer">LeetCode #509</a> | <a href="https://www.geeksforgeeks.org/problems/nth-fibonacci-number1335/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/fibonacci-number/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** Calculate the nth Fibonacci number using both recursive (exponential) and iterative (linear) approaches.
 

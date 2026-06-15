@@ -155,7 +155,7 @@ Both visit every vertex and edge exactly once.
 
 ### Question 1: Number of Islands
 
-**Practice Links:** [LeetCode #200](https://leetcode.com/problems/number-of-islands/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/find-the-number-of-islands/1)
+**Practice Links:** <a href="https://leetcode.com/problems/number-of-islands/" target="_blank" rel="noopener noreferrer">LeetCode #200</a> | <a href="https://www.geeksforgeeks.org/problems/find-the-number-of-islands/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 **Problem Statement:** Given a 2D grid of `'1'` (land) and `'0'` (water), count the number of islands.
 
@@ -245,7 +245,7 @@ function numIslandsBFS(grid) {
 
 ### Question 2: Shortest Path in Unweighted Graph (BFS)
 
-**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/shortest-path-in-undirected-graph-having-unit-distance/1)
+**Practice Links:** <a href="https://www.geeksforgeeks.org/problems/shortest-path-in-undirected-graph-having-unit-distance/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 **Problem Statement:** Find the shortest path from source to destination in an unweighted graph.
 
@@ -313,7 +313,7 @@ console.log(shortestPathBFS(g, 'A', 'E')); // ['A', 'C', 'E']
 
 ### Question 3: Detect Cycle in an Undirected Graph
 
-**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/detect-cycle-in-an-undirected-graph/1)
+**Practice Links:** <a href="https://www.geeksforgeeks.org/problems/detect-cycle-in-an-undirected-graph/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 **Problem Statement:** Check if an undirected graph contains a cycle.
 
@@ -402,7 +402,7 @@ function hasCycleBFS(n, edges) {
 
 ### Question 4: Detect Cycle in a Directed Graph
 
-**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/detect-cycle-in-a-directed-graph/1)
+**Practice Links:** <a href="https://www.geeksforgeeks.org/problems/detect-cycle-in-a-directed-graph/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 ```javascript
 function hasCycleDirected(n, edges) {
@@ -446,7 +446,7 @@ console.log(hasCycleDirected(4, [[0,1],[1,2],[2,0]]));       // true
 
 ### Problem 1: Flood Fill
 
-**Practice Links:** [LeetCode #733](https://leetcode.com/problems/flood-fill/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/flood-fill-algorithm1856/1)
+**Practice Links:** <a href="https://leetcode.com/problems/flood-fill/" target="_blank" rel="noopener noreferrer">LeetCode #733</a> | <a href="https://www.geeksforgeeks.org/problems/flood-fill-algorithm1856/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 ```javascript
 function floodFill(image, sr, sc, color) {
@@ -477,7 +477,7 @@ console.log(floodFill([[1,1,1],[1,1,0],[1,0,1]], 1, 1, 2));
 
 ### Problem 2: Course Schedule (Can Finish?)
 
-**Practice Links:** [LeetCode #207](https://leetcode.com/problems/course-schedule/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/course-schedule/1) | [InterviewBit](https://www.interviewbit.com/problems/possibility-of-finishing-all-courses-given-prerequisites/)
+**Practice Links:** <a href="https://leetcode.com/problems/course-schedule/" target="_blank" rel="noopener noreferrer">LeetCode #207</a> | <a href="https://www.geeksforgeeks.org/problems/course-schedule/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/possibility-of-finishing-all-courses-given-prerequisites/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 ```javascript
 function canFinish(numCourses, prerequisites) {
@@ -518,7 +518,7 @@ console.log(canFinish(2, [[1,0],[0,1]])); // false (cycle!)
 
 ### Problem 3: Surrounded Regions
 
-**Practice Links:** [LeetCode #130](https://leetcode.com/problems/surrounded-regions/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/surrounded-regions-1616126287/1)
+**Practice Links:** <a href="https://leetcode.com/problems/surrounded-regions/" target="_blank" rel="noopener noreferrer">LeetCode #130</a> | <a href="https://www.geeksforgeeks.org/problems/surrounded-regions-1616126287/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 ```javascript
 function solve(board) {

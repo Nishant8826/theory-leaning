@@ -60,7 +60,7 @@ Think of a row of **10 switches** controlling lights. Bitwise AND is like checki
 
 ### Problem: Find the Single Number (all others appear twice)
 
-**Practice Links:** [LeetCode #136](https://leetcode.com/problems/single-number/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/single-number1014/1) | [InterviewBit](https://www.interviewbit.com/problems/single-number/)
+**Practice Links:** <a href="https://leetcode.com/problems/single-number/" target="_blank" rel="noopener noreferrer">LeetCode #136</a> | <a href="https://www.geeksforgeeks.org/problems/single-number1014/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/single-number/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 ```javascript
 // Brute Force: Use a hash map to count occurrences
@@ -124,7 +124,7 @@ console.log(singleNumberXOR([4, 1, 2, 1, 2])); // 4
 
 ### Question 1: Count Number of 1-Bits (Hamming Weight)
 
-**Practice Links:** [LeetCode #191](https://leetcode.com/problems/number-of-1-bits/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/set-bits0143/1) | [InterviewBit](https://www.interviewbit.com/problems/number-of-1-bits/)
+**Practice Links:** <a href="https://leetcode.com/problems/number-of-1-bits/" target="_blank" rel="noopener noreferrer">LeetCode #191</a> | <a href="https://www.geeksforgeeks.org/problems/set-bits0143/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/number-of-1-bits/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** Count the number of 1 bits in the binary representation of a number.
 
@@ -184,7 +184,7 @@ console.log(hammingWeightOptimized(128)); // 1
 
 ### Question 2: Power of Two
 
-**Practice Links:** [LeetCode #231](https://leetcode.com/problems/power-of-two/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/power-of-2-1587115620/1)
+**Practice Links:** <a href="https://leetcode.com/problems/power-of-two/" target="_blank" rel="noopener noreferrer">LeetCode #231</a> | <a href="https://www.geeksforgeeks.org/problems/power-of-2-1587115620/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 **Problem Statement:** Check if a number is a power of 2.
 
@@ -230,7 +230,7 @@ console.log(isPowerOfTwo(0));   // false
 
 ### Question 3: Missing Number (XOR Approach)
 
-**Practice Links:** [LeetCode #268](https://leetcode.com/problems/missing-number/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/missing-number-in-array1416/1)
+**Practice Links:** <a href="https://leetcode.com/problems/missing-number/" target="_blank" rel="noopener noreferrer">LeetCode #268</a> | <a href="https://www.geeksforgeeks.org/problems/missing-number-in-array1416/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 **Problem Statement:** Given array of n numbers from 0 to n, find the missing one.
 
@@ -278,7 +278,7 @@ console.log(missingNumberXOR([9,6,4,2,3,5,7,0,1])); // 8
 
 ### Question 4: Reverse Bits
 
-**Practice Links:** [LeetCode #190](https://leetcode.com/problems/reverse-bits/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/reverse-bits3556/1) | [InterviewBit](https://www.interviewbit.com/problems/reverse-bits/)
+**Practice Links:** <a href="https://leetcode.com/problems/reverse-bits/" target="_blank" rel="noopener noreferrer">LeetCode #190</a> | <a href="https://www.geeksforgeeks.org/problems/reverse-bits3556/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/reverse-bits/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** Reverse all 32 bits of a given unsigned integer.
 
@@ -311,7 +311,7 @@ console.log(reverseBits(43261596)); // 964176192
 
 ### Problem 1: Counting Bits
 
-**Practice Links:** [LeetCode #338](https://leetcode.com/problems/counting-bits/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/counting-bits/1)
+**Practice Links:** <a href="https://leetcode.com/problems/counting-bits/" target="_blank" rel="noopener noreferrer">LeetCode #338</a> | <a href="https://www.geeksforgeeks.org/problems/counting-bits/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 **Problem Statement:** For every number from 0 to n, count the number of 1-bits.
 
@@ -347,7 +347,7 @@ console.log(countBits(2)); // [0, 1, 1]
 
 ### Problem 2: Sum of Two Integers Without + Operator
 
-**Practice Links:** [LeetCode #371](https://leetcode.com/problems/sum-of-two-integers/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/sum-of-two-numbers-without-using-arithmetic-operators/1)
+**Practice Links:** <a href="https://leetcode.com/problems/sum-of-two-integers/" target="_blank" rel="noopener noreferrer">LeetCode #371</a> | <a href="https://www.geeksforgeeks.org/problems/sum-of-two-numbers-without-using-arithmetic-operators/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 ```javascript
 function getSum(a, b) {
@@ -371,7 +371,7 @@ console.log(getSum(-2, 3)); // 1
 
 ### Problem 3: Single Number III (Two Unique Numbers)
 
-**Practice Links:** [LeetCode #260](https://leetcode.com/problems/single-number-iii/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/two-repeated-elements-1587115621/1)
+**Practice Links:** <a href="https://leetcode.com/problems/single-number-iii/" target="_blank" rel="noopener noreferrer">LeetCode #260</a> | <a href="https://www.geeksforgeeks.org/problems/two-repeated-elements-1587115621/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 ```javascript
 function singleNumberIII(nums) {

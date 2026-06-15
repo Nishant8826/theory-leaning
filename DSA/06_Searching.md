@@ -35,7 +35,7 @@ Imagine you've lost your keys somewhere in your house. You have two strategies:
 
 ### Problem: Find a Target in an Array
 
-**Practice Links:** [LeetCode #704](https://leetcode.com/problems/binary-search/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/binary-search-1587115620/1) | [InterviewBit](https://www.interviewbit.com/problems/search-in-bitonic-array/)
+**Practice Links:** <a href="https://leetcode.com/problems/binary-search/" target="_blank" rel="noopener noreferrer">LeetCode #704</a> | <a href="https://www.geeksforgeeks.org/problems/binary-search-1587115620/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/search-in-bitonic-array/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 Given an array of integers and a target, find the index of the target.
 
@@ -135,7 +135,7 @@ If you have 1,000,000 elements:
 
 ### Question 1: Find First and Last Position of Element in Sorted Array
 
-**Practice Links:** [LeetCode #34](https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/first-and-last-occurrences-of-x3116/1) | [InterviewBit](https://www.interviewbit.com/problems/search-for-a-range/)
+**Practice Links:** <a href="https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/" target="_blank" rel="noopener noreferrer">LeetCode #34</a> | <a href="https://www.geeksforgeeks.org/problems/first-and-last-occurrences-of-x3116/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/search-for-a-range/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** Given a sorted array with possible duplicates, find the first and last position of a target value.
 
@@ -224,7 +224,7 @@ console.log(searchRangeOptimized([5, 7, 7, 8, 8, 10], 6)); // [-1, -1]
 
 ### Question 2: Search in Rotated Sorted Array
 
-**Practice Links:** [LeetCode #33](https://leetcode.com/problems/search-in-rotated-sorted-array/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/search-in-a-rotated-array4618/1) | [InterviewBit](https://www.interviewbit.com/problems/rotated-sorted-array-search/)
+**Practice Links:** <a href="https://leetcode.com/problems/search-in-rotated-sorted-array/" target="_blank" rel="noopener noreferrer">LeetCode #33</a> | <a href="https://www.geeksforgeeks.org/problems/search-in-a-rotated-array4618/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/rotated-sorted-array-search/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** A sorted array has been rotated at some pivot. Find the target in O(log n).
 
@@ -294,7 +294,7 @@ console.log(searchRotatedOptimized([4, 5, 6, 7, 0, 1, 2], 3)); // -1
 
 ### Question 3: Find Peak Element
 
-**Practice Links:** [LeetCode #162](https://leetcode.com/problems/find-peak-element/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/find-a-peak-element-1587115620/1) | [InterviewBit](https://www.interviewbit.com/problems/find-a-peak-element/)
+**Practice Links:** <a href="https://leetcode.com/problems/find-peak-element/" target="_blank" rel="noopener noreferrer">LeetCode #162</a> | <a href="https://www.geeksforgeeks.org/problems/find-a-peak-element-1587115620/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/find-a-peak-element/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** Find any peak element (greater than its neighbors). The array may have multiple peaks.
 
@@ -356,7 +356,7 @@ console.log(findPeakOptimized([1, 2, 1, 3, 5, 6])); // 5
 
 ### Question 4: Find Square Root (Integer)
 
-**Practice Links:** [LeetCode #69](https://leetcode.com/problems/sqrtx/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/square-root/1) | [InterviewBit](https://www.interviewbit.com/problems/square-root-of-integer/)
+**Practice Links:** <a href="https://leetcode.com/problems/sqrtx/" target="_blank" rel="noopener noreferrer">LeetCode #69</a> | <a href="https://www.geeksforgeeks.org/problems/square-root/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/square-root-of-integer/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** Given a non-negative integer `x`, return the integer square root (floor of actual square root).
 
@@ -432,7 +432,7 @@ console.log(mySqrtOptimized(100)); // 10
 
 ### Problem 1: Search Insert Position
 
-**Practice Links:** [LeetCode #35](https://leetcode.com/problems/search-insert-position/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/search-insert-position-of-k-in-a-sorted-array/1) | [InterviewBit](https://www.interviewbit.com/problems/sorted-insert-position/)
+**Practice Links:** <a href="https://leetcode.com/problems/search-insert-position/" target="_blank" rel="noopener noreferrer">LeetCode #35</a> | <a href="https://www.geeksforgeeks.org/problems/search-insert-position-of-k-in-a-sorted-array/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/sorted-insert-position/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** Given a sorted array and target, find the index where it would be inserted to keep the array sorted.
 
@@ -467,7 +467,7 @@ console.log(searchInsert([1, 3, 5, 6], 0)); // 0
 
 ### Problem 2: Count Occurrences in Sorted Array
 
-**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/number-of-occurrence2259/1)
+**Practice Links:** <a href="https://www.geeksforgeeks.org/problems/number-of-occurrence2259/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 **Problem Statement:** Count how many times a target appears in a sorted array.
 
@@ -513,7 +513,7 @@ console.log(countOccurrences([1, 2, 3, 4, 5], 6));     // 0
 
 ### Problem 3: Find Minimum in Rotated Sorted Array
 
-**Practice Links:** [LeetCode #153](https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/minimum-element-in-a-sorted-and-rotated-array3611/1) | [InterviewBit](https://www.interviewbit.com/problems/rotated-sorted-array-search/)
+**Practice Links:** <a href="https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/" target="_blank" rel="noopener noreferrer">LeetCode #153</a> | <a href="https://www.geeksforgeeks.org/problems/minimum-element-in-a-sorted-and-rotated-array3611/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/rotated-sorted-array-search/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** A sorted array was rotated. Find the minimum element.
 
@@ -552,7 +552,7 @@ console.log(findMin([1, 2, 3, 4, 5]));    // 1 (not rotated)
 
 ### Problem 4: Search a 2D Matrix
 
-**Practice Links:** [LeetCode #74](https://leetcode.com/problems/search-a-2d-matrix/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/search-in-a-matrix-1587115621/1) | [InterviewBit](https://www.interviewbit.com/problems/matrix-search/)
+**Practice Links:** <a href="https://leetcode.com/problems/search-a-2d-matrix/" target="_blank" rel="noopener noreferrer">LeetCode #74</a> | <a href="https://www.geeksforgeeks.org/problems/search-in-a-matrix-1587115621/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/matrix-search/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** Search for a target in a matrix where each row is sorted and the first element of each row is greater than the last element of the previous row.
 

@@ -173,7 +173,7 @@ console.log(primMST(9, adjList).totalWeight); // 37
 
 ### Question 1: Min Cost to Connect All Points
 
-**Practice Links:** [LeetCode #1584](https://leetcode.com/problems/min-cost-to-connect-all-points/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/minimum-spanning-tree/1)
+**Practice Links:** <a href="https://leetcode.com/problems/min-cost-to-connect-all-points/" target="_blank" rel="noopener noreferrer">LeetCode #1584</a> | <a href="https://www.geeksforgeeks.org/problems/minimum-spanning-tree/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 **Problem Statement:** Given n points, find the minimum cost to connect all points (cost = Manhattan distance).
 
@@ -269,7 +269,7 @@ console.log(minCostPrims([[0,0],[2,2],[3,10],[5,2],[7,0]])); // 20
 
 ### Question 2: Connecting Cities with Minimum Cost
 
-**Practice Links:** [LeetCode #1135](https://leetcode.com/problems/connecting-cities-with-minimum-cost/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/minimum-cost-to-connect-all-cities/1)
+**Practice Links:** <a href="https://leetcode.com/problems/connecting-cities-with-minimum-cost/" target="_blank" rel="noopener noreferrer">LeetCode #1135</a> | <a href="https://www.geeksforgeeks.org/problems/minimum-cost-to-connect-all-cities/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 ```javascript
 function minimumCost(n, connections) {
@@ -347,7 +347,7 @@ function isMSTUnique(n, edges) {
 
 ### Problem 2: Critical and Pseudo-Critical Edges in MST
 
-**Practice Links:** [LeetCode #1489](https://leetcode.com/problems/find-critical-and-pseudo-critical-edges-in-minimum-spanning-tree/)
+**Practice Links:** <a href="https://leetcode.com/problems/find-critical-and-pseudo-critical-edges-in-minimum-spanning-tree/" target="_blank" rel="noopener noreferrer">LeetCode #1489</a>
 
 ```javascript
 function findCriticalAndPseudo(n, edges) {

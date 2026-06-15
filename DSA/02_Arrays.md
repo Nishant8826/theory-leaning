@@ -44,7 +44,7 @@ Think of a **train with numbered coaches**. Want coach 5? Walk straight to it. Y
 
 ### Problem: Find the Second Largest Element
 
-**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/second-largest3735/1) | [InterviewBit](https://www.interviewbit.com/problems/second-largest-element/)
+**Practice Links:** <a href="https://www.geeksforgeeks.org/problems/second-largest3735/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/second-largest-element/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 Given an array, find the second largest element.
 
@@ -146,7 +146,7 @@ We keep two variables (`first` and `second`) and update them as we scan. Like ha
 
 ### Question 1: Rotate Array by K Positions
 
-**Practice Links:** [LeetCode #189](https://leetcode.com/problems/rotate-array/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/rotate-array-by-n-elements-1587115621/1) | [CodeChef](https://www.codechef.com/problems/ROTATE) | [HackerRank](https://www.hackerrank.com/challenges/array-left-rotation/problem)
+**Practice Links:** <a href="https://leetcode.com/problems/rotate-array/" target="_blank" rel="noopener noreferrer">LeetCode #189</a> | <a href="https://www.geeksforgeeks.org/problems/rotate-array-by-n-elements-1587115621/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.codechef.com/problems/ROTATE" target="_blank" rel="noopener noreferrer">CodeChef</a> | <a href="https://www.hackerrank.com/challenges/array-left-rotation/problem" target="_blank" rel="noopener noreferrer">HackerRank</a>
 
 **Problem Statement:** Given an array and a number `k`, rotate the array to the right by `k` positions.
 
@@ -231,7 +231,7 @@ console.log(rotateOptimized([1, 2, 3, 4, 5], 2)); // [4, 5, 1, 2, 3]
 
 ### Question 2: Move All Zeros to End
 
-**Practice Links:** [LeetCode #283](https://leetcode.com/problems/move-zeroes/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/move-all-zeroes-to-end-of-array0751/1) | [InterviewBit](https://www.interviewbit.com/problems/move-zeroes/)
+**Practice Links:** <a href="https://leetcode.com/problems/move-zeroes/" target="_blank" rel="noopener noreferrer">LeetCode #283</a> | <a href="https://www.geeksforgeeks.org/problems/move-all-zeroes-to-end-of-array0751/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/move-zeroes/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** Given an array, move all zeros to the end while keeping the order of non-zero elements.
 
@@ -311,7 +311,7 @@ console.log(moveZerosOptimized([0, 0, 1]));          // [1, 0, 0]
 
 ### Question 3: Find Missing Number
 
-**Practice Links:** [LeetCode #268](https://leetcode.com/problems/missing-number/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/missing-number-in-array1416/1) | [InterviewBit](https://www.interviewbit.com/problems/missing-number/)
+**Practice Links:** <a href="https://leetcode.com/problems/missing-number/" target="_blank" rel="noopener noreferrer">LeetCode #268</a> | <a href="https://www.geeksforgeeks.org/problems/missing-number-in-array1416/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/missing-number/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** Given an array containing `n` distinct numbers from 0 to n, find the one missing. 
 
@@ -385,7 +385,7 @@ console.log(missingNumberOptimized([9,6,4,2,3,5,7,0,1])); // 8
 
 ### Question 4: Best Time to Buy and Sell Stock
 
-**Practice Links:** [LeetCode #121](https://leetcode.com/problems/best-time-to-buy-and-sell-stock/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/buy-maximum-stocks-if-i-stocks-can-be-bought-on-i-th-day/1) | [InterviewBit](https://www.interviewbit.com/problems/best-time-to-buy-and-sell-stocks-i/)
+**Practice Links:** <a href="https://leetcode.com/problems/best-time-to-buy-and-sell-stock/" target="_blank" rel="noopener noreferrer">LeetCode #121</a> | <a href="https://www.geeksforgeeks.org/problems/buy-maximum-stocks-if-i-stocks-can-be-bought-on-i-th-day/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/best-time-to-buy-and-sell-stocks-i/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** Given an array where `prices[i]` is the price of a stock on day `i`, find the maximum profit from one buy and one sell. You must buy before you sell.
 
@@ -458,7 +458,7 @@ console.log(maxProfitOptimized([7, 6, 4, 3, 1]));     // 0 (prices only go down)
 
 ### Problem 1: Find Two Numbers That Add Up to Target (Two Sum)
 
-**Practice Links:** [LeetCode #1](https://leetcode.com/problems/two-sum/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/key-pair5616/1) | [InterviewBit](https://www.interviewbit.com/problems/2-sum/)
+**Practice Links:** <a href="https://leetcode.com/problems/two-sum/" target="_blank" rel="noopener noreferrer">LeetCode #1</a> | <a href="https://www.geeksforgeeks.org/problems/key-pair5616/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/2-sum/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** Given an array and a target, find two numbers that add up to the target. Return their indices.
 
@@ -501,7 +501,7 @@ console.log(twoSum([3, 2, 4], 6));        // [1, 2] → 2 + 4 = 6
 
 ### Problem 2: Remove Duplicates from Sorted Array (In-Place)
 
-**Practice Links:** [LeetCode #26](https://leetcode.com/problems/remove-duplicates-from-sorted-array/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/remove-duplicate-elements-from-sorted-array/1) | [InterviewBit](https://www.interviewbit.com/problems/remove-duplicates-from-sorted-array/)
+**Practice Links:** <a href="https://leetcode.com/problems/remove-duplicates-from-sorted-array/" target="_blank" rel="noopener noreferrer">LeetCode #26</a> | <a href="https://www.geeksforgeeks.org/problems/remove-duplicate-elements-from-sorted-array/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/remove-duplicates-from-sorted-array/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** Given a sorted array, remove duplicates in-place and return the new length.
 
@@ -562,7 +562,7 @@ console.log(arr.slice(0, len));      // [1, 2, 3, 4, 5]
 
 ### Problem 3: Maximum Subarray Sum (Kadane's Algorithm)
 
-**Practice Links:** [LeetCode #53](https://leetcode.com/problems/maximum-subarray/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/kadanes-algorithm-1587115620/1) | [InterviewBit](https://www.interviewbit.com/problems/max-sum-contiguous-subarray/)
+**Practice Links:** <a href="https://leetcode.com/problems/maximum-subarray/" target="_blank" rel="noopener noreferrer">LeetCode #53</a> | <a href="https://www.geeksforgeeks.org/problems/kadanes-algorithm-1587115620/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/max-sum-contiguous-subarray/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** Find the contiguous subarray with the largest sum.
 
@@ -617,7 +617,7 @@ console.log(maxSubarraySum([-1, -2, -3]));                       // -1 → least
 
 ### Problem 4: Merge Two Sorted Arrays
 
-**Practice Links:** [LeetCode #88](https://leetcode.com/problems/merge-sorted-array/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/merge-two-sorted-arrays-1587115620/1) | [InterviewBit](https://www.interviewbit.com/problems/merge-two-sorted-lists/) | [HackerRank](https://www.hackerrank.com/challenges/merge-two-sorted-linked-lists/problem)
+**Practice Links:** <a href="https://leetcode.com/problems/merge-sorted-array/" target="_blank" rel="noopener noreferrer">LeetCode #88</a> | <a href="https://www.geeksforgeeks.org/problems/merge-two-sorted-arrays-1587115620/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/merge-two-sorted-lists/" target="_blank" rel="noopener noreferrer">InterviewBit</a> | <a href="https://www.hackerrank.com/challenges/merge-two-sorted-linked-lists/problem" target="_blank" rel="noopener noreferrer">HackerRank</a>
 
 **Problem Statement:** Given two sorted arrays, merge them into one sorted array.
 
@@ -686,7 +686,7 @@ console.log(mergeSortedArrays([1, 2], [3, 4, 5, 6])); // [1, 2, 3, 4, 5, 6]
 
 ### Problem 5: Product of Array Except Self
 
-**Practice Links:** [LeetCode #238](https://leetcode.com/problems/product-of-array-except-self/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/product-array-puzzle4525/1) | [CodeChef](https://www.codechef.com/problems/PRODARRAY)
+**Practice Links:** <a href="https://leetcode.com/problems/product-of-array-except-self/" target="_blank" rel="noopener noreferrer">LeetCode #238</a> | <a href="https://www.geeksforgeeks.org/problems/product-array-puzzle4525/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.codechef.com/problems/PRODARRAY" target="_blank" rel="noopener noreferrer">CodeChef</a>
 
 **Problem Statement:** Given an array, return an array where each element is the product of all others except itself. Do NOT use division.
 

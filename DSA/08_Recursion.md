@@ -44,7 +44,7 @@ Think of **Russian nesting dolls (Matryoshka)**. To find the smallest doll, you 
 
 ### Problem: Calculate Factorial
 
-**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/factorial5739/1) | [CodeChef](https://www.codechef.com/problems/FCTRL2)
+**Practice Links:** <a href="https://www.geeksforgeeks.org/problems/factorial5739/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.codechef.com/problems/FCTRL2" target="_blank" rel="noopener noreferrer">CodeChef</a>
 
 Factorial of n: `n! = n × (n-1) × (n-2) × ... × 1`
 
@@ -113,7 +113,7 @@ factorial(5)
 
 ### Another Classic: Fibonacci
 
-**Practice Links:** [LeetCode #509](https://leetcode.com/problems/fibonacci-number/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/nth-fibonacci-number1335/1) | [InterviewBit](https://www.interviewbit.com/problems/stairs/)
+**Practice Links:** <a href="https://leetcode.com/problems/fibonacci-number/" target="_blank" rel="noopener noreferrer">LeetCode #509</a> | <a href="https://www.geeksforgeeks.org/problems/nth-fibonacci-number1335/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/stairs/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 ```javascript
 // Recursive Fibonacci
@@ -168,7 +168,7 @@ Recursion uses **stack space** for each call. Deep recursion on large inputs can
 
 ### Question 1: Power Function (x^n)
 
-**Practice Links:** [LeetCode #50](https://leetcode.com/problems/powx-n/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/power-of-numbers-1587115620/1)
+**Practice Links:** <a href="https://leetcode.com/problems/powx-n/" target="_blank" rel="noopener noreferrer">LeetCode #50</a> | <a href="https://www.geeksforgeeks.org/problems/power-of-numbers-1587115620/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 **Problem Statement:** Calculate x raised to the power n. Handle negative exponents.
 
@@ -237,7 +237,7 @@ console.log(powerOptimized(3, 5));   // 243
 
 ### Question 2: Generate All Subsets (Power Set)
 
-**Practice Links:** [LeetCode #78](https://leetcode.com/problems/subsets/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/subsets-1613027340/1) | [InterviewBit](https://www.interviewbit.com/problems/subset/)
+**Practice Links:** <a href="https://leetcode.com/problems/subsets/" target="_blank" rel="noopener noreferrer">LeetCode #78</a> | <a href="https://www.geeksforgeeks.org/problems/subsets-1613027340/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/subset/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** Given a set of unique integers, return all possible subsets.
 
@@ -304,7 +304,7 @@ console.log(subsetsRecursive([1, 2, 3]));
 
 ### Question 3: Tower of Hanoi
 
-**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/tower-of-hanoi-1587115621/1) | [InterviewBit](https://www.interviewbit.com/problems/tower-of-hanoi/)
+**Practice Links:** <a href="https://www.geeksforgeeks.org/problems/tower-of-hanoi-1587115621/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/tower-of-hanoi/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** Move `n` disks from source peg to destination peg using an auxiliary peg. Rules: move one disk at a time, never place a larger disk on a smaller one.
 
@@ -356,7 +356,7 @@ console.log(hanoiCount(10)); // 1023
 
 ### Question 4: Check if a String is a Palindrome (Recursive)
 
-**Practice Links:** [LeetCode #125](https://leetcode.com/problems/valid-palindrome/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/palindrome-string0817/1)
+**Practice Links:** <a href="https://leetcode.com/problems/valid-palindrome/" target="_blank" rel="noopener noreferrer">LeetCode #125</a> | <a href="https://www.geeksforgeeks.org/problems/palindrome-string0817/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 **Problem Statement:** Use recursion to check if a string is a palindrome.
 
@@ -407,7 +407,7 @@ console.log(isPalindromeRecursive("abba"));    // true
 
 ### Problem 1: Sum of Digits
 
-**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/sum-of-digits1723/1) | [HackerRank](https://www.hackerrank.com/challenges/recursive-digit-sum/problem)
+**Practice Links:** <a href="https://www.geeksforgeeks.org/problems/sum-of-digits1723/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.hackerrank.com/challenges/recursive-digit-sum/problem" target="_blank" rel="noopener noreferrer">HackerRank</a>
 
 **Problem Statement:** Find the sum of digits of a number using recursion.
 
@@ -442,7 +442,7 @@ console.log(sumOfDigits(0));     // 0
 
 ### Problem 2: Reverse a String Recursively
 
-**Practice Links:** [LeetCode #344](https://leetcode.com/problems/reverse-string/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/reverse-a-string/1)
+**Practice Links:** <a href="https://leetcode.com/problems/reverse-string/" target="_blank" rel="noopener noreferrer">LeetCode #344</a> | <a href="https://www.geeksforgeeks.org/problems/reverse-a-string/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 **Problem Statement:** Reverse a string using recursion.
 
@@ -469,7 +469,7 @@ console.log(reverseString("recursion")); // "noisrucer"
 
 ### Problem 3: Count Paths in a Grid
 
-**Practice Links:** [LeetCode #62](https://leetcode.com/problems/unique-paths/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/number-of-paths0911/1) | [InterviewBit](https://www.interviewbit.com/problems/grid-unique-paths/)
+**Practice Links:** <a href="https://leetcode.com/problems/unique-paths/" target="_blank" rel="noopener noreferrer">LeetCode #62</a> | <a href="https://www.geeksforgeeks.org/problems/number-of-paths0911/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/grid-unique-paths/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** Count the number of ways to go from the top-left to the bottom-right of an m×n grid (can only move right or down).
 
@@ -500,7 +500,7 @@ console.log(countPaths(7, 3)); // 28
 
 ### Problem 4: Flatten a Nested Array
 
-**Practice Links:** [LeetCode #341](https://leetcode.com/problems/flatten-nested-list-iterator/)
+**Practice Links:** <a href="https://leetcode.com/problems/flatten-nested-list-iterator/" target="_blank" rel="noopener noreferrer">LeetCode #341</a>
 
 **Problem Statement:** Given a deeply nested array, flatten it into a single-level array.
 
@@ -534,7 +534,7 @@ console.log(flattenArray([[1, 2], [3, [4, [5]]]])); // [1, 2, 3, 4, 5]
 
 ### Problem 5: Print All Permutations of a String
 
-**Practice Links:** [LeetCode #46](https://leetcode.com/problems/permutations/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/permutations-of-a-given-string2041/1) | [InterviewBit](https://www.interviewbit.com/problems/permutations/)
+**Practice Links:** <a href="https://leetcode.com/problems/permutations/" target="_blank" rel="noopener noreferrer">LeetCode #46</a> | <a href="https://www.geeksforgeeks.org/problems/permutations-of-a-given-string2041/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/permutations/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** Generate all permutations of a string.
 

@@ -188,7 +188,7 @@ Jump pattern: 7 → 6 → 4 → 0 (remove lowest set bit each time)
 
 ### Question 1: Range Sum Query — Mutable (Fenwick Approach)
 
-**Practice Links:** [LeetCode #307](https://leetcode.com/problems/range-sum-query-mutable/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/range-sum-query-mutable/1)
+**Practice Links:** <a href="https://leetcode.com/problems/range-sum-query-mutable/" target="_blank" rel="noopener noreferrer">LeetCode #307</a> | <a href="https://www.geeksforgeeks.org/problems/range-sum-query-mutable/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 **Problem Statement:** Support update(index, val) and sumRange(left, right) operations efficiently.
 
@@ -232,7 +232,7 @@ console.log(na.sumRange(0, 2)); // 8
 
 ### Question 2: Count of Smaller Numbers After Self
 
-**Practice Links:** [LeetCode #315](https://leetcode.com/problems/count-of-smaller-numbers-after-self/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/count-smaller-elements3741/1)
+**Practice Links:** <a href="https://leetcode.com/problems/count-of-smaller-numbers-after-self/" target="_blank" rel="noopener noreferrer">LeetCode #315</a> | <a href="https://www.geeksforgeeks.org/problems/count-smaller-elements3741/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 **Problem Statement:** For each element, count how many elements after it are smaller.
 
@@ -301,7 +301,7 @@ console.log(countSmaller([5, 2, 6, 1])); // [2, 1, 1, 0]
 
 ### Question 3: Reverse Pairs
 
-**Practice Links:** [LeetCode #493](https://leetcode.com/problems/reverse-pairs/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/reverse-pairs/1)
+**Practice Links:** <a href="https://leetcode.com/problems/reverse-pairs/" target="_blank" rel="noopener noreferrer">LeetCode #493</a> | <a href="https://www.geeksforgeeks.org/problems/reverse-pairs/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 **Problem Statement:** Count pairs (i, j) where i < j and nums[i] > 2 × nums[j].
 
@@ -354,7 +354,7 @@ console.log(reversePairs([2, 4, 3, 5, 1])); // 3
 
 ### Problem 1: 2D Fenwick Tree (Matrix Range Sum)
 
-**Practice Links:** [LeetCode #308](https://leetcode.com/problems/range-sum-query-2d-mutable/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/range-sum-query-2d-mutable/1)
+**Practice Links:** <a href="https://leetcode.com/problems/range-sum-query-2d-mutable/" target="_blank" rel="noopener noreferrer">LeetCode #308</a> | <a href="https://www.geeksforgeeks.org/problems/range-sum-query-2d-mutable/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 ```javascript
 class FenwickTree2D {
@@ -404,7 +404,7 @@ console.log(bit2d.rangeSum(1, 1, 2, 2)); // 10
 
 ### Problem 2: Range Frequency Query
 
-**Practice Links:** [LeetCode #2080](https://leetcode.com/problems/range-frequency-queries/)
+**Practice Links:** <a href="https://leetcode.com/problems/range-frequency-queries/" target="_blank" rel="noopener noreferrer">LeetCode #2080</a>
 
 ```javascript
 class RangeFreqQuery {
@@ -461,7 +461,7 @@ console.log(rfq.query(0, 11, 12)); // 2
 
 ### Problem 3: Fenwick Tree for Prefix XOR
 
-**Practice Links:** [LeetCode #1310](https://leetcode.com/problems/xor-queries-of-a-subarray/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/xor-queries-of-a-subarray/1)
+**Practice Links:** <a href="https://leetcode.com/problems/xor-queries-of-a-subarray/" target="_blank" rel="noopener noreferrer">LeetCode #1310</a> | <a href="https://www.geeksforgeeks.org/problems/xor-queries-of-a-subarray/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 ```javascript
 class FenwickXOR {

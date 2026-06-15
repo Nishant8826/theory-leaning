@@ -37,7 +37,7 @@ Think of a string like a **train of letters**. Each coach (character) has a seat
 
 ### Problem: Reverse a String
 
-**Practice Links:** [LeetCode #344](https://leetcode.com/problems/reverse-string/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/reverse-a-string/1) | [InterviewBit](https://www.interviewbit.com/problems/reverse-the-string/) | [HackerRank](https://www.hackerrank.com/challenges/java-string-reverse/problem)
+**Practice Links:** <a href="https://leetcode.com/problems/reverse-string/" target="_blank" rel="noopener noreferrer">LeetCode #344</a> | <a href="https://www.geeksforgeeks.org/problems/reverse-a-string/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/reverse-the-string/" target="_blank" rel="noopener noreferrer">InterviewBit</a> | <a href="https://www.hackerrank.com/challenges/java-string-reverse/problem" target="_blank" rel="noopener noreferrer">HackerRank</a>
 
 Given a string, reverse it.
 
@@ -111,7 +111,7 @@ console.log(reverseStringOptimized("abcde"));  // "edcba"
 
 ### Question 1: Check if a String is a Palindrome
 
-**Practice Links:** [LeetCode #125](https://leetcode.com/problems/valid-palindrome/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/palindrome-string0817/1) | [InterviewBit](https://www.interviewbit.com/problems/palindrome-string/)
+**Practice Links:** <a href="https://leetcode.com/problems/valid-palindrome/" target="_blank" rel="noopener noreferrer">LeetCode #125</a> | <a href="https://www.geeksforgeeks.org/problems/palindrome-string0817/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/palindrome-string/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** A palindrome reads the same forward and backward. Check if a given string is a palindrome (ignore non-alphanumeric characters and case).
 
@@ -197,7 +197,7 @@ console.log(isPalindrome("race a car"));                      // false
 
 ### Question 2: First Non-Repeating Character
 
-**Practice Links:** [LeetCode #387](https://leetcode.com/problems/first-unique-character-in-a-string/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/non-repeating-character-1587115620/1) | [InterviewBit](https://www.interviewbit.com/problems/first-non-repeating-character-in-a-stream-of-characters/)
+**Practice Links:** <a href="https://leetcode.com/problems/first-unique-character-in-a-string/" target="_blank" rel="noopener noreferrer">LeetCode #387</a> | <a href="https://www.geeksforgeeks.org/problems/non-repeating-character-1587115620/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/first-non-repeating-character-in-a-stream-of-characters/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** Find the first character in a string that doesn't repeat.
 
@@ -268,7 +268,7 @@ console.log(firstUniqueOptimized("aabb"));           // null
 
 ### Question 3: Check if Two Strings are Anagrams
 
-**Practice Links:** [LeetCode #242](https://leetcode.com/problems/valid-anagram/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/anagram-1587115620/1) | [HackerRank](https://www.hackerrank.com/challenges/anagram/problem)
+**Practice Links:** <a href="https://leetcode.com/problems/valid-anagram/" target="_blank" rel="noopener noreferrer">LeetCode #242</a> | <a href="https://www.geeksforgeeks.org/problems/anagram-1587115620/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.hackerrank.com/challenges/anagram/problem" target="_blank" rel="noopener noreferrer">HackerRank</a>
 
 **Problem Statement:** Two strings are anagrams if they contain the same characters with the same frequency, just rearranged.
 
@@ -350,7 +350,7 @@ console.log(isAnagramOptimized("rat", "car"));       // false
 
 ### Question 4: Longest Substring Without Repeating Characters
 
-**Practice Links:** [LeetCode #3](https://leetcode.com/problems/longest-substring-without-repeating-characters/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/longest-distinct-characters-in-string5848/1) | [InterviewBit](https://www.interviewbit.com/problems/longest-substring-without-repeat/)
+**Practice Links:** <a href="https://leetcode.com/problems/longest-substring-without-repeating-characters/" target="_blank" rel="noopener noreferrer">LeetCode #3</a> | <a href="https://www.geeksforgeeks.org/problems/longest-distinct-characters-in-string5848/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/longest-substring-without-repeat/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** Find the length of the longest substring without repeating characters.
 
@@ -422,7 +422,7 @@ console.log(longestSubstringOptimized("pwwkew"));    // 3
 
 ### Problem 1: Count Vowels and Consonants
 
-**Practice Links:** [GeeksforGeeks](https://www.geeksforgeeks.org/problems/vowels-and-consonants/1)
+**Practice Links:** <a href="https://www.geeksforgeeks.org/problems/vowels-and-consonants/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 **Problem Statement:** Count the number of vowels and consonants in a string.
 
@@ -473,7 +473,7 @@ console.log(countVowelsConsonants("Hello World"));
 
 ### Problem 2: String Compression
 
-**Practice Links:** [LeetCode #443](https://leetcode.com/problems/string-compression/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/run-length-encoding/1) | [InterviewBit](https://www.interviewbit.com/problems/string-compression/)
+**Practice Links:** <a href="https://leetcode.com/problems/string-compression/" target="_blank" rel="noopener noreferrer">LeetCode #443</a> | <a href="https://www.geeksforgeeks.org/problems/run-length-encoding/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/string-compression/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** Compress a string by counting consecutive repeated characters. `"aabcccccaaa"` → `"a2b1c5a3"`
 
@@ -534,7 +534,7 @@ console.log(compressString("abc"));          // "abc" (compressed is longer)
 
 ### Problem 3: Check if String is a Rotation of Another
 
-**Practice Links:** [LeetCode #796](https://leetcode.com/problems/rotate-string/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/check-if-strings-are-rotations-of-each-other-or-not-1587115620/1)
+**Practice Links:** <a href="https://leetcode.com/problems/rotate-string/" target="_blank" rel="noopener noreferrer">LeetCode #796</a> | <a href="https://www.geeksforgeeks.org/problems/check-if-strings-are-rotations-of-each-other-or-not-1587115620/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a>
 
 **Problem Statement:** Check if string `s2` is a rotation of `s1`.
 
@@ -567,7 +567,7 @@ console.log(isRotation("hello", "world"));              // false
 
 ### Problem 4: Reverse Words in a Sentence
 
-**Practice Links:** [LeetCode #151](https://leetcode.com/problems/reverse-words-in-a-string/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/reverse-words-in-a-given-string5459/1) | [InterviewBit](https://www.interviewbit.com/problems/reverse-the-string/)
+**Practice Links:** <a href="https://leetcode.com/problems/reverse-words-in-a-string/" target="_blank" rel="noopener noreferrer">LeetCode #151</a> | <a href="https://www.geeksforgeeks.org/problems/reverse-words-in-a-given-string5459/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/reverse-the-string/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** Reverse the order of words in a sentence.
 
@@ -598,7 +598,7 @@ console.log(reverseWords("a good   example"));   // "example good a"
 
 ### Problem 5: Longest Common Prefix
 
-**Practice Links:** [LeetCode #14](https://leetcode.com/problems/longest-common-prefix/) | [GeeksforGeeks](https://www.geeksforgeeks.org/problems/longest-common-prefix-in-an-array5129/1) | [InterviewBit](https://www.interviewbit.com/problems/longest-common-prefix/)
+**Practice Links:** <a href="https://leetcode.com/problems/longest-common-prefix/" target="_blank" rel="noopener noreferrer">LeetCode #14</a> | <a href="https://www.geeksforgeeks.org/problems/longest-common-prefix-in-an-array5129/1" target="_blank" rel="noopener noreferrer">GeeksforGeeks</a> | <a href="https://www.interviewbit.com/problems/longest-common-prefix/" target="_blank" rel="noopener noreferrer">InterviewBit</a>
 
 **Problem Statement:** Find the longest common prefix among an array of strings.
 
