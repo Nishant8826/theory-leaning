@@ -14,6 +14,7 @@
 | 04 | **Next.js** | [View Prep Material](./04_Nextjs.md) | ✅ Completed |
 | 05 | **React Native** | [View Prep Material](./05_ReactNative.md) | ✅ Completed |
 | 06 | **Learning Saint Prep** | [View Prep Material](./learning_saint.md) | ✅ Completed |
+| 07 | **Khelo Tech Prep** | [View Prep Material](./khelo_tech.md) | ✅ Completed |
 
 ---
 
