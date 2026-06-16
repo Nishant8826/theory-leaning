@@ -1,16 +1,6 @@
 # Scaling Node.js
 
-## What You Will Learn
-* Comparing Vertical Scaling (Scale Up) and Horizontal Scaling (Scale Out).
-* Designing stateless application architectures for horizontal scale.
-* Decoupling session storage and static files from the application process.
-* The differences between Layer 4 (TCP) and Layer 7 (HTTP) Load Balancers.
-* Implementing Sticky Sessions for legacy applications.
-
-## Why This Matters
 A single Node.js server has limits. Even with clustering, a single machine will run out of CPU, memory, or network bandwidth under high traffic. To support millions of concurrent users, you must scale your application horizontally across multiple servers. This requires designing a stateless architecture where any server can process any incoming request.
-
-## Theory
 
 ### Vertical vs. Horizontal Scaling
 * **Vertical Scaling (Scale Up)**: Adding more resources (CPU, RAM, SSD) to a single server.
@@ -116,29 +106,41 @@ app.listen(3000, () => console.log('Stateless app listening on port 3000'));
 
 ## Interview Questions
 
-### Beginner
-* **What is the difference between vertical scaling and horizontal scaling?**
-  *Answer*: Vertical scaling (scale up) adds more resources (CPU, RAM, disk) to a single physical server. Horizontal scaling (scale out) adds more independent server instances to the application cluster, distributing traffic across them using a load balancer.
+**Q:** What is the difference between vertical scaling and horizontal scaling?
 
-### Intermediate
-* **What is a stateless application, and why is it required for horizontal scaling?**
-  *Answer*: A stateless application is an application that does not store client session data or state in its local memory or disk. It is required for horizontal scaling because the load balancer can route user requests to any server instance in the cluster dynamically. If a server held local state, requests routed to other instances would fail.
+> **Answer:**
+> Vertical scaling (scale up) adds more resources (CPU, RAM, disk) to a single physical server. Horizontal scaling (scale out) adds more independent server instances to the application cluster, distributing traffic across them using a load balancer.
 
-### Advanced
-* **Compare Layer 4 and Layer 7 Load Balancers. Which one is required for path-based routing?**
-  *Answer*: 
-  * **Layer 4 Load Balancers**: Route traffic at the transport layer based on IP addresses and TCP ports, without inspecting the HTTP payload. They are fast and consume minimal CPU.
-  * **Layer 7 Load Balancers**: Route traffic at the application layer, inspecting HTTP headers, cookies, and paths. Layer 7 is required for path-based routing (e.g. routing `/users` to one service and `/billing` to another) and SSL termination.
+**Q:** What is a stateless application, and why is it required for horizontal scaling?
 
-### Senior Architect
-* **How would you migrate a legacy stateful Node.js application (which stores active user websocket states in local memory) to support horizontal scaling? Walk through the architecture changes.**
-  *Answer*: To migrate a stateful websocket application to a horizontal scale:
-  1. **Decouple Sessions**: Move standard HTTP user sessions out of local memory and store them in a shared Redis cluster.
-  2. **Introduce Redis Pub/Sub Adapter**: Websocket connections are inherently stateful because they maintain active TCP sockets on specific servers. If User A is connected to Server 1, and User B is connected to Server 2, Server 1 cannot emit a message directly to User B.
-     - Integrate the Socket.io Redis Adapter (or a custom Redis Pub/Sub bridge).
-     - When Server 1 wants to send a message to User B, it publishes the message to the Redis Pub/Sub channel.
-     - Server 2 consumes the event from Redis and forwards it to User B over its active websocket connection, coordinating state across servers.
-  3. **Configure Sticky Sessions (Optional fallback)**: If the client cannot use websocket adapters, configure the Layer 7 load balancer to use cookie-based sticky sessions, routing a user's requests to the same server instance throughout their session.
+> **Answer:**
+> A stateless application is an application that does not store client session data or state in its local memory or disk. It is required for horizontal scaling because the load balancer can route user requests to any server instance in the cluster dynamically. If a server held local state, requests routed to other instances would fail.
+
+**Q:** Compare Layer 4 and Layer 7 Load Balancers. Which one is required for path-based routing?
+
+> **Answer:**
+> 
+
+**Q:** Layer 4 Load Balancers
+
+> **Answer:**
+> 
+
+**Q:** Layer 7 Load Balancers
+
+> **Answer:**
+> 
+
+**Q:** How would you migrate a legacy stateful Node.js application (which stores active user websocket states in local memory) to support horizontal scaling? Walk through the architecture changes.
+
+> **Answer:**
+> To migrate a stateful websocket application to a horizontal scale:
+> 1. **Decouple Sessions**: Move standard HTTP user sessions out of local memory and store them in a shared Redis cluster.
+> 2. **Introduce Redis Pub/Sub Adapter**: Websocket connections are inherently stateful because they maintain active TCP sockets on specific servers. If User A is connected to Server 1, and User B is connected to Server 2, Server 1 cannot emit a message directly to User B.
+> - Integrate the Socket.io Redis Adapter (or a custom Redis Pub/Sub bridge).
+> - When Server 1 wants to send a message to User B, it publishes the message to the Redis Pub/Sub channel.
+> - Server 2 consumes the event from Redis and forwards it to User B over its active websocket connection, coordinating state across servers.
+> 3. **Configure Sticky Sessions (Optional fallback)**: If the client cannot use websocket adapters, configure the Layer 7 load balancer to use cookie-based sticky sessions, routing a user's requests to the same server instance throughout their session.
 
 ---
-Previous : [73_Distributed_Systems.md] | Index : [00_index.md] | Next : [75_Docker.md]
+Previous : [73_Distributed_Systems.md](73_Distributed_Systems.md) | Index : [00_index.md](00_index.md) | Next : [75_Docker.md](75_Docker.md)

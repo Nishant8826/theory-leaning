@@ -1,15 +1,6 @@
 # CI/CD
 
-## What You Will Learn
-* The differences between Continuous Integration (CI), Continuous Delivery (CD), and Continuous Deployment.
-* Structuring pipeline stages: Lint, Test, Audit, Build, and Deploy.
-* Securing pipeline execution environments using Vault Secrets.
-* Integrating container registries (Docker Hub, AWS ECR) in automation scripts.
-
-## Why This Matters
 Deploying updates to production manually (like copy-pasting files or running build commands directly on servers) is prone to errors. A small mistake can break your code or expose credentials. A CI/CD pipeline automates the entire process: every commit is run through automated tests, scanned for vulnerabilities, built into a container, and deployed securely, ensuring consistent and safe releases.
-
-## Theory
 
 ### CI vs. CD
 * **Continuous Integration (CI)**: The practice of automating the integration of code changes from multiple developers into a single shared repository.
@@ -130,31 +121,47 @@ deploy_prod:
 
 ## Interview Questions
 
-### Beginner
-* **What is the difference between Continuous Integration (CI) and Continuous Deployment (CD)?**
-  *Answer*: Continuous Integration (CI) automates the process of merging code changes, running linters, tests, and security audits to catch bugs early. Continuous Deployment (CD) automates the release process, deploying code changes to production instantly if all CI checks pass.
+**Q:** What is the difference between Continuous Integration (CI) and Continuous Deployment (CD)?
 
-### Intermediate
-* **Why should you avoid using the `latest` image tag in your deployment pipelines?**
-  *Answer*: The `latest` tag points to the most recently built image. Using it makes builds non-deterministic: you cannot guarantee which version is running in production, tracing bugs back to specific commits is difficult, and rolling back to a previous version is complicated because previous versions share the same `latest` tag. Always tag images with unique Git commit hashes.
+> **Answer:**
+> Continuous Integration (CI) automates the process of merging code changes, running linters, tests, and security audits to catch bugs early. Continuous Deployment (CD) automates the release process, deploying code changes to production instantly if all CI checks pass.
 
-### Advanced
-* **How do you secure database migrations (e.g. running schema updates) inside an automated CI/CD pipeline, and how do you handle migrations that fail halfway through?**
-  *Answer*: 
-  * **Execution**: Run migrations during the deployment stage of your pipeline before updating application containers. Use a database migration runner (like Knex or Prisma Migrate) that connects to the database using credentials injected securely via environment secrets.
-  * **Failure Management**: Run migrations inside database transactions to ensure that if a migration fails, all changes are rolled back automatically, preventing corrupt schema states.
-  * **Rolling Updates**: Design database schemas to be backwards-compatible (e.g., adding nullable columns instead of renaming fields) to ensure that the old application version continues running while new containers spin up.
+**Q:** Why should you avoid using the `latest` image tag in your deployment pipelines?
 
-### Senior Architect
-* **How would you architecture a canary deployment pipeline in a highly available Kubernetes environment? Walk through how you route a small percentage of user traffic to the new version and monitor metrics before rolling out the release.**
-  *Answer*: To build a canary deployment pipeline:
-  1. **Deploy Canary Workload**: Spin up a new deployment (the canary deployment) containing the updated container version, running a small number of replicas (e.g., 1 pod vs. 9 pods of the stable version).
-  2. **Traffic Distribution**: Configure the ingress router (e.g., Nginx Ingress or a Service Mesh like Istio) to route a small percentage of traffic (e.g. 10%) to the canary pod, and the remaining 90% to the stable pods.
-  3. **Monitor Telemetry**: Collect telemetry metrics (using Prometheus and Grafana) to compare the canary and stable workloads:
-     - Error rates (5xx status codes).
-     - Response latency.
-     - System resource consumption (CPU/RAM).
-  4. **Evaluate and Promote**: If the canary metrics show no anomalies after a validation window (e.g., 30 minutes), update the stable deployment image tag, scale up the replicas, and delete the canary deployment, completing the rollout. If anomalies occur, route 100% of traffic back to the stable version, achieving a safe rollback.
+> **Answer:**
+> The `latest` tag points to the most recently built image. Using it makes builds non-deterministic: you cannot guarantee which version is running in production, tracing bugs back to specific commits is difficult, and rolling back to a previous version is complicated because previous versions share the same `latest` tag. Always tag images with unique Git commit hashes.
+
+**Q:** How do you secure database migrations (e.g. running schema updates) inside an automated CI/CD pipeline, and how do you handle migrations that fail halfway through?
+
+> **Answer:**
+> 
+
+**Q:** Execution
+
+> **Answer:**
+> 
+
+**Q:** Failure Management
+
+> **Answer:**
+> 
+
+**Q:** Rolling Updates
+
+> **Answer:**
+> 
+
+**Q:** How would you architecture a canary deployment pipeline in a highly available Kubernetes environment? Walk through how you route a small percentage of user traffic to the new version and monitor metrics before rolling out the release.
+
+> **Answer:**
+> To build a canary deployment pipeline:
+> 1. **Deploy Canary Workload**: Spin up a new deployment (the canary deployment) containing the updated container version, running a small number of replicas (e.g., 1 pod vs. 9 pods of the stable version).
+> 2. **Traffic Distribution**: Configure the ingress router (e.g., Nginx Ingress or a Service Mesh like Istio) to route a small percentage of traffic (e.g. 10%) to the canary pod, and the remaining 90% to the stable pods.
+> 3. **Monitor Telemetry**: Collect telemetry metrics (using Prometheus and Grafana) to compare the canary and stable workloads:
+> - Error rates (5xx status codes).
+> - Response latency.
+> - System resource consumption (CPU/RAM).
+> 4. **Evaluate and Promote**: If the canary metrics show no anomalies after a validation window (e.g., 30 minutes), update the stable deployment image tag, scale up the replicas, and delete the canary deployment, completing the rollout. If anomalies occur, route 100% of traffic back to the stable version, achieving a safe rollback.
 
 ---
-Previous : [76_Kubernetes.md] | Index : [00_index.md] | Next : [78_GitHub_Actions.md]
+Previous : [76_Kubernetes.md](76_Kubernetes.md) | Index : [00_index.md](00_index.md) | Next : [78_GitHub_Actions.md](78_GitHub_Actions.md)

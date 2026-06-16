@@ -1,16 +1,6 @@
 # Sessions
 
-## What You Will Learn
-* Stateful vs. Stateless authentication models (Sessions vs. JWT).
-* How session-based authentication works (Cookie session IDs + server-side storage).
-* Why the default memory store (`MemoryStore`) causes memory leaks in production.
-* Configuring production-ready session storage using Redis.
-* Managing session lifecycles (creation, regeneration, save, destruction).
-
-## Why This Matters
 Using the default in-memory session store (`MemoryStore`) in packages like `express-session` is a common production mistake. Because it stores session data in the server's local RAM, it creates a memory leak as active users increase. Additionally, in-memory sessions are lost when the server restarts and prevent you from scaling your application across multiple servers.
-
-## Theory
 
 ### Stateful vs. Stateless Authentication
 * **Stateful (Sessions)**: The server stores session data (like user ID and permissions) in a database or cache, and sends a unique Session ID to the client in a cookie. The server must query the session store for every request to check authentication.
@@ -154,26 +144,30 @@ app.listen(3000, () => console.log('Session server running on port 3000'));
 
 ## Interview Questions
 
-### Beginner
-* **What is the difference between stateful session-based authentication and stateless token-based authentication?**
-  *Answer*: Stateful authentication stores session data on the server (e.g., in a database or Redis) and references it via a Session ID stored in a client cookie. Stateless authentication stores claims directly inside a cryptographically signed token (JWT) held by the client, allowing the server to verify requests locally without querying a database.
+**Q:** What is the difference between stateful session-based authentication and stateless token-based authentication?
 
-### Intermediate
-* **Why does the default `MemoryStore` in `express-session` cause memory leaks, and how do you resolve it?**
-  *Answer*: The default `MemoryStore` stores session data in a simple JavaScript object in the server's local RAM. It does not automatically clean up expired sessions or limit memory usage, causing memory consumption to grow indefinitely as active users increase. To resolve this, configure an external store like Redis (`connect-redis`) to manage session data.
+> **Answer:**
+> Stateful authentication stores session data on the server (e.g., in a database or Redis) and references it via a Session ID stored in a client cookie. Stateless authentication stores claims directly inside a cryptographically signed token (JWT) held by the client, allowing the server to verify requests locally without querying a database.
 
-### Advanced
-* **What is a Session Fixation attack, and how do you protect against it in a Node.js application?**
-  *Answer*: A Session Fixation attack occurs when an attacker forces a target user to use a pre-determined Session ID (e.g. by sending them a link containing a session cookie ID). If the server maintains this same Session ID after the user logs in, the attacker can use the ID to access the user's authenticated session. 
-  To protect against this, always regenerate the session ID (using `req.session.regenerate()`) immediately after a user authenticates, assigning them a new Session ID.
+**Q:** Why does the default `MemoryStore` in `express-session` cause memory leaks, and how do you resolve it?
 
-### Senior Architect
-* **How would you architecture a high-availability session clustering system across multiple data centers, ensuring that session data remains available if a primary Redis cluster goes down?**
-  *Answer*: To build a high-availability session system:
-  1. **Configure Redis Replication**: Deploy Redis in a Master-Replica configuration using **Redis Sentinel** or **Redis Cluster** to handle automatic failover if the primary node crashes.
-  2. **Multi-Region Sync**: Use active-passive or active-active Redis replication configurations to sync session data across data centers asynchronously.
-  3. **Fallback Database**: Configure the application's session middleware with a fallback connection strategy. If the primary Redis cluster goes down, the session store client catches the connection error and falls back to writing session data to a highly available relational database (like PostgreSQL with multi-region replicas) or a distributed NoSQL database.
-  4. **Circuit Breakers**: Implement a circuit breaker pattern to prevent connection failures from blocking server processes, keeping the application stable.
+> **Answer:**
+> The default `MemoryStore` stores session data in a simple JavaScript object in the server's local RAM. It does not automatically clean up expired sessions or limit memory usage, causing memory consumption to grow indefinitely as active users increase. To resolve this, configure an external store like Redis (`connect-redis`) to manage session data.
+
+**Q:** What is a Session Fixation attack, and how do you protect against it in a Node.js application?
+
+> **Answer:**
+> A Session Fixation attack occurs when an attacker forces a target user to use a pre-determined Session ID (e.g. by sending them a link containing a session cookie ID). If the server maintains this same Session ID after the user logs in, the attacker can use the ID to access the user's authenticated session.
+> To protect against this, always regenerate the session ID (using `req.session.regenerate()`) immediately after a user authenticates, assigning them a new Session ID.
+
+**Q:** How would you architecture a high-availability session clustering system across multiple data centers, ensuring that session data remains available if a primary Redis cluster goes down?
+
+> **Answer:**
+> To build a high-availability session system:
+> 1. **Configure Redis Replication**: Deploy Redis in a Master-Replica configuration using **Redis Sentinel** or **Redis Cluster** to handle automatic failover if the primary node crashes.
+> 2. **Multi-Region Sync**: Use active-passive or active-active Redis replication configurations to sync session data across data centers asynchronously.
+> 3. **Fallback Database**: Configure the application's session middleware with a fallback connection strategy. If the primary Redis cluster goes down, the session store client catches the connection error and falls back to writing session data to a highly available relational database (like PostgreSQL with multi-region replicas) or a distributed NoSQL database.
+> 4. **Circuit Breakers**: Implement a circuit breaker pattern to prevent connection failures from blocking server processes, keeping the application stable.
 
 ---
-Previous : [35_Cookies.md] | Index : [00_index.md] | Next : [37_MongoDB.md]
+Previous : [35_Cookies.md](35_Cookies.md) | Index : [00_index.md](00_index.md) | Next : [37_MongoDB.md](37_MongoDB.md)

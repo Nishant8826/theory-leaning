@@ -1,16 +1,6 @@
 # HTTP Module
 
-## What You Will Learn
-* How the native `http` module interacts with the TCP layer.
-* Creating raw HTTP web servers using `http.createServer()`.
-* Parsing request headers, query parameters, and URLs.
-* Managing HTTP response statuses, headers, and payloads.
-* Analyzing `IncomingMessage` and `ServerResponse` as stream streams.
-
-## Why This Matters
 All Node.js web frameworks (Express, Fastify, Nest.js) are built on top of the native `http` module. If you only understand framework wrappers, you will struggle to debug low-level network issues like socket timeouts, header manipulation errors, or raw stream parsing errors in production.
-
-## Theory
 
 ### The HTTP Module and TCP Sockets
 The `http` module sits on top of Node's native TCP network module (`net`). When you create an HTTP server, Node binds a TCP socket to a network port and listens for incoming data. When a client sends an HTTP request, Node parses the raw TCP text stream, builds `req` (an instance of `IncomingMessage`) and `res` (an instance of `ServerResponse`), and runs your connection handler callback.
@@ -116,32 +106,36 @@ server.listen(PORT, () => {
 
 ## Interview Questions
 
-### Beginner
-* **What native Node.js module is used to create a web server?**
-  *Answer*: The native `http` module is used to create and manage web servers via its `http.createServer()` method.
+**Q:** What native Node.js module is used to create a web server?
 
-### Intermediate
-* **Why are HTTP request header keys accessed in lowercase inside Node.js?**
-  *Answer*: The HTTP specification declares headers to be case-insensitive. To simplify parsing and prevent developers from needing to handle variations (like `Content-Type` vs `content-type`), Node's internal parser automatically converts all incoming header keys to lowercase.
+> **Answer:**
+> The native `http` module is used to create and manage web servers via its `http.createServer()` method.
 
-### Advanced
-* **Explain how incoming request body data is parsed in a raw HTTP server without frameworks, referencing streams.**
-  *Answer*: The `req` parameter passed to the `createServer` callback is an instance of `http.IncomingMessage`, which is a Readable Stream. Since request payloads (like large JSON payloads or file uploads) arrive in chunks, you must listen to the `'data'` event to accumulate the chunks into a buffer or string, and then parse the full payload once the `'end'` event fires:
-  ```javascript
-  let body = '';
-  req.on('data', chunk => body += chunk.toString());
-  req.on('end', () => {
-    const data = JSON.parse(body);
-  });
-  ```
+**Q:** Why are HTTP request header keys accessed in lowercase inside Node.js?
 
-### Senior Architect
-* **In a high-throughput raw HTTP backend, what socket-level optimizations can you implement to maximize concurrent requests, and what are the trade-offs of toggling `keepAlive`?**
-  *Answer*: To optimize low-level network performance:
-  1. **Configure Keep-Alive**: Enable `keepAlive` on the HTTP Agent. This keeps TCP connections open across multiple requests, eliminating the CPU and latency overhead of setting up and tearing down TCP connections for each request.
-  2. **Set Socket Timeouts**: Configure socket timeouts (`server.keepAliveTimeout` and `server.headersTimeout`) to close idle sockets quickly, preventing slow-loris attacks and freeing up file descriptors.
-  3. **Tune Backlog Limit**: Adjust the socket connection queue size limit (using the `backlog` parameter in `server.listen(port, hostname, backlog)`) to handle larger bursts of connections.
-  *Trade-off*: While keep-alive improves latency and throughput for active clients, holding sockets open consumes system memory and file descriptors. If there are many idle clients, this can exhaust server resources, requiring careful configuration of idle timeout thresholds.
+> **Answer:**
+> The HTTP specification declares headers to be case-insensitive. To simplify parsing and prevent developers from needing to handle variations (like `Content-Type` vs `content-type`), Node's internal parser automatically converts all incoming header keys to lowercase.
+
+**Q:** Explain how incoming request body data is parsed in a raw HTTP server without frameworks, referencing streams.
+
+> **Answer:**
+> The `req` parameter passed to the `createServer` callback is an instance of `http.IncomingMessage`, which is a Readable Stream. Since request payloads (like large JSON payloads or file uploads) arrive in chunks, you must listen to the `'data'` event to accumulate the chunks into a buffer or string, and then parse the full payload once the `'end'` event fires:
+> ```javascript
+> let body = '';
+> req.on('data', chunk => body += chunk.toString());
+> req.on('end', () => {
+> const data = JSON.parse(body);
+> });
+> ```
+
+**Q:** In a high-throughput raw HTTP backend, what socket-level optimizations can you implement to maximize concurrent requests, and what are the trade-offs of toggling `keepAlive`?
+
+> **Answer:**
+> To optimize low-level network performance:
+> 1. **Configure Keep-Alive**: Enable `keepAlive` on the HTTP Agent. This keeps TCP connections open across multiple requests, eliminating the CPU and latency overhead of setting up and tearing down TCP connections for each request.
+> 2. **Set Socket Timeouts**: Configure socket timeouts (`server.keepAliveTimeout` and `server.headersTimeout`) to close idle sockets quickly, preventing slow-loris attacks and freeing up file descriptors.
+> 3. **Tune Backlog Limit**: Adjust the socket connection queue size limit (using the `backlog` parameter in `server.listen(port, hostname, backlog)`) to handle larger bursts of connections.
+> *Trade-off*: While keep-alive improves latency and throughput for active clients, holding sockets open consumes system memory and file descriptors. If there are many idle clients, this can exhaust server resources, requiring careful configuration of idle timeout thresholds.
 
 ---
-Previous : [20_Async_Await.md] | Index : [00_index.md] | Next : [22_Creating_Web_Servers.md]
+Previous : [20_Async_Await.md](20_Async_Await.md) | Index : [00_index.md](00_index.md) | Next : [22_Creating_Web_Servers.md](22_Creating_Web_Servers.md)

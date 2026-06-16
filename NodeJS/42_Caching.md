@@ -1,15 +1,6 @@
 # Caching
 
-## What You Will Learn
-* Caching strategies: Read-Aside, Write-Through, and Write-Behind.
-* Managing Cache Invalidation and setting optimal TTLs.
-* What causes a Cache Stampede (Thundering Herd) and how to prevent it.
-* Building Express route caching middleware.
-
-## Why This Matters
 If your application queries the primary database for every single request, the database will eventually become a bottleneck under heavy traffic, causing slow API responses and crashes. Caching stores frequently requested data in a fast memory layer (like Redis), offloading traffic from your database and keeping response times low.
-
-## Theory
 
 ### Caching Strategies
 1. **Read-Aside (Lazy Loading)**:
@@ -154,26 +145,30 @@ app.listen(3000, async () => {
 
 ## Interview Questions
 
-### Beginner
-* **What is the difference between a cache hit and a cache miss?**
-  *Answer*: A cache hit occurs when requested data is found in the cache and returned instantly. A cache miss occurs when the data is not in the cache, forcing the application to fetch the data from the database and write it to the cache before returning it.
+**Q:** What is the difference between a cache hit and a cache miss?
 
-### Intermediate
-* **What is the Read-Aside caching strategy and what are its benefits?**
-  *Answer*: The Read-Aside strategy checks the cache first. If found, it returns the data. If not, it fetches the data from the database, writes it to the cache, and returns it. This strategy is popular because it is simple and memory-efficient, caching only the data that is actively requested by users.
+> **Answer:**
+> A cache hit occurs when requested data is found in the cache and returned instantly. A cache miss occurs when the data is not in the cache, forcing the application to fetch the data from the database and write it to the cache before returning it.
 
-### Advanced
-* **What is a Cache Stampede (Thundering Herd) and how do you protect a database from it?**
-  *Answer*: A cache stampede occurs when a highly popular cache key expires under heavy traffic. Because the key is missing, multiple requests query the database at the same time, which can overload and crash the database. 
-  To prevent this, use a distributed lock so only the first request can query the database and update the cache, forcing other requests to wait. Alternatively, use probabilistic early expiration to recalculate and refresh the cache in the background before the key expires.
+**Q:** What is the Read-Aside caching strategy and what are its benefits?
 
-### Senior Architect
-* **How would you architecture a cache invalidation strategy in a distributed microservices environment, ensuring that modifications to data in Service A instantly invalidates cached data in Service B?**
-  *Answer*: To coordinate cache invalidation across microservices:
-  1. **Event-Driven Invalidation**: Implement an asynchronous, publish-subscribe pattern using a message broker (like RabbitMQ or Redis Pub/Sub).
-  2. When Service A updates a database record, it publishes an invalidation event (containing the resource ID and type) to the broker.
-  3. Service B subscribes to this channel. When it receives the event, it invalidates the corresponding cache keys locally or in Redis.
-  4. This decouples the microservices, ensuring that cache updates propagate instantly across the system without direct network requests between services.
+> **Answer:**
+> The Read-Aside strategy checks the cache first. If found, it returns the data. If not, it fetches the data from the database, writes it to the cache, and returns it. This strategy is popular because it is simple and memory-efficient, caching only the data that is actively requested by users.
+
+**Q:** What is a Cache Stampede (Thundering Herd) and how do you protect a database from it?
+
+> **Answer:**
+> A cache stampede occurs when a highly popular cache key expires under heavy traffic. Because the key is missing, multiple requests query the database at the same time, which can overload and crash the database.
+> To prevent this, use a distributed lock so only the first request can query the database and update the cache, forcing other requests to wait. Alternatively, use probabilistic early expiration to recalculate and refresh the cache in the background before the key expires.
+
+**Q:** How would you architecture a cache invalidation strategy in a distributed microservices environment, ensuring that modifications to data in Service A instantly invalidates cached data in Service B?
+
+> **Answer:**
+> To coordinate cache invalidation across microservices:
+> 1. **Event-Driven Invalidation**: Implement an asynchronous, publish-subscribe pattern using a message broker (like RabbitMQ or Redis Pub/Sub).
+> 2. When Service A updates a database record, it publishes an invalidation event (containing the resource ID and type) to the broker.
+> 3. Service B subscribes to this channel. When it receives the event, it invalidates the corresponding cache keys locally or in Redis.
+> 4. This decouples the microservices, ensuring that cache updates propagate instantly across the system without direct network requests between services.
 
 ---
-Previous : [41_Redis.md] | Index : [00_index.md] | Next : [43_Rate_Limiting.md]
+Previous : [41_Redis.md](41_Redis.md) | Index : [00_index.md](00_index.md) | Next : [43_Rate_Limiting.md](43_Rate_Limiting.md)

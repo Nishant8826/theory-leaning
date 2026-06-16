@@ -1,16 +1,6 @@
 # XSS
 
-## What You Will Learn
-* The three categories of Cross-Site Scripting (Stored, Reflected, DOM-based XSS).
-* The risks of script injection: token theft, keylogging, and session hijacking.
-* Implementing input sanitization and character escaping.
-* Configuring a strict Content Security Policy (CSP) header.
-* Securing session cookies against script access.
-
-## Why This Matters
 XSS is a common vulnerability in web applications. If your backend database stores unvalidated HTML inputs (like `<script>steal()</script>`) and renders them to other users, attackers can execute code inside their browsers. This allows them to steal session tokens, log keystrokes, or redirect users to malicious sites. Implementing strict sanitization and CSP headers protects your users.
-
-## Theory
 
 ### The Three Types of XSS
 1. **Stored XSS (Persistent)**:
@@ -130,45 +120,49 @@ app.listen(3000, () => console.log('XSS protected server running on port 3000'))
 
 ## Interview Questions
 
-### Beginner
-* **What is Cross-Site Scripting (XSS)?**
-  *Answer*: XSS is a vulnerability where an application executes malicious scripts injected by attackers inside a user's browser, potentially exposing session tokens, logging keystrokes, or redirecting pages.
+**Q:** What is Cross-Site Scripting (XSS)?
 
-### Intermediate
-* **What is the difference between Stored XSS and Reflected XSS?**
-  *Answer*: Stored XSS occurs when a malicious script is saved in the database (e.g. inside a comment) and executed whenever other users view the page. Reflected XSS is non-persistent; the script is passed in the request (e.g. in a query parameter) and echoed back in the response immediately, requiring the attacker to trick the user into clicking a malicious link.
+> **Answer:**
+> XSS is a vulnerability where an application executes malicious scripts injected by attackers inside a user's browser, potentially exposing session tokens, logging keystrokes, or redirecting pages.
 
-### Advanced
-* **How does setting `HttpOnly` on cookies defend against XSS, and why does this not resolve the underlying XSS vulnerability?**
-  *Answer*: The `HttpOnly` flag blocks client-side JavaScript from reading the cookie, preventing an XSS script from stealing session tokens. 
-  However, it does not fix the XSS vulnerability itself. An attacker can still use the script to perform actions (like sending API requests, logging keystrokes, or modifying the page content) on behalf of the user within their active browser session.
+**Q:** What is the difference between Stored XSS and Reflected XSS?
 
-### Senior Architect
-* **How would you configure a Content Security Policy (CSP) using Nonces to allow specific inline scripts to execute while blocking unauthorized inline scripts?**
-  *Answer*: To run inline scripts safely using CSP Nonces:
-  1. Generate a unique, cryptographically strong random token (a **Nonce**) on every request using middleware:
-     ```javascript
-     const crypto = require('crypto');
-     app.use((req, res, next) => {
-       res.locals.nonce = crypto.randomBytes(16).toString('base64');
-       next();
-     });
-     ```
-  2. Configure your CSP headers to trust this specific nonce:
-     ```javascript
-     app.use(helmet.contentSecurityPolicy({
-       directives: {
-         scriptSrc: ["'self'", (req, res) => `'nonce-${res.locals.nonce}'`]
-       }
-     }));
-     ```
-  3. Include this nonce in your HTML templates when rendering inline scripts:
-     ```html
-     <script nonce="<%= nonce %>">
-       console.log('Safe inline script executing.');
-     </script>
-     ```
-  The browser will execute only inline scripts that present the matching nonce value, blocking any attacker-injected scripts that lack the token.
+> **Answer:**
+> Stored XSS occurs when a malicious script is saved in the database (e.g. inside a comment) and executed whenever other users view the page. Reflected XSS is non-persistent; the script is passed in the request (e.g. in a query parameter) and echoed back in the response immediately, requiring the attacker to trick the user into clicking a malicious link.
+
+**Q:** How does setting `HttpOnly` on cookies defend against XSS, and why does this not resolve the underlying XSS vulnerability?
+
+> **Answer:**
+> The `HttpOnly` flag blocks client-side JavaScript from reading the cookie, preventing an XSS script from stealing session tokens.
+> However, it does not fix the XSS vulnerability itself. An attacker can still use the script to perform actions (like sending API requests, logging keystrokes, or modifying the page content) on behalf of the user within their active browser session.
+
+**Q:** How would you configure a Content Security Policy (CSP) using Nonces to allow specific inline scripts to execute while blocking unauthorized inline scripts?
+
+> **Answer:**
+> To run inline scripts safely using CSP Nonces:
+> 1. Generate a unique, cryptographically strong random token (a **Nonce**) on every request using middleware:
+> ```javascript
+> const crypto = require('crypto');
+> app.use((req, res, next) => {
+> res.locals.nonce = crypto.randomBytes(16).toString('base64');
+> next();
+> });
+> ```
+> 2. Configure your CSP headers to trust this specific nonce:
+> ```javascript
+> app.use(helmet.contentSecurityPolicy({
+> directives: {
+> scriptSrc: ["'self'", (req, res) => `'nonce-${res.locals.nonce}'`]
+> }
+> }));
+> ```
+> 3. Include this nonce in your HTML templates when rendering inline scripts:
+> ```html
+> <script nonce="<%= nonce %>">
+> console.log('Safe inline script executing.');
+> </script>
+> ```
+> The browser will execute only inline scripts that present the matching nonce value, blocking any attacker-injected scripts that lack the token.
 
 ---
-Previous : [59_CSRF.md] | Index : [00_index.md] | Next : [61_SQL_Injection.md]
+Previous : [59_CSRF.md](59_CSRF.md) | Index : [00_index.md](00_index.md) | Next : [61_SQL_Injection.md](61_SQL_Injection.md)

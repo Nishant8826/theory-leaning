@@ -1,16 +1,6 @@
 # Production Architecture
 
-## What You Will Learn
-* Decoupling systems into a Multi-Tier Production Architecture.
-* Horizontal vs. Vertical scaling characteristics.
-* Database replication patterns: Primary/Replica write-read splitting.
-* Designing stateless, cloud-native Node.js services.
-* Disaster recovery planning and Availability Zones (AZ).
-
-## Why This Matters
 A Node.js server running on a single server or container will eventually fail due to hardware crashes, network outages, or resource exhaustion. Designing a production-grade architecture ensures your backend services can survive outages, scale dynamically under heavy user demand, and process database queries efficiently without bottlenecking the central primary database.
-
-## Theory
 
 ### Multi-Tier Architecture
 A production system segregates concerns into distinct layers:
@@ -183,25 +173,28 @@ async function updateUserEmail(userId, newEmail) {
 
 ## Interview Questions
 
-### Beginner
-* **What is the difference between vertical scaling and horizontal scaling?**
-  *Answer*: Vertical scaling (scaling up) means adding more hardware resources (like upgrading CPU, RAM, or disk space) to a single server. Horizontal scaling (scaling out) means adding more identical server machines or containers to your resource pool, sharing traffic via a load balancer.
+**Q:** What is the difference between vertical scaling and horizontal scaling?
 
-### Intermediate
-* **Why should a production Node.js application be stateless?**
-  *Answer*: In production, traffic is distributed across multiple dynamic server nodes. If an application stores state (like login sessions or user files) locally on one node, subsequent requests routed to other nodes will fail because they lack access to that localized data. Keeping the backend stateless allows any node to handle any request and enables autoscaling.
+> **Answer:**
+> Vertical scaling (scaling up) means adding more hardware resources (like upgrading CPU, RAM, or disk space) to a single server. Horizontal scaling (scaling out) means adding more identical server machines or containers to your resource pool, sharing traffic via a load balancer.
 
-### Advanced
-* **How does database read/write splitting improve application performance, and how is it handled in Node.js?**
-  *Answer*: Database write operations require row/table locks and transaction processing, which are resource-intensive. Reading data (queries) is faster but high in frequency. Splitting these operations isolates the Primary database to handle writes, while routing read operations to a cluster of Read Replicas. In Node.js, this is handled by instantiating two separate connection pools: one pointing to the writer database node and another to the reader endpoint.
+**Q:** Why should a production Node.js application be stateless?
 
-### Senior Architect
-* **How would you architecture a file processing Node.js system that handles user photo uploads, resizes them, and serves them globally, ensuring high availability, statelessness, and optimal CDN cache hit rates?**
-  *Answer*:
-  1. **Upload Phase**: Client requests a presigned upload URL from the Node.js API server. The server generates a secure AWS S3 presigned URL. The client uploads the file directly to an S3 bucket (S3 Upload Bucket), bypassing Node.js memory limits.
-  2. **Processing Phase**: An S3 upload event triggers a serverless function (AWS Lambda) or publishes a message to a queue (RabbitMQ/SQS). A stateless Node.js worker microservice consumes this event, downloads the photo from S3, uses the `sharp` library to resize it, and uploads the compressed image to a separate S3 public bucket.
-  3. **Delivery Phase**: An edge CDN (like Cloudflare or AWS CloudFront) is configured with the public S3 bucket as its origin.
-  4. **Caching optimization**: Images are requested through the CDN domain (e.g. `cdn.myapp.com/photos/image.jpg`). The CDN caches images globally, ensuring high speed and reducing requests to S3. Cache headers (`Cache-Control: public, max-age=31536000`) are applied to optimize edge caching.
+> **Answer:**
+> In production, traffic is distributed across multiple dynamic server nodes. If an application stores state (like login sessions or user files) locally on one node, subsequent requests routed to other nodes will fail because they lack access to that localized data. Keeping the backend stateless allows any node to handle any request and enables autoscaling.
+
+**Q:** How does database read/write splitting improve application performance, and how is it handled in Node.js?
+
+> **Answer:**
+> Database write operations require row/table locks and transaction processing, which are resource-intensive. Reading data (queries) is faster but high in frequency. Splitting these operations isolates the Primary database to handle writes, while routing read operations to a cluster of Read Replicas. In Node.js, this is handled by instantiating two separate connection pools: one pointing to the writer database node and another to the reader endpoint.
+
+**Q:** How would you architecture a file processing Node.js system that handles user photo uploads, resizes them, and serves them globally, ensuring high availability, statelessness, and optimal CDN cache hit rates?
+
+> **Answer:**
+> 1. **Upload Phase**: Client requests a presigned upload URL from the Node.js API server. The server generates a secure AWS S3 presigned URL. The client uploads the file directly to an S3 bucket (S3 Upload Bucket), bypassing Node.js memory limits.
+> 2. **Processing Phase**: An S3 upload event triggers a serverless function (AWS Lambda) or publishes a message to a queue (RabbitMQ/SQS). A stateless Node.js worker microservice consumes this event, downloads the photo from S3, uses the `sharp` library to resize it, and uploads the compressed image to a separate S3 public bucket.
+> 3. **Delivery Phase**: An edge CDN (like Cloudflare or AWS CloudFront) is configured with the public S3 bucket as its origin.
+> 4. **Caching optimization**: Images are requested through the CDN domain (e.g. `cdn.myapp.com/photos/image.jpg`). The CDN caches images globally, ensuring high speed and reducing requests to S3. Cache headers (`Cache-Control: public, max-age=31536000`) are applied to optimize edge caching.
 
 ---
-Previous : [86_Distributed_Tracing.md] | Index : [00_index.md] | Next : [88_System_Design_for_NodeJS.md]
+Previous : [86_Distributed_Tracing.md](86_Distributed_Tracing.md) | Index : [00_index.md](00_index.md) | Next : [88_System_Design_for_NodeJS.md](88_System_Design_for_NodeJS.md)

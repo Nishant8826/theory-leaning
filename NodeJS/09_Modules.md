@@ -1,16 +1,6 @@
 # Modules
 
-## What You Will Learn
-* The first-principles concept of modular code structures in software architectures.
-* Why module systems are required to prevent global namespace pollution.
-* How Node.js runs files inside the internal **Module Wrapper Function**.
-* Analyzing the variables injected by the wrapper (`exports`, `require`, `module`, `__filename`, `__dirname`).
-* How circular dependency loops form and resolve.
-
-## Why This Matters
 If you do not understand how Node.js wraps and loads code files, you will encounter bugs where variables leak into global scopes, paths fail to resolve, or circular references trigger silent `undefined` crashes. Mastery of module wrapping is key to writing modular backend systems.
-
-## Theory
 
 ### The Necessity of Modules
 In standard client-side browser JavaScript (before ES Modules), script tags shared the global scope (`window`). If `script1.js` declared a variable `const db = {}`, and `script2.js` declared the same variable, it created a collision. 
@@ -105,23 +95,27 @@ console.log(moduleSystem.wrapper);
 
 ## Interview Questions
 
-### Beginner
-* **What is a module in Node.js and why do we use them?**
-  *Answer*: A module is an isolated JavaScript file containing code that is wrapped in its own scope. We use modules to organize codebases into maintainable files, encapsulate logic, and prevent variable collisions in the global namespace.
+**Q:** What is a module in Node.js and why do we use them?
 
-### Intermediate
-* **Explain the Node.js Module Wrapper Function.**
-  *Answer*: Before executing a file, Node.js wraps its code in a function block: `(function(exports, require, module, __filename, __dirname) { ... })`. This isolates the file's variables from the global scope and injects variables like `require` and `module` so they are accessible inside the file.
+> **Answer:**
+> A module is an isolated JavaScript file containing code that is wrapped in its own scope. We use modules to organize codebases into maintainable files, encapsulate logic, and prevent variable collisions in the global namespace.
 
-### Advanced
-* **What is a circular dependency in Node.js, and how does the runtime handle it?**
-  *Answer*: A circular dependency occurs when Module A imports Module B, and Module B imports Module A. Node.js handles this by returning an incomplete (partial) object representation of Module A's exports to Module B. When Module B tries to access properties that Module A has not yet reached or exported, those properties return `undefined`.
+**Q:** Explain the Node.js Module Wrapper Function.
 
-### Senior Architect
-* **Analyze the design implications of exports being an alias of module.exports. Explain how developers break this alias, why it halts module parsing, and how to debug memory leakage in cached module instances.**
-  *Answer*: The parameter `exports` is passed as a reference to `module.exports`. If you assign properties (e.g. `exports.name = 'db'`), both point to the same object in memory. However, if you reassign `exports` (e.g. `exports = { name: 'db' }`), you rebind the local `exports` variable to a new object, leaving the original `module.exports` unchanged. As a result, the module returns its default empty object `{}`.
-  
-  Because Node.js caches modules in `require.cache` after the first import, subsequent requests return the exact same instance. If a module stores user state or accumulates references inside local variables, those references are never garbage collected, leading to a memory leak. You can debug this by monitoring `require.cache` and ensuring modules remain stateless, utilizing factory functions or class instantiations to pass state when needed.
+> **Answer:**
+> Before executing a file, Node.js wraps its code in a function block: `(function(exports, require, module, __filename, __dirname) { ... })`. This isolates the file's variables from the global scope and injects variables like `require` and `module` so they are accessible inside the file.
+
+**Q:** What is a circular dependency in Node.js, and how does the runtime handle it?
+
+> **Answer:**
+> A circular dependency occurs when Module A imports Module B, and Module B imports Module A. Node.js handles this by returning an incomplete (partial) object representation of Module A's exports to Module B. When Module B tries to access properties that Module A has not yet reached or exported, those properties return `undefined`.
+
+**Q:** Analyze the design implications of exports being an alias of module.exports. Explain how developers break this alias, why it halts module parsing, and how to debug memory leakage in cached module instances.
+
+> **Answer:**
+> The parameter `exports` is passed as a reference to `module.exports`. If you assign properties (e.g. `exports.name = 'db'`), both point to the same object in memory. However, if you reassign `exports` (e.g. `exports = { name: 'db' }`), you rebind the local `exports` variable to a new object, leaving the original `module.exports` unchanged. As a result, the module returns its default empty object `{}`.
+> 
+> Because Node.js caches modules in `require.cache` after the first import, subsequent requests return the exact same instance. If a module stores user state or accumulates references inside local variables, those references are never garbage collected, leading to a memory leak. You can debug this by monitoring `require.cache` and ensuring modules remain stateless, utilizing factory functions or class instantiations to pass state when needed.
 
 ---
-Previous : [08_npx.md] | Index : [00_index.md] | Next : [10_CommonJS.md]
+Previous : [08_npx.md](08_npx.md) | Index : [00_index.md](00_index.md) | Next : [10_CommonJS.md](10_CommonJS.md)

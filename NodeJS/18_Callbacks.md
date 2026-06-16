@@ -1,16 +1,6 @@
 # Callbacks
 
-## What You Will Learn
-* The fundamental concept of asynchronous callbacks.
-* The design and rules of the **Error-First Callback** pattern.
-* What causes "Callback Hell" (Pyramid of Doom).
-* Designing clean, modular asynchronous control flows.
-* Converting callback-based APIs into Promises (Promisification).
-
-## Why This Matters
 Before Promises and Async/Await, callbacks were the only way to write asynchronous code in Node.js. Although modern codebases use newer patterns, thousands of npm packages and core Node APIs still rely on callbacks under the hood. Understanding callbacks is essential for maintaining older codebases and working with legacy libraries.
-
-## Theory
 
 ### Asynchronous Callbacks
 In JavaScript, functions are first-class citizens: they can be passed as arguments to other functions. An **asynchronous callback** is a function passed to an I/O operation. When the I/O operation completes in the background (via Libuv), the callback is pushed to the event queue to be executed on the main thread.
@@ -139,40 +129,43 @@ const unlinkPromise = promisify(fs.unlink);
 
 ## Interview Questions
 
-### Beginner
-* **What is an error-first callback in Node.js?**
-  *Answer*: An error-first callback is a standard convention in Node.js where the first argument of the callback function is reserved for an error object (`err`), and subsequent arguments contain the success data. If no error occurs, the first argument is set to `null` or `undefined`.
+**Q:** What is an error-first callback in Node.js?
 
-### Intermediate
-* **What is Callback Hell and how do you resolve it?**
-  *Answer*: Callback Hell refers to heavily nested and indented callback functions that result from chaining multiple asynchronous operations. It makes code difficult to read and maintain. You can resolve it by modularizing code into separate named functions, wrapping functions in Promises, or using `async/await` syntax.
+> **Answer:**
+> An error-first callback is a standard convention in Node.js where the first argument of the callback function is reserved for an error object (`err`), and subsequent arguments contain the success data. If no error occurs, the first argument is set to `null` or `undefined`.
 
-### Advanced
-* **Write a custom function that converts a standard callback-based function into a Promise-based one (implement a basic version of `util.promisify`).**
-  *Answer*: 
-  ```javascript
-  function customPromisify(fn) {
-    return function (...args) {
-      return new Promise((resolve, reject) => {
-        // Append custom error-first callback to arguments
-        fn(...args, (err, result) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(result);
-          }
-        });
-      });
-    };
-  }
-  ```
+**Q:** What is Callback Hell and how do you resolve it?
 
-### Senior Architect
-* **Discuss the execution order difference between standard callbacks and Promise callbacks. How do they interact with the event loop's task queues?**
-  *Answer*: Standard callbacks (like those passed to `fs.readFile` or network operations) are **macrotasks**. When their underlying I/O operations complete, their callbacks are queued in the Event Loop's I/O queue and execute in a future loop iteration.
-  
-  Promise callbacks (like those registered in `.then()`) are **microtasks**. When a Promise resolves, its callback is queued in the Promise microtask queue. The microtask queue is checked and drained *immediately* after the currently executing script or task completes, before the Event Loop moves to the next phase. 
-  Consequently, Promise callbacks run much earlier than standard I/O callbacks, which is critical to keep in mind when coordinating complex asynchronous sequences.
+> **Answer:**
+> Callback Hell refers to heavily nested and indented callback functions that result from chaining multiple asynchronous operations. It makes code difficult to read and maintain. You can resolve it by modularizing code into separate named functions, wrapping functions in Promises, or using `async/await` syntax.
+
+**Q:** Write a custom function that converts a standard callback-based function into a Promise-based one (implement a basic version of `util.promisify`).
+
+> **Answer:**
+> ```javascript
+> function customPromisify(fn) {
+> return function (...args) {
+> return new Promise((resolve, reject) => {
+> // Append custom error-first callback to arguments
+> fn(...args, (err, result) => {
+> if (err) {
+> reject(err);
+> } else {
+> resolve(result);
+> }
+> });
+> });
+> };
+> }
+> ```
+
+**Q:** Discuss the execution order difference between standard callbacks and Promise callbacks. How do they interact with the event loop's task queues?
+
+> **Answer:**
+> Standard callbacks (like those passed to `fs.readFile` or network operations) are **macrotasks**. When their underlying I/O operations complete, their callbacks are queued in the Event Loop's I/O queue and execute in a future loop iteration.
+> 
+> Promise callbacks (like those registered in `.then()`) are **microtasks**. When a Promise resolves, its callback is queued in the Promise microtask queue. The microtask queue is checked and drained *immediately* after the currently executing script or task completes, before the Event Loop moves to the next phase.
+> Consequently, Promise callbacks run much earlier than standard I/O callbacks, which is critical to keep in mind when coordinating complex asynchronous sequences.
 
 ---
-Previous : [17_Streams_Basics.md] | Index : [00_index.md] | Next : [19_Promises.md]
+Previous : [17_Streams_Basics.md](17_Streams_Basics.md) | Index : [00_index.md](00_index.md) | Next : [19_Promises.md](19_Promises.md)

@@ -1,15 +1,7 @@
 # Environment Setup
 
-## What You Will Learn
-* Installing Node.js using Node Version Managers (NVM / FNM).
-* Locking runtime versions in `package.json` for team and CI/CD consistency.
-* Initializing project environments with `.npmrc` configuration.
-* Professional developer environment configuration (VS Code, ESLint, Prettier).
-
-## Why This Matters
 Installing Node.js globally using a direct installer leads to version conflicts, permission issues on Unix-based systems (forcing the usage of `sudo npm install`), and environment drift across local environments, staging, and production. Standardizing version control and configuring tools prevents "it works on my machine" bugs.
 
-## Theory
 Production-ready backend environments require absolute determinism. A small variation in the minor or patch version of Node.js can introduce changes in the V8 engine compilation phase or differences in experimental APIs. 
 
 To achieve determinism, we use:
@@ -96,26 +88,30 @@ console.log(`\x1b[32m[SUCCESS] Node.js version check passed: ${currentVersion}\x
 
 ## Interview Questions
 
-### Beginner
-* **What is the purpose of NVM or FNM, and why is it preferred over direct installers?**
-  *Answer*: Node Version Managers download isolated runtime environments, allowing developers to switch between multiple versions easily. This avoids system permission errors (which occur when writing global packages to root folders like `/usr/local`) and prevents runtime mismatch issues when working on multiple projects.
+**Q:** What is the purpose of NVM or FNM, and why is it preferred over direct installers?
 
-### Intermediate
-* **How can you ensure that every member of a development team runs the exact same Node.js version?**
-  *Answer*: Define the targeted version in the `engines` property of the `package.json` file, create a `.node-version` or `.nvmrc` file at the root, and configure `.npmrc` with `engine-strict=true`. This setup causes the package manager to fail immediately if a developer attempts to install packages using an incompatible Node.js version.
+> **Answer:**
+> Node Version Managers download isolated runtime environments, allowing developers to switch between multiple versions easily. This avoids system permission errors (which occur when writing global packages to root folders like `/usr/local`) and prevents runtime mismatch issues when working on multiple projects.
 
-### Advanced
-* **Explain how dependencies are resolved in package-lock.json and why the lockfile must be committed to git.**
-  *Answer*: `package-lock.json` records the exact version of every dependency and nested dependency installed, along with a cryptographic hash (integrity check) of the packages fetched from the registry. Committing this file ensures that the build pipeline, local development environments, and production servers install the exact same dependency tree, preventing bugs caused by semantic-range auto-updates.
+**Q:** How can you ensure that every member of a development team runs the exact same Node.js version?
 
-### Senior Architect
-* **Discuss how version drift can cause subtle failures in highly scaled production clusters when migrating from Node.js 18 to Node.js 20. What migration strategy would you enforce?**
-  *Answer*: Node.js upgrades introduce new V8 memory profiles, modified HTTP parsing rules, and deprecations of experimental APIs. An upgrade can cause memory leaks if closures perform differently, or connection drops if HTTP parser tolerances change.
-  To migrate safely:
-  1. Enforce engine constraints in `.npmrc`.
-  2. Implement local checking scripts before testing builds.
-  3. Deploy to staging, checking heap profiles and memory footprints under simulated load tests.
-  4. Perform a canary deployment to production, route 5% of traffic to the new Node.js 20 container, and monitor latency spikes, 5xx errors, and error logs before rolling out to the rest of the cluster.
+> **Answer:**
+> Define the targeted version in the `engines` property of the `package.json` file, create a `.node-version` or `.nvmrc` file at the root, and configure `.npmrc` with `engine-strict=true`. This setup causes the package manager to fail immediately if a developer attempts to install packages using an incompatible Node.js version.
+
+**Q:** Explain how dependencies are resolved in package-lock.json and why the lockfile must be committed to git.
+
+> **Answer:**
+> `package-lock.json` records the exact version of every dependency and nested dependency installed, along with a cryptographic hash (integrity check) of the packages fetched from the registry. Committing this file ensures that the build pipeline, local development environments, and production servers install the exact same dependency tree, preventing bugs caused by semantic-range auto-updates.
+
+**Q:** Discuss how version drift can cause subtle failures in highly scaled production clusters when migrating from Node.js 18 to Node.js 20. What migration strategy would you enforce?
+
+> **Answer:**
+> Node.js upgrades introduce new V8 memory profiles, modified HTTP parsing rules, and deprecations of experimental APIs. An upgrade can cause memory leaks if closures perform differently, or connection drops if HTTP parser tolerances change.
+> To migrate safely:
+> 1. Enforce engine constraints in `.npmrc`.
+> 2. Implement local checking scripts before testing builds.
+> 3. Deploy to staging, checking heap profiles and memory footprints under simulated load tests.
+> 4. Perform a canary deployment to production, route 5% of traffic to the new Node.js 20 container, and monitor latency spikes, 5xx errors, and error logs before rolling out to the rest of the cluster.
 
 ---
-Previous : [01_Introduction_to_NodeJS.md] | Index : [00_index.md] | Next : [03_JavaScript_Fundamentals_for_NodeJS.md]
+Previous : [01_Introduction_to_NodeJS.md](01_Introduction_to_NodeJS.md) | Index : [00_index.md](00_index.md) | Next : [03_JavaScript_Fundamentals_for_NodeJS.md](03_JavaScript_Fundamentals_for_NodeJS.md)

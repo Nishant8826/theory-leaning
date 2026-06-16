@@ -1,17 +1,6 @@
 # REST APIs
 
-## What You Will Learn
-* The architectural constraints of REST (Representational State Transfer).
-* Mapping HTTP methods (GET, POST, PUT, DELETE, PATCH) to CRUD operations.
-* Correct utilization of HTTP Status Code categories.
-* Designing semantic, resource-oriented URIs.
-* Implementing query parameters for filtering, sorting, and pagination.
-* Content negotiation using request headers.
-
-## Why This Matters
 Building an API is not just about routing requests to functions. Poorly structured endpoints (like `POST /delete-user?id=1` or returning `200 OK` with an error message in the body) break integration standards, make client integration difficult, and bypass caching proxies. Understanding REST standards ensures your APIs are secure, scalable, and easy to consume.
-
-## Theory
 
 ### REST Architectural Constraints
 REST is an architectural style defined by several constraints:
@@ -185,31 +174,41 @@ server.listen(3000, () => console.log('REST API Server running on port 3000'));
 
 ## Interview Questions
 
-### Beginner
-* **What is a REST API?**
-  *Answer*: A REST API is a web service architecture style built on top of the HTTP protocol. It identifies resources using URIs and manipulates them using standard HTTP methods (GET, POST, PUT, DELETE), returning data in formats like JSON.
+**Q:** What is a REST API?
 
-### Intermediate
-* **What is the difference between PUT and PATCH methods?**
-  *Answer*: The `PUT` method replaces the entire representation of a target resource with the new request payload. It is idempotent. The `PATCH` method applies partial modifications to the resource (updating only specific fields). It is not guaranteed to be idempotent.
+> **Answer:**
+> A REST API is a web service architecture style built on top of the HTTP protocol. It identifies resources using URIs and manipulates them using standard HTTP methods (GET, POST, PUT, DELETE), returning data in formats like JSON.
 
-### Advanced
-* **What does "idempotence" mean in the context of HTTP methods, and why are POST operations not idempotent?**
-  *Answer*: An HTTP method is idempotent if executing the same request multiple times yields the exact same resource state on the server. `GET`, `PUT`, and `DELETE` are idempotent. `POST` is not idempotent because repeating a `POST` request (e.g. submitting a payment form twice) creates duplicate resources (e.g. two separate transactions or orders) on the server.
+**Q:** What is the difference between PUT and PATCH methods?
 
-### Senior Architect
-* **Discuss the API design trade-offs of using JSON API standards versus GraphQL in a microservices ecosystem. When would you veto a migration to GraphQL?**
-  *Answer*: 
-  * **REST (JSON API)**:
-    * *Pros*: Simple to cache using standard CDNs (via HTTP headers like `Cache-Control`), has a small learning curve, and is easy to load-balance.
-    * *Cons*: Can suffer from over-fetching or under-fetching data, requiring clients to make multiple round-trip requests.
-  * **GraphQL**:
-    * *Pros*: Clients can fetch exactly the fields they need in a single request, which is ideal for complex frontend views.
-    * *Cons*: Difficult to cache at the network layer because requests use `POST` payloads, and clients can write complex queries that overload the database.
-  * *Veto Criteria*: I would veto a migration to GraphQL if:
-    1. The application relies heavily on network caching and CDN performance.
-    2. The services are lightweight and do not have deeply nested relational queries.
-    3. The team lacks database query-depth analysis and cost-limiting middleware to prevent clients from executing resource-heavy nested queries.
+> **Answer:**
+> The `PUT` method replaces the entire representation of a target resource with the new request payload. It is idempotent. The `PATCH` method applies partial modifications to the resource (updating only specific fields). It is not guaranteed to be idempotent.
+
+**Q:** What does "idempotence" mean in the context of HTTP methods, and why are POST operations not idempotent?
+
+> **Answer:**
+> An HTTP method is idempotent if executing the same request multiple times yields the exact same resource state on the server. `GET`, `PUT`, and `DELETE` are idempotent. `POST` is not idempotent because repeating a `POST` request (e.g. submitting a payment form twice) creates duplicate resources (e.g. two separate transactions or orders) on the server.
+
+**Q:** Discuss the API design trade-offs of using JSON API standards versus GraphQL in a microservices ecosystem. When would you veto a migration to GraphQL?
+
+> **Answer:**
+> 
+
+**Q:** REST (JSON API)
+
+> **Answer:**
+> * *Pros*: Simple to cache using standard CDNs (via HTTP headers like `Cache-Control`), has a small learning curve, and is easy to load-balance.
+> * *Cons*: Can suffer from over-fetching or under-fetching data, requiring clients to make multiple round-trip requests.
+
+**Q:** GraphQL
+
+> **Answer:**
+> * *Pros*: Clients can fetch exactly the fields they need in a single request, which is ideal for complex frontend views.
+> * *Cons*: Difficult to cache at the network layer because requests use `POST` payloads, and clients can write complex queries that overload the database.
+> * *Veto Criteria*: I would veto a migration to GraphQL if:
+> 1. The application relies heavily on network caching and CDN performance.
+> 2. The services are lightweight and do not have deeply nested relational queries.
+> 3. The team lacks database query-depth analysis and cost-limiting middleware to prevent clients from executing resource-heavy nested queries.
 
 ---
-Previous : [22_Creating_Web_Servers.md] | Index : [00_index.md] | Next : [24_ExpressJS.md]
+Previous : [22_Creating_Web_Servers.md](22_Creating_Web_Servers.md) | Index : [00_index.md](00_index.md) | Next : [24_ExpressJS.md](24_ExpressJS.md)

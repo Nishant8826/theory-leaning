@@ -1,16 +1,6 @@
 # Promises
 
-## What You Will Learn
-* The three states of a Promise (Pending, Fulfilled, Rejected).
-* Chaining asynchronous operations using `.then()`, `.catch()`, and `.finally()`.
-* Promise execution priority in the Microtask Queue.
-* Using Promise combinators (`Promise.all`, `Promise.allSettled`, `Promise.race`, `Promise.any`).
-* Managing error propagation and handling unhandled Promise rejections.
-
-## Why This Matters
 Promises are the standard foundation for asynchronous programming in modern Node.js. If you do not understand how Promises behave under the hood, you will write code with unhandled rejections that crash production servers, create memory leaks, or execution ordering bugs.
-
-## Theory
 
 ### What is a Promise?
 A **Promise** is a proxy object representing the eventual completion (or failure) of an asynchronous operation. A Promise is always in one of three states:
@@ -125,24 +115,28 @@ Promise.reject(new Error('Forgotten catch block'));
 
 ## Interview Questions
 
-### Beginner
-* **What are the three states of a Promise?**
-  *Answer*: The three states are **Pending** (the operation is still running), **Fulfilled** (the operation completed successfully), and **Rejected** (the operation failed).
+**Q:** What are the three states of a Promise?
 
-### Intermediate
-* **What is the difference between `Promise.all` and `Promise.allSettled`?**
-  *Answer*: `Promise.all` takes an array of promises and resolves only when all of them resolve. If any promise rejects, it rejects immediately with that error. `Promise.allSettled` waits for all promises to settle (either resolve or reject) and returns an array of objects describing the outcome of each promise.
+> **Answer:**
+> The three states are **Pending** (the operation is still running), **Fulfilled** (the operation completed successfully), and **Rejected** (the operation failed).
 
-### Advanced
-* **Explain how unhandled Promise rejections behave in modern Node.js and how a senior engineer configures process-level safety nets.**
-  *Answer*: In modern Node.js, unhandled rejections trigger a deprecation warning and will eventually terminate the process with an exit code of `1`. 
-  To secure the application, register listeners for `unhandledRejection` and `uncaughtException` on the `process` object. These listeners should log the error details to a secure storage pipeline (like Winston/Elasticsearch) and trigger a graceful shutdown sequence to restart the container cleanly, preventing memory leaks or corrupted states.
+**Q:** What is the difference between `Promise.all` and `Promise.allSettled`?
 
-### Senior Architect
-* **In high-concurrency environments, discuss the memory footprint implications of instantiating thousands of Promises simultaneously. How does V8 allocate memory for Promise instances compared to simple callbacks?**
-  *Answer*: Promises carry a higher memory footprint than callbacks. A callback is simply a function reference passed as an argument. A Promise is a full JavaScript object containing internal state arrays (`[[PromiseState]]`, `[[PromiseResult]]`), lists of resolve/reject handler bindings, and closure scopes. 
-  
-  Instantiating thousands of Promises concurrently creates many short-lived objects on the V8 heap. This increases GC pressure, leading to frequent minor scavenger collection sweeps that can cause latency spikes. To mitigate this in high-concurrency systems, use streaming APIs, implement backpressure limits, or utilize connection pools instead of spawning unconstrained Promise operations.
+> **Answer:**
+> `Promise.all` takes an array of promises and resolves only when all of them resolve. If any promise rejects, it rejects immediately with that error. `Promise.allSettled` waits for all promises to settle (either resolve or reject) and returns an array of objects describing the outcome of each promise.
+
+**Q:** Explain how unhandled Promise rejections behave in modern Node.js and how a senior engineer configures process-level safety nets.
+
+> **Answer:**
+> In modern Node.js, unhandled rejections trigger a deprecation warning and will eventually terminate the process with an exit code of `1`.
+> To secure the application, register listeners for `unhandledRejection` and `uncaughtException` on the `process` object. These listeners should log the error details to a secure storage pipeline (like Winston/Elasticsearch) and trigger a graceful shutdown sequence to restart the container cleanly, preventing memory leaks or corrupted states.
+
+**Q:** In high-concurrency environments, discuss the memory footprint implications of instantiating thousands of Promises simultaneously. How does V8 allocate memory for Promise instances compared to simple callbacks?
+
+> **Answer:**
+> Promises carry a higher memory footprint than callbacks. A callback is simply a function reference passed as an argument. A Promise is a full JavaScript object containing internal state arrays (`[[PromiseState]]`, `[[PromiseResult]]`), lists of resolve/reject handler bindings, and closure scopes.
+> 
+> Instantiating thousands of Promises concurrently creates many short-lived objects on the V8 heap. This increases GC pressure, leading to frequent minor scavenger collection sweeps that can cause latency spikes. To mitigate this in high-concurrency systems, use streaming APIs, implement backpressure limits, or utilize connection pools instead of spawning unconstrained Promise operations.
 
 ---
-Previous : [18_Callbacks.md] | Index : [00_index.md] | Next : [20_Async_Await.md]
+Previous : [18_Callbacks.md](18_Callbacks.md) | Index : [00_index.md](00_index.md) | Next : [20_Async_Await.md](20_Async_Await.md)

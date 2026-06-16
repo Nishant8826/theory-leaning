@@ -1,16 +1,6 @@
 # Garbage Collection
 
-## What You Will Learn
-* The Generational Hypothesis behind V8's memory reclaim strategies.
-* How the **Scavenger** (Minor GC) collects memory in the Young Generation.
-* How the **Mark-Sweep-Compact** (Major GC) collects memory in the Old Generation.
-* Orinoco project optimizations: Incremental, Parallel, and Concurrent collection.
-* Tuning GC performance using V8 CLI flags (`--trace-gc`, `--max-old-space-size`).
-
-## Why This Matters
 JavaScript abstracts memory management, but high-throughput servers cannot treat the Garbage Collector as a black box. If your application creates too many short-lived objects, the garbage collector will run frequently, causing "Stop-The-World" pauses that freeze the main thread. Understanding how V8 reclaims memory allows you to write GC-friendly code that keeps latency low.
-
-## Theory
 
 ### The Generational Hypothesis
 V8's garbage collection strategy is based on the **Generational Hypothesis**: most objects die shortly after allocation (e.g. variables inside function scopes are reclaimed immediately when the function returns). 
@@ -127,29 +117,45 @@ setInterval(() => {
 
 ## Interview Questions
 
-### Beginner
-* **What is Garbage Collection in JavaScript?**
-  *Answer*: Garbage Collection is an automatic memory management process in the JavaScript engine (V8) that identifies and reclaims memory allocated to objects that are no longer referenced or reachable from the application roots.
+**Q:** What is Garbage Collection in JavaScript?
 
-### Intermediate
-* **What is the Generational Hypothesis, and how does it affect V8's heap structure?**
-  *Answer*: The Generational Hypothesis states that most objects die shortly after allocation. To optimize cleanup based on this rule, V8 divides the heap into two spaces: the Young Generation (New Space, for new, short-lived objects) and the Old Generation (Old Space, for long-lived objects promoted from the New Space).
+> **Answer:**
+> Garbage Collection is an automatic memory management process in the JavaScript engine (V8) that identifies and reclaims memory allocated to objects that are no longer referenced or reachable from the application roots.
 
-### Advanced
-* **Explain Cheney's Scavenger copying algorithm used in the V8 New Space.**
-  *Answer*: Cheney's copying algorithm divides the New Space into two equal semi-spaces: From-Space and To-Space. 
-  1. New objects are allocated in the From-Space.
-  2. When the From-Space fills up, the Scavenger pauses execution to find active, reachable objects.
-  3. It copies the active objects to the To-Space, compacting them to prevent memory fragmentation.
-  4. Any objects that survive multiple Scavenger runs are promoted to the Old Space.
-  5. The names of the semi-spaces are flipped, and the old From-Space is cleared, ready for new allocations.
+**Q:** What is the Generational Hypothesis, and how does it affect V8's heap structure?
 
-### Senior Architect
-* **Discuss how Orinoco optimizes V8 garbage collection to minimize Stop-The-World latency. Explain the difference between concurrent, parallel, and incremental garbage collection.**
-  *Answer*: To minimize Stop-The-World latency, Orinoco implements several non-blocking collection patterns:
-  * **Parallel Collection**: The main thread and multiple background worker threads perform GC tasks simultaneously. While this still pauses JavaScript execution (Stop-The-World), sharing the workload across multiple threads reduces the pause duration.
-  * **Incremental Collection**: The main thread runs GC tasks in small, interleaved steps between JavaScript execution cycles. This does not reduce the total GC workload, but it breaks a single long pause into multiple short pauses, keeping the application responsive.
-  * **Concurrent Collection**: Background helper threads perform the entire GC cycle (like marking or sweeping) while the main thread continues executing JavaScript. This is the most efficient pattern because it eliminates Stop-The-World pauses on the main thread entirely.
+> **Answer:**
+> The Generational Hypothesis states that most objects die shortly after allocation. To optimize cleanup based on this rule, V8 divides the heap into two spaces: the Young Generation (New Space, for new, short-lived objects) and the Old Generation (Old Space, for long-lived objects promoted from the New Space).
+
+**Q:** Explain Cheney's Scavenger copying algorithm used in the V8 New Space.
+
+> **Answer:**
+> Cheney's copying algorithm divides the New Space into two equal semi-spaces: From-Space and To-Space.
+> 1. New objects are allocated in the From-Space.
+> 2. When the From-Space fills up, the Scavenger pauses execution to find active, reachable objects.
+> 3. It copies the active objects to the To-Space, compacting them to prevent memory fragmentation.
+> 4. Any objects that survive multiple Scavenger runs are promoted to the Old Space.
+> 5. The names of the semi-spaces are flipped, and the old From-Space is cleared, ready for new allocations.
+
+**Q:** Discuss how Orinoco optimizes V8 garbage collection to minimize Stop-The-World latency. Explain the difference between concurrent, parallel, and incremental garbage collection.
+
+> **Answer:**
+> To minimize Stop-The-World latency, Orinoco implements several non-blocking collection patterns:
+
+**Q:** Parallel Collection
+
+> **Answer:**
+> 
+
+**Q:** Incremental Collection
+
+> **Answer:**
+> 
+
+**Q:** Concurrent Collection
+
+> **Answer:**
+> 
 
 ---
-Previous : [51_Memory_Management.md] | Index : [00_index.md] | Next : [53_Performance_Optimization.md]
+Previous : [51_Memory_Management.md](51_Memory_Management.md) | Index : [00_index.md](00_index.md) | Next : [53_Performance_Optimization.md](53_Performance_Optimization.md)

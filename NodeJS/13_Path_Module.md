@@ -1,15 +1,6 @@
 # Path Module
 
-## What You Will Learn
-* How the `path` module abstracts platform-specific separator differences.
-* Key utility methods (`join`, `resolve`, `normalize`, `parse`, `format`).
-* The difference between absolute and relative path resolution.
-* The critical behavioral difference between `path.join()` and `path.resolve()`.
-
-## Why This Matters
 Different operating systems use different characters to separate file paths: Windows uses backslashes (`\`), while POSIX systems (Linux, macOS) use forward slashes (`/`). Hardcoding slashes in your code (e.g. `const p = __dirname + '/src/config.json'`) will make your application crash when deployed to a different operating system. Using the `path` module prevents these cross-platform bugs.
-
-## Theory
 
 ### Platform Absctraction
 The `path` module automatically detects the host operating system at runtime and adapts its path manipulation logic. You can also access platform-specific implementations directly if needed:
@@ -108,27 +99,31 @@ console.log('Reconstructed string:', formattedPath); // '/home/user/workspace/ap
 
 ## Interview Questions
 
-### Beginner
-* **What is the difference between Windows and Linux file path separators, and how does Node.js handle them?**
-  *Answer*: Windows uses a backslash (`\`) to separate path segments, while Linux and macOS use a forward slash (`/`). Node.js abstracts these differences through the `path` module. Methods like `path.join()` use the host system's native path separator dynamically at runtime.
+**Q:** What is the difference between Windows and Linux file path separators, and how does Node.js handle them?
 
-### Intermediate
-* **Explain the difference between `path.join()` and `path.resolve()`.**
-  *Answer*: `path.join()` joins all given path segments together using the platform-specific separator and normalizes the resulting path. It does not resolve relative segments to absolute paths unless an absolute segment is passed. `path.resolve()` resolves a sequence of paths into an absolute path, processing segments from right to left until an absolute root is found. If no absolute root is found, it prepends the current working directory (`process.cwd()`).
+> **Answer:**
+> Windows uses a backslash (`\`) to separate path segments, while Linux and macOS use a forward slash (`/`). Node.js abstracts these differences through the `path` module. Methods like `path.join()` use the host system's native path separator dynamically at runtime.
 
-### Advanced
-* **What happens when `path.resolve('/foo', '/bar', 'baz')` is executed, and why?**
-  *Answer*: It returns `/bar/baz` (or `\bar\baz` on Windows). `path.resolve()` processes segments from right to left:
-  1. It starts with `baz` (relative).
-  2. It prepends `/bar`. Because `/bar` is an absolute path, the resolution is complete.
-  3. It discards `/foo` because it has already constructed an absolute path root, stopping further evaluation.
+**Q:** Explain the difference between `path.join()` and `path.resolve()`.
 
-### Senior Architect
-* **How would you build a secure file system access layer that prevents Directory Traversal (LFI) attacks when resolving paths input by users?**
-  *Answer*: To prevent Directory Traversal (where users pass paths containing `../` to access sensitive system files like `/etc/passwd`):
-  1. Define a strict root storage directory path, resolved to an absolute path (e.g., `const STORAGE_ROOT = path.resolve('/var/storage')`).
-  2. Resolve the user-provided path relative to this root using `path.resolve(STORAGE_ROOT, userRawInput)`.
-  3. Verify that the resolved path starts with the root path using `.startsWith(STORAGE_ROOT)`. This validation ensures the user's path is confined to the target storage folder and prevents traversal attacks.
+> **Answer:**
+> `path.join()` joins all given path segments together using the platform-specific separator and normalizes the resulting path. It does not resolve relative segments to absolute paths unless an absolute segment is passed. `path.resolve()` resolves a sequence of paths into an absolute path, processing segments from right to left until an absolute root is found. If no absolute root is found, it prepends the current working directory (`process.cwd()`).
+
+**Q:** What happens when `path.resolve('/foo', '/bar', 'baz')` is executed, and why?
+
+> **Answer:**
+> It returns `/bar/baz` (or `\bar\baz` on Windows). `path.resolve()` processes segments from right to left:
+> 1. It starts with `baz` (relative).
+> 2. It prepends `/bar`. Because `/bar` is an absolute path, the resolution is complete.
+> 3. It discards `/foo` because it has already constructed an absolute path root, stopping further evaluation.
+
+**Q:** How would you build a secure file system access layer that prevents Directory Traversal (LFI) attacks when resolving paths input by users?
+
+> **Answer:**
+> To prevent Directory Traversal (where users pass paths containing `../` to access sensitive system files like `/etc/passwd`):
+> 1. Define a strict root storage directory path, resolved to an absolute path (e.g., `const STORAGE_ROOT = path.resolve('/var/storage')`).
+> 2. Resolve the user-provided path relative to this root using `path.resolve(STORAGE_ROOT, userRawInput)`.
+> 3. Verify that the resolved path starts with the root path using `.startsWith(STORAGE_ROOT)`. This validation ensures the user's path is confined to the target storage folder and prevents traversal attacks.
 
 ---
-Previous : [12_File_System_Module.md] | Index : [00_index.md] | Next : [14_OS_Module.md]
+Previous : [12_File_System_Module.md](12_File_System_Module.md) | Index : [00_index.md](00_index.md) | Next : [14_OS_Module.md](14_OS_Module.md)

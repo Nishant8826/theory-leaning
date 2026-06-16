@@ -1,16 +1,6 @@
 # Event-Driven Architecture
 
-## What You Will Learn
-* The core concepts of Event-Driven Architecture (EDA).
-* Distinguishing between Events, Commands, and Messages.
-* The Publisher-Subscriber (Pub/Sub) pattern vs. Point-to-Point Message Queues.
-* Designing Event Sourcing and CQRS (Command Query Responsibility Segregation).
-* Navigating Eventual Consistency trade-offs in distributed systems.
-
-## Why This Matters
 Traditional APIs rely on synchronous, request-response communication (like REST). If Service A calls Service B, and Service B is down, the request fails. Event-Driven Architecture decouples services: they communicate by publishing events to a message broker. This allows services to continue running independently, improving system availability and scalability.
-
-## Theory
 
 ### Event-Driven Principles
 * **Decoupling**: Services do not know about each other's existences. They only publish events to, or consume events from, a central event broker, allowing you to add or modify services without changing existing ones.
@@ -132,30 +122,42 @@ orderService.createOrder(42, ['Laptop', 'Mouse']);
 
 ## Interview Questions
 
-### Beginner
-* **What is an Event in Event-Driven Architecture, and how does it differ from a Command?**
-  *Answer*: An event represents a record of something that has already occurred in the system (e.g. `OrderCreated`). It is immutable, can have multiple subscribers, and cannot be rejected. A command is an instruction to perform a specific action (e.g. `CreateOrder`). It has a single target receiver, is expected to execute immediately, and can fail.
+**Q:** What is an Event in Event-Driven Architecture, and how does it differ from a Command?
 
-### Intermediate
-* **What is the difference between point-to-point message queues and the publisher-subscriber (Pub/Sub) pattern?**
-  *Answer*: Point-to-point queues deliver a message to exactly one consumer, who processes and deletes the message (ideal for task distribution like sending emails). Pub/Sub topics broadcast the message to all registered subscribers simultaneously, allowing multiple services to process the event independently.
+> **Answer:**
+> An event represents a record of something that has already occurred in the system (e.g. `OrderCreated`). It is immutable, can have multiple subscribers, and cannot be rejected. A command is an instruction to perform a specific action (e.g. `CreateOrder`). It has a single target receiver, is expected to execute immediately, and can fail.
 
-### Advanced
-* **What is Event Sourcing, and what are its main advantages and disadvantages?**
-  *Answer*: Event Sourcing is a design pattern where the application stores the complete, sequential log of all state changes (events) that occurred on an object instead of saving its current state.
-  * **Advantages**: Provides a perfect audit log of all changes, supports time-travel debugging (rebuilding state at any point in time), and makes write operations fast.
-  * **Disadvantages**: Reading objects requires replaying the event log, which can be slow (mitigated by snapshots), and increases code complexity.
+**Q:** What is the difference between point-to-point message queues and the publisher-subscriber (Pub/Sub) pattern?
 
-### Senior Architect
-* **How would you architecture a high-volume system that handles Eventual Consistency across multiple microservices without violating domain boundaries? Discuss CQRS, read-model sync, and data synchronization.**
-  *Answer*: To handle eventual consistency using CQRS and Event Sourcing:
-  1. **Decouple Write/Read**: Separate the write database (optimized for transaction consistency, e.g. PostgreSQL) from the read databases (optimized for queries, e.g. Elasticsearch).
-  2. **Publish State Events**: When the write service modifies data, it publishes a state change event (e.g. `UserUpdatedEvent`) to a message broker (like Kafka).
-  3. **Sync Read Models**: A read model sync service consumes these events and updates the Elasticsearch query database asynchronously.
-  4. **Manage Delay**: Because of network latency, the read database will lag slightly behind the write database. To manage this:
-     - Use **Optimistic UI Updates**: Have the frontend update the UI instantly, assuming success.
-     - Pass **version identifiers** in events to detect and reject out-of-order event delivery.
-     - Configure clients to poll with backoff if a resource is queried immediately after updates.
+> **Answer:**
+> Point-to-point queues deliver a message to exactly one consumer, who processes and deletes the message (ideal for task distribution like sending emails). Pub/Sub topics broadcast the message to all registered subscribers simultaneously, allowing multiple services to process the event independently.
+
+**Q:** What is Event Sourcing, and what are its main advantages and disadvantages?
+
+> **Answer:**
+> Event Sourcing is a design pattern where the application stores the complete, sequential log of all state changes (events) that occurred on an object instead of saving its current state.
+
+**Q:** Advantages
+
+> **Answer:**
+> 
+
+**Q:** Disadvantages
+
+> **Answer:**
+> 
+
+**Q:** How would you architecture a high-volume system that handles Eventual Consistency across multiple microservices without violating domain boundaries? Discuss CQRS, read-model sync, and data synchronization.
+
+> **Answer:**
+> To handle eventual consistency using CQRS and Event Sourcing:
+> 1. **Decouple Write/Read**: Separate the write database (optimized for transaction consistency, e.g. PostgreSQL) from the read databases (optimized for queries, e.g. Elasticsearch).
+> 2. **Publish State Events**: When the write service modifies data, it publishes a state change event (e.g. `UserUpdatedEvent`) to a message broker (like Kafka).
+> 3. **Sync Read Models**: A read model sync service consumes these events and updates the Elasticsearch query database asynchronously.
+> 4. **Manage Delay**: Because of network latency, the read database will lag slightly behind the write database. To manage this:
+> - Use **Optimistic UI Updates**: Have the frontend update the UI instantly, assuming success.
+> - Pass **version identifiers** in events to detect and reject out-of-order event delivery.
+> - Configure clients to poll with backoff if a resource is queried immediately after updates.
 
 ---
-Previous : [69_Microservices.md] | Index : [00_index.md] | Next : [71_RabbitMQ.md]
+Previous : [69_Microservices.md](69_Microservices.md) | Index : [00_index.md](00_index.md) | Next : [71_RabbitMQ.md](71_RabbitMQ.md)

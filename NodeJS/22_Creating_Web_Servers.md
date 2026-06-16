@@ -1,15 +1,6 @@
 # Creating Web Servers
 
-## What You Will Learn
-* Binding configurations, hostnames, and socket backlogs.
-* Managing TCP connections and socket keep-alive timeouts.
-* Graceful shutdown patterns: cleaning up connections and database resources.
-* Dynamic port allocation strategies for testing environments.
-
-## Why This Matters
 If you shut down a production Node.js server by simply terminating the process (`SIGTERM`/`SIGINT`), you will abort active client transactions (such as database writes, file uploads, or payments) halfway through. Building a production-grade server requires implementing graceful shutdown sequences that finish active requests before exiting.
-
-## Theory
 
 ### Listen Parameters and TCP Backlog
 When a server starts listening, you configure:
@@ -128,26 +119,30 @@ process.on('SIGINT', () => shutdown('SIGINT')); // Handles Ctrl+C locally
 
 ## Interview Questions
 
-### Beginner
-* **What is the difference between binding to host `127.0.0.1` and `0.0.0.0`?**
-  *Answer*: Binding to `127.0.0.1` (localhost) restricts connections to the local machine only. Binding to `0.0.0.0` instructs the server to listen on all available network interfaces, allowing external clients to connect.
+**Q:** What is the difference between binding to host `127.0.0.1` and `0.0.0.0`?
 
-### Intermediate
-* **What is the purpose of `server.close()` and what happens to active requests when it is called?**
-  *Answer*: `server.close()` stops the server from accepting new TCP connections. However, it does not abort active requests that are already processing. The server remains active until all existing connections have finished processing and closed.
+> **Answer:**
+> Binding to `127.0.0.1` (localhost) restricts connections to the local machine only. Binding to `0.0.0.0` instructs the server to listen on all available network interfaces, allowing external clients to connect.
 
-### Advanced
-* **Why does a Node.js process sometimes refuse to exit when `server.close()` is called, and how do you resolve it?**
-  *Answer*: `server.close()` stops accepting new connections but waits for existing connections to close on their own. If a client keeps a TCP connection open (e.g. via keep-alive or open web sockets), the socket remains active. Because active sockets keep the Event Loop running, the process will not exit. To resolve this, keep track of all active sockets in a `Set` and call `socket.destroy()` on them if they remain open after a safe shutdown timeout window.
+**Q:** What is the purpose of `server.close()` and what happens to active requests when it is called?
 
-### Senior Architect
-* **In cloud container environments (like AWS Fargate or Kubernetes), discuss the lifecycle of a pod shutdown. How do the preStop hook, SIGTERM signal, and server graceful shutdown timeouts coordinate to achieve zero-downtime deployments?**
-  *Answer*: To achieve zero-downtime deployments during updates:
-  1. The orchestrator deletes the pod/container from the Service directory (stopping routing networks from sending traffic). However, network routing updates are asynchronous and can take a few seconds to propagate.
-  2. To prevent connection drops during this propagation window, a `preStop` hook script can run a short sleep command (e.g. 5-10 seconds) before sending the `SIGTERM` signal.
-  3. The orchestrator sends the `SIGTERM` signal to the Node.js process.
-  4. The process catches `SIGTERM` and immediately calls `server.close()` to stop accepting new requests, while continuing to process active transactions.
-  5. The application is given a grace period (e.g. 30 seconds) to clean up. The Node.js application should configure its internal socket-destroy timeout (e.g. 20 seconds) to execute before the container orchestrator sends a `SIGKILL` signal, ensuring all transactions are saved and resources are cleaned up cleanly.
+> **Answer:**
+> `server.close()` stops the server from accepting new TCP connections. However, it does not abort active requests that are already processing. The server remains active until all existing connections have finished processing and closed.
+
+**Q:** Why does a Node.js process sometimes refuse to exit when `server.close()` is called, and how do you resolve it?
+
+> **Answer:**
+> `server.close()` stops accepting new connections but waits for existing connections to close on their own. If a client keeps a TCP connection open (e.g. via keep-alive or open web sockets), the socket remains active. Because active sockets keep the Event Loop running, the process will not exit. To resolve this, keep track of all active sockets in a `Set` and call `socket.destroy()` on them if they remain open after a safe shutdown timeout window.
+
+**Q:** In cloud container environments (like AWS Fargate or Kubernetes), discuss the lifecycle of a pod shutdown. How do the preStop hook, SIGTERM signal, and server graceful shutdown timeouts coordinate to achieve zero-downtime deployments?
+
+> **Answer:**
+> To achieve zero-downtime deployments during updates:
+> 1. The orchestrator deletes the pod/container from the Service directory (stopping routing networks from sending traffic). However, network routing updates are asynchronous and can take a few seconds to propagate.
+> 2. To prevent connection drops during this propagation window, a `preStop` hook script can run a short sleep command (e.g. 5-10 seconds) before sending the `SIGTERM` signal.
+> 3. The orchestrator sends the `SIGTERM` signal to the Node.js process.
+> 4. The process catches `SIGTERM` and immediately calls `server.close()` to stop accepting new requests, while continuing to process active transactions.
+> 5. The application is given a grace period (e.g. 30 seconds) to clean up. The Node.js application should configure its internal socket-destroy timeout (e.g. 20 seconds) to execute before the container orchestrator sends a `SIGKILL` signal, ensuring all transactions are saved and resources are cleaned up cleanly.
 
 ---
-Previous : [21_HTTP_Module.md] | Index : [00_index.md] | Next : [23_REST_APIs.md]
+Previous : [21_HTTP_Module.md](21_HTTP_Module.md) | Index : [00_index.md](00_index.md) | Next : [23_REST_APIs.md](23_REST_APIs.md)

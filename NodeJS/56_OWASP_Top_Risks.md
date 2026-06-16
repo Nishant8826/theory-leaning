@@ -1,16 +1,6 @@
 # OWASP Top Risks
 
-## What You Will Learn
-* Overview of the OWASP Top 10 Web Application Security Risks in Node.js.
-* Identifying and defending against Injection vulnerabilities.
-* Securing applications against Broken Access Control and privilege escalation.
-* Preventing Cryptographic Failures and Security Misconfigurations.
-* Integrating security scanners into development workflows.
-
-## Why This Matters
 The Open Web Application Security Project (OWASP) compiles a list of the ten most critical security risks for web applications. Attackers actively scan applications for these vulnerabilities. Understanding how these risks manifest in Node.js code allows you to implement defensive programming practices and prevent security breaches.
-
-## Theory
 
 ### Key OWASP Risks in Node.js Applications
 
@@ -142,31 +132,38 @@ app.listen(3000, () => console.log('OWASP Demo Server running on port 3000'));
 
 ## Interview Questions
 
-### Beginner
-* **What is OWASP and why is it important for backend security?**
-  *Answer*: OWASP stands for the Open Web Application Security Project. It is a non-profit foundation that compiles the "OWASP Top 10", a list of the ten most critical security vulnerabilities in web applications, helping developers understand and prevent common security risks.
+**Q:** What is OWASP and why is it important for backend security?
 
-### Intermediate
-* **What is a NoSQL Injection attack, and how do you prevent it in a MongoDB/Mongoose application?**
-  *Answer*: A NoSQL Injection attack occurs when an attacker passes a query operator object (like `{ "$ne": "" }` - "not equal to empty string") instead of a string value inside request parameters. MongoDB evaluates the operator, bypassing checks like password validation. 
-  To prevent NoSQL injection, validate request parameters using schema libraries (like Zod) or cast inputs to strings explicitly (e.g. `String(req.body.password)`) before querying the database, ensuring the engine treats them literally.
+> **Answer:**
+> OWASP stands for the Open Web Application Security Project. It is a non-profit foundation that compiles the "OWASP Top 10", a list of the ten most critical security vulnerabilities in web applications, helping developers understand and prevent common security risks.
 
-### Advanced
-* **Explain the risk of Insecure Direct Object Reference (IDOR) and outline a multi-layered defense strategy to secure user resources.**
-  *Answer*: IDOR is an access control vulnerability where an application uses database identifiers directly in URLs (e.g. `/api/invoices/:id`) and returns resources without verifying if the user has permission to access that record.
-  * **Defense Strategy**:
-    1. **Authentication**: Verify the client's identity and roles using JWT or Session checks.
-    2. **Authorization Middleware**: Restrict route access to roles allowed to query that resource class.
-    3. **Resource Ownership Verification**: In the database query, verify that the resource's owner ID matches the authenticated user ID (`req.user.id`), or query the resource filter directly (e.g., `Invoice.findOne({ _id: invoiceId, userId: req.user.id })`), preventing access leaks.
+**Q:** What is a NoSQL Injection attack, and how do you prevent it in a MongoDB/Mongoose application?
 
-### Senior Architect
-* **How would you secure a Node.js microservices cluster against OWASP Top Risks, considering network boundaries, service-to-service communication, and secret management?**
-  *Answer*: To secure a microservices cluster:
-  1. **API Gateway Boundary**: Enforce rate-limiting, SSL termination, and initial CORS validation at the API Gateway layer before traffic enters the cluster network.
-  2. **Zero-Trust Communication**: Secure service-to-service calls using mutual TLS (mTLS) with validation tokens (like SPIFFE/SPIRE).
-  3. **Least Privilege Processes**: Run all containers as non-root users (like the `node` user) with read-only filesystems.
-  4. **Dynamic Secrets**: Retrieve and rotate credentials dynamically using a secure vault manager (like HashiCorp Vault), preventing credentials from leaking in code repositories.
-  5. **Static Analysis**: Integrate security scans into CI/CD pipelines to block builds with high-severity vulnerabilities.
+> **Answer:**
+> A NoSQL Injection attack occurs when an attacker passes a query operator object (like `{ "$ne": "" }` - "not equal to empty string") instead of a string value inside request parameters. MongoDB evaluates the operator, bypassing checks like password validation.
+> To prevent NoSQL injection, validate request parameters using schema libraries (like Zod) or cast inputs to strings explicitly (e.g. `String(req.body.password)`) before querying the database, ensuring the engine treats them literally.
+
+**Q:** Explain the risk of Insecure Direct Object Reference (IDOR) and outline a multi-layered defense strategy to secure user resources.
+
+> **Answer:**
+> IDOR is an access control vulnerability where an application uses database identifiers directly in URLs (e.g. `/api/invoices/:id`) and returns resources without verifying if the user has permission to access that record.
+
+**Q:** Defense Strategy
+
+> **Answer:**
+> 1. **Authentication**: Verify the client's identity and roles using JWT or Session checks.
+> 2. **Authorization Middleware**: Restrict route access to roles allowed to query that resource class.
+> 3. **Resource Ownership Verification**: In the database query, verify that the resource's owner ID matches the authenticated user ID (`req.user.id`), or query the resource filter directly (e.g., `Invoice.findOne({ _id: invoiceId, userId: req.user.id })`), preventing access leaks.
+
+**Q:** How would you secure a Node.js microservices cluster against OWASP Top Risks, considering network boundaries, service-to-service communication, and secret management?
+
+> **Answer:**
+> To secure a microservices cluster:
+> 1. **API Gateway Boundary**: Enforce rate-limiting, SSL termination, and initial CORS validation at the API Gateway layer before traffic enters the cluster network.
+> 2. **Zero-Trust Communication**: Secure service-to-service calls using mutual TLS (mTLS) with validation tokens (like SPIFFE/SPIRE).
+> 3. **Least Privilege Processes**: Run all containers as non-root users (like the `node` user) with read-only filesystems.
+> 4. **Dynamic Secrets**: Retrieve and rotate credentials dynamically using a secure vault manager (like HashiCorp Vault), preventing credentials from leaking in code repositories.
+> 5. **Static Analysis**: Integrate security scans into CI/CD pipelines to block builds with high-severity vulnerabilities.
 
 ---
-Previous : [55_Security_Fundamentals.md] | Index : [00_index.md] | Next : [57_Helmet.md]
+Previous : [55_Security_Fundamentals.md](55_Security_Fundamentals.md) | Index : [00_index.md](00_index.md) | Next : [57_Helmet.md](57_Helmet.md)

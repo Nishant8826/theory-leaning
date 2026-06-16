@@ -1,16 +1,6 @@
 # Helmet
 
-## What You Will Learn
-* The role of Helmet middleware in securing HTTP response headers.
-* Critical HTTP headers: Content Security Policy (CSP) and Strict Transport Security (HSTS).
-* Defending against Clickjacking using `X-Frame-Options`.
-* Preventing MIME-sniffing using `X-Content-Type-Options`.
-* Integrating and configuring Helmet in Express.
-
-## Why This Matters
 By default, Express response headers expose framework details (like the `X-Powered-By: Express` header), making it easy for attackers to identify your framework and search for known exploits. Additionally, browsers rely on HTTP headers to enforce security policies. Helmet sets these headers to secure your application and protect users from common web vulnerabilities.
-
-## Theory
 
 ### HTTP Security Headers
 Helmet is an Express middleware collection that sets HTTP headers to secure your application:
@@ -99,24 +89,36 @@ app.listen(3000, () => console.log('Helmet-secured server running on port 3000')
 
 ## Interview Questions
 
-### Beginner
-* **What is Helmet in Express.js?**
-  *Answer*: Helmet is a security middleware for Express applications that sets various HTTP headers in responses to secure the application against common web vulnerabilities.
+**Q:** What is Helmet in Express.js?
 
-### Intermediate
-* **How does setting the `X-Content-Type-Options: nosniff` header improve security?**
-  *Answer*: It prevents browsers from guessing (sniffing) the MIME type of a file based on its contents, forcing them to use the type declared in the `Content-Type` header. This prevents attackers from uploading a script disguised as an image and executing it in the browser.
+> **Answer:**
+> Helmet is a security middleware for Express applications that sets various HTTP headers in responses to secure the application against common web vulnerabilities.
 
-### Advanced
-* **What is a Clickjacking attack, and how does the `X-Frame-Options` header defend against it?**
-  *Answer*: Clickjacking is an attack where a user is tricked into clicking an element on a website while actually clicking a hidden, transparent iframe of another website layered on top of it. 
-  The `X-Frame-Options` header defends against this by telling the browser whether it is allowed to render the site inside a frame (`<frame>`, `<iframe>`, or `<object>`). Setting it to `DENY` or `SAMEORIGIN` prevents other domains from embedding your site inside their pages.
+**Q:** How does setting the `X-Content-Type-Options: nosniff` header improve security?
 
-### Senior Architect
-* **In a single-page application (SPA) architecture utilizing a separate Node.js API server and static CDN frontend, how should Content Security Policy (CSP) headers be configured? Discuss the roles of the API server and the CDN.**
-  *Answer*: In an SPA architecture:
-  * **CDN (Frontend Host)**: Should serve the static HTML file along with strict CSP headers (via HTTP headers or `<meta http-equiv="Content-Security-Policy" ...>`). The CDN's CSP must restrict script execution to trusted domains, block inline scripts, and set `connect-src` to allow network requests only to the API server domain.
-  * **API Server**: Does not serve HTML files, so it does not need to configure full CSP directive headers like `script-src` or `style-src`. However, it should still configure basic security headers (like HSTS to force HTTPS, CORS policies to restrict origin access, and `X-Content-Type-Options: nosniff` to prevent MIME-sniffing), ensuring the API endpoints are secure.
+> **Answer:**
+> It prevents browsers from guessing (sniffing) the MIME type of a file based on its contents, forcing them to use the type declared in the `Content-Type` header. This prevents attackers from uploading a script disguised as an image and executing it in the browser.
+
+**Q:** What is a Clickjacking attack, and how does the `X-Frame-Options` header defend against it?
+
+> **Answer:**
+> Clickjacking is an attack where a user is tricked into clicking an element on a website while actually clicking a hidden, transparent iframe of another website layered on top of it.
+> The `X-Frame-Options` header defends against this by telling the browser whether it is allowed to render the site inside a frame (`<frame>`, `<iframe>`, or `<object>`). Setting it to `DENY` or `SAMEORIGIN` prevents other domains from embedding your site inside their pages.
+
+**Q:** In a single-page application (SPA) architecture utilizing a separate Node.js API server and static CDN frontend, how should Content Security Policy (CSP) headers be configured? Discuss the roles of the API server and the CDN.
+
+> **Answer:**
+> In an SPA architecture:
+
+**Q:** CDN (Frontend Host)
+
+> **Answer:**
+> 
+
+**Q:** API Server
+
+> **Answer:**
+> 
 
 ---
-Previous : [56_OWASP_Top_Risks.md] | Index : [00_index.md] | Next : [58_CORS.md]
+Previous : [56_OWASP_Top_Risks.md](56_OWASP_Top_Risks.md) | Index : [00_index.md](00_index.md) | Next : [58_CORS.md](58_CORS.md)

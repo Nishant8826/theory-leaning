@@ -1,16 +1,6 @@
 # Authentication
 
-## What You Will Learn
-* The difference between Authentication and Authorization.
-* Why storing plain-text passwords is a critical security vulnerability.
-* The fundamentals of secure password hashing: Salt, Pepper, and Work Factors.
-* Comparing password hashing algorithms (bcrypt vs. Argon2id).
-* Implementing secure password hashing and verification.
-
-## Why This Matters
 If you store plain-text passwords in your database and your server is compromised, attackers will steal your users' credentials. Because users frequently reuse passwords across multiple sites, a data breach at your company exposes their accounts on other platforms. Implementing secure hashing algorithms protects user credentials even if your database is compromised.
-
-## Theory
 
 ### Authentication vs. Authorization
 * **Authentication (AuthN)**: Verifying **who** a user is (e.g. validating login credentials, verifying OTP tokens).
@@ -121,26 +111,30 @@ simulateAuthenticationFlow();
 
 ## Interview Questions
 
-### Beginner
-* **What is the difference between authentication and authorization?**
-  *Answer*: Authentication verifies the identity of a user (who they are). Authorization verifies what resources or actions the authenticated user is allowed to perform (what they can access).
+**Q:** What is the difference between authentication and authorization?
 
-### Intermediate
-* **Why should you salt passwords before hashing them?**
-  *Answer*: A salt is a random string generated for each user and appended to their password before hashing. Salting ensures that identical passwords yield different hashes, preventing attackers from using pre-computed dictionary tables (rainbow tables) to crack passwords.
+> **Answer:**
+> Authentication verifies the identity of a user (who they are). Authorization verifies what resources or actions the authenticated user is allowed to perform (what they can access).
 
-### Advanced
-* **Why are SHA-256 and MD5 inappropriate for password hashing? What makes bcrypt or Argon2 better?**
-  *Answer*: SHA-256 and MD5 are cryptographic checksum algorithms designed to compile binary blocks quickly. Because they are fast, an attacker can compute billions of guesses per second using custom GPU hardware. 
-  Bcrypt and Argon2 are slow hashing algorithms. They include configurable computational costs (CPU and memory requirements) that slow down the hashing process (~100-200ms per pass). This delay makes brute-force attacks computationally expensive and slow.
+**Q:** Why should you salt passwords before hashing them?
 
-### Senior Architect
-* **How would you defend your backend authentication endpoints against high-volume credential stuffing attacks without impacting genuine user latency?**
-  *Answer*: To defend against credential stuffing:
-  1. Implement **Rate Limiting** at the API gateway boundary, limiting request volume by IP and target account email keys.
-  2. Implement a **Captcha** system (like Cloudflare Turnstile or reCAPTCHA) for login attempts that exhibit suspicious request profiles.
-  3. Deploy **Web Application Firewalls (WAF)** to identify and block automated bots based on user-agent signatures and request behaviors.
-  4. Use connection pools and set limits on database query timeouts to prevent credential stuffing spikes from consuming all available database connections, protecting the rest of the application.
+> **Answer:**
+> A salt is a random string generated for each user and appended to their password before hashing. Salting ensures that identical passwords yield different hashes, preventing attackers from using pre-computed dictionary tables (rainbow tables) to crack passwords.
+
+**Q:** Why are SHA-256 and MD5 inappropriate for password hashing? What makes bcrypt or Argon2 better?
+
+> **Answer:**
+> SHA-256 and MD5 are cryptographic checksum algorithms designed to compile binary blocks quickly. Because they are fast, an attacker can compute billions of guesses per second using custom GPU hardware.
+> Bcrypt and Argon2 are slow hashing algorithms. They include configurable computational costs (CPU and memory requirements) that slow down the hashing process (~100-200ms per pass). This delay makes brute-force attacks computationally expensive and slow.
+
+**Q:** How would you defend your backend authentication endpoints against high-volume credential stuffing attacks without impacting genuine user latency?
+
+> **Answer:**
+> To defend against credential stuffing:
+> 1. Implement **Rate Limiting** at the API gateway boundary, limiting request volume by IP and target account email keys.
+> 2. Implement a **Captcha** system (like Cloudflare Turnstile or reCAPTCHA) for login attempts that exhibit suspicious request profiles.
+> 3. Deploy **Web Application Firewalls (WAF)** to identify and block automated bots based on user-agent signatures and request behaviors.
+> 4. Use connection pools and set limits on database query timeouts to prevent credential stuffing spikes from consuming all available database connections, protecting the rest of the application.
 
 ---
-Previous : [31_Logging.md] | Index : [00_index.md] | Next : [33_Authorization.md]
+Previous : [31_Logging.md](31_Logging.md) | Index : [00_index.md](00_index.md) | Next : [33_Authorization.md](33_Authorization.md)

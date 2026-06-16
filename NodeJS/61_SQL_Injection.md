@@ -1,15 +1,6 @@
 # SQL Injection
 
-## What You Will Learn
-* How SQL Injection (SQLi) occurs in database queries.
-* Exploit vectors: Authentication bypass, UNION-based extraction, and schema deletion.
-* Defensive coding: Parameterized queries, ORMs, and Query Builders.
-* Restricting database user permissions.
-
-## Why This Matters
 SQL Injection is one of the most destructive security vulnerabilities in backend applications. If an attacker can inject SQL commands into your queries, they can bypass login screens, read your entire database (including passwords and credit cards), modify data, or drop entire tables. Parameterizing your queries is critical for database security.
-
-## Theory
 
 ### What is SQL Injection?
 **SQL Injection (SQLi)** occurs when untrusted user input is concatenated directly into a SQL query string instead of being passed as a parameter. This allows the database engine to interpret the input as SQL command instructions rather than text data.
@@ -140,29 +131,33 @@ async function fetchUserById(req, res, next) {
 
 ## Interview Questions
 
-### Beginner
-* **What is SQL Injection (SQLi)?**
-  *Answer*: SQL Injection is a vulnerability that occurs when untrusted user input is concatenated directly into a SQL query string, allowing the database engine to execute the input as SQL commands.
+**Q:** What is SQL Injection (SQLi)?
 
-### Intermediate
-* **How do parameterized queries prevent SQL Injection?**
-  *Answer*: Parameterized queries (prepared statements) separate the query template from the parameter values. The database engine compiles the query template first to establish the execution plan, and then inserts the parameters strictly as text or data values, preventing them from altering the query structure.
+> **Answer:**
+> SQL Injection is a vulnerability that occurs when untrusted user input is concatenated directly into a SQL query string, allowing the database engine to execute the input as SQL commands.
 
-### Advanced
-* **What is a UNION-based SQL Injection attack, and what does the attacker require to execute it successfully?**
-  *Answer*: A UNION-based SQL Injection attack occurs when an attacker appends a `UNION SELECT` command to a normal query to merge and return results from other tables. 
-  To execute it successfully, the attacker must:
-  1. Determine the number of columns returned by the original query (often by appending `ORDER BY` commands).
-  2. Match the data types of the columns in the `UNION` query with those of the original query.
-  If successful, the query returns the requested data (such as passwords or configuration settings) directly in the search results.
+**Q:** How do parameterized queries prevent SQL Injection?
 
-### Senior Architect
-* **How would you architecture a database security strategy in an enterprise Node.js microservices fleet to mitigate the impact if a SQL Injection vulnerability is compromised in one of the services?**
-  *Answer*: To mitigate the impact of a database compromise:
-  1. **Least Privilege Users**: Create unique database credentials for each microservice. Limit permissions strictly to the tables that specific service needs to access (e.g., the billing service cannot access the user credentials table).
-  2. **Row-Level Security (RLS)**: Enable Row-Level Security in the database (e.g. in PostgreSQL) to restrict queries to return only records associated with the active tenant or user context.
-  3. **Network Isolation**: Deploy database instances inside a private virtual network (VPC), allowing access only from authenticated application containers and blocking direct external connections.
-  4. **Encryption at Rest**: Encrypt sensitive data columns (like credit cards or passwords) using AES-256-GCM. This ensures that even if an attacker extracts raw table rows via SQLi, the data remains encrypted and unreadable.
+> **Answer:**
+> Parameterized queries (prepared statements) separate the query template from the parameter values. The database engine compiles the query template first to establish the execution plan, and then inserts the parameters strictly as text or data values, preventing them from altering the query structure.
+
+**Q:** What is a UNION-based SQL Injection attack, and what does the attacker require to execute it successfully?
+
+> **Answer:**
+> A UNION-based SQL Injection attack occurs when an attacker appends a `UNION SELECT` command to a normal query to merge and return results from other tables.
+> To execute it successfully, the attacker must:
+> 1. Determine the number of columns returned by the original query (often by appending `ORDER BY` commands).
+> 2. Match the data types of the columns in the `UNION` query with those of the original query.
+> If successful, the query returns the requested data (such as passwords or configuration settings) directly in the search results.
+
+**Q:** How would you architecture a database security strategy in an enterprise Node.js microservices fleet to mitigate the impact if a SQL Injection vulnerability is compromised in one of the services?
+
+> **Answer:**
+> To mitigate the impact of a database compromise:
+> 1. **Least Privilege Users**: Create unique database credentials for each microservice. Limit permissions strictly to the tables that specific service needs to access (e.g., the billing service cannot access the user credentials table).
+> 2. **Row-Level Security (RLS)**: Enable Row-Level Security in the database (e.g. in PostgreSQL) to restrict queries to return only records associated with the active tenant or user context.
+> 3. **Network Isolation**: Deploy database instances inside a private virtual network (VPC), allowing access only from authenticated application containers and blocking direct external connections.
+> 4. **Encryption at Rest**: Encrypt sensitive data columns (like credit cards or passwords) using AES-256-GCM. This ensures that even if an attacker extracts raw table rows via SQLi, the data remains encrypted and unreadable.
 
 ---
-Previous : [60_XSS.md] | Index : [00_index.md] | Next : [62_NoSQL_Injection.md]
+Previous : [60_XSS.md](60_XSS.md) | Index : [00_index.md](00_index.md) | Next : [62_NoSQL_Injection.md](62_NoSQL_Injection.md)

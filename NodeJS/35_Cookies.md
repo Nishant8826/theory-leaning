@@ -1,16 +1,6 @@
 # Cookies
 
-## What You Will Learn
-* How cookies are sent and received via HTTP headers (`Set-Cookie`, `Cookie`).
-* Managing cookie lifecycles using `Expires` and `Max-Age`.
-* Configuring security flags (`HttpOnly`, `Secure`, `SameSite`).
-* Preventing client-side tampering using Signed Cookies.
-* Reading and writing cookies in Express.
-
-## Why This Matters
 Cookies are the standard mechanism for maintaining session state in web browsers. If you do not configure cookie security flags correctly, attackers can write scripts to steal session tokens (via XSS) or trigger actions on behalf of authenticated users (via CSRF). Understanding cookie security is essential for building secure web applications.
-
-## Theory
 
 ### HTTP Cookie Exchange
 Cookies are key-value text pairs managed by the browser:
@@ -133,24 +123,36 @@ app.listen(3000, () => console.log('Cookie server running on port 3000'));
 
 ## Interview Questions
 
-### Beginner
-* **What is the difference between the `Set-Cookie` and `Cookie` HTTP headers?**
-  *Answer*: `Set-Cookie` is a response header sent by the server to instruct the browser to store a cookie. `Cookie` is a request header sent by the browser to transmit stored cookies back to the server.
+**Q:** What is the difference between the `Set-Cookie` and `Cookie` HTTP headers?
 
-### Intermediate
-* **What does the `HttpOnly` flag do, and what type of attack does it prevent?**
-  *Answer*: The `HttpOnly` flag prevents client-side scripts (like JavaScript's `document.cookie`) from reading the cookie. It prevents XSS (Cross-Site Scripting) attacks from stealing session tokens.
+> **Answer:**
+> `Set-Cookie` is a response header sent by the server to instruct the browser to store a cookie. `Cookie` is a request header sent by the browser to transmit stored cookies back to the server.
 
-### Advanced
-* **Explain how signed cookies work in Express and how the server detects client-side tampering.**
-  *Answer*: When a signed cookie is created, Express takes the cookie value, combines it with a secret key, and generates a cryptographic hash (HMAC) signature. It appends this signature to the cookie value (e.g. `s:premium.signatureHash`). 
-  When the client sends the cookie back, Express extracts the value and regenerates the signature using its secret key. If the client modified the cookie value, the regenerated signature will not match the signature hash, and Express will reject the cookie, omitting it from `req.signedCookies`.
+**Q:** What does the `HttpOnly` flag do, and what type of attack does it prevent?
 
-### Senior Architect
-* **Discuss the security implications of utilizing `SameSite=None` cookies. What browser requirements are enforced, and how does this affect authentication flows across domains?**
-  *Answer*: Setting `SameSite=None` permits browsers to send cookies on cross-site requests (e.g. when an iframe on `site-a.com` calls an API on `site-b.com`).
-  * **Browser Requirements**: Modern browsers require that any cookie set with `SameSite=None` must also have the `Secure` flag. This ensures the cookie is only transmitted over HTTPS.
-  * **Authentication Implications**: In cross-domain setups (like third-party widgets or embedded checkouts), `SameSite=None` is required to maintain the user's session. However, it exposes the application to CSRF attacks because the cookie is sent automatically with cross-site requests. To secure the connection, you must implement anti-CSRF tokens or verify request signatures at the API layer.
+> **Answer:**
+> The `HttpOnly` flag prevents client-side scripts (like JavaScript's `document.cookie`) from reading the cookie. It prevents XSS (Cross-Site Scripting) attacks from stealing session tokens.
+
+**Q:** Explain how signed cookies work in Express and how the server detects client-side tampering.
+
+> **Answer:**
+> When a signed cookie is created, Express takes the cookie value, combines it with a secret key, and generates a cryptographic hash (HMAC) signature. It appends this signature to the cookie value (e.g. `s:premium.signatureHash`).
+> When the client sends the cookie back, Express extracts the value and regenerates the signature using its secret key. If the client modified the cookie value, the regenerated signature will not match the signature hash, and Express will reject the cookie, omitting it from `req.signedCookies`.
+
+**Q:** Discuss the security implications of utilizing `SameSite=None` cookies. What browser requirements are enforced, and how does this affect authentication flows across domains?
+
+> **Answer:**
+> Setting `SameSite=None` permits browsers to send cookies on cross-site requests (e.g. when an iframe on `site-a.com` calls an API on `site-b.com`).
+
+**Q:** Browser Requirements
+
+> **Answer:**
+> 
+
+**Q:** Authentication Implications
+
+> **Answer:**
+> 
 
 ---
-Previous : [34_JWT.md] | Index : [00_index.md] | Next : [36_Sessions.md]
+Previous : [34_JWT.md](34_JWT.md) | Index : [00_index.md](00_index.md) | Next : [36_Sessions.md](36_Sessions.md)

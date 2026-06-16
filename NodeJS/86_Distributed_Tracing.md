@@ -1,16 +1,6 @@
 # Distributed Tracing
 
-## What You Will Learn
-* Trace propagation across HTTP and gRPC boundaries.
-* The W3C Trace Context standard and `traceparent` header format.
-* Creating Parent and Child Spans in a Node.js microservice lifecycle.
-* How `AsyncLocalStorage` maintains execution context across asynchronous boundaries.
-* Querying and visualizing traces using Jaeger.
-
-## Why This Matters
 In a monolithic application, analyzing code execution is simple because stack traces are execution-bounded. In microservices, a single client request triggers a domino effect of internal API calls across multiple servers, programming languages, and databases. If a request is slow or errors out, logs cannot easily show the path or sequence. Distributed tracing acts as a distributed debugger, mapping the chronological path of requests across your entire system.
-
-## Theory
 
 ### Trace Context Propagation
 For tracing to work across network boundaries, services must communicate their active state. **Context Propagation** is the act of serializing trace metadata (Trace ID, Parent Span ID, Flags) into outgoing network request headers and deserializing them at the receiving microservice.
@@ -204,29 +194,33 @@ serviceB.listen(3002, () => console.log('Service B online on port 3002'));
 
 ## Interview Questions
 
-### Beginner
-* **What is context propagation in distributed tracing?**
-  *Answer*: Context propagation is the mechanism of passing trace identity metadata (such as the Trace ID and parent Span ID) across physical network boundaries, typically by injecting them as HTTP headers or message queue metadata envelopes, allowing downstream services to register their spans under the same trace.
+**Q:** What is context propagation in distributed tracing?
 
-### Intermediate
-* **What are the four components of a W3C `traceparent` header?**
-  *Answer*: The W3C `traceparent` header is formatted as `version-traceId-parentId-flags`. 
-  1. `version`: The protocol version (currently `00`).
-  2. `traceId`: The 32-hex-character unique identifier for the overall trace.
-  3. `parentId`: The 16-hex-character span identifier of the caller service.
-  4. `flags`: 8-bit flags controlling trace attributes (e.g., `01` indicates that the request is sampled).
+> **Answer:**
+> Context propagation is the mechanism of passing trace identity metadata (such as the Trace ID and parent Span ID) across physical network boundaries, typically by injecting them as HTTP headers or message queue metadata envelopes, allowing downstream services to register their spans under the same trace.
 
-### Advanced
-* **How does `AsyncLocalStorage` help in tracing asynchronous JavaScript execution? Why can't we use standard global variables?**
-  *Answer*: Since JavaScript is single-threaded and execution is non-blocking, callbacks, promises, and events execute out of sequence. Standard global variables would leak across different users' concurrent executions. `AsyncLocalStorage` allocates state to specific asynchronous resource trees. As V8 processes asynchronous ticks, it tracks context boundaries, allowing libraries to retrieve active context like the current Trace ID without polluting global scopes.
+**Q:** What are the four components of a W3C `traceparent` header?
 
-### Senior Architect
-* **How would you trace asynchronous request paths that span across an HTTP Gateway, a Kafka message broker, and multiple worker microservices?**
-  *Answer*: To trace request paths across messaging brokers:
-  1. **Gateway Initialization**: The HTTP Gateway initializes the trace and records the incoming HTTP request.
-  2. **Kafka Header Injection**: When publishing a message, the gateway extracts the active trace context from `AsyncLocalStorage` and serializes it into the Kafka message's header metadata fields (as a key-value byte array string).
-  3. **Broker Propagation**: Kafka carries this header metadata transparently along with the message payload to partition queues.
-  4. **Worker Context Extraction**: When the consumer worker polls the message from the partition, its Kafka instrumentation middleware extracts the trace metadata from the message headers, initializes a new context, and starts a child span. This links the asynchronous worker execution trace to the initial gateway request.
+> **Answer:**
+> The W3C `traceparent` header is formatted as `version-traceId-parentId-flags`.
+> 1. `version`: The protocol version (currently `00`).
+> 2. `traceId`: The 32-hex-character unique identifier for the overall trace.
+> 3. `parentId`: The 16-hex-character span identifier of the caller service.
+> 4. `flags`: 8-bit flags controlling trace attributes (e.g., `01` indicates that the request is sampled).
+
+**Q:** How does `AsyncLocalStorage` help in tracing asynchronous JavaScript execution? Why can't we use standard global variables?
+
+> **Answer:**
+> Since JavaScript is single-threaded and execution is non-blocking, callbacks, promises, and events execute out of sequence. Standard global variables would leak across different users' concurrent executions. `AsyncLocalStorage` allocates state to specific asynchronous resource trees. As V8 processes asynchronous ticks, it tracks context boundaries, allowing libraries to retrieve active context like the current Trace ID without polluting global scopes.
+
+**Q:** How would you trace asynchronous request paths that span across an HTTP Gateway, a Kafka message broker, and multiple worker microservices?
+
+> **Answer:**
+> To trace request paths across messaging brokers:
+> 1. **Gateway Initialization**: The HTTP Gateway initializes the trace and records the incoming HTTP request.
+> 2. **Kafka Header Injection**: When publishing a message, the gateway extracts the active trace context from `AsyncLocalStorage` and serializes it into the Kafka message's header metadata fields (as a key-value byte array string).
+> 3. **Broker Propagation**: Kafka carries this header metadata transparently along with the message payload to partition queues.
+> 4. **Worker Context Extraction**: When the consumer worker polls the message from the partition, its Kafka instrumentation middleware extracts the trace metadata from the message headers, initializes a new context, and starts a child span. This links the asynchronous worker execution trace to the initial gateway request.
 
 ---
-Previous : [85_Logging_Pipelines.md] | Index : [00_index.md] | Next : [87_Production_Architecture.md]
+Previous : [85_Logging_Pipelines.md](85_Logging_Pipelines.md) | Index : [00_index.md](00_index.md) | Next : [87_Production_Architecture.md](87_Production_Architecture.md)

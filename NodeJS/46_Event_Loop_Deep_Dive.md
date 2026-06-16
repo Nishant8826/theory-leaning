@@ -1,15 +1,6 @@
 # Event Loop Deep Dive
 
-## What You Will Learn
-* The six distinct phases of the Libuv Event Loop.
-* The difference between the Macrotask and Microtask execution loops.
-* How `process.nextTick()` and Promises can starve the Event Loop.
-* Deterministic scheduling: tracing `setImmediate()` vs. `setTimeout(..., 0)`.
-
-## Why This Matters
 While the basic Event Loop model explains simple async operations, complex production applications (like websockets clusters or real-time trading engines) require a precise understanding of execution scheduling. Failing to understand how the loop transitions between I/O poll, timers, and check phases can lead to race conditions, microtask starvation, and performance bottlenecks.
-
-## Theory
 
 ### The Six Phases of the Libuv Event Loop
 The Libuv event loop iterates over six distinct phases in a continuous cycle (a "Tick"):
@@ -139,31 +130,53 @@ console.log('2. Main Script End');
 
 ## Interview Questions
 
-### Beginner
-* **What are the key phases of the Event Loop?**
-  *Answer*: The key phases of the Libuv event loop are: **Timers** (handles timeouts), **Pending Callbacks** (handles I/O errors), **Poll** (retrieves new I/O events), **Check** (handles `setImmediate` callbacks), and **Close Callbacks** (handles resource closures).
+**Q:** What are the key phases of the Event Loop?
 
-### Intermediate
-* **Why does `setImmediate` always execute before `setTimeout(..., 0)` when called inside an I/O callback?**
-  *Answer*: I/O callbacks are processed in the **Poll phase** of the event loop. Once the Poll phase completes, the event loop transitions directly to the **Check phase** (where `setImmediate` callbacks are run) before wrapping around to the **Timers phase** (where `setTimeout` runs) in the next tick. Therefore, `setImmediate` always runs first.
+> **Answer:**
+> The key phases of the Libuv event loop are: **Timers** (handles timeouts), **Pending Callbacks** (handles I/O errors), **Poll** (retrieves new I/O events), **Check** (handles `setImmediate` callbacks), and **Close Callbacks** (handles resource closures).
 
-### Advanced
-* **What is microtask starvation and how can it impact a high-concurrency Node.js application?**
-  *Answer*: Microtask starvation occurs when recursive or high-volume callbacks are continuously added to the microtask queue (e.g. `process.nextTick` or Promise chains). Because V8 drains the entire microtask queue before transitioning to the next phase of the event loop, the loop remains stuck in the microtask phase, starvation-blocking I/O events, timers, and connections. This causes API endpoints to hang and timeouts to occur.
+**Q:** Why does `setImmediate` always execute before `setTimeout(..., 0)` when called inside an I/O callback?
 
-### Senior Architect
-* **How would you debug a production Node.js process that is experiencing event loop delay (event loop blocking)? Discuss tools, performance metrics, and application code mitigations.**
-  *Answer*: 
-  * **Detection Tools**:
-    1. Use the native `perf_hooks` module to measure loop delay: `monitorEventLoopDelay()`.
-    2. Collect CPU profiles using Node's diagnostic flags (`node --prof` or `--inspect`) to identify long-running synchronous functions.
-  * **Key Metrics**:
-    - **Loop Delay**: Latency between when a timer is scheduled and when it actually runs. A delay > 50-100ms indicates blocking.
-    - **CPU Utilization**: 100% CPU usage on a single core indicates heavy synchronous execution.
-  * **Code Mitigations**:
-    - Offload heavy calculations to **Worker Threads** or background service queues.
-    - Rewrite blocking synchronous calls (like `fs.readFileSync` or heavy JSON parsing) to use asynchronous equivalents.
-    - Split large loops into chunks using `setImmediate` to yield execution back to the loop between iterations.
+> **Answer:**
+> I/O callbacks are processed in the **Poll phase** of the event loop. Once the Poll phase completes, the event loop transitions directly to the **Check phase** (where `setImmediate` callbacks are run) before wrapping around to the **Timers phase** (where `setTimeout` runs) in the next tick. Therefore, `setImmediate` always runs first.
+
+**Q:** What is microtask starvation and how can it impact a high-concurrency Node.js application?
+
+> **Answer:**
+> Microtask starvation occurs when recursive or high-volume callbacks are continuously added to the microtask queue (e.g. `process.nextTick` or Promise chains). Because V8 drains the entire microtask queue before transitioning to the next phase of the event loop, the loop remains stuck in the microtask phase, starvation-blocking I/O events, timers, and connections. This causes API endpoints to hang and timeouts to occur.
+
+**Q:** How would you debug a production Node.js process that is experiencing event loop delay (event loop blocking)? Discuss tools, performance metrics, and application code mitigations.
+
+> **Answer:**
+> 
+
+**Q:** Detection Tools
+
+> **Answer:**
+> 1. Use the native `perf_hooks` module to measure loop delay: `monitorEventLoopDelay()`.
+> 2. Collect CPU profiles using Node's diagnostic flags (`node --prof` or `--inspect`) to identify long-running synchronous functions.
+
+**Q:** Key Metrics
+
+> **Answer:**
+> 
+
+**Q:** Loop Delay
+
+> **Answer:**
+> 
+
+**Q:** CPU Utilization
+
+> **Answer:**
+> 
+
+**Q:** Code Mitigations
+
+> **Answer:**
+> - Offload heavy calculations to **Worker Threads** or background service queues.
+> - Rewrite blocking synchronous calls (like `fs.readFileSync` or heavy JSON parsing) to use asynchronous equivalents.
+> - Split large loops into chunks using `setImmediate` to yield execution back to the loop between iterations.
 
 ---
-Previous : [20_Async_Await.md] | Index : [00_index.md] | Next : [47_Streams_Deep_Dive.md]
+Previous : [20_Async_Await.md](20_Async_Await.md) | Index : [00_index.md](00_index.md) | Next : [47_Streams_Deep_Dive.md](47_Streams_Deep_Dive.md)

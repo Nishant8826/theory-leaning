@@ -1,16 +1,6 @@
 # Jest
 
-## What You Will Learn
-* Configuring Jest for Node.js backends (`jest.config.js`).
-* Utilizing standard matchers (`toBe`, `toEqual`, `toThrow`, `toHaveBeenCalledWith`).
-* Managing test lifecycle hooks (`beforeAll`, `afterAll`, `beforeEach`, `afterEach`).
-* Implementing Snapshot Testing.
-* Enforcing Code Coverage thresholds in project configurations.
-
-## Why This Matters
 Jest is the most popular testing framework in the JavaScript ecosystem. It provides a test runner, assertion library, code coverage engine, and mock framework in a single package. Understanding how to configure Jest, use the correct matchers, and set up coverage thresholds ensures your test suite is fast, reliable, and maintains high standards.
-
-## Theory
 
 ### Core Matchers
 Jest uses "matchers" to let you assert values in different ways:
@@ -166,43 +156,47 @@ describe('Jest Assertions and Lifecycle Demo', () => {
 
 ## Interview Questions
 
-### Beginner
-* **What is the difference between `toBe()` and `toEqual()` in Jest?**
-  *Answer*: `toBe()` checks for strict equality using `Object.is`, which is suitable for primitive types (numbers, strings, booleans). `toEqual()` performs a deep comparison of properties in objects and elements in arrays, which is suitable for comparing reference types.
+**Q:** What is the difference between `toBe()` and `toEqual()` in Jest?
 
-### Intermediate
-* **What are Jest lifecycle hooks and when would you use `beforeAll` vs `beforeEach`?**
-  *Answer*: Jest lifecycle hooks run setup and teardown tasks around tests. You use `beforeAll` once before any tests in the file execute, making it ideal for starting databases or server connections. You use `beforeEach` before each individual test case runs, making it ideal for resetting mocks or seeding clean table states.
+> **Answer:**
+> `toBe()` checks for strict equality using `Object.is`, which is suitable for primitive types (numbers, strings, booleans). `toEqual()` performs a deep comparison of properties in objects and elements in arrays, which is suitable for comparing reference types.
 
-### Advanced
-* **What is Snapshot Testing in Jest? When should you use it, and what are its main limitations?**
-  *Answer*: Snapshot Testing compares a rendered data structure or component output against a stored reference snapshot file. It is useful for verifying complex JSON payloads or configurations. 
-  The main limitation is that snapshots fail when they encounter dynamic data (like timestamps, auto-incrementing IDs, or random hashes). Additionally, snapshots can easily be updated blindly without review, missing regression bugs.
+**Q:** What are Jest lifecycle hooks and when would you use `beforeAll` vs `beforeEach`?
 
-### Senior Architect
-* **How would you configure Jest to run integration tests sequentially (in a single process) while running unit tests concurrently in multiple worker threads, explaining the rationale behind this configuration?**
-  *Answer*: To run unit and integration tests under different execution rules:
-  1. **Configure Projects**: Use Jest's `projects` configuration to split tests into separate workspace runs:
-     ```javascript
-     // jest.config.js
-     module.exports = {
-       projects: [
-         {
-           displayName: 'unit',
-           testMatch: ['<rootDir>/tests/unit/**/*.test.js'],
-           testEnvironment: 'node'
-           // Runs concurrently in parallel threads
-         },
-         {
-           displayName: 'integration',
-           testMatch: ['<rootDir>/tests/integration/**/*.test.js'],
-           testEnvironment: 'node',
-           runInBand: true // Forces sequential execution
-         }
-       ]
-     };
-     ```
-  2. **Rationale**: Unit tests are stateless and run in memory, so they can run concurrently in parallel threads to speed up the test runner. Integration tests share a single database, so running them concurrently can cause write conflicts and data pollution. Running integration tests sequentially (`runInBand: true`) prevents collisions and keeps the database state clean.
+> **Answer:**
+> Jest lifecycle hooks run setup and teardown tasks around tests. You use `beforeAll` once before any tests in the file execute, making it ideal for starting databases or server connections. You use `beforeEach` before each individual test case runs, making it ideal for resetting mocks or seeding clean table states.
+
+**Q:** What is Snapshot Testing in Jest? When should you use it, and what are its main limitations?
+
+> **Answer:**
+> Snapshot Testing compares a rendered data structure or component output against a stored reference snapshot file. It is useful for verifying complex JSON payloads or configurations.
+> The main limitation is that snapshots fail when they encounter dynamic data (like timestamps, auto-incrementing IDs, or random hashes). Additionally, snapshots can easily be updated blindly without review, missing regression bugs.
+
+**Q:** How would you configure Jest to run integration tests sequentially (in a single process) while running unit tests concurrently in multiple worker threads, explaining the rationale behind this configuration?
+
+> **Answer:**
+> To run unit and integration tests under different execution rules:
+> 1. **Configure Projects**: Use Jest's `projects` configuration to split tests into separate workspace runs:
+> ```javascript
+> // jest.config.js
+> module.exports = {
+> projects: [
+> {
+> displayName: 'unit',
+> testMatch: ['<rootDir>/tests/unit/**/*.test.js'],
+> testEnvironment: 'node'
+> // Runs concurrently in parallel threads
+> },
+> {
+> displayName: 'integration',
+> testMatch: ['<rootDir>/tests/integration/**/*.test.js'],
+> testEnvironment: 'node',
+> runInBand: true // Forces sequential execution
+> }
+> ]
+> };
+> ```
+> 2. **Rationale**: Unit tests are stateless and run in memory, so they can run concurrently in parallel threads to speed up the test runner. Integration tests share a single database, so running them concurrently can cause write conflicts and data pollution. Running integration tests sequentially (`runInBand: true`) prevents collisions and keeps the database state clean.
 
 ---
-Previous : [65_Integration_Testing.md] | Index : [00_index.md] | Next : [67_Supertest.md]
+Previous : [65_Integration_Testing.md](65_Integration_Testing.md) | Index : [00_index.md](00_index.md) | Next : [67_Supertest.md](67_Supertest.md)

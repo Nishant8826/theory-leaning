@@ -1,15 +1,6 @@
 # Event Loop Basics
 
-## What You Will Learn
-* The primary definition and loop structure of the Event Loop.
-* Distinguishing between Macrotasks (Task Queue) and Microtasks.
-* Understanding execution priorities between standard scripts, Promises, and `process.nextTick`.
-* Tracing the execution order of asynchronous Node.js scripts.
-
-## Why This Matters
 Asynchronous execution is the heart of Node.js. If you do not understand how execution priority is scheduled, you will introduce race conditions, write buggy asynchronous flows, and struggles to debug timing issues in production web services.
-
-## Theory
 
 ### Asynchronous Execution offloading
 JavaScript runs on a single main thread. However, Node.js handles thousands of concurrent operations by offloading blocking calls (like reading files, network requests, database transactions) to **Libuv** or the **OS Kernel**.
@@ -116,23 +107,27 @@ EXPECTED OUTPUT ORDER:
 
 ## Interview Questions
 
-### Beginner
-* **What is the Event Loop in Node.js?**
-  *Answer*: The Event Loop is an infinite loop mechanism that allows Node.js to perform non-blocking I/O operations. It executes JavaScript callbacks from queues on the main thread after offloading I/O operations to Libuv or the operating system.
+**Q:** What is the Event Loop in Node.js?
 
-### Intermediate
-* **What is the difference between a Microtask and a Macrotask? Provide examples of both.**
-  *Answer*: Microtasks are high-priority tasks executed immediately after the currently running script or task completes, before the Event Loop transitions to the next phase. Examples include `process.nextTick` and Promise callbacks. Macrotasks are standard events processed in their respective phases of the Event Loop. Examples include `setTimeout`, `setInterval`, `setImmediate`, and I/O callbacks.
+> **Answer:**
+> The Event Loop is an infinite loop mechanism that allows Node.js to perform non-blocking I/O operations. It executes JavaScript callbacks from queues on the main thread after offloading I/O operations to Libuv or the operating system.
 
-### Advanced
-* **In what order do `setTimeout(..., 0)`, `setImmediate`, and `process.nextTick` execute, and why?**
-  *Answer*: `process.nextTick` executes first because it is a microtask that executes immediately when the current execution context clears, before the loop transitions. Between `setTimeout(..., 0)` (timers phase) and `setImmediate` (check phase), the order can be non-deterministic if called from the main script module. This is because V8 startup time can take 1-2ms, meaning the timers phase check may run before or after the timer actually registers. However, if invoked within an I/O callback (e.g. inside `fs.readFile`), `setImmediate` will always run first because the check phase executes immediately after the poll phase where I/O callbacks run.
+**Q:** What is the difference between a Microtask and a Macrotask? Provide examples of both.
 
-### Senior Architect
-* **What is "releasing Zalgo" in Node.js API design, how does it degrade system predictability, and how do you resolve it?**
-  *Answer*: "Releasing Zalgo" refers to designing an API that executes either synchronously or asynchronously depending on runtime state (e.g., returning a cached result synchronously, but fetching a db record asynchronously). 
-  This degrades system predictability because the caller cannot guarantee the order of execution. If caller code expects asynchronous behavior, it may execute dependent logic before the callback runs under cache misses, but after the callback under cache hits.
-  To resolve this, ensure all pathways are asynchronous. You can wrap synchronous returns in `process.nextTick()`, `queueMicrotask()`, or use Promises to guarantee that the callback always executes in a future tick.
+> **Answer:**
+> Microtasks are high-priority tasks executed immediately after the currently running script or task completes, before the Event Loop transitions to the next phase. Examples include `process.nextTick` and Promise callbacks. Macrotasks are standard events processed in their respective phases of the Event Loop. Examples include `setTimeout`, `setInterval`, `setImmediate`, and I/O callbacks.
+
+**Q:** In what order do `setTimeout(..., 0)`, `setImmediate`, and `process.nextTick` execute, and why?
+
+> **Answer:**
+> `process.nextTick` executes first because it is a microtask that executes immediately when the current execution context clears, before the loop transitions. Between `setTimeout(..., 0)` (timers phase) and `setImmediate` (check phase), the order can be non-deterministic if called from the main script module. This is because V8 startup time can take 1-2ms, meaning the timers phase check may run before or after the timer actually registers. However, if invoked within an I/O callback (e.g. inside `fs.readFile`), `setImmediate` will always run first because the check phase executes immediately after the poll phase where I/O callbacks run.
+
+**Q:** What is "releasing Zalgo" in Node.js API design, how does it degrade system predictability, and how do you resolve it?
+
+> **Answer:**
+> "Releasing Zalgo" refers to designing an API that executes either synchronously or asynchronously depending on runtime state (e.g., returning a cached result synchronously, but fetching a db record asynchronously).
+> This degrades system predictability because the caller cannot guarantee the order of execution. If caller code expects asynchronous behavior, it may execute dependent logic before the callback runs under cache misses, but after the callback under cache hits.
+> To resolve this, ensure all pathways are asynchronous. You can wrap synchronous returns in `process.nextTick()`, `queueMicrotask()`, or use Promises to guarantee that the callback always executes in a future tick.
 
 ---
-Previous : [05_V8_Engine.md] | Index : [00_index.md] | Next : [07_npm.md]
+Previous : [05_V8_Engine.md](05_V8_Engine.md) | Index : [00_index.md](00_index.md) | Next : [07_npm.md](07_npm.md)

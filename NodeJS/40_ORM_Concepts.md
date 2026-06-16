@@ -1,16 +1,6 @@
 # ORM Concepts
 
-## What You Will Learn
-* What an Object-Relational Mapper (ORM) is and how it compares to Query Builders.
-* Active Record vs. Data Mapper design patterns in ORMs.
-* The Prisma engine architecture and how it differs from traditional JavaScript ORMs.
-* The N+1 Query Problem: identification, causes, and resolutions.
-* The concept and necessity of Database Migrations.
-
-## Why This Matters
 ORMs simplify database interactions by allowing you to write query logic in JavaScript or TypeScript instead of raw SQL. However, this abstraction can hide database performance issues. If you do not understand how your ORM translates code to SQL, you will introduce performance bottlenecks (like the N+1 query problem) that slow down database lookups.
-
-## Theory
 
 ### ORMs vs. Query Builders
 * **Query Builders (e.g. Knex.js, Kysely)**: Provide a programmatic, chainable API to construct raw SQL queries dynamically. They do not manage schemas or model states, keeping query execution fast and predictable.
@@ -123,25 +113,37 @@ run();
 
 ## Interview Questions
 
-### Beginner
-* **What is an ORM and why is it used?**
-  *Answer*: An ORM (Object-Relational Mapper) is a library that maps database tables to programming language classes, allowing developers to query and manipulate database records using object-oriented code instead of raw SQL queries.
+**Q:** What is an ORM and why is it used?
 
-### Intermediate
-* **What is the N+1 Query Problem, and how do you resolve it?**
-  *Answer*: The N+1 query problem occurs when an application executes one query to fetch parent records, and then loops through them to execute a separate query (N queries) for each record to fetch its related child data. You resolve this by using eager loading (joins) to fetch parent and child records together in a single database query.
+> **Answer:**
+> An ORM (Object-Relational Mapper) is a library that maps database tables to programming language classes, allowing developers to query and manipulate database records using object-oriented code instead of raw SQL queries.
 
-### Advanced
-* **Compare the Active Record and Data Mapper design patterns in ORMs. What are the key trade-offs?**
-  *Answer*: 
-  * **Active Record**: Maps database tables to classes where each instance represents a row containing both data properties and database interaction methods (e.g., `user.save()`). It is easy to write, but violates the Single Responsibility Principle by mixing data and persistence concerns.
-  * **Data Mapper**: Separates data entities from database access logic, using repositories to handle queries (e.g., `userRepository.save(user)`). This keeps entities clean and makes the codebase easier to test, but adds more boilerplate code.
+**Q:** What is the N+1 Query Problem, and how do you resolve it?
 
-### Senior Architect
-* **How does Prisma's architecture differ from traditional JavaScript ORMs (like Sequelize), and how does the compiled Rust Query Engine affect Node.js event loop performance?**
-  *Answer*: Traditional JS ORMs (like Sequelize or TypeORM) compile schemas, validate properties, and generate SQL queries dynamically in JavaScript on the Node.js main thread. This consumes CPU cycles and can block the event loop in high-throughput applications.
-  
-  Prisma uses a custom schema syntax and processes queries using a dedicated binary engine written in Rust. When you execute a query, the Prisma client serializes the query parameters and passes them to this background binary process. The Rust Query Engine handles SQL generation, connection pooling, and payload serialization. This offloads CPU-intensive database query generation from the Node.js main thread, keeping the event loop responsive.
+> **Answer:**
+> The N+1 query problem occurs when an application executes one query to fetch parent records, and then loops through them to execute a separate query (N queries) for each record to fetch its related child data. You resolve this by using eager loading (joins) to fetch parent and child records together in a single database query.
+
+**Q:** Compare the Active Record and Data Mapper design patterns in ORMs. What are the key trade-offs?
+
+> **Answer:**
+> 
+
+**Q:** Active Record
+
+> **Answer:**
+> 
+
+**Q:** Data Mapper
+
+> **Answer:**
+> 
+
+**Q:** How does Prisma's architecture differ from traditional JavaScript ORMs (like Sequelize), and how does the compiled Rust Query Engine affect Node.js event loop performance?
+
+> **Answer:**
+> Traditional JS ORMs (like Sequelize or TypeORM) compile schemas, validate properties, and generate SQL queries dynamically in JavaScript on the Node.js main thread. This consumes CPU cycles and can block the event loop in high-throughput applications.
+> 
+> Prisma uses a custom schema syntax and processes queries using a dedicated binary engine written in Rust. When you execute a query, the Prisma client serializes the query parameters and passes them to this background binary process. The Rust Query Engine handles SQL generation, connection pooling, and payload serialization. This offloads CPU-intensive database query generation from the Node.js main thread, keeping the event loop responsive.
 
 ---
-Previous : [39_PostgreSQL.md] | Index : [00_index.md] | Next : [41_Redis.md]
+Previous : [39_PostgreSQL.md](39_PostgreSQL.md) | Index : [00_index.md](00_index.md) | Next : [41_Redis.md](41_Redis.md)

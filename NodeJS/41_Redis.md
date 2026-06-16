@@ -1,16 +1,6 @@
 # Redis
 
-## What You Will Learn
-* The core concepts of Redis as an in-memory data store.
-* Key use cases for Redis (Caching, Session management, Rate Limiting, Pub/Sub).
-* Connecting to Redis using the native `redis` package in Node.js.
-* Executing basic Redis commands (GET, SET, EXPIRE, DEL, EXISTS).
-* Utilizing key Redis data structures (Strings, Hashes, Lists, Sets, Sorted Sets).
-
-## Why This Matters
 Disk-based databases (like PostgreSQL or MongoDB) have query latency and limited write throughput. Redis runs entirely in-memory, keeping query latency under 1-2 milliseconds. Knowing how to leverage Redis for caching, session management, and rate limiting is key to building fast, scalable backend systems.
-
-## Theory
 
 ### What is Redis?
 **Redis (Remote Dictionary Server)** is an open-source, in-memory key-value data structure store. It is used as a database, cache, message broker, and streaming engine. Because it keeps all data in RAM, read and write operations are extremely fast.
@@ -152,42 +142,51 @@ runRedisDemo();
 
 ## Interview Questions
 
-### Beginner
-* **What is Redis and why is it faster than standard databases like PostgreSQL or MongoDB?**
-  *Answer*: Redis is an in-memory key-value data structure store. It is faster because it holds all data in RAM, eliminating disk write and read latency, which keeps operations under 1-2 milliseconds.
+**Q:** What is Redis and why is it faster than standard databases like PostgreSQL or MongoDB?
 
-### Intermediate
-* **Name three data structures supported by Redis and describe a real-world use case for each.**
-  *Answer*: 
-  1. **Strings**: Storing standard user session tokens or cached JSON outputs with an expiration time.
-  2. **Hashes**: Storing structured objects, like a user profile containing fields for name, role, and email.
-  3. **Lists**: Building simple message queues using Left-Push (`lPush`) and Right-Pop (`rPop`) operations.
+> **Answer:**
+> Redis is an in-memory key-value data structure store. It is faster because it holds all data in RAM, eliminating disk write and read latency, which keeps operations under 1-2 milliseconds.
 
-### Advanced
-* **Explain the difference between Redis RDB (Redis Database) and AOF (Append Only File) persistence mechanisms. What are the performance trade-offs?**
-  *Answer*: Redis provides two persistence options:
-  * **RDB**: Takes point-in-time snapshots of the dataset at specified intervals.
-    * *Pros*: Highly optimized for fast restarts; minimal impact on write performance.
-    * *Cons*: If Redis crashes, data written since the last snapshot is lost.
-  * **AOF**: Logs every write operation received by the server to a disk file.
-    * *Pros*: Highly durable; minimal data loss if Redis crashes.
-    * *Cons*: Slower write performance due to continuous disk writes, and generates larger log files.
-  * *Trade-off*: High-performance caching layers often disable persistence entirely. Hybrid configurations use both RDB and AOF to balance speed and durability.
+**Q:** Name three data structures supported by Redis and describe a real-world use case for each.
 
-### Senior Architect
-* **How would you architecture a distributed locking mechanism using Redis (Redlock algorithm) to prevent race conditions when updating inventory in a scaled multi-instance Node.js cluster?**
-  *Answer*: To implement a distributed lock using Redis:
-  1. Define a unique lock key (e.g. `lock:inventory:product_id`).
-  2. Attempt to acquire the lock using the atomic `SET` command with options:
-     ```javascript
-     const acquired = await redisClient.set(lockKey, uniqueToken, {
-       NX: true, // Only set the key if it does not already exist
-       PX: 5000  // Set a millisecond expiration (5 seconds) to prevent deadlocks
-     });
-     ```
-  3. If `acquired === 'OK'`, the server holds the lock and can safely update the inventory database.
-  4. If the server fails to acquire the lock, implement a retry back-off loop before attempting again.
-  5. Once the database update is complete, release the lock by deleting the key. To do this safely, run a Lua script to verify that the value stored in the lock matches the server's `uniqueToken` before deleting it, preventing the server from accidentally deleting a lock held by another process if the operation took longer than the TTL.
+> **Answer:**
+> 1. **Strings**: Storing standard user session tokens or cached JSON outputs with an expiration time.
+> 2. **Hashes**: Storing structured objects, like a user profile containing fields for name, role, and email.
+> 3. **Lists**: Building simple message queues using Left-Push (`lPush`) and Right-Pop (`rPop`) operations.
+
+**Q:** Explain the difference between Redis RDB (Redis Database) and AOF (Append Only File) persistence mechanisms. What are the performance trade-offs?
+
+> **Answer:**
+> Redis provides two persistence options:
+
+**Q:** RDB
+
+> **Answer:**
+> * *Pros*: Highly optimized for fast restarts; minimal impact on write performance.
+> * *Cons*: If Redis crashes, data written since the last snapshot is lost.
+
+**Q:** AOF
+
+> **Answer:**
+> * *Pros*: Highly durable; minimal data loss if Redis crashes.
+> * *Cons*: Slower write performance due to continuous disk writes, and generates larger log files.
+> * *Trade-off*: High-performance caching layers often disable persistence entirely. Hybrid configurations use both RDB and AOF to balance speed and durability.
+
+**Q:** How would you architecture a distributed locking mechanism using Redis (Redlock algorithm) to prevent race conditions when updating inventory in a scaled multi-instance Node.js cluster?
+
+> **Answer:**
+> To implement a distributed lock using Redis:
+> 1. Define a unique lock key (e.g. `lock:inventory:product_id`).
+> 2. Attempt to acquire the lock using the atomic `SET` command with options:
+> ```javascript
+> const acquired = await redisClient.set(lockKey, uniqueToken, {
+> NX: true, // Only set the key if it does not already exist
+> PX: 5000  // Set a millisecond expiration (5 seconds) to prevent deadlocks
+> });
+> ```
+> 3. If `acquired === 'OK'`, the server holds the lock and can safely update the inventory database.
+> 4. If the server fails to acquire the lock, implement a retry back-off loop before attempting again.
+> 5. Once the database update is complete, release the lock by deleting the key. To do this safely, run a Lua script to verify that the value stored in the lock matches the server's `uniqueToken` before deleting it, preventing the server from accidentally deleting a lock held by another process if the operation took longer than the TTL.
 
 ---
-Previous : [40_ORM_Concepts.md] | Index : [00_index.md] | Next : [42_Caching.md]
+Previous : [40_ORM_Concepts.md](40_ORM_Concepts.md) | Index : [00_index.md](00_index.md) | Next : [42_Caching.md](42_Caching.md)

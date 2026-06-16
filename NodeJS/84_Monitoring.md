@@ -1,16 +1,6 @@
 # Monitoring
 
-## What You Will Learn
-* Prometheus core metric types: Counter, Gauge, Histogram, and Summary.
-* Pull-based vs. Push-based metric collection architectures.
-* Exposing runtime and custom metrics from Node.js using `prom-client`.
-* Critical Node.js metrics: Event Loop Lag, Active Handles, Heap Space, and GC pauses.
-* Visualizing application performance using Grafana.
-
-## Why This Matters
 If you don't measure the runtime health of your application, you cannot prevent outages. In single-threaded JavaScript environments, heavy synchronous operations block the event loop, causing request timeouts. Monitoring tracks critical parameters like event loop delay, garbage collection frequency, and V8 heap limits, allowing you to alert on anomalies and auto-scale before your server crashes due to Out-Of-Memory (OOM) errors.
-
-## Theory
 
 ### Prometheus Metric Types
 Prometheus categorizes all time-series metrics into four main types:
@@ -167,25 +157,29 @@ app.listen(port, () => {
 
 ## Interview Questions
 
-### Beginner
-* **What endpoint path does Prometheus typically scrape, and what format is the data returned in?**
-  *Answer*: Prometheus typically scrapes the `/metrics` endpoint path. The data is returned in a standard plaintext key-value format containing metrics names, labels, values, and comments containing type descriptions.
+**Q:** What endpoint path does Prometheus typically scrape, and what format is the data returned in?
 
-### Intermediate
-* **What is "Event Loop Lag" in Node.js, and how is it programmatically measured?**
-  *Answer*: Event loop lag is the delay between when an asynchronous callback is scheduled to run and when it actually executes. It is measured by scheduling a recurring timer (e.g. using `setInterval`) for a set interval (like 1000ms), checking the actual time elapsed since the last tick, and calculating the difference between the actual interval and the target 1000ms.
+> **Answer:**
+> Prometheus typically scrapes the `/metrics` endpoint path. The data is returned in a standard plaintext key-value format containing metrics names, labels, values, and comments containing type descriptions.
 
-### Advanced
-* **What is the difference between active requests and active handles in Node.js metrics?**
-  *Answer*: Active handles (`process._getActiveHandles()`) are physical system resources held by the Node.js process, such as open database client connections, TCP server ports, active timers, or open files. Active requests (`process._getActiveRequests()`) represent scheduled asynchronous operations managed by Libuv that are currently executing in the OS kernel or thread pool (e.g., DNS queries, cryptographical hashing, filesystem actions) and waiting to complete.
+**Q:** What is "Event Loop Lag" in Node.js, and how is it programmatically measured?
 
-### Senior Architect
-* **How would you configure alerting rules in Prometheus to detect memory leaks and event loop blocking before a Node.js process crashes? Write the conceptual PromQL.**
-  *Answer*: To detect these issues, you configure Prometheus Alerting Rules using **PromQL**:
-  1. **Memory Leak**: Check if V8 heap utilization exceeds 85% of its hard limit:
-     `nodejs_app_nodejs_heap_size_used_bytes / nodejs_app_nodejs_heap_size_limit_bytes > 0.85`
-  2. **Blocked Event Loop**: Alert if the 99th percentile of event loop lag is greater than 100 milliseconds for more than 5 minutes:
-     `histogram_quantile(0.99, sum(rate(nodejs_app_nodejs_eventloop_lag_seconds_bucket[5m])) by (le)) > 0.1`
+> **Answer:**
+> Event loop lag is the delay between when an asynchronous callback is scheduled to run and when it actually executes. It is measured by scheduling a recurring timer (e.g. using `setInterval`) for a set interval (like 1000ms), checking the actual time elapsed since the last tick, and calculating the difference between the actual interval and the target 1000ms.
+
+**Q:** What is the difference between active requests and active handles in Node.js metrics?
+
+> **Answer:**
+> Active handles (`process._getActiveHandles()`) are physical system resources held by the Node.js process, such as open database client connections, TCP server ports, active timers, or open files. Active requests (`process._getActiveRequests()`) represent scheduled asynchronous operations managed by Libuv that are currently executing in the OS kernel or thread pool (e.g., DNS queries, cryptographical hashing, filesystem actions) and waiting to complete.
+
+**Q:** How would you configure alerting rules in Prometheus to detect memory leaks and event loop blocking before a Node.js process crashes? Write the conceptual PromQL.
+
+> **Answer:**
+> To detect these issues, you configure Prometheus Alerting Rules using **PromQL**:
+> 1. **Memory Leak**: Check if V8 heap utilization exceeds 85% of its hard limit:
+> `nodejs_app_nodejs_heap_size_used_bytes / nodejs_app_nodejs_heap_size_limit_bytes > 0.85`
+> 2. **Blocked Event Loop**: Alert if the 99th percentile of event loop lag is greater than 100 milliseconds for more than 5 minutes:
+> `histogram_quantile(0.99, sum(rate(nodejs_app_nodejs_eventloop_lag_seconds_bucket[5m])) by (le)) > 0.1`
 
 ---
-Previous : [83_Observability.md] | Index : [00_index.md] | Next : [85_Logging_Pipelines.md]
+Previous : [83_Observability.md](83_Observability.md) | Index : [00_index.md](00_index.md) | Next : [85_Logging_Pipelines.md](85_Logging_Pipelines.md)

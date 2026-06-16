@@ -1,16 +1,6 @@
 # Logging
 
-## What You Will Learn
-* Why `console.log` is an anti-pattern for production backend systems.
-* Structuring logs using Log Levels (info, debug, warn, error, fatal).
-* The benefits of structured JSON logs for logging pipelines.
-* Comparing logging libraries (Winston vs. Pino).
-* Building custom request logger middleware that tracks execution duration.
-
-## Why This Matters
 Logs are the eyes and ears of a production application. Using `console.log` blocks the event loop because writing to standard output (`stdout`) is a synchronous operation on most operating systems. Additionally, unstructured text logs are difficult to search or parse. Structured JSON logging keeps your applications fast and makes searching, filtering, and indexing logs in production tools easy.
-
-## Theory
 
 ### Why `console.log` is Bad for Production
 1. **Blocks the Event Loop**: When writing to a terminal (TTY) or a local file, `console.log` writes synchronously. This blocks the main thread, halting request processing.
@@ -141,26 +131,30 @@ app.listen(3000, () => {
 
 ## Interview Questions
 
-### Beginner
-* **Why should you avoid using `console.log` in production applications?**
-  *Answer*: `console.log` writes to `stdout` synchronously, which blocks the single-threaded event loop and slows down request processing under load. Additionally, it lacks structured metadata (like timestamps and log levels) and is difficult to parse or search.
+**Q:** Why should you avoid using `console.log` in production applications?
 
-### Intermediate
-* **What is structured logging and why is it preferred over plain text logs?**
-  *Answer*: Structured logging writes log entries as structured JSON objects. This format is preferred because it allows log shippers and databases (like Elasticsearch or Loki) to index log properties dynamically, making searching, filtering, and metric aggregation in production dashboards easy.
+> **Answer:**
+> `console.log` writes to `stdout` synchronously, which blocks the single-threaded event loop and slows down request processing under load. Additionally, it lacks structured metadata (like timestamps and log levels) and is difficult to parse or search.
 
-### Advanced
-* **Explain how Pino achieves higher performance than Winston.**
-  *Answer*: Pino is designed with a "zero-overhead" philosophy. Instead of processing logs in memory, stringifying objects dynamically, or managing multiple transports inside the application thread, Pino converts JS objects to strings using highly optimized serialization schemas. It writes logs to `stdout` as a single stream, offloading formatting and routing tasks to external processes to keep the main application thread fast.
+**Q:** What is structured logging and why is it preferred over plain text logs?
 
-### Senior Architect
-* **How would you design a distributed request tracing system across a microservices fleet, ensuring that a single API request can be traced across multiple services in log dashboards?**
-  *Answer*: To trace requests across microservices:
-  1. Generate a unique trace ID (e.g. using UUIDs) at the entry point of the network (like an API Gateway or the first receiving service) if one is not already present in the headers.
-  2. Implement an Express middleware that checks the incoming headers for a correlation identifier (e.g. `X-Correlation-ID` or OpenTelemetry headers).
-  3. Store this trace ID in a request context layer (such as **AsyncLocalStorage**).
-  4. Configure your logger library to read this trace ID from the context and append it automatically to all logs generated during that request.
-  5. When the service calls another microservice (via HTTP, gRPC, or message queues), forward the trace ID in the request headers, ensuring that all logs generated across the microservices fleet share the same trace ID for easy debugging.
+> **Answer:**
+> Structured logging writes log entries as structured JSON objects. This format is preferred because it allows log shippers and databases (like Elasticsearch or Loki) to index log properties dynamically, making searching, filtering, and metric aggregation in production dashboards easy.
+
+**Q:** Explain how Pino achieves higher performance than Winston.
+
+> **Answer:**
+> Pino is designed with a "zero-overhead" philosophy. Instead of processing logs in memory, stringifying objects dynamically, or managing multiple transports inside the application thread, Pino converts JS objects to strings using highly optimized serialization schemas. It writes logs to `stdout` as a single stream, offloading formatting and routing tasks to external processes to keep the main application thread fast.
+
+**Q:** How would you design a distributed request tracing system across a microservices fleet, ensuring that a single API request can be traced across multiple services in log dashboards?
+
+> **Answer:**
+> To trace requests across microservices:
+> 1. Generate a unique trace ID (e.g. using UUIDs) at the entry point of the network (like an API Gateway or the first receiving service) if one is not already present in the headers.
+> 2. Implement an Express middleware that checks the incoming headers for a correlation identifier (e.g. `X-Correlation-ID` or OpenTelemetry headers).
+> 3. Store this trace ID in a request context layer (such as **AsyncLocalStorage**).
+> 4. Configure your logger library to read this trace ID from the context and append it automatically to all logs generated during that request.
+> 5. When the service calls another microservice (via HTTP, gRPC, or message queues), forward the trace ID in the request headers, ensuring that all logs generated across the microservices fleet share the same trace ID for easy debugging.
 
 ---
-Previous : [30_Error_Handling.md] | Index : [00_index.md] | Next : [32_Authentication.md]
+Previous : [30_Error_Handling.md](30_Error_Handling.md) | Index : [00_index.md](00_index.md) | Next : [32_Authentication.md](32_Authentication.md)

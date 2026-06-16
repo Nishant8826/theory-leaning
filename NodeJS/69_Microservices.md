@@ -1,16 +1,6 @@
 # Microservices
 
-## What You Will Learn
-* Comparing Monolithic and Microservices architectures.
-* Establishing network boundaries and service autonomy.
-* Synchronous (HTTP, gRPC) vs. Asynchronous (RabbitMQ, Kafka) communication.
-* The role of API Gateways in microservices networks.
-* Managing distributed transaction states (The Saga Pattern vs. 2-Phase Commit).
-
-## Why This Matters
 As applications grow, maintaining a single, massive codebase (a Monolith) becomes difficult. Microservices partition applications into small, independent services organized around business capabilities. However, microservices introduce network complexity, latency, and data consistency challenges. Understanding microservices architecture allows you to design scalable, distributed systems.
-
-## Theory
 
 ### Monolith vs. Microservices
 * **Monolith**: A single, unified application containing all business modules. It shares a single database, runs in a single process space, and is easy to develop and deploy initially. However, it scales poorly as teams grow, and a single crash takes the entire system offline.
@@ -120,28 +110,39 @@ app.listen(3000, () => console.log('Saga Gateway Coordinator running on port 300
 
 ## Interview Questions
 
-### Beginner
-* **What is the difference between a monolithic and a microservices architecture?**
-  *Answer*: A monolith is a single application where all modules run in a single process and share a database. Microservices partition the application into small, independent services, where each service runs in its own process, manages its own database, and communicates over network protocols.
+**Q:** What is the difference between a monolithic and a microservices architecture?
 
-### Intermediate
-* **What is the role of an API Gateway in a microservices architecture?**
-  *Answer*: An API Gateway acts as the entry point for all client requests. It handles routing to downstream microservices, aggregates responses, terminates SSL, and enforces cross-cutting concerns like authentication, rate-limiting, and CORS, protecting internal services.
+> **Answer:**
+> A monolith is a single application where all modules run in a single process and share a database. Microservices partition the application into small, independent services, where each service runs in its own process, manages its own database, and communicates over network protocols.
 
-### Advanced
-* **What is the Saga Pattern, and how does it manage data consistency in microservices compared to a Two-Phase Commit (2PC)?**
-  *Answer*: The Saga Pattern manages distributed transactions as a sequence of local transactions. Each service executes its local transaction and publishes an event to trigger the next service. If a step fails, the system executes compensating transactions (rollbacks) in reverse order to restore consistency. 
-  It differs from 2PC (which uses a coordinator to lock all databases before committing) because it does not lock database rows, improving performance and scalability.
+**Q:** What is the role of an API Gateway in a microservices architecture?
 
-### Senior Architect
-* **How would you handle a failure in a compensating rollback transaction during a Saga execution? Discuss monitoring, dead-letter queues, and manual reconciliation workflows.**
-  *Answer*: 
-  * **Failure Analysis**: A compensating transaction can fail due to database crashes, network timeouts, or logic errors, leaving the system in an inconsistent state.
-  * **Architecture Strategy**:
-    1. **Retry Mechanism**: Configure the saga coordinator or message queue (e.g. BullMQ) to retry the compensating transaction using exponential backoff.
-    2. **Dead Letter Queue (DLQ)**: If the compensating transaction fails after maximum retries (e.g. 5 attempts), route the failed transaction context payload to a Dead Letter Queue (DLQ).
-    3. **Monitoring and Alerts**: Configure alerts (e.g., in Prometheus or PagerDuty) to notify the operations team immediately when a job enters the DLQ.
-    4. **Manual Reconciliation Dashboard**: Build an administrative tool that displays failed transactions in the DLQ, allowing operators to audit records, manually fix database consistency, and clear the queue safely.
+> **Answer:**
+> An API Gateway acts as the entry point for all client requests. It handles routing to downstream microservices, aggregates responses, terminates SSL, and enforces cross-cutting concerns like authentication, rate-limiting, and CORS, protecting internal services.
+
+**Q:** What is the Saga Pattern, and how does it manage data consistency in microservices compared to a Two-Phase Commit (2PC)?
+
+> **Answer:**
+> The Saga Pattern manages distributed transactions as a sequence of local transactions. Each service executes its local transaction and publishes an event to trigger the next service. If a step fails, the system executes compensating transactions (rollbacks) in reverse order to restore consistency.
+> It differs from 2PC (which uses a coordinator to lock all databases before committing) because it does not lock database rows, improving performance and scalability.
+
+**Q:** How would you handle a failure in a compensating rollback transaction during a Saga execution? Discuss monitoring, dead-letter queues, and manual reconciliation workflows.
+
+> **Answer:**
+> 
+
+**Q:** Failure Analysis
+
+> **Answer:**
+> 
+
+**Q:** Architecture Strategy
+
+> **Answer:**
+> 1. **Retry Mechanism**: Configure the saga coordinator or message queue (e.g. BullMQ) to retry the compensating transaction using exponential backoff.
+> 2. **Dead Letter Queue (DLQ)**: If the compensating transaction fails after maximum retries (e.g. 5 attempts), route the failed transaction context payload to a Dead Letter Queue (DLQ).
+> 3. **Monitoring and Alerts**: Configure alerts (e.g., in Prometheus or PagerDuty) to notify the operations team immediately when a job enters the DLQ.
+> 4. **Manual Reconciliation Dashboard**: Build an administrative tool that displays failed transactions in the DLQ, allowing operators to audit records, manually fix database consistency, and clear the queue safely.
 
 ---
-Previous : [68_Swagger_OpenAPI.md] | Index : [00_index.md] | Next : [70_Event_Driven_Architecture.md]
+Previous : [68_Swagger_OpenAPI.md](68_Swagger_OpenAPI.md) | Index : [00_index.md](00_index.md) | Next : [70_Event_Driven_Architecture.md](70_Event_Driven_Architecture.md)

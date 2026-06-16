@@ -1,15 +1,6 @@
 # Authorization
 
-## What You Will Learn
-* Defining Access Control Models: Role-Based Access Control (RBAC) vs. Attribute-Based Access Control (ABAC).
-* Writing Express authorization middleware.
-* Verifying user context permissions and preventing privilege escalation.
-* Defending against Insecure Direct Object Reference (IDOR) attacks.
-
-## Why This Matters
 Authentication only verifies *who* the user is. If your application lacks secure authorization checks, any authenticated user can guess another user's ID and query their private data (an IDOR attack) or access admin endpoints (privilege escalation). Secure authorization enforces access policies at the API boundary, protecting resources from unauthorized access.
-
-## Theory
 
 ### Access Control Models
 1. **Role-Based Access Control (RBAC)**:
@@ -147,26 +138,30 @@ module.exports = router;
 
 ## Interview Questions
 
-### Beginner
-* **What is the difference between role-based access control (RBAC) and attribute-based access control (ABAC)?**
-  *Answer*: RBAC grants access based on predefined static user roles (e.g. admin or editor). ABAC grants access dynamically by evaluating attributes of the user, the resource, and the current request context (e.g., owner ID, creation date, or IP address).
+**Q:** What is the difference between role-based access control (RBAC) and attribute-based access control (ABAC)?
 
-### Intermediate
-* **What is an Insecure Direct Object Reference (IDOR) vulnerability, and how do you prevent it in a Node.js API?**
-  *Answer*: An IDOR vulnerability occurs when an API endpoint exposes database keys directly (e.g. `/api/orders/:id`), and executes queries without validating if the requesting user has permission to access that specific record. 
-  To prevent IDOR, always verify in your database query or controller logic that the resource's owner ID matches the authenticated user ID (`req.user.id`) before returning or modifying the data.
+> **Answer:**
+> RBAC grants access based on predefined static user roles (e.g. admin or editor). ABAC grants access dynamically by evaluating attributes of the user, the resource, and the current request context (e.g., owner ID, creation date, or IP address).
 
-### Advanced
-* **Explain how authorization middleware interacts with the Express request context pipeline, and why authentication middleware must always execute first.**
-  *Answer*: Authorization checks permissions based on the user's identity and roles. The user context (like `req.user`) is resolved and attached to the request object by the authentication middleware. 
-  If authorization middleware executes first, `req.user` will be `undefined`, causing the authorization check to fail or crash. Therefore, authentication must always run first to populate the request context.
+**Q:** What is an Insecure Direct Object Reference (IDOR) vulnerability, and how do you prevent it in a Node.js API?
 
-### Senior Architect
-* **How would you design a scalable, low-latency authorization system in a distributed microservices architecture, ensuring that changes to user permissions propagate instantly without overloading the central database?**
-  *Answer*: To design a distributed authorization system:
-  1. **Decouple Policy Check**: Embed the user's roles and permissions as claims inside a signed, cryptographically secure JWT token. This allows each microservice to validate permissions locally without querying a central database.
-  2. **Cache Permission Scopes**: If permissions are too large to fit in a JWT, store the user's permissions cache in a shared in-memory database like Redis. Microservices can query Redis with low latency.
-  3. **Event-Driven Revocation**: When a user's roles or permissions change, publish a revocation event to a message broker (like RabbitMQ or Redis Pub/Sub). Microservices consume this event to invalidate local tokens or update their cache instantly, ensuring changes propagate without database overhead.
+> **Answer:**
+> An IDOR vulnerability occurs when an API endpoint exposes database keys directly (e.g. `/api/orders/:id`), and executes queries without validating if the requesting user has permission to access that specific record.
+> To prevent IDOR, always verify in your database query or controller logic that the resource's owner ID matches the authenticated user ID (`req.user.id`) before returning or modifying the data.
+
+**Q:** Explain how authorization middleware interacts with the Express request context pipeline, and why authentication middleware must always execute first.
+
+> **Answer:**
+> Authorization checks permissions based on the user's identity and roles. The user context (like `req.user`) is resolved and attached to the request object by the authentication middleware.
+> If authorization middleware executes first, `req.user` will be `undefined`, causing the authorization check to fail or crash. Therefore, authentication must always run first to populate the request context.
+
+**Q:** How would you design a scalable, low-latency authorization system in a distributed microservices architecture, ensuring that changes to user permissions propagate instantly without overloading the central database?
+
+> **Answer:**
+> To design a distributed authorization system:
+> 1. **Decouple Policy Check**: Embed the user's roles and permissions as claims inside a signed, cryptographically secure JWT token. This allows each microservice to validate permissions locally without querying a central database.
+> 2. **Cache Permission Scopes**: If permissions are too large to fit in a JWT, store the user's permissions cache in a shared in-memory database like Redis. Microservices can query Redis with low latency.
+> 3. **Event-Driven Revocation**: When a user's roles or permissions change, publish a revocation event to a message broker (like RabbitMQ or Redis Pub/Sub). Microservices consume this event to invalidate local tokens or update their cache instantly, ensuring changes propagate without database overhead.
 
 ---
-Previous : [32_Authentication.md] | Index : [00_index.md] | Next : [34_JWT.md]
+Previous : [32_Authentication.md](32_Authentication.md) | Index : [00_index.md](00_index.md) | Next : [34_JWT.md](34_JWT.md)

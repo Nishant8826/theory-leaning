@@ -1,15 +1,6 @@
 # Validation
 
-## What You Will Learn
-* Why input validation is critical at the request boundary.
-* Designing schema-based validation using Zod.
-* Building Express validation middleware.
-* Validating request body, query parameters, and route parameters.
-
-## Why This Matters
 Accepting client inputs without validation exposes your application to SQL injection, NoSQL injection, resource exhaustion attacks (like sending a huge payload), and database structure corruption. Input validation acts as the front gate of your application, filtering out invalid or malicious data before it can reach your database or trigger business logic.
-
-## Theory
 
 ### Request Boundary Validation
 Input validation should happen as early as possible in the request lifecycle, right at the HTTP routing boundary. It checks that incoming payloads have the correct structure, field types, and size.
@@ -150,33 +141,37 @@ app.listen(3000, () => console.log('Validation server running on port 3000'));
 
 ## Interview Questions
 
-### Beginner
-* **Why should you validate user input in a backend application?**
-  *Answer*: Input validation prevents security vulnerabilities (like database injection attacks), blocks invalid data formats that could crash the application, and keeps the database structure clean.
+**Q:** Why should you validate user input in a backend application?
 
-### Intermediate
-* **What is the difference between Joi and Zod validation libraries?**
-  *Answer*: Joi is a schema-validation library that uses chained helper methods to validate runtime data. Zod is a newer schema-validation library that supports TypeScript type inference out of the box, allowing you to infer TS types directly from your schemas without manual type definitions.
+> **Answer:**
+> Input validation prevents security vulnerabilities (like database injection attacks), blocks invalid data formats that could crash the application, and keeps the database structure clean.
 
-### Advanced
-* **Explain how validation middleware helps keep your code clean, and how to configure it to prevent parameter injection attacks.**
-  *Answer*: Validation middleware checks incoming request structures before they reach controller handlers, keeping controllers focused on business logic. 
-  To prevent parameter injection attacks (where clients send extra properties to modify values like roles or billing status), configure your schemas to strip unknown keys. In Zod, the `.parse()` method strips out undefined properties by default. In Joi, you can configure the validation options to set `stripUnknown: true`, ensuring only defined fields reach the database operations.
+**Q:** What is the difference between Joi and Zod validation libraries?
 
-### Senior Architect
-* **How would you build an extensible, schema-driven validation framework in an Express API that integrates with database models to perform asynchronous, cross-field integrity checks (e.g., validating that an email is unique in the database before routing)?**
-  *Answer*: To build a validation framework with asynchronous database checks:
-  1. Define a base schema validation middleware using a library like Zod.
-  2. Leverage Zod's `.refine()` method, which supports asynchronous callbacks, to check database state:
-     ```javascript
-     const emailSchema = z.string().email().refine(async (email) => {
-       const userExists = await db.findUserByEmail(email);
-       return !userExists; // Valid if user does not exist
-     }, {
-       message: 'Email address is already registered'
-     });
-     ```
-  3. Keep database queries inside validation refines fast by using indexing on the target columns (e.g., email), preventing database query latency from blocking requests at the API boundary.
+> **Answer:**
+> Joi is a schema-validation library that uses chained helper methods to validate runtime data. Zod is a newer schema-validation library that supports TypeScript type inference out of the box, allowing you to infer TS types directly from your schemas without manual type definitions.
+
+**Q:** Explain how validation middleware helps keep your code clean, and how to configure it to prevent parameter injection attacks.
+
+> **Answer:**
+> Validation middleware checks incoming request structures before they reach controller handlers, keeping controllers focused on business logic.
+> To prevent parameter injection attacks (where clients send extra properties to modify values like roles or billing status), configure your schemas to strip unknown keys. In Zod, the `.parse()` method strips out undefined properties by default. In Joi, you can configure the validation options to set `stripUnknown: true`, ensuring only defined fields reach the database operations.
+
+**Q:** How would you build an extensible, schema-driven validation framework in an Express API that integrates with database models to perform asynchronous, cross-field integrity checks (e.g., validating that an email is unique in the database before routing)?
+
+> **Answer:**
+> To build a validation framework with asynchronous database checks:
+> 1. Define a base schema validation middleware using a library like Zod.
+> 2. Leverage Zod's `.refine()` method, which supports asynchronous callbacks, to check database state:
+> ```javascript
+> const emailSchema = z.string().email().refine(async (email) => {
+> const userExists = await db.findUserByEmail(email);
+> return !userExists; // Valid if user does not exist
+> }, {
+> message: 'Email address is already registered'
+> });
+> ```
+> 3. Keep database queries inside validation refines fast by using indexing on the target columns (e.g., email), preventing database query latency from blocking requests at the API boundary.
 
 ---
-Previous : [28_Environment_Variables.md] | Index : [00_index.md] | Next : [30_Error_Handling.md]
+Previous : [28_Environment_Variables.md](28_Environment_Variables.md) | Index : [00_index.md](00_index.md) | Next : [30_Error_Handling.md](30_Error_Handling.md)

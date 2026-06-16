@@ -1,16 +1,6 @@
 # AWS Deployment
 
-## What You Will Learn
-* Comparing AWS deployment platforms (EC2, ECS Fargate, Lambda).
-* Understanding Serverless Execution and managing Lambda Cold Starts.
-* Database integrations using Amazon RDS (Relational Database Service).
-* Decoupling static files using Amazon S3 (Simple Storage Service).
-* Designing scalable AWS hosting architectures for Node.js.
-
-## Why This Matters
 Cloud deployment is not a one-size-fits-all solution. If you choose the wrong platform (like deploying a real-time WebSocket API to AWS Lambda, or a simple task script to a massive EC2 instance), you will experience high server costs, latency issues, or scaling limitations. Understanding the trade-offs of AWS platforms is essential for building cost-effective, scalable systems.
-
-## Theory
 
 ### AWS Compute Platforms Comparison
 AWS provides multiple hosting options for Node.js applications:
@@ -140,28 +130,32 @@ app.listen(3000, () => console.log('AWS Deployment App listening on port 3000'))
 
 ## Interview Questions
 
-### Beginner
-* **What are EC2, ECS, and Lambda in AWS?**
-  *Answer*: EC2 provides virtual servers (VMs) where you manage the operating system. ECS is a managed container orchestration platform used to run Docker containers. Lambda is a serverless platform (FaaS) that executes code on demand in response to events, automatically managing server allocation.
+**Q:** What are EC2, ECS, and Lambda in AWS?
 
-### Intermediate
-* **What is a "Cold Start" in AWS Lambda, and how do you mitigate it?**
-  *Answer*: A cold start is the startup latency that occurs when a Lambda function is called after being idle. AWS must spawn a new container runtime and initialize the Node.js code, which can add up to 2 seconds of delay. 
-  To mitigate cold starts, keep dependency sizes small, bundle code using packagers, and configure **Provisioned Concurrency** to keep a set of warm containers active.
+> **Answer:**
+> EC2 provides virtual servers (VMs) where you manage the operating system. ECS is a managed container orchestration platform used to run Docker containers. Lambda is a serverless platform (FaaS) that executes code on demand in response to events, automatically managing server allocation.
 
-### Advanced
-* **Why should you avoid using AWS Lambda for real-time WebSocket APIs, and what is the preferred hosting platform?**
-  *Answer*: AWS Lambda is designed for short-lived, stateless executions (functions are terminated after a maximum of 15 minutes). WebSockets require long-lived, persistent TCP connections to push real-time updates. Keeping sockets open on Lambda is impossible or cost-prohibitive because you are billed for execution duration. 
-  The preferred hosting platform is **AWS ECS Fargate** or **Amazon EKS**, which runs Docker containers continuously behind an ALB. Alternatively, offload WebSocket connection management to **AWS API Gateway WebSockets**, which manages connections at the network layer and routes events to Lambda dynamically.
+**Q:** What is a "Cold Start" in AWS Lambda, and how do you mitigate it?
 
-### Senior Architect
-* **How would you architecture a disaster recovery strategy for a Node.js API deployed on AWS, ensuring that the system can survive the complete outage of an AWS region?**
-  *Answer*: To design a multi-region disaster recovery strategy (Active-Passive or Active-Active):
-  1. **Route 53 DNS**: Configure AWS Route 53 with failover routing and health checks to detect region health and route traffic to the backup region automatically if the primary region goes offline.
-  2. **Multi-Region Compute**: Deploy identical ECS Fargate container clusters in both the primary region (e.g. us-east-1) and secondary region (e.g. us-west-2).
-  3. **Database Replication**: Configure an **Amazon Aurora Global Database** (PostgreSQL). Aurora replicates data across regions asynchronously in less than a second, allowing the secondary region to be promoted to write mode instantly during failover.
-  4. **S3 Replication**: Enable S3 Cross-Region Replication (CRR) to sync uploaded user files between S3 buckets in both regions.
-  5. **Infrastructure as Code (IaC)**: Define the entire infrastructure using Terraform to ensure that you can replicate and deploy the environment cleanly in new regions.
+> **Answer:**
+> A cold start is the startup latency that occurs when a Lambda function is called after being idle. AWS must spawn a new container runtime and initialize the Node.js code, which can add up to 2 seconds of delay.
+> To mitigate cold starts, keep dependency sizes small, bundle code using packagers, and configure **Provisioned Concurrency** to keep a set of warm containers active.
+
+**Q:** Why should you avoid using AWS Lambda for real-time WebSocket APIs, and what is the preferred hosting platform?
+
+> **Answer:**
+> AWS Lambda is designed for short-lived, stateless executions (functions are terminated after a maximum of 15 minutes). WebSockets require long-lived, persistent TCP connections to push real-time updates. Keeping sockets open on Lambda is impossible or cost-prohibitive because you are billed for execution duration.
+> The preferred hosting platform is **AWS ECS Fargate** or **Amazon EKS**, which runs Docker containers continuously behind an ALB. Alternatively, offload WebSocket connection management to **AWS API Gateway WebSockets**, which manages connections at the network layer and routes events to Lambda dynamically.
+
+**Q:** How would you architecture a disaster recovery strategy for a Node.js API deployed on AWS, ensuring that the system can survive the complete outage of an AWS region?
+
+> **Answer:**
+> To design a multi-region disaster recovery strategy (Active-Passive or Active-Active):
+> 1. **Route 53 DNS**: Configure AWS Route 53 with failover routing and health checks to detect region health and route traffic to the backup region automatically if the primary region goes offline.
+> 2. **Multi-Region Compute**: Deploy identical ECS Fargate container clusters in both the primary region (e.g. us-east-1) and secondary region (e.g. us-west-2).
+> 3. **Database Replication**: Configure an **Amazon Aurora Global Database** (PostgreSQL). Aurora replicates data across regions asynchronously in less than a second, allowing the secondary region to be promoted to write mode instantly during failover.
+> 4. **S3 Replication**: Enable S3 Cross-Region Replication (CRR) to sync uploaded user files between S3 buckets in both regions.
+> 5. **Infrastructure as Code (IaC)**: Define the entire infrastructure using Terraform to ensure that you can replicate and deploy the environment cleanly in new regions.
 
 ---
-Previous : [78_GitHub_Actions.md] | Index : [00_index.md] | Next : [80_Nginx.md]
+Previous : [78_GitHub_Actions.md](78_GitHub_Actions.md) | Index : [00_index.md](00_index.md) | Next : [80_Nginx.md](80_Nginx.md)

@@ -1,15 +1,6 @@
 # NoSQL Injection
 
-## What You Will Learn
-* How NoSQL Injection occurs in document-based databases (MongoDB).
-* Exploit vectors: Operator Injection (`$ne`, `$gt`, `$or`) and regex extraction (`$regex`).
-* Defensive coding: Enforcing types, using Mongoose ODM validation, and sanitizing payloads.
-* Implementing NoSQL sanitization middleware.
-
-## Why This Matters
 Many developers assume NoSQL databases are safe from injection because they do not use SQL strings. This is false. MongoDB queries use JavaScript objects. If you pass client-provided objects directly into your query parameters, attackers can inject query operators (like `$ne` - "not equal") to bypass authentication checks or extract private data. Understanding NoSQL validation is critical for securing document databases.
-
-## Theory
 
 ### What is NoSQL Injection?
 **NoSQL Injection** occurs when untrusted user input is parsed directly into NoSQL query objects, allowing attackers to inject query operators that alter the query structure.
@@ -143,28 +134,32 @@ app.listen(3000, () => console.log('NoSQL secure server running on port 3000'));
 
 ## Interview Questions
 
-### Beginner
-* **Can NoSQL databases suffer from injection attacks?**
-  *Answer*: Yes. NoSQL databases are vulnerable to operator injection attacks, where attackers inject query operators (like `$ne` or `$regex` in MongoDB) inside query objects to bypass authentication or extract private data.
+**Q:** Can NoSQL databases suffer from injection attacks?
 
-### Intermediate
-* **How does utilizing Mongoose help defend against NoSQL injection?**
-  *Answer*: Mongoose enforces schema definitions. When a query is executed, Mongoose automatically casts incoming values to the types defined in the schema. If a schema field is defined as a `String` and an attacker passes an object containing operators (like `{ "$ne": "" }`), Mongoose casts the object to a literal string, neutralizing the query operator.
+> **Answer:**
+> Yes. NoSQL databases are vulnerable to operator injection attacks, where attackers inject query operators (like `$ne` or `$regex` in MongoDB) inside query objects to bypass authentication or extract private data.
 
-### Advanced
-* **Explain how an attacker can extract user passwords from a MongoDB database using the `$regex` operator, and how you prevent it.**
-  *Answer*: An attacker can send login requests containing a regex pattern: `{ "username": "admin", "password": { "$regex": "^a" } }`. If the query succeeds, the attacker learns the password starts with "a". By iterating through characters, they can extract the complete password. 
-  To prevent this:
-  1. Enforce strict input validation using schema libraries (like Zod) to ensure that the password parameter is strictly a string, rejecting objects.
-  2. Apply sanitization middleware (like `mongo-sanitize`) to strip out any keys starting with `$` from the request payload.
+**Q:** How does utilizing Mongoose help defend against NoSQL injection?
 
-### Senior Architect
-* **How would you secure a high-throughput Node.js API that uses a combination of MongoDB and PostgreSQL against both SQL and NoSQL injection attacks, ensuring minimum latency overhead?**
-  *Answer*: To secure a hybrid SQL/NoSQL API with minimal latency:
-  1. **Validation at Boundary**: Use Zod validation middleware at the API boundary to enforce strict schemas for all inputs. Reject invalid formats (such as objects where strings are expected) before they reach controllers. Zod schemas compile validations quickly, minimizing latency.
-  2. **Automatic Parameterization**: Use query builders (like Knex or Kysely) for PostgreSQL queries, which use parameterized queries automatically.
-  3. **Schema Enforcement**: Use Mongoose for MongoDB queries, leveraging its built-in schema casting. For raw MongoDB driver commands, apply `mongo-sanitize` to strip out operator keys.
-  4. **Least Privilege**: Configure separate, restricted database users for MongoDB and PostgreSQL. Limit permissions to the minimum tables and collections required, containing the impact if a vulnerability is compromised.
+> **Answer:**
+> Mongoose enforces schema definitions. When a query is executed, Mongoose automatically casts incoming values to the types defined in the schema. If a schema field is defined as a `String` and an attacker passes an object containing operators (like `{ "$ne": "" }`), Mongoose casts the object to a literal string, neutralizing the query operator.
+
+**Q:** Explain how an attacker can extract user passwords from a MongoDB database using the `$regex` operator, and how you prevent it.
+
+> **Answer:**
+> An attacker can send login requests containing a regex pattern: `{ "username": "admin", "password": { "$regex": "^a" } }`. If the query succeeds, the attacker learns the password starts with "a". By iterating through characters, they can extract the complete password.
+> To prevent this:
+> 1. Enforce strict input validation using schema libraries (like Zod) to ensure that the password parameter is strictly a string, rejecting objects.
+> 2. Apply sanitization middleware (like `mongo-sanitize`) to strip out any keys starting with `$` from the request payload.
+
+**Q:** How would you secure a high-throughput Node.js API that uses a combination of MongoDB and PostgreSQL against both SQL and NoSQL injection attacks, ensuring minimum latency overhead?
+
+> **Answer:**
+> To secure a hybrid SQL/NoSQL API with minimal latency:
+> 1. **Validation at Boundary**: Use Zod validation middleware at the API boundary to enforce strict schemas for all inputs. Reject invalid formats (such as objects where strings are expected) before they reach controllers. Zod schemas compile validations quickly, minimizing latency.
+> 2. **Automatic Parameterization**: Use query builders (like Knex or Kysely) for PostgreSQL queries, which use parameterized queries automatically.
+> 3. **Schema Enforcement**: Use Mongoose for MongoDB queries, leveraging its built-in schema casting. For raw MongoDB driver commands, apply `mongo-sanitize` to strip out operator keys.
+> 4. **Least Privilege**: Configure separate, restricted database users for MongoDB and PostgreSQL. Limit permissions to the minimum tables and collections required, containing the impact if a vulnerability is compromised.
 
 ---
-Previous : [61_SQL_Injection.md] | Index : [00_index.md] | Next : [63_Testing_Fundamentals.md]
+Previous : [61_SQL_Injection.md](61_SQL_Injection.md) | Index : [00_index.md](00_index.md) | Next : [63_Testing_Fundamentals.md](63_Testing_Fundamentals.md)

@@ -1,15 +1,6 @@
 # Middleware
 
-## What You Will Learn
-* The design and purpose of the Middleware pattern.
-* The five main categories of middleware in Express.
-* Why the registration order of middleware is critical.
-* Implementing custom middleware and handling errors using `next(err)`.
-
-## Why This Matters
 Middleware is the backbone of Express. Authentication, input validation, logging, and rate limiting are all written as middleware. If you do not understand how the middleware execution chain works, you will encounter bugs where requests hang indefinitely, authentication checks are bypassed, or errors fail to trigger proper response handlers.
-
-## Theory
 
 ### What is Middleware?
 **Middleware** functions are code blocks that run sequentially during the request-response cycle. They have access to the request object (`req`), the response object (`res`), and the next middleware function in the execution chain (`next`).
@@ -134,37 +125,47 @@ app.listen(3000, () => console.log('Middleware server running on port 3000'));
 
 ## Interview Questions
 
-### Beginner
-* **What is middleware in Express.js?**
-  *Answer*: Middleware functions are functions that execute sequentially during the request-response cycle of an Express application. They have access to the request object (`req`), response object (`res`), and the `next` middleware function in the execution chain.
+**Q:** What is middleware in Express.js?
 
-### Intermediate
-* **Why must error-handling middleware be registered last in the Express app definition?**
-  *Answer*: Express executes middleware and routes sequentially in the order they are defined. If you register error-handling middleware before routing definitions, it will not catch exceptions thrown in those routes because they sit further down the execution stack.
+> **Answer:**
+> Middleware functions are functions that execute sequentially during the request-response cycle of an Express application. They have access to the request object (`req`), response object (`res`), and the `next` middleware function in the execution chain.
 
-### Advanced
-* **How does Express distinguish standard middleware from error-handling middleware?**
-  *Answer*: Express checks the function signature (specifically the number of arguments) using JavaScript's `Function.prototype.length` property. Standard middleware functions take 2 or 3 arguments (`(req, res, next)`), while error-handling middleware must declare exactly 4 arguments (`(err, req, res, next)`). If you declare fewer than 4 arguments, Express treats the function as standard middleware, and it will not receive thrown errors.
+**Q:** Why must error-handling middleware be registered last in the Express app definition?
 
-### Senior Architect
-* **Discuss how asynchronous error handling changes between Express 4 and Express 5 under the hood. How do you implement a robust global async-error-catcher wrapper in Express 4?**
-  *Answer*: 
-  * **Express 4**: Does not catch unhandled rejections or errors thrown in asynchronous code paths (such as `await` or callbacks) automatically. If an error is thrown inside an asynchronous block, it bypasses the Express router stack and triggers an `unhandledRejection` event. To handle errors, you must wrap async code in `try/catch` and pass the error to `next(err)` manually.
-  * **Express 5**: Automatically catches rejected Promises and forwards them to the error-handling middleware.
-  
-  To handle this cleanly in Express 4, you can write an asynchronous wrapper helper function (often called `asyncHandler`):
-  ```javascript
-  const asyncHandler = (fn) => (req, res, next) => {
-    Promise.resolve(fn(req, res, next)).catch(next);
-  };
+> **Answer:**
+> Express executes middleware and routes sequentially in the order they are defined. If you register error-handling middleware before routing definitions, it will not catch exceptions thrown in those routes because they sit further down the execution stack.
 
-  // Usage in routes
-  app.get('/api/users', asyncHandler(async (req, res) => {
-    const users = await db.fetchUsers();
-    res.json(users); // If fetchUsers rejects, catch(next) forwards the error automatically
-  }));
-  ```
-  This wrapper ensures all asynchronous rejections are forwarded to your error-handling middleware without cluttering controllers with duplicate `try/catch` blocks.
+**Q:** How does Express distinguish standard middleware from error-handling middleware?
+
+> **Answer:**
+> Express checks the function signature (specifically the number of arguments) using JavaScript's `Function.prototype.length` property. Standard middleware functions take 2 or 3 arguments (`(req, res, next)`), while error-handling middleware must declare exactly 4 arguments (`(err, req, res, next)`). If you declare fewer than 4 arguments, Express treats the function as standard middleware, and it will not receive thrown errors.
+
+**Q:** Discuss how asynchronous error handling changes between Express 4 and Express 5 under the hood. How do you implement a robust global async-error-catcher wrapper in Express 4?
+
+> **Answer:**
+> 
+
+**Q:** Express 4
+
+> **Answer:**
+> 
+
+**Q:** Express 5
+
+> **Answer:**
+> To handle this cleanly in Express 4, you can write an asynchronous wrapper helper function (often called `asyncHandler`):
+> ```javascript
+> const asyncHandler = (fn) => (req, res, next) => {
+> Promise.resolve(fn(req, res, next)).catch(next);
+> };
+> 
+> // Usage in routes
+> app.get('/api/users', asyncHandler(async (req, res) => {
+> const users = await db.fetchUsers();
+> res.json(users); // If fetchUsers rejects, catch(next) forwards the error automatically
+> }));
+> ```
+> This wrapper ensures all asynchronous rejections are forwarded to your error-handling middleware without cluttering controllers with duplicate `try/catch` blocks.
 
 ---
-Previous : [24_ExpressJS.md] | Index : [00_index.md] | Next : [26_Routing.md]
+Previous : [24_ExpressJS.md](24_ExpressJS.md) | Index : [00_index.md](00_index.md) | Next : [26_Routing.md](26_Routing.md)

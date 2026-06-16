@@ -1,16 +1,6 @@
 # Error Handling
 
-## What You Will Learn
-* Distinguishing between Operational and Programmer errors.
-* Designing a custom, unified `AppError` exception class.
-* Writing a global Express error-handling middleware.
-* Catching errors in asynchronous routes cleanly.
-* Structuring error responses based on environment (Development vs. Production).
-
-## Why This Matters
 Unhandled errors crash servers and expose sensitive internal details (like database queries, file paths, and dependency stacks) to clients. Standardizing error handling secures your application, prevents crashes, and ensures that clients receive consistent error payloads that are easy to debug.
-
-## Theory
 
 ### Operational vs. Programmer Errors
 In backend architecture, errors are divided into two main categories:
@@ -152,35 +142,39 @@ app.listen(3000, () => console.log('Error handling server running on port 3000')
 
 ## Interview Questions
 
-### Beginner
-* **What is the difference between an operational error and a programmer error?**
-  *Answer*: Operational errors are predictable failures that can occur in correct programs (e.g., database timeouts, missing IDs, or validation errors). They should be handled gracefully. Programmer errors are unexpected bugs caused by incorrect code (e.g., syntax errors, reference errors, or undefined functions). They require logging and restarting the process.
+**Q:** What is the difference between an operational error and a programmer error?
 
-### Intermediate
-* **How do you define a global error handler in Express?**
-  *Answer*: You define global error handler middleware by declaring a function that takes exactly four arguments: `(err, req, res, next)`. You then register this middleware at the very end of your middleware chain, after all route definitions.
+> **Answer:**
+> Operational errors are predictable failures that can occur in correct programs (e.g., database timeouts, missing IDs, or validation errors). They should be handled gracefully. Programmer errors are unexpected bugs caused by incorrect code (e.g., syntax errors, reference errors, or undefined functions). They require logging and restarting the process.
 
-### Advanced
-* **Why do try/catch blocks fail to catch errors thrown in asynchronous callbacks or nested timer loops in Express, and how do you resolve this?**
-  *Answer*: Try/catch blocks only catch errors thrown in the same execution context and call stack. If an error is thrown inside an asynchronous callback (such as inside a `setTimeout` loop or database client event handler) after the main call stack has cleared, the try/catch block will miss it. 
-  To resolve this, ensure all asynchronous execution paths use Promises or `async/await` and pass caught errors to `next(err)` explicitly.
+**Q:** How do you define a global error handler in Express?
 
-### Senior Architect
-* **How would you architecture a zero-crash, self-healing process recovery system inside a Node.js cluster when encountering uncaught programmer errors?**
-  *Answer*: To build a self-healing process recovery system:
-  1. Register process-level event listeners for `uncaughtException` and `unhandledRejection`:
-     ```javascript
-     process.on('uncaughtException', (err) => {
-       logger.error('CRITICAL UNCAUGHT EXCEPTION:', err);
-       gracefulShutdown(1); // Exit with failure code
-     });
-     ```
-  2. Implement a `gracefulShutdown` function that:
-     - Instructs load balancers to stop routing traffic to this instance.
-     - Sets a timeout (e.g. 10-20 seconds) to force-exit the process.
-     - Attempts to close active database pools and server connections.
-     - Exits the process with code `1`.
-  3. Deploy the application inside a container orchestrator (like Kubernetes) or use process managers (like PM2) configured to automatically launch a fresh, healthy container instance when a container exits, ensuring zero downtime.
+> **Answer:**
+> You define global error handler middleware by declaring a function that takes exactly four arguments: `(err, req, res, next)`. You then register this middleware at the very end of your middleware chain, after all route definitions.
+
+**Q:** Why do try/catch blocks fail to catch errors thrown in asynchronous callbacks or nested timer loops in Express, and how do you resolve this?
+
+> **Answer:**
+> Try/catch blocks only catch errors thrown in the same execution context and call stack. If an error is thrown inside an asynchronous callback (such as inside a `setTimeout` loop or database client event handler) after the main call stack has cleared, the try/catch block will miss it.
+> To resolve this, ensure all asynchronous execution paths use Promises or `async/await` and pass caught errors to `next(err)` explicitly.
+
+**Q:** How would you architecture a zero-crash, self-healing process recovery system inside a Node.js cluster when encountering uncaught programmer errors?
+
+> **Answer:**
+> To build a self-healing process recovery system:
+> 1. Register process-level event listeners for `uncaughtException` and `unhandledRejection`:
+> ```javascript
+> process.on('uncaughtException', (err) => {
+> logger.error('CRITICAL UNCAUGHT EXCEPTION:', err);
+> gracefulShutdown(1); // Exit with failure code
+> });
+> ```
+> 2. Implement a `gracefulShutdown` function that:
+> - Instructs load balancers to stop routing traffic to this instance.
+> - Sets a timeout (e.g. 10-20 seconds) to force-exit the process.
+> - Attempts to close active database pools and server connections.
+> - Exits the process with code `1`.
+> 3. Deploy the application inside a container orchestrator (like Kubernetes) or use process managers (like PM2) configured to automatically launch a fresh, healthy container instance when a container exits, ensuring zero downtime.
 
 ---
-Previous : [29_Validation.md] | Index : [00_index.md] | Next : [31_Logging.md]
+Previous : [29_Validation.md](29_Validation.md) | Index : [00_index.md](00_index.md) | Next : [31_Logging.md](31_Logging.md)

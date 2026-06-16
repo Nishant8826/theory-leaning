@@ -1,16 +1,6 @@
 # Node.js Internals
 
-## What You Will Learn
-* The execution layers of Node.js (JavaScript, C++ Bindings, Libuv, V8, OS).
-* How C++ Bindings bridge JavaScript and C++ code.
-* The internal architecture of Libuv and operating system async primitives.
-* Tuning the Libuv thread pool size using `UV_THREADPOOL_SIZE`.
-* The step-by-step application startup and bootstrap lifecycle.
-
-## Why This Matters
 To master backend engineering, you must understand the internal architecture of your runtime environment. Knowing how JavaScript code maps to C++ bindings, how Libuv interacts with the operating system kernel, and how to configure the Libuv thread pool allows you to build highly optimized applications and debug low-level systems failures.
-
-## Theory
 
 ### The Architectural Layers of Node.js
 Node.js compiles and runs JavaScript code on the server by layering multiple technologies:
@@ -119,34 +109,49 @@ for (let i = 0; i < ITERATIONS; i++) {
 
 ## Interview Questions
 
-### Beginner
-* **What is Libuv, and what is its role in Node.js?**
-  *Answer*: Libuv is a multi-platform support library written in C. It manages the Event Loop, handles the internal worker thread pool, and abstracts platform-specific asynchronous I/O operations, allowing Node.js to run non-blocking code.
+**Q:** What is Libuv, and what is its role in Node.js?
 
-### Intermediate
-* **Why does setting `process.env.UV_THREADPOOL_SIZE = 8` inside your JavaScript code fail to change the thread pool size?**
-  *Answer*: The Libuv thread pool is initialized and allocated during the Node.js runtime bootstrap phase *before* the JavaScript engine compiles and runs your code. Therefore, modifications made to `process.env` inside your JavaScript script occur too late to affect the thread pool allocation. The variable must be set at the system terminal level before executing the `node` command.
+> **Answer:**
+> Libuv is a multi-platform support library written in C. It manages the Event Loop, handles the internal worker thread pool, and abstracts platform-specific asynchronous I/O operations, allowing Node.js to run non-blocking code.
 
-### Advanced
-* **Walk through the internal layers when `fs.readFile` is executed, starting from the JavaScript call to the OS kernel read.**
-  *Answer*: When `fs.readFile` runs:
-  1. The **JavaScript Core** library validates arguments and calls the corresponding internal binding method.
-  2. The **C++ Binding layer** translates the JavaScript parameters (like path and encoding) into native C++ types using V8 engine namespaces.
-  3. The binding function calls the **Libuv I/O queue**.
-  4. Libuv allocates a task and pushes it to an idle thread in the **Libuv Thread Pool**.
-  5. The assigned worker thread invokes the **Operating System Kernel** system read call, blocking until the data is returned.
-  6. Once the OS returns the data, the Libuv thread writes the result to a buffer and notifies the event loop.
-  7. During the Poll phase of the event loop, V8 restores the execution context and runs the registered JavaScript callback function with the data.
+**Q:** Why does setting `process.env.UV_THREADPOOL_SIZE = 8` inside your JavaScript code fail to change the thread pool size?
 
-### Senior Architect
-* **How would you debug a thread pool starvation issue in production where DNS resolution calls (`dns.lookup`) are timing out? What are the root causes, and how do you resolve them?**
-  *Answer*: 
-  * **Root Cause**: In Node.js, `dns.lookup` uses the operating system's synchronous getaddrinfo call, which is offloaded to the Libuv thread pool. If the application executes many heavy filesystem calls (like writing logs) or cryptographic calculations simultaneously, these tasks will consume all available Libuv threads (default is 4). This starves the thread pool, causing DNS lookup calls to wait in the queue and eventually time out.
-  * **Debugging**: Collect thread trace data and measure event loop delays. A high event loop delay along with I/O timeouts confirms thread pool starvation.
-  * **Resolution**:
-    1. Increase the thread pool size by setting `UV_THREADPOOL_SIZE` (e.g. to 16 or 64) before starting the process.
-    2. Avoid using `dns.lookup`. Use `dns.resolve` instead, which performs DNS resolution asynchronously using network sockets, bypassing the Libuv thread pool entirely.
-    3. Offload heavy cryptographic tasks to **Worker Threads** to keep the Libuv thread pool free for I/O operations.
+> **Answer:**
+> The Libuv thread pool is initialized and allocated during the Node.js runtime bootstrap phase *before* the JavaScript engine compiles and runs your code. Therefore, modifications made to `process.env` inside your JavaScript script occur too late to affect the thread pool allocation. The variable must be set at the system terminal level before executing the `node` command.
+
+**Q:** Walk through the internal layers when `fs.readFile` is executed, starting from the JavaScript call to the OS kernel read.
+
+> **Answer:**
+> When `fs.readFile` runs:
+> 1. The **JavaScript Core** library validates arguments and calls the corresponding internal binding method.
+> 2. The **C++ Binding layer** translates the JavaScript parameters (like path and encoding) into native C++ types using V8 engine namespaces.
+> 3. The binding function calls the **Libuv I/O queue**.
+> 4. Libuv allocates a task and pushes it to an idle thread in the **Libuv Thread Pool**.
+> 5. The assigned worker thread invokes the **Operating System Kernel** system read call, blocking until the data is returned.
+> 6. Once the OS returns the data, the Libuv thread writes the result to a buffer and notifies the event loop.
+> 7. During the Poll phase of the event loop, V8 restores the execution context and runs the registered JavaScript callback function with the data.
+
+**Q:** How would you debug a thread pool starvation issue in production where DNS resolution calls (`dns.lookup`) are timing out? What are the root causes, and how do you resolve them?
+
+> **Answer:**
+> 
+
+**Q:** Root Cause
+
+> **Answer:**
+> 
+
+**Q:** Debugging
+
+> **Answer:**
+> 
+
+**Q:** Resolution
+
+> **Answer:**
+> 1. Increase the thread pool size by setting `UV_THREADPOOL_SIZE` (e.g. to 16 or 64) before starting the process.
+> 2. Avoid using `dns.lookup`. Use `dns.resolve` instead, which performs DNS resolution asynchronously using network sockets, bypassing the Libuv thread pool entirely.
+> 3. Offload heavy cryptographic tasks to **Worker Threads** to keep the Libuv thread pool free for I/O operations.
 
 ---
-Previous : [53_Performance_Optimization.md] | Index : [00_index.md] | Next : [55_Security_Fundamentals.md]
+Previous : [53_Performance_Optimization.md](53_Performance_Optimization.md) | Index : [00_index.md](00_index.md) | Next : [55_Security_Fundamentals.md](55_Security_Fundamentals.md)

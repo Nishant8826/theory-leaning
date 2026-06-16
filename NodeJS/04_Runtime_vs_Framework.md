@@ -1,15 +1,6 @@
 # Runtime vs Framework
 
-## What You Will Learn
-* The precise definition of a runtime environment vs. a web application framework.
-* What API surfaces are native to Node.js vs. what Express or Nest.js provide.
-* Architectural differences between Node.js, Deno, and Bun.
-* Evaluating framework choices (Express, Fastify, Koa, Nest.js) for backend architectures.
-
-## Why This Matters
 Many backend developers confuse Node.js with web frameworks like Express, which leads to weak troubleshooting skills. When a network error occurs or a memory leak develops, you must know whether the root cause lies in your web framework's routing logic or in Node's underlying TCP socket handling.
-
-## Theory
 
 ### What is a Runtime Environment?
 A **runtime environment** provides the execution engine and external APIs needed to run code that the programming language itself does not define. 
@@ -112,25 +103,29 @@ app.listen(3000, () => {
 
 ## Interview Questions
 
-### Beginner
-* **What is the difference between Node.js and Express?**
-  *Answer*: Node.js is the runtime environment that executes JavaScript outside the browser and provides low-level system modules (like `http` and `fs`). Express is a minimalist web framework built on top of Node.js that provides structure for routing, request handling, and middleware execution.
+**Q:** What is the difference between Node.js and Express?
 
-### Intermediate
-* **Why would an organization choose Fastify over Express for a new microservices project?**
-  *Answer*: Fastify is designed for performance. It features a highly optimized radix tree router, implements schema-based validation that compiles parsing/serialization code ahead of time, and has lower overhead. These optimizations yield higher request throughput and lower CPU utilization compared to Express under heavy load.
+> **Answer:**
+> Node.js is the runtime environment that executes JavaScript outside the browser and provides low-level system modules (like `http` and `fs`). Express is a minimalist web framework built on top of Node.js that provides structure for routing, request handling, and middleware execution.
 
-### Advanced
-* **Compare the internal engine differences and runtime architectures of Node.js and Bun.**
-  *Answer*: Node.js utilizes the V8 engine, which uses JIT (Just-In-Time) compilation (Ignition/TurboFan) and C++ for native bindings. Bun utilizes Apple's JavaScriptCore engine (from WebKit), which compiles and starts faster than V8. Additionally, Bun is written in Zig, which enables manual memory management, and it implements native system APIs from scratch rather than wrapping libuv. This architecture yields significantly faster cold starts and higher performance.
+**Q:** Why would an organization choose Fastify over Express for a new microservices project?
 
-### Senior Architect
-* **In a high-throughput enterprise application, why might NestJS's dependency injection container introduce performance or memory overhead during initialization, and how do you mitigate this?**
-  *Answer*: Nest.js relies on reflective metadata APIs (`reflect-metadata`) to resolve dependency trees and instantiate services during bootstrap. In large codebases, this process parses hundreds of classes, allocating metadata records on the V8 heap and blocking the event loop during initialization. 
-  To mitigate this:
-  1. Leverage modular separation, ensuring lazy-loaded modules are initialized only when their routes are invoked.
-  2. Optimize dependency injection by avoiding circular dependency resolution markers.
-  3. Ensure production builds are fully transpiled to optimized JavaScript, minimizing metadata lookup lookups.
+> **Answer:**
+> Fastify is designed for performance. It features a highly optimized radix tree router, implements schema-based validation that compiles parsing/serialization code ahead of time, and has lower overhead. These optimizations yield higher request throughput and lower CPU utilization compared to Express under heavy load.
+
+**Q:** Compare the internal engine differences and runtime architectures of Node.js and Bun.
+
+> **Answer:**
+> Node.js utilizes the V8 engine, which uses JIT (Just-In-Time) compilation (Ignition/TurboFan) and C++ for native bindings. Bun utilizes Apple's JavaScriptCore engine (from WebKit), which compiles and starts faster than V8. Additionally, Bun is written in Zig, which enables manual memory management, and it implements native system APIs from scratch rather than wrapping libuv. This architecture yields significantly faster cold starts and higher performance.
+
+**Q:** In a high-throughput enterprise application, why might NestJS's dependency injection container introduce performance or memory overhead during initialization, and how do you mitigate this?
+
+> **Answer:**
+> Nest.js relies on reflective metadata APIs (`reflect-metadata`) to resolve dependency trees and instantiate services during bootstrap. In large codebases, this process parses hundreds of classes, allocating metadata records on the V8 heap and blocking the event loop during initialization.
+> To mitigate this:
+> 1. Leverage modular separation, ensuring lazy-loaded modules are initialized only when their routes are invoked.
+> 2. Optimize dependency injection by avoiding circular dependency resolution markers.
+> 3. Ensure production builds are fully transpiled to optimized JavaScript, minimizing metadata lookup lookups.
 
 ---
-Previous : [03_JavaScript_Fundamentals_for_NodeJS.md] | Index : [00_index.md] | Next : [05_V8_Engine.md]
+Previous : [03_JavaScript_Fundamentals_for_NodeJS.md](03_JavaScript_Fundamentals_for_NodeJS.md) | Index : [00_index.md](00_index.md) | Next : [05_V8_Engine.md](05_V8_Engine.md)

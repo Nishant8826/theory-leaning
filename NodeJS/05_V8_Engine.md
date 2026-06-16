@@ -1,16 +1,6 @@
 # V8 Engine
 
-## What You Will Learn
-* The V8 compiler pipeline (Ignition Interpreter & TurboFan Compiler).
-* How Just-In-Time (JIT) compilation works under the hood.
-* How Hidden Classes (Shapes) and Inline Caches (IC) optimize JS execution.
-* The structure of the V8 Heap (Young vs. Old generation memory spaces).
-* Identifying what causes optimization and deoptimization pathways.
-
-## Why This Matters
 JavaScript is dynamically typed, which means the runtime does not know variable types until execution. In a static language (like C++), compiler offsets are resolved during compile time. V8 does this on the fly. Knowing how V8 compiles code allows you to write JavaScript that aligns with the engine's optimization pipeline, yielding production-grade code that executes at near-native speeds.
-
-## Theory
 
 ### The V8 Compiler Pipeline
 JavaScript code cannot be run directly by physical CPU cores; it must be compiled into machine code. V8 achieves this using JIT (Just-In-Time) compilation:
@@ -130,23 +120,35 @@ if (typeof %GetOptimizationStatus === 'function') {
 
 ## Interview Questions
 
-### Beginner
-* **What is the V8 engine and where is it used?**
-  *Answer*: V8 is Google’s open-source High-Performance JavaScript and WebAssembly engine. It is written in C++ and is used inside Google Chrome and the Node.js runtime environment to compile JavaScript directly into native machine code.
+**Q:** What is the V8 engine and where is it used?
 
-### Intermediate
-* **Explain how JIT compilation works in Node.js.**
-  *Answer*: V8 does not compile all code to machine code up front. It initially parses the code and generates bytecode using the Ignition Interpreter. While executing, it monitors the execution metrics to spot "hot" functions. It then passes these hot functions to the TurboFan compiler, which compiles them into optimized machine code based on runtime type data.
+> **Answer:**
+> V8 is Google’s open-source High-Performance JavaScript and WebAssembly engine. It is written in C++ and is used inside Google Chrome and the Node.js runtime environment to compile JavaScript directly into native machine code.
 
-### Advanced
-* **What are Hidden Classes (Shapes) and how do dynamic changes to objects affect V8’s execution performance?**
-  *Answer*: Since JavaScript is dynamic, V8 creates internal "Hidden Classes" (Shapes) that define the offsets of object properties in memory. When properties are dynamically added, deleted, or initialized in different orders, V8 must generate new hidden classes and transition maps. This invalidates Inline Caches (ICs) and forces the TurboFan compiler to deoptimize hot code, reverting to slower interpreter bytecodes or dictionary lookups.
+**Q:** Explain how JIT compilation works in Node.js.
 
-### Senior Architect
-* **Describe the structural layout of V8 heap generations. How does the scavenger algorithm operate differently from the major mark-sweep-compact collector, and how does this affect application performance spikes?**
-  *Answer*: The V8 heap is divided into the Young Generation (New Space, composed of two semi-spaces: To-space and From-space) and the Old Generation (Old Space). 
-  * **Scavenger Collection**: Runs on the Young Generation. It copies surviving active objects from the From-space to the To-space and flips the spaces. This is fast and runs frequently.
-  * **Major Garbage Collection**: Runs on the Old Generation using mark-sweep-compact algorithms. It traces active object references, sweeps unreferenced memory addresses, and compacts remaining blocks to fix fragmentation. Major collections block the main thread (stop-the-world phases) longer than minor scavenger runs. If heap memory size spikes near limits, major collections trigger frequently, causing latency spikes and processing delays.
+> **Answer:**
+> V8 does not compile all code to machine code up front. It initially parses the code and generates bytecode using the Ignition Interpreter. While executing, it monitors the execution metrics to spot "hot" functions. It then passes these hot functions to the TurboFan compiler, which compiles them into optimized machine code based on runtime type data.
+
+**Q:** What are Hidden Classes (Shapes) and how do dynamic changes to objects affect V8’s execution performance?
+
+> **Answer:**
+> Since JavaScript is dynamic, V8 creates internal "Hidden Classes" (Shapes) that define the offsets of object properties in memory. When properties are dynamically added, deleted, or initialized in different orders, V8 must generate new hidden classes and transition maps. This invalidates Inline Caches (ICs) and forces the TurboFan compiler to deoptimize hot code, reverting to slower interpreter bytecodes or dictionary lookups.
+
+**Q:** Describe the structural layout of V8 heap generations. How does the scavenger algorithm operate differently from the major mark-sweep-compact collector, and how does this affect application performance spikes?
+
+> **Answer:**
+> The V8 heap is divided into the Young Generation (New Space, composed of two semi-spaces: To-space and From-space) and the Old Generation (Old Space).
+
+**Q:** Scavenger Collection
+
+> **Answer:**
+> 
+
+**Q:** Major Garbage Collection
+
+> **Answer:**
+> 
 
 ---
-Previous : [04_Runtime_vs_Framework.md] | Index : [00_index.md] | Next : [06_Event_Loop_Basics.md]
+Previous : [04_Runtime_vs_Framework.md](04_Runtime_vs_Framework.md) | Index : [00_index.md](00_index.md) | Next : [06_Event_Loop_Basics.md](06_Event_Loop_Basics.md)

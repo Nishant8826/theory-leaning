@@ -1,16 +1,6 @@
 # npx
 
-## What You Will Learn
-* The primary differences between npm and npx.
-* How npx executes binaries without global installation.
-* The internal download and execution cache mechanisms of npx.
-* Safely executing local repository bin directories vs. executing remote packages.
-* Security risks of executing arbitrary remote npx scripts.
-
-## Why This Matters
 Installing developer tools globally (`npm install -g package`) leads to version mismatches across projects and pollutes the host system. Using `npx` allows developers to run one-off scripts, run local project binaries, and execute generators cleanly. However, executing unverified remote binaries exposes your machine to shell script execution risks.
-
-## Theory
 
 ### What is npx?
 **npx** is a package execution tool bundled with npm since version 5.2.0. Its main purpose is to run CLI executables from the npm registry without requiring them to be installed globally on your machine.
@@ -85,23 +75,27 @@ npx --no-install eslint --version
 
 ## Interview Questions
 
-### Beginner
-* **What is the difference between npm and npx?**
-  *Answer*: `npm` is a package manager used to install, update, and manage dependency packages in a project. `npx` is a package executor used to run CLI binaries directly from `./node_modules/.bin` or download and run them from the npm registry in a temporary cache without modifying project configuration.
+**Q:** What is the difference between npm and npx?
 
-### Intermediate
-* **How does npx find binaries in a local Node.js project?**
-  *Answer*: When `npx <command>` is run, it looks inside the project's local `./node_modules/.bin` directory. This folder contains symbolic links (symlinks) to the executable scripts defined in the `bin` sections of the installed dependencies' `package.json` files.
+> **Answer:**
+> `npm` is a package manager used to install, update, and manage dependency packages in a project. `npx` is a package executor used to run CLI binaries directly from `./node_modules/.bin` or download and run them from the npm registry in a temporary cache without modifying project configuration.
 
-### Advanced
-* **What are the security implications of executing `npx <unknown-package>`? How do you prevent npx from fetching packages from the remote registry in production builds?**
-  *Answer*: Running `npx` with an unknown package runs remote code on your system. If the package has been hijacked or is a typo-squatted malicious clone, it executes shell operations with the host machine's user permissions. 
-  To prevent npx from fetching remote registry files in production, use the `--no-install` flag (e.g., `npx --no-install webpack`). This flag restricts npx to looking only in local folders, throwing an error if the executable is not found.
+**Q:** How does npx find binaries in a local Node.js project?
 
-### Senior Architect
-* **In microservice configurations, how can npx use cases cause deployment issues or latency during container startup, and what architecture patterns solve this?**
-  *Answer*: If container startup scripts rely on `npx <command>` (for example, running database migrations with `npx prisma migrate deploy` or starting servers), and the package is not pre-installed in the container image, npx will download the package at runtime. This causes startup latency, increases network dependencies (failing if the registry is down), and creates non-deterministic builds.
-  To solve this, build container images with all required dependencies pre-installed in the image's `node_modules` during the build phase. You can then call the binaries directly (e.g. `node node_modules/.bin/prisma`) or run npm script tasks defined in `package.json` (which automatically add `./node_modules/.bin` to the execution `PATH`), bypassing npx remote fetches entirely.
+> **Answer:**
+> When `npx <command>` is run, it looks inside the project's local `./node_modules/.bin` directory. This folder contains symbolic links (symlinks) to the executable scripts defined in the `bin` sections of the installed dependencies' `package.json` files.
+
+**Q:** What are the security implications of executing `npx <unknown-package>`? How do you prevent npx from fetching packages from the remote registry in production builds?
+
+> **Answer:**
+> Running `npx` with an unknown package runs remote code on your system. If the package has been hijacked or is a typo-squatted malicious clone, it executes shell operations with the host machine's user permissions.
+> To prevent npx from fetching remote registry files in production, use the `--no-install` flag (e.g., `npx --no-install webpack`). This flag restricts npx to looking only in local folders, throwing an error if the executable is not found.
+
+**Q:** In microservice configurations, how can npx use cases cause deployment issues or latency during container startup, and what architecture patterns solve this?
+
+> **Answer:**
+> If container startup scripts rely on `npx <command>` (for example, running database migrations with `npx prisma migrate deploy` or starting servers), and the package is not pre-installed in the container image, npx will download the package at runtime. This causes startup latency, increases network dependencies (failing if the registry is down), and creates non-deterministic builds.
+> To solve this, build container images with all required dependencies pre-installed in the image's `node_modules` during the build phase. You can then call the binaries directly (e.g. `node node_modules/.bin/prisma`) or run npm script tasks defined in `package.json` (which automatically add `./node_modules/.bin` to the execution `PATH`), bypassing npx remote fetches entirely.
 
 ---
-Previous : [07_npm.md] | Index : [00_index.md] | Next : [09_Modules.md]
+Previous : [07_npm.md](07_npm.md) | Index : [00_index.md](00_index.md) | Next : [09_Modules.md](09_Modules.md)

@@ -1,16 +1,6 @@
 # Buffers
 
-## What You Will Learn
-* How the `Buffer` class represents raw binary data.
-* Buffer allocation methods (`alloc`, `allocUnsafe`, `from`).
-* Memory allocation mechanics (V8 Heap vs. C++ OS memory slab allocator).
-* Security risks of using uninitialized memory via `Buffer.allocUnsafe()`.
-* Converting buffers to different character encodings (UTF-8, Hex, Base64).
-
-## Why This Matters
 JavaScript was originally designed to handle text strings in browsers. However, backend applications must process binary data like file streams, cryptographic payloads, and TCP network packets. The `Buffer` class allows Node.js to manage raw binary memory directly. Using the wrong allocation methods can leak sensitive data from other processes into your application.
-
-## Theory
 
 ### What is a Buffer?
 A **Buffer** represents a fixed-size chunk of memory allocated outside the V8 JavaScript engine's heap space. It acts like an array of integers, where each element represents a single byte (8 bits) of binary data with a decimal value between `0` and `255` (or `00` to `ff` in hexadecimal format).
@@ -95,26 +85,30 @@ console.log('Mutated buffer:', mutableBuffer.toString()); // 'Mello'
 
 ## Interview Questions
 
-### Beginner
-* **What is a Buffer in Node.js?**
-  *Answer*: A `Buffer` is a global class in Node.js used to handle raw binary data. It represents a fixed-size block of memory allocated outside the V8 JavaScript heap, where each byte is represented as an integer between 0 and 255.
+**Q:** What is a Buffer in Node.js?
 
-### Intermediate
-* **What is the difference between `Buffer.alloc` and `Buffer.allocUnsafe`?**
-  *Answer*: `Buffer.alloc(size)` allocates a memory block and overwrites it with zeros, which is safe but slower. `Buffer.allocUnsafe(size)` allocates a memory block without overwriting it, which is fast but carries the security risk of exposing leftover data from other processes.
+> **Answer:**
+> A `Buffer` is a global class in Node.js used to handle raw binary data. It represents a fixed-size block of memory allocated outside the V8 JavaScript heap, where each byte is represented as an integer between 0 and 255.
 
-### Advanced
-* **Explain how Node's 8KB Buffer Pool (Slab Allocator) works under the hood and why it is used.**
-  *Answer*: Allocating memory blocks via C++ system calls has high performance overhead. To optimize this, Node.js pre-allocates an 8KB memory block called a **Slab** for small buffers. When you allocate a buffer smaller than 4KB (half the slab size), Node assigns a slice of this pre-allocated Slab instead of calling the OS kernel. This reduces system call overhead and limits memory fragmentation.
+**Q:** What is the difference between `Buffer.alloc` and `Buffer.allocUnsafe`?
 
-### Senior Architect
-* **Analyze the security risks of Heartbleed-style memory leaks in Node.js applications using `Buffer.allocUnsafe`. How do you protect an application from leaking uninitialized memory?**
-  *Answer*: A Heartbleed-style leak occurs when an application allocates memory using `Buffer.allocUnsafe(size)` based on a size value provided by a client, and then returns that buffer to the client without writing over the entire allocated space first. The uninitialized space in the buffer will contain leftover data from the host machine's memory, which may include database credentials, session tokens, or other users' private data.
-  
-  To protect your application:
-  1. Default to using `Buffer.alloc` to guarantee that all returned buffers are zero-filled.
-  2. If using `Buffer.allocUnsafe` for performance reasons, ensure you write over the entire buffer space (using methods like `buffer.fill()` or `buffer.write()`) before sending it to the client.
-  3. Validate and constrain client-supplied buffer size inputs to prevent allocation of excessively large buffers.
+> **Answer:**
+> `Buffer.alloc(size)` allocates a memory block and overwrites it with zeros, which is safe but slower. `Buffer.allocUnsafe(size)` allocates a memory block without overwriting it, which is fast but carries the security risk of exposing leftover data from other processes.
+
+**Q:** Explain how Node's 8KB Buffer Pool (Slab Allocator) works under the hood and why it is used.
+
+> **Answer:**
+> Allocating memory blocks via C++ system calls has high performance overhead. To optimize this, Node.js pre-allocates an 8KB memory block called a **Slab** for small buffers. When you allocate a buffer smaller than 4KB (half the slab size), Node assigns a slice of this pre-allocated Slab instead of calling the OS kernel. This reduces system call overhead and limits memory fragmentation.
+
+**Q:** Analyze the security risks of Heartbleed-style memory leaks in Node.js applications using `Buffer.allocUnsafe`. How do you protect an application from leaking uninitialized memory?
+
+> **Answer:**
+> A Heartbleed-style leak occurs when an application allocates memory using `Buffer.allocUnsafe(size)` based on a size value provided by a client, and then returns that buffer to the client without writing over the entire allocated space first. The uninitialized space in the buffer will contain leftover data from the host machine's memory, which may include database credentials, session tokens, or other users' private data.
+> 
+> To protect your application:
+> 1. Default to using `Buffer.alloc` to guarantee that all returned buffers are zero-filled.
+> 2. If using `Buffer.allocUnsafe` for performance reasons, ensure you write over the entire buffer space (using methods like `buffer.fill()` or `buffer.write()`) before sending it to the client.
+> 3. Validate and constrain client-supplied buffer size inputs to prevent allocation of excessively large buffers.
 
 ---
-Previous : [15_Events_Module.md] | Index : [00_index.md] | Next : [17_Streams_Basics.md]
+Previous : [15_Events_Module.md](15_Events_Module.md) | Index : [00_index.md](00_index.md) | Next : [17_Streams_Basics.md](17_Streams_Basics.md)

@@ -1,16 +1,6 @@
 # JWT
 
-## What You Will Learn
-* The structural components of a JSON Web Token (Header, Payload, Signature).
-* The stateless authorization pattern and its benefits.
-* Symmetric vs. Asymmetric signing (HS256 vs. RS256).
-* Security vulnerabilities: token theft, XSS, CSRF, and payload exposure.
-* Building JWT sign and verify middleware in Express.
-
-## Why This Matters
 JSON Web Tokens (JWTs) are the standard for authorizing requests in modern APIs and microservices. However, a poor understanding of JWT security can lead to critical vulnerabilities, such as using weak signing keys, storing sensitive data (like passwords) in the unencrypted payload, or exposing tokens to Cross-Site Scripting (XSS) attacks.
-
-## Theory
 
 ### The Structure of a JWT
 A JWT is a string divided into three parts separated by dots (`.`):
@@ -149,27 +139,31 @@ app.listen(3000, () => console.log('JWT Server running on port 3000'));
 
 ## Interview Questions
 
-### Beginner
-* **What are the three parts of a JSON Web Token (JWT)?**
-  *Answer*: A JWT consists of three parts separated by dots: the **Header** (defines token type and signing algorithm), the **Payload** (contains the user claims and metadata), and the **Signature** (verifies that the token has not been altered).
+**Q:** What are the three parts of a JSON Web Token (JWT)?
 
-### Intermediate
-* **Can a user modify their role in a JWT to gain admin access? Why or why not?**
-  *Answer*: A user can decode the base64-encoded payload and change their role, but doing so invalidates the signature. The server verifies the signature using its private secret key when receiving the token. If the payload has been modified, the computed signature will not match the token's signature segment, and the server will reject the request as unauthorized.
+> **Answer:**
+> A JWT consists of three parts separated by dots: the **Header** (defines token type and signing algorithm), the **Payload** (contains the user claims and metadata), and the **Signature** (verifies that the token has not been altered).
 
-### Advanced
-* **Compare symmetric signing (HS256) and asymmetric signing (RS256) for JWTs. In what scenarios is RS256 required?**
-  *Answer*: HS256 uses a single shared secret key for both signing and verification. If a resource server needs to verify a token, it must have access to this secret key, which creates a security risk in multi-tenant or distributed architectures. 
-  RS256 uses a private key to sign tokens and a public key to verify them. This is required in enterprise identity provider (IdP) systems and microservice architectures, where only the authentication service needs access to the private key, and external microservices can verify tokens using the public key securely.
+**Q:** Can a user modify their role in a JWT to gain admin access? Why or why not?
 
-### Senior Architect
-* **How would you implement a token revocation system (blacklisting) in a stateless JWT architecture to invalidate a compromised user token before it expires?**
-  *Answer*: By design, JWT verification is stateless: if the token has a valid signature and is not expired, it is accepted.
-  To support token revocation without losing the benefits of statelessness:
-  1. Add a unique identifier claim (e.g. `jti` - JWT ID) to the token payload when signing it.
-  2. When a user logs out, resets their password, or a token is reported stolen, store the `jti` in a fast, in-memory cache (like Redis) with a TTL (Time To Live) set to the remaining expiration duration of the token.
-  3. Update your verification middleware to check if the incoming token's `jti` exists in the Redis blacklist. If found, reject the token as unauthorized.
-  This hybrid approach preserves stateless validation for the majority of requests, while using a fast cache lookup to support instant revocation.
+> **Answer:**
+> A user can decode the base64-encoded payload and change their role, but doing so invalidates the signature. The server verifies the signature using its private secret key when receiving the token. If the payload has been modified, the computed signature will not match the token's signature segment, and the server will reject the request as unauthorized.
+
+**Q:** Compare symmetric signing (HS256) and asymmetric signing (RS256) for JWTs. In what scenarios is RS256 required?
+
+> **Answer:**
+> HS256 uses a single shared secret key for both signing and verification. If a resource server needs to verify a token, it must have access to this secret key, which creates a security risk in multi-tenant or distributed architectures.
+> RS256 uses a private key to sign tokens and a public key to verify them. This is required in enterprise identity provider (IdP) systems and microservice architectures, where only the authentication service needs access to the private key, and external microservices can verify tokens using the public key securely.
+
+**Q:** How would you implement a token revocation system (blacklisting) in a stateless JWT architecture to invalidate a compromised user token before it expires?
+
+> **Answer:**
+> By design, JWT verification is stateless: if the token has a valid signature and is not expired, it is accepted.
+> To support token revocation without losing the benefits of statelessness:
+> 1. Add a unique identifier claim (e.g. `jti` - JWT ID) to the token payload when signing it.
+> 2. When a user logs out, resets their password, or a token is reported stolen, store the `jti` in a fast, in-memory cache (like Redis) with a TTL (Time To Live) set to the remaining expiration duration of the token.
+> 3. Update your verification middleware to check if the incoming token's `jti` exists in the Redis blacklist. If found, reject the token as unauthorized.
+> This hybrid approach preserves stateless validation for the majority of requests, while using a fast cache lookup to support instant revocation.
 
 ---
-Previous : [33_Authorization.md] | Index : [00_index.md] | Next : [35_Cookies.md]
+Previous : [33_Authorization.md](33_Authorization.md) | Index : [00_index.md](00_index.md) | Next : [35_Cookies.md](35_Cookies.md)

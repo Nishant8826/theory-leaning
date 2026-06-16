@@ -1,16 +1,6 @@
 # npm (Node Package Manager)
 
-## What You Will Learn
-* How npm operates as a registry, CLI client, and package manager.
-* Understanding `package.json` configurations and dependency categories.
-* The internal structure and role of `package-lock.json`.
-* Semantic Versioning (SemVer) operators (`^`, `~`, exact versioning).
-* Executing audits and dependency checks.
-
-## Why This Matters
 An application's stability depends on its third-party packages. A poor understanding of npm configuration leads to security risks, broken production builds when patches release, and bloated deployment containers. Knowing how to lock versions and audit dependencies protects your supply chain.
-
-## Theory
 
 ### Node Package Manager Core Role
 **npm** consists of three distinct components:
@@ -119,30 +109,34 @@ npm outdated
 
 ## Interview Questions
 
-### Beginner
-* **What is the difference between dependencies and devDependencies in package.json?**
-  *Answer*: `dependencies` are libraries required for the application to run in production (e.g. web frameworks, database ORMs). `devDependencies` are only needed during development or build stages (e.g. compilers, testing frameworks, linters) and are excluded from production builds.
+**Q:** What is the difference between dependencies and devDependencies in package.json?
 
-### Intermediate
-* **What is the difference between package.json and package-lock.json, and why is the latter important?**
-  *Answer*: `package.json` defines metadata, scripts, and target version ranges of direct dependencies. `package-lock.json` locks the exact version, download source, and cryptographic hash of every dependency and nested dependency installed. This ensures consistent, reproducible environments across all developer machines and servers.
+> **Answer:**
+> `dependencies` are libraries required for the application to run in production (e.g. web frameworks, database ORMs). `devDependencies` are only needed during development or build stages (e.g. compilers, testing frameworks, linters) and are excluded from production builds.
 
-### Advanced
-* **Explain how `npm ci` works, how it differs from `npm install`, and why you should use it in CI/CD pipelines.**
-  *Answer*: `npm ci` (Clean Install) is optimized for automated environments. It differs from `npm install` in several ways:
-  1. It requires a `package-lock.json` to exist; otherwise, it throws an error.
-  2. If the lockfile is out of sync with `package.json`, it aborts rather than modifying the lockfile.
-  3. It deletes the existing `node_modules` directory entirely before downloading dependencies.
-  4. It does not write to `package.json` or `package-lock.json`. This ensures absolute consistency and prevents dynamic updates during build runs.
+**Q:** What is the difference between package.json and package-lock.json, and why is the latter important?
 
-### Senior Architect
-* **Describe the security risks associated with npm dependencies (e.g., typo-squatting, package hijacking). How do you secure a enterprise CI/CD pipeline against these supply chain attacks?**
-  *Answer*: Risks include typo-squatting (malicious packages named similarly to popular ones), dependency confusion (uploading internal packages to public registries), and package hijacking (compromised maintainer accounts releasing malicious updates).
-  To secure a pipeline:
-  1. Run a private registry mirror (like Nexus or Artifactory) to control package additions.
-  2. Enforce `npm ci` using verified lockfile integrity hashes (SHA-512 check).
-  3. Integrate automated static analysis security testing (SAST) tools like Snyk or `npm audit` into the build process, blocking commits with critical vulnerabilities.
-  4. Implement policy checks that restrict the licensing types of dependencies and require approval for packages that have not been vetted.
+> **Answer:**
+> `package.json` defines metadata, scripts, and target version ranges of direct dependencies. `package-lock.json` locks the exact version, download source, and cryptographic hash of every dependency and nested dependency installed. This ensures consistent, reproducible environments across all developer machines and servers.
+
+**Q:** Explain how `npm ci` works, how it differs from `npm install`, and why you should use it in CI/CD pipelines.
+
+> **Answer:**
+> `npm ci` (Clean Install) is optimized for automated environments. It differs from `npm install` in several ways:
+> 1. It requires a `package-lock.json` to exist; otherwise, it throws an error.
+> 2. If the lockfile is out of sync with `package.json`, it aborts rather than modifying the lockfile.
+> 3. It deletes the existing `node_modules` directory entirely before downloading dependencies.
+> 4. It does not write to `package.json` or `package-lock.json`. This ensures absolute consistency and prevents dynamic updates during build runs.
+
+**Q:** Describe the security risks associated with npm dependencies (e.g., typo-squatting, package hijacking). How do you secure a enterprise CI/CD pipeline against these supply chain attacks?
+
+> **Answer:**
+> Risks include typo-squatting (malicious packages named similarly to popular ones), dependency confusion (uploading internal packages to public registries), and package hijacking (compromised maintainer accounts releasing malicious updates).
+> To secure a pipeline:
+> 1. Run a private registry mirror (like Nexus or Artifactory) to control package additions.
+> 2. Enforce `npm ci` using verified lockfile integrity hashes (SHA-512 check).
+> 3. Integrate automated static analysis security testing (SAST) tools like Snyk or `npm audit` into the build process, blocking commits with critical vulnerabilities.
+> 4. Implement policy checks that restrict the licensing types of dependencies and require approval for packages that have not been vetted.
 
 ---
-Previous : [06_Event_Loop_Basics.md] | Index : [00_index.md] | Next : [08_npx.md]
+Previous : [06_Event_Loop_Basics.md](06_Event_Loop_Basics.md) | Index : [00_index.md](00_index.md) | Next : [08_npx.md](08_npx.md)

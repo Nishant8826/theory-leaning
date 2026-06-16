@@ -1,16 +1,6 @@
 # Security Fundamentals
 
-## What You Will Learn
-* Implementing the Principle of Least Privilege in process execution.
-* Scanning for vulnerabilities in third-party dependencies.
-* Defending against Denial of Service (DoS) attacks.
-* Proper sanitization and data escaping rules.
-* Secure secrets management and rotation.
-
-## Why This Matters
 Security is not an afterthought; it must be built into your application's design. A single compromised dependency, a hardcoded API key committed to a repository, or a process running with root permissions can allow attackers to steal user data or gain control of your servers. Implementing security fundamentals protects your application from vulnerabilities.
-
-## Theory
 
 ### Principle of Least Privilege
 The **Principle of Least Privilege** states that a process must only have access to the resources and permissions it needs to perform its task, and no more.
@@ -106,26 +96,30 @@ server.listen(3000, () => console.log('Secure server running on port 3000'));
 
 ## Interview Questions
 
-### Beginner
-* **What is the Principle of Least Privilege in security?**
-  *Answer*: The Principle of Least Privilege states that a user, process, or program should only have the minimum permissions necessary to perform its task. In Node.js, this means never running the application process as the system root user.
+**Q:** What is the Principle of Least Privilege in security?
 
-### Intermediate
-* **Why should you set payload size limits on your JSON body parsers in an Express API?**
-  *Answer*: Exposing endpoints without payload size limits allows attackers to send massive JSON payloads (e.g., 100MB). Parsing these payloads consumes significant CPU and RAM, which can exhaust server resources and crash the application, creating a Denial of Service (DoS).
+> **Answer:**
+> The Principle of Least Privilege states that a user, process, or program should only have the minimum permissions necessary to perform its task. In Node.js, this means never running the application process as the system root user.
 
-### Advanced
-* **What is a Slowloris attack, and how do you configure socket timeouts in Node.js to defend against it?**
-  *Answer*: A Slowloris attack is a type of Denial of Service (DoS) attack where an attacker opens multiple connections to a server and sends request headers very slowly. This keeps the connections open, exhausting the server's maximum file descriptor or socket limit and blocking genuine users. 
-  To defend against this, configure socket timeouts on the HTTP server instance: `server.headersTimeout` (timeout for reading headers) and `server.requestTimeout` (timeout for processing the entire request) to close slow, idle connections quickly.
+**Q:** Why should you set payload size limits on your JSON body parsers in an Express API?
 
-### Senior Architect
-* **How would you build a secure CI/CD pipeline that enforces dependency vulnerability checks, prevents credentials from leaking, and handles automatic secret rotations?**
-  *Answer*: To build a secure pipeline:
-  1. **Enforce Audits**: Add a step in the pipeline that runs `npm audit` or Snyk. If high-severity vulnerabilities are found, fail the build and block the pull request.
-  2. **Scan for Secrets**: Integrate scanner tools (like GitGuardian or Trufflehog) into the pre-commit or CI pipeline to detect if any developer has accidentally committed API keys or passwords.
-  3. **Inject Secrets at Runtime**: Retrieve configuration settings and credentials dynamically from a secret vault (like HashiCorp Vault or AWS Secrets Manager) using secure environment variables.
-  4. **Implement Rotation**: Configure your application to reload database connection credentials dynamically from the vault periodically without restarting the process, supporting zero-downtime secret rotations.
+> **Answer:**
+> Exposing endpoints without payload size limits allows attackers to send massive JSON payloads (e.g., 100MB). Parsing these payloads consumes significant CPU and RAM, which can exhaust server resources and crash the application, creating a Denial of Service (DoS).
+
+**Q:** What is a Slowloris attack, and how do you configure socket timeouts in Node.js to defend against it?
+
+> **Answer:**
+> A Slowloris attack is a type of Denial of Service (DoS) attack where an attacker opens multiple connections to a server and sends request headers very slowly. This keeps the connections open, exhausting the server's maximum file descriptor or socket limit and blocking genuine users.
+> To defend against this, configure socket timeouts on the HTTP server instance: `server.headersTimeout` (timeout for reading headers) and `server.requestTimeout` (timeout for processing the entire request) to close slow, idle connections quickly.
+
+**Q:** How would you build a secure CI/CD pipeline that enforces dependency vulnerability checks, prevents credentials from leaking, and handles automatic secret rotations?
+
+> **Answer:**
+> To build a secure pipeline:
+> 1. **Enforce Audits**: Add a step in the pipeline that runs `npm audit` or Snyk. If high-severity vulnerabilities are found, fail the build and block the pull request.
+> 2. **Scan for Secrets**: Integrate scanner tools (like GitGuardian or Trufflehog) into the pre-commit or CI pipeline to detect if any developer has accidentally committed API keys or passwords.
+> 3. **Inject Secrets at Runtime**: Retrieve configuration settings and credentials dynamically from a secret vault (like HashiCorp Vault or AWS Secrets Manager) using secure environment variables.
+> 4. **Implement Rotation**: Configure your application to reload database connection credentials dynamically from the vault periodically without restarting the process, supporting zero-downtime secret rotations.
 
 ---
-Previous : [54_NodeJS_Internals.md] | Index : [00_index.md] | Next : [56_OWASP_Top_Risks.md]
+Previous : [54_NodeJS_Internals.md](54_NodeJS_Internals.md) | Index : [00_index.md](00_index.md) | Next : [56_OWASP_Top_Risks.md](56_OWASP_Top_Risks.md)

@@ -1,16 +1,6 @@
 # Worker Threads
 
-## What You Will Learn
-* Offloading CPU-bound tasks using the `worker_threads` module.
-* The differences between Worker Threads, Child Processes, and Clusters.
-* Communicating between parent and worker threads using `parentPort` and `MessagePort`.
-* Sharing memory using `SharedArrayBuffer` and managing race conditions with `Atomics`.
-* Building a basic, reusable Worker Thread Pool.
-
-## Why This Matters
 Node.js is single-threaded, which means executing heavy calculations (like image resizing, PDF rendering, or cryptography) on the main thread blocks the event loop, freezing all other client requests. Using `worker_threads` allows you to spawn native OS threads running isolated V8 engines to run heavy computations in parallel, keeping your main server responsive.
-
-## Theory
 
 ### Worker Threads vs. Child Processes
 * **Child Processes (e.g. `child_process`)**: Spawn completely new OS processes. Each process has its own isolated memory space, meaning data must be serialized and sent over slow Inter-Process Communication (IPC) channels.
@@ -123,28 +113,32 @@ else {
 
 ## Interview Questions
 
-### Beginner
-* **What is the purpose of the `worker_threads` module in Node.js?**
-  *Answer*: The `worker_threads` module allows Node.js to execute heavy CPU-bound JavaScript calculations concurrently on separate native threads, preventing them from blocking the main event loop.
+**Q:** What is the purpose of the `worker_threads` module in Node.js?
 
-### Intermediate
-* **What is the difference between a Worker Thread and a Child Process?**
-  *Answer*: A child process runs in a completely separate operating system process with its own isolated memory, requiring slow serialization (IPC) to pass data. A worker thread runs inside the same parent process, running an isolated V8 instance but capable of sharing memory directly using `SharedArrayBuffer`, which is much faster.
+> **Answer:**
+> The `worker_threads` module allows Node.js to execute heavy CPU-bound JavaScript calculations concurrently on separate native threads, preventing them from blocking the main event loop.
 
-### Advanced
-* **What are race conditions, and how does the `Atomics` object help you prevent them when sharing memory between threads?**
-  *Answer*: A race condition occurs when multiple threads attempt to read and write to the same shared memory address (`SharedArrayBuffer`) simultaneously, resulting in corrupted or unpredictable data. The `Atomics` object provides atomic execution operations (like `Atomics.add` or `Atomics.wait`). It guarantees that memory operations are completed entirely by one thread without interruption from other threads, preventing data corruption.
+**Q:** What is the difference between a Worker Thread and a Child Process?
 
-### Senior Architect
-* **How would you build a production-grade Worker Pool from scratch? Discuss worker initialization, task routing queues, and managing CPU throttling limits.**
-  *Answer*: To build a production-grade Worker Pool:
-  1. **Spawn Warm Workers**: Instantiate a fixed number of workers (typically matching the core count `os.cpus().length` to avoid CPU context-switching overhead) when the application starts, keeping them active ("warm").
-  2. **Implement Task Queue**: Maintain an array queue of pending CPU tasks in the parent process.
-  3. **Manage Worker States**: Track active and idle workers in a map. When a task is added:
-     - If an idle worker is available, assign the task to it using `worker.postMessage()`.
-     - If all workers are active, push the task to the queue.
-  4. **Handle Terminations**: Listen for worker crash events (`error` and `exit` events) and automatically spawn a new worker to replace the crashed one, keeping the pool capacity stable.
-  5. **Implement Timeouts**: Add execution timeouts to tasks to terminate and recreate workers that get stuck in infinite loops, protecting server resources.
+> **Answer:**
+> A child process runs in a completely separate operating system process with its own isolated memory, requiring slow serialization (IPC) to pass data. A worker thread runs inside the same parent process, running an isolated V8 instance but capable of sharing memory directly using `SharedArrayBuffer`, which is much faster.
+
+**Q:** What are race conditions, and how does the `Atomics` object help you prevent them when sharing memory between threads?
+
+> **Answer:**
+> A race condition occurs when multiple threads attempt to read and write to the same shared memory address (`SharedArrayBuffer`) simultaneously, resulting in corrupted or unpredictable data. The `Atomics` object provides atomic execution operations (like `Atomics.add` or `Atomics.wait`). It guarantees that memory operations are completed entirely by one thread without interruption from other threads, preventing data corruption.
+
+**Q:** How would you build a production-grade Worker Pool from scratch? Discuss worker initialization, task routing queues, and managing CPU throttling limits.
+
+> **Answer:**
+> To build a production-grade Worker Pool:
+> 1. **Spawn Warm Workers**: Instantiate a fixed number of workers (typically matching the core count `os.cpus().length` to avoid CPU context-switching overhead) when the application starts, keeping them active ("warm").
+> 2. **Implement Task Queue**: Maintain an array queue of pending CPU tasks in the parent process.
+> 3. **Manage Worker States**: Track active and idle workers in a map. When a task is added:
+> - If an idle worker is available, assign the task to it using `worker.postMessage()`.
+> - If all workers are active, push the task to the queue.
+> 4. **Handle Terminations**: Listen for worker crash events (`error` and `exit` events) and automatically spawn a new worker to replace the crashed one, keeping the pool capacity stable.
+> 5. **Implement Timeouts**: Add execution timeouts to tasks to terminate and recreate workers that get stuck in infinite loops, protecting server resources.
 
 ---
-Previous : [47_Streams_Deep_Dive.md] | Index : [00_index.md] | Next : [49_Cluster_Module.md]
+Previous : [47_Streams_Deep_Dive.md](47_Streams_Deep_Dive.md) | Index : [00_index.md](00_index.md) | Next : [49_Cluster_Module.md](49_Cluster_Module.md)

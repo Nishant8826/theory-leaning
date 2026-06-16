@@ -1,17 +1,6 @@
 # MongoDB
 
-## What You Will Learn
-* The difference between NoSQL Document databases and Relational databases.
-* JSON and BSON formats in MongoDB.
-* Establishing connection pools using the native MongoDB driver.
-* Executing CRUD operations without an ODM wrapper.
-* Optimizing query performance using single-field and compound indexes.
-* Understanding Write Concerns and Read Preferences.
-
-## Why This Matters
 MongoDB is the most popular NoSQL database in the Node.js ecosystem. While ODMs like Mongoose are widely used, they add layer overhead. Understanding how to use the native MongoDB driver allows you to write high-performance database queries, manage connection pools directly, and design optimal indexes to prevent slow queries in production.
-
-## Theory
 
 ### NoSQL Documents vs. Relational Tables
 * **Relational Databases (e.g. PostgreSQL)**: Store data in rigid, tabular rows and columns. They require pre-defined schemas and use foreign keys to join tables together.
@@ -162,26 +151,41 @@ executeCrudDemo();
 
 ## Interview Questions
 
-### Beginner
-* **What is BSON and how does it relate to JSON in MongoDB?**
-  *Answer*: BSON stands for Binary JSON. It is the binary serialization format MongoDB uses internally to store documents. BSON extends JSON by supporting additional data types (like `Date`, `ObjectId`, and raw binary buffers) and is optimized for fast parsing and space efficiency.
+**Q:** What is BSON and how does it relate to JSON in MongoDB?
 
-### Intermediate
-* **Why should you use a connection pool, and how do you configure it in the native MongoDB driver?**
-  *Answer*: A connection pool maintains a set of persistent TCP connections to the database. This allows the application to reuse connections across multiple queries, eliminating the latency of opening and closing connections for each query. In the native MongoDB driver, you configure the pool size by passing `maxPoolSize` and `minPoolSize` settings in the `MongoClient` options during initialization.
+> **Answer:**
+> BSON stands for Binary JSON. It is the binary serialization format MongoDB uses internally to store documents. BSON extends JSON by supporting additional data types (like `Date`, `ObjectId`, and raw binary buffers) and is optimized for fast parsing and space efficiency.
 
-### Advanced
-* **Explain the difference between a Collection Scan (COLLSCAN) and an Index Scan (IXSCAN) in MongoDB. How do you identify which one a query is using?**
-  *Answer*: A Collection Scan (COLLSCAN) occurs when MongoDB must search through every document in a collection to find a match. This is slow and CPU-intensive for large collections. An Index Scan (IXSCAN) occurs when MongoDB uses an index to locate documents quickly, similar to using an index in a textbook. 
-  You can identify which scan a query uses by appending `.explain('executionStats')` to your query chain. The output details the query plan and shows either `COLLSCAN` or `IXSCAN` in the winning plan stage.
+**Q:** Why should you use a connection pool, and how do you configure it in the native MongoDB driver?
 
-### Senior Architect
-* **Discuss how Write Concerns (`w: 1` vs `w: majority`) and Journaling (`j: true`) impact data durability and write performance in a MongoDB Replica Set.**
-  *Answer*: 
-  * **`w: 1`**: Confirm write operations as soon as the primary node writes the data to memory. This is fast, but if the primary crashes before the data replicates to other nodes, the data is lost.
-  * **`w: majority`**: Confirms write operations only after the data has been replicated to a majority of the replica set nodes. This guarantees high durability but increases write latency because the application must wait for network acknowledgments from other nodes.
-  * **`j: true`**: Confirms write operations only after the data has been written to the disk journal file. This protects the data from corruption if the database process crashes or loses power, but adds disk I/O overhead.
-  For high-availability transactions, use `w: majority` and `j: true` to guarantee durability. For high-volume log ingestion where occasional data loss is acceptable, use `w: 1` and disable disk journaling confirmations to maximize write throughput.
+> **Answer:**
+> A connection pool maintains a set of persistent TCP connections to the database. This allows the application to reuse connections across multiple queries, eliminating the latency of opening and closing connections for each query. In the native MongoDB driver, you configure the pool size by passing `maxPoolSize` and `minPoolSize` settings in the `MongoClient` options during initialization.
+
+**Q:** Explain the difference between a Collection Scan (COLLSCAN) and an Index Scan (IXSCAN) in MongoDB. How do you identify which one a query is using?
+
+> **Answer:**
+> A Collection Scan (COLLSCAN) occurs when MongoDB must search through every document in a collection to find a match. This is slow and CPU-intensive for large collections. An Index Scan (IXSCAN) occurs when MongoDB uses an index to locate documents quickly, similar to using an index in a textbook.
+> You can identify which scan a query uses by appending `.explain('executionStats')` to your query chain. The output details the query plan and shows either `COLLSCAN` or `IXSCAN` in the winning plan stage.
+
+**Q:** Discuss how Write Concerns (`w: 1` vs `w: majority`) and Journaling (`j: true`) impact data durability and write performance in a MongoDB Replica Set.
+
+> **Answer:**
+> 
+
+**Q:** `w: 1`
+
+> **Answer:**
+> 
+
+**Q:** `w: majority`
+
+> **Answer:**
+> 
+
+**Q:** `j: true`
+
+> **Answer:**
+> For high-availability transactions, use `w: majority` and `j: true` to guarantee durability. For high-volume log ingestion where occasional data loss is acceptable, use `w: 1` and disable disk journaling confirmations to maximize write throughput.
 
 ---
-Previous : [36_Sessions.md] | Index : [00_index.md] | Next : [38_Mongoose.md]
+Previous : [36_Sessions.md](36_Sessions.md) | Index : [00_index.md](00_index.md) | Next : [38_Mongoose.md](38_Mongoose.md)

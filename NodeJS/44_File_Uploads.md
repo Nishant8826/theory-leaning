@@ -1,16 +1,6 @@
 # File Uploads
 
-## What You Will Learn
-* How file uploads are transmitted over HTTP using `multipart/form-data` encoding.
-* Security risks: Denial of Service (DoS) and Remote Code Execution (RCE) vulnerabilities.
-* Parsing file uploads in Express using the Multer middleware.
-* Validating file sizes, extensions, and MIME types.
-* Streaming file uploads directly to Cloud Object Storage (like AWS S3).
-
-## Why This Matters
 Handling file uploads incorrectly is a major security risk. If you allow clients to upload files of any size without validation, they can exhaust your server's disk space, causing a Denial of Service (DoS). If you allow them to upload executable scripts (like `.js` or `.php`) to a folder served by your web server, they can execute code on your server (Remote Code Execution - RCE). Proper file upload validation and storage are critical for security.
-
-## Theory
 
 ### Multipart/form-data Encoding
 Standard JSON APIs transmit payload data using `application/json` format. However, JSON is text-based and inefficient for transmitting binary files.
@@ -175,31 +165,35 @@ app.listen(3000, () => console.log('File upload server running on port 3000'));
 
 ## Interview Questions
 
-### Beginner
-* **What HTTP encoding format is used to upload files, and why is it preferred over JSON?**
-  *Answer*: File uploads use the `multipart/form-data` encoding format. It is preferred over JSON because JSON is a text-based format that cannot transmit raw binary data efficiently. `multipart/form-data` encodes the request body in multiple parts using boundary strings, allowing binary files and text fields to be transmitted efficiently in a single request.
+**Q:** What HTTP encoding format is used to upload files, and why is it preferred over JSON?
 
-### Intermediate
-* **What is a Remote Code Execution (RCE) vulnerability in file uploads, and how do you prevent it?**
-  *Answer*: An RCE vulnerability occurs when an attacker uploads an executable script (such as a `.js` or `.php` file) to a public folder on your server. If the web server is configured to serve and execute files in that folder, the attacker can execute code on your server. 
-  To prevent it, rename all uploaded files to random strings, validate that only safe file extensions and MIME types are allowed, and configure your web server (e.g. Nginx) to disable execution permissions in the upload directory.
+> **Answer:**
+> File uploads use the `multipart/form-data` encoding format. It is preferred over JSON because JSON is a text-based format that cannot transmit raw binary data efficiently. `multipart/form-data` encodes the request body in multiple parts using boundary strings, allowing binary files and text fields to be transmitted efficiently in a single request.
 
-### Advanced
-* **Why should you stream file uploads directly to AWS S3 instead of writing them to a local temporary folder first?**
-  *Answer*: Storing files locally first creates performance and security issues:
-  1. Writing to a local disk is a slow, blocking I/O operation.
-  2. If multiple users upload files concurrently, it can fill up the local disk space, causing a Denial of Service (DoS) crash.
-  3. In ephemeral container environments (like Kubernetes pods), local storage is temporary and lost when the container restarts.
-  Streaming files directly to S3 as the data bytes arrive in chunks keeps memory and disk utilization low, improving scalability.
+**Q:** What is a Remote Code Execution (RCE) vulnerability in file uploads, and how do you prevent it?
 
-### Senior Architect
-* **How would you build a highly secure file upload scanning pipeline that scans uploaded files for malware and viruses before making them publicly available in an S3 bucket?**
-  *Answer*: To build a secure file upload scanning pipeline:
-  1. Set up an S3 bucket with two main directories: `/quarantine` (private) and `/public` (publicly accessible).
-  2. Configure the Node.js application to stream uploads directly to the `/quarantine` folder in S3, making the file private by default.
-  3. Configure an S3 event trigger that executes an AWS Lambda function whenever a new file is uploaded to the `/quarantine` folder.
-  4. The Lambda function runs an antivirus engine (like ClamAV) to scan the file's binary content.
-  5. If the scan passes, the Lambda function moves the file from `/quarantine` to the `/public` folder, making it available to clients. If the scan fails, the Lambda function deletes the file and alerts security systems, protecting users from malware.
+> **Answer:**
+> An RCE vulnerability occurs when an attacker uploads an executable script (such as a `.js` or `.php` file) to a public folder on your server. If the web server is configured to serve and execute files in that folder, the attacker can execute code on your server.
+> To prevent it, rename all uploaded files to random strings, validate that only safe file extensions and MIME types are allowed, and configure your web server (e.g. Nginx) to disable execution permissions in the upload directory.
+
+**Q:** Why should you stream file uploads directly to AWS S3 instead of writing them to a local temporary folder first?
+
+> **Answer:**
+> Storing files locally first creates performance and security issues:
+> 1. Writing to a local disk is a slow, blocking I/O operation.
+> 2. If multiple users upload files concurrently, it can fill up the local disk space, causing a Denial of Service (DoS) crash.
+> 3. In ephemeral container environments (like Kubernetes pods), local storage is temporary and lost when the container restarts.
+> Streaming files directly to S3 as the data bytes arrive in chunks keeps memory and disk utilization low, improving scalability.
+
+**Q:** How would you build a highly secure file upload scanning pipeline that scans uploaded files for malware and viruses before making them publicly available in an S3 bucket?
+
+> **Answer:**
+> To build a secure file upload scanning pipeline:
+> 1. Set up an S3 bucket with two main directories: `/quarantine` (private) and `/public` (publicly accessible).
+> 2. Configure the Node.js application to stream uploads directly to the `/quarantine` folder in S3, making the file private by default.
+> 3. Configure an S3 event trigger that executes an AWS Lambda function whenever a new file is uploaded to the `/quarantine` folder.
+> 4. The Lambda function runs an antivirus engine (like ClamAV) to scan the file's binary content.
+> 5. If the scan passes, the Lambda function moves the file from `/quarantine` to the `/public` folder, making it available to clients. If the scan fails, the Lambda function deletes the file and alerts security systems, protecting users from malware.
 
 ---
-Previous : [43_Rate_Limiting.md] | Index : [00_index.md] | Next : [45_Email_Services.md]
+Previous : [43_Rate_Limiting.md](43_Rate_Limiting.md) | Index : [00_index.md](00_index.md) | Next : [45_Email_Services.md](45_Email_Services.md)

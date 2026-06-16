@@ -1,15 +1,6 @@
 # Routing
 
-## What You Will Learn
-* Defining Express route paths using strings, string patterns, and regular expressions.
-* Constructing complex route parameters and nested path configurations.
-* Creating chainable route handlers using `app.route()`.
-* Chaining multiple controller callbacks on a single route.
-
-## Why This Matters
 Routing defines how your API exposes resources to the outside world. If you do not understand routing parameters, you will write duplicate routes or struggle to validate variable route segments. Designing semantic, clean routes keeps your API structured and easy for clients to consume.
-
-## Theory
 
 ### Route Path Matchers
 Express routes match HTTP requests to controller functions based on paths. You can define route paths in three ways:
@@ -139,40 +130,44 @@ app.listen(3000, () => console.log('Routing server running on port 3000'));
 
 ## Interview Questions
 
-### Beginner
-* **How do you define route parameters in Express and retrieve their values?**
-  *Answer*: Route parameters are defined by prefixing a path segment with a colon (e.g. `/users/:id`). The values are parsed by Express and accessed via the `req.params` object (e.g. `req.params.id`).
+**Q:** How do you define route parameters in Express and retrieve their values?
 
-### Intermediate
-* **What is the purpose of `app.route()` and what is its benefit?**
-  *Answer*: `app.route()` returns a single instance of a route targeting a specific path, allowing you to chain different HTTP method handlers (GET, POST, PUT, DELETE) on that path. This prevents path string duplication and organizes CRUD routes cleanly.
+> **Answer:**
+> Route parameters are defined by prefixing a path segment with a colon (e.g. `/users/:id`). The values are parsed by Express and accessed via the `req.params` object (e.g. `req.params.id`).
 
-### Advanced
-* **How do you restrict an Express route parameter to match only numeric values, and what error does Express return if a client passes string characters instead?**
-  *Answer*: You can add a regular expression constraint inside parentheses directly after the parameter name (e.g., `/users/:id(\\d+)`). If a client passes non-numeric characters (e.g., `/users/abc`), Express will bypass this route definition and continue searching the routing stack. If no other route matches, the client receives a standard `404 Not Found` response.
+**Q:** What is the purpose of `app.route()` and what is its benefit?
 
-### Senior Architect
-* **How would you build a dynamic route auditing system in Express that automatically maps all active routes to a database, tracking registration order and regex patterns for service discovery?**
-  *Answer*: To build a route auditing system:
-  1. Inspect the internal routing table array `app._router.stack` after all routes have been registered (typically during the app bootstrap phase).
-  2. Iterate recursively through the stack entries to identify layers containing routes and sub-routers:
-     ```javascript
-     app._router.stack.forEach((layer) => {
-       if (layer.route) {
-         // Direct route
-         const path = layer.route.path;
-         const methods = Object.keys(layer.route.methods);
-         console.log(`Route: ${methods.join(',')} ${path}`);
-       } else if (layer.name === 'router') {
-         // Sub-router
-         layer.handle.stack.forEach((subLayer) => {
-           // Recursively extract sub-routes
-         });
-       }
-     });
-     ```
-  3. Extract the compiled regular expression of each route (`layer.regexp`).
-  4. Write these mappings to a database or expose them via a `/routes` endpoint to enable service discovery, monitoring, and request auditing.
+> **Answer:**
+> `app.route()` returns a single instance of a route targeting a specific path, allowing you to chain different HTTP method handlers (GET, POST, PUT, DELETE) on that path. This prevents path string duplication and organizes CRUD routes cleanly.
+
+**Q:** How do you restrict an Express route parameter to match only numeric values, and what error does Express return if a client passes string characters instead?
+
+> **Answer:**
+> You can add a regular expression constraint inside parentheses directly after the parameter name (e.g., `/users/:id(\\d+)`). If a client passes non-numeric characters (e.g., `/users/abc`), Express will bypass this route definition and continue searching the routing stack. If no other route matches, the client receives a standard `404 Not Found` response.
+
+**Q:** How would you build a dynamic route auditing system in Express that automatically maps all active routes to a database, tracking registration order and regex patterns for service discovery?
+
+> **Answer:**
+> To build a route auditing system:
+> 1. Inspect the internal routing table array `app._router.stack` after all routes have been registered (typically during the app bootstrap phase).
+> 2. Iterate recursively through the stack entries to identify layers containing routes and sub-routers:
+> ```javascript
+> app._router.stack.forEach((layer) => {
+> if (layer.route) {
+> // Direct route
+> const path = layer.route.path;
+> const methods = Object.keys(layer.route.methods);
+> console.log(`Route: ${methods.join(',')} ${path}`);
+> } else if (layer.name === 'router') {
+> // Sub-router
+> layer.handle.stack.forEach((subLayer) => {
+> // Recursively extract sub-routes
+> });
+> }
+> });
+> ```
+> 3. Extract the compiled regular expression of each route (`layer.regexp`).
+> 4. Write these mappings to a database or expose them via a `/routes` endpoint to enable service discovery, monitoring, and request auditing.
 
 ---
-Previous : [25_Middleware.md] | Index : [00_index.md] | Next : [27_MVC_Architecture.md]
+Previous : [25_Middleware.md](25_Middleware.md) | Index : [00_index.md](00_index.md) | Next : [27_MVC_Architecture.md](27_MVC_Architecture.md)

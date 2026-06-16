@@ -1,15 +1,7 @@
 # Introduction to Node.js
 
-## What You Will Learn
-* The historical context of why Node.js was created.
-* Node's core architecture from first principles (V8, Libuv, C++ bindings).
-* Understanding the non-blocking asynchronous execution model compared to multi-threaded synchronous execution.
-* Identifying appropriate and inappropriate use cases for Node.js.
-
-## Why This Matters
 As a backend engineer, you must understand the foundation of your runtime environment. Knowing the internals of Node.js prevents common pitfalls, such as blocking the single main execution thread, and helps you make informed architectural decisions on when to use Node.js and when to select a different tool.
 
-## Theory
 Before Node.js, JavaScript was confined to running inside web browsers. Ryan Dahl created Node.js in 2009 to solve a key problem: traditional web servers (like Apache) allocated a dedicated thread per connection. Under heavy load, these servers spent excessive memory context-switching and waiting on database/network I/O.
 
 Ryan Dahl combined:
@@ -79,7 +71,6 @@ try {
 }
 console.log('3. Moving to next task.\n');
 
-
 // --- NON-BLOCKING (Asynchronous) ---
 console.log('1. Starting non-blocking read...');
 // The main execution thread requests the read and immediately continues to line 22
@@ -100,21 +91,25 @@ console.log('2. Moving to next task (Main thread free).');
 
 ## Interview Questions
 
-### Beginner
-* **What is Node.js and why is it single-threaded?**
-  *Answer*: Node.js is an open-source runtime environment that compiles JavaScript to machine code using Google's V8 engine and wraps it with C++ bindings to execute outside the browser. It uses a single thread for JS execution to simplify programming models, avoiding lock contention and race conditions. Concurrency is handled by offloading I/O blocking tasks to Libuv and the OS kernel.
+**Q:** What is Node.js and why is it single-threaded?
 
-### Intermediate
-* **How does Node.js handle concurrency if it only runs on one thread?**
-  *Answer*: It utilizes an Event Loop and non-blocking I/O. When an asynchronous operation is triggered (like fetching data over a socket), Node delegates this to the OS kernel or Libuv's thread pool. The single JS thread continues running other code. When the operation completes, the OS or Libuv informs the Event Loop, placing the registered callback in the queue to be executed when the JS thread is idle.
+> **Answer:**
+> Node.js is an open-source runtime environment that compiles JavaScript to machine code using Google's V8 engine and wraps it with C++ bindings to execute outside the browser. It uses a single thread for JS execution to simplify programming models, avoiding lock contention and race conditions. Concurrency is handled by offloading I/O blocking tasks to Libuv and the OS kernel.
 
-### Advanced
-* **What is the difference between CPU-bound and I/O-bound tasks in Node.js, and how should a senior engineer handle CPU-bound tasks?**
-  *Answer*: I/O-bound tasks wait on external hardware or network events (e.g., database queries or file reading), which Node.js excels at. CPU-bound tasks involve heavy calculations that block the main thread. A senior engineer handles CPU-bound tasks by using Node's `worker_threads` module (which spawns native OS threads running isolated V8 instances) or offloading the task to a message broker (e.g., RabbitMQ) connected to specialized worker services.
+**Q:** How does Node.js handle concurrency if it only runs on one thread?
 
-### Senior Architect
-* **Discuss Ryan Dahl's original design goals for Node.js and how Apache's thread-per-connection scaling issues drove the creation of Libuv.**
-  *Answer*: Ryan Dahl aimed to design a web application framework where I/O was handled asynchronously, preventing blocking. Apache's model (one OS thread per connection) scales poorly due to context-switching overhead and memory consumption (each thread consumes ~1-2 MB of memory stack space). To support thousands of concurrent client connections without scaling hardware lineally, Dahl integrated V8 with Libuv. Libuv abstracts platform-specific asynchronous APIs (`epoll` on Linux, `kqueue` on macOS, `IOCP` on Windows) to create a single interface that schedules executions on a single main loop thread.
+> **Answer:**
+> It utilizes an Event Loop and non-blocking I/O. When an asynchronous operation is triggered (like fetching data over a socket), Node delegates this to the OS kernel or Libuv's thread pool. The single JS thread continues running other code. When the operation completes, the OS or Libuv informs the Event Loop, placing the registered callback in the queue to be executed when the JS thread is idle.
+
+**Q:** What is the difference between CPU-bound and I/O-bound tasks in Node.js, and how should a senior engineer handle CPU-bound tasks?
+
+> **Answer:**
+> I/O-bound tasks wait on external hardware or network events (e.g., database queries or file reading), which Node.js excels at. CPU-bound tasks involve heavy calculations that block the main thread. A senior engineer handles CPU-bound tasks by using Node's `worker_threads` module (which spawns native OS threads running isolated V8 instances) or offloading the task to a message broker (e.g., RabbitMQ) connected to specialized worker services.
+
+**Q:** Discuss Ryan Dahl's original design goals for Node.js and how Apache's thread-per-connection scaling issues drove the creation of Libuv.
+
+> **Answer:**
+> Ryan Dahl aimed to design a web application framework where I/O was handled asynchronously, preventing blocking. Apache's model (one OS thread per connection) scales poorly due to context-switching overhead and memory consumption (each thread consumes ~1-2 MB of memory stack space). To support thousands of concurrent client connections without scaling hardware lineally, Dahl integrated V8 with Libuv. Libuv abstracts platform-specific asynchronous APIs (`epoll` on Linux, `kqueue` on macOS, `IOCP` on Windows) to create a single interface that schedules executions on a single main loop thread.
 
 ---
-Previous : N/A | Index : [00_index.md] | Next : [02_NodeJS_Environment_Setup.md]
+Previous : N/A | Index : [00_index.md](00_index.md) | Next : [02_NodeJS_Environment_Setup.md](02_NodeJS_Environment_Setup.md)

@@ -1,15 +1,6 @@
 # CommonJS
 
-## What You Will Learn
-* The history and structure of the CommonJS (CJS) module system.
-* The internal workings of the `require()` resolver algorithm.
-* How the module cache (`require.cache`) works.
-* The differences between exporting with `module.exports` and `exports`.
-
-## Why This Matters
 CommonJS is Node.js's legacy module system and remains widely used in millions of legacy libraries. Understanding how `require()` resolves paths and caches instances prevents bugs where configuration changes are shared across file boundaries, or where incorrect paths cause deployment crashes.
-
-## Theory
 
 ### CommonJS Core Rules
 * **Synchronous Loading**: CommonJS files are loaded synchronously. When you call `require('./db')`, the main thread blocks until the file is read from disk, compiled, and executed.
@@ -100,31 +91,35 @@ console.log('db1 and db3 are reference equal:', db1 === db3); // false
 
 ## Interview Questions
 
-### Beginner
-* **How do you export and import modules in CommonJS?**
-  *Answer*: In CommonJS, you import modules using the `require('module-name')` function and export them by assigning properties or objects to `module.exports` (e.g. `module.exports = { myFunc }`).
+**Q:** How do you export and import modules in CommonJS?
 
-### Intermediate
-* **Explain how `require.cache` works and how it affects module instances.**
-  *Answer*: When a module is loaded via `require()`, Node.js cache-stores the evaluated module's exports in a key-value object `require.cache`, using the absolute file path as the key. Subsequent imports of the same file return the cached exports directly, acting as a singleton across the application.
+> **Answer:**
+> In CommonJS, you import modules using the `require('module-name')` function and export them by assigning properties or objects to `module.exports` (e.g. `module.exports = { myFunc }`).
 
-### Advanced
-* **Walk through the resolution steps when `require('my-library')` is executed.**
-  *Answer*: When `require('my-library')` runs:
-  1. Node.js checks if `my-library` is a native core module.
-  2. If not, it checks the current directory for a directory named `node_modules/my-library`.
-  3. If not found, it traverses up parent directories, checking for `node_modules/my-library` at each level until it reaches the root directory.
-  4. Once found, it checks `node_modules/my-library/package.json` for the `"main"` property to identify the entrypoint. If the file or property does not exist, it falls back to `index.js`, `index.json`, or `index.node`.
-  5. If the directory traversal completes without finding the module, it throws a `MODULE_NOT_FOUND` error.
+**Q:** Explain how `require.cache` works and how it affects module instances.
 
-### Senior Architect
-* **Discuss the architectural trade-offs of CommonJS's synchronous loading design in high-throughput server applications. What issues arise when clearing `require.cache` dynamically to implement hot-reloading?**
-  *Answer*: CommonJS loads modules synchronously, which works well on the server during startup because files are loaded from local disk. However, if modules are required dynamically during active client requests (e.g., inside an HTTP route handler), the event loop will block while reading the files from disk, degrading request throughput.
-  
-  Implementing dynamic hot-reloading by clearing `require.cache` presents major risks:
-  1. It can create memory leaks because other active modules may still hold references to the old module instances, preventing garbage collection.
-  2. It can cause state mismatches if the reloaded module references global variables or registers event emitters that get duplicate-bound.
-  3. It invalidates V8 hidden classes and inline caches for the reloaded code, forcing deoptimization and slowing down code execution.
+> **Answer:**
+> When a module is loaded via `require()`, Node.js cache-stores the evaluated module's exports in a key-value object `require.cache`, using the absolute file path as the key. Subsequent imports of the same file return the cached exports directly, acting as a singleton across the application.
+
+**Q:** Walk through the resolution steps when `require('my-library')` is executed.
+
+> **Answer:**
+> When `require('my-library')` runs:
+> 1. Node.js checks if `my-library` is a native core module.
+> 2. If not, it checks the current directory for a directory named `node_modules/my-library`.
+> 3. If not found, it traverses up parent directories, checking for `node_modules/my-library` at each level until it reaches the root directory.
+> 4. Once found, it checks `node_modules/my-library/package.json` for the `"main"` property to identify the entrypoint. If the file or property does not exist, it falls back to `index.js`, `index.json`, or `index.node`.
+> 5. If the directory traversal completes without finding the module, it throws a `MODULE_NOT_FOUND` error.
+
+**Q:** Discuss the architectural trade-offs of CommonJS's synchronous loading design in high-throughput server applications. What issues arise when clearing `require.cache` dynamically to implement hot-reloading?
+
+> **Answer:**
+> CommonJS loads modules synchronously, which works well on the server during startup because files are loaded from local disk. However, if modules are required dynamically during active client requests (e.g., inside an HTTP route handler), the event loop will block while reading the files from disk, degrading request throughput.
+> 
+> Implementing dynamic hot-reloading by clearing `require.cache` presents major risks:
+> 1. It can create memory leaks because other active modules may still hold references to the old module instances, preventing garbage collection.
+> 2. It can cause state mismatches if the reloaded module references global variables or registers event emitters that get duplicate-bound.
+> 3. It invalidates V8 hidden classes and inline caches for the reloaded code, forcing deoptimization and slowing down code execution.
 
 ---
-Previous : [09_Modules.md] | Index : [00_index.md] | Next : [11_ES_Modules.md]
+Previous : [09_Modules.md](09_Modules.md) | Index : [00_index.md](00_index.md) | Next : [11_ES_Modules.md](11_ES_Modules.md)

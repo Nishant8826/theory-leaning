@@ -1,17 +1,6 @@
 # RabbitMQ
 
-## What You Will Learn
-* The Advanced Message Queuing Protocol (AMQP) core architecture.
-* The roles of Producers, Exchanges, Bindings, Queues, and Consumers.
-* Configuring Exchange Types: Direct, Fanout, Topic, and Headers.
-* Connecting to RabbitMQ in Node.js using the `amqplib` library.
-* Message Acknowledgments (`ack`, `nack`, `reject`) to prevent data loss.
-* Implementing Dead Letter Exchanges (DLX) for failed messages.
-
-## Why This Matters
 For high-throughput applications, you need a message broker that supports complex message routing rules and guarantees delivery. RabbitMQ is an enterprise-grade AMQP message broker. If you do not configure message acknowledgments correctly, network drops or crashed consumer processes can cause lost or duplicated messages, resulting in data corruption.
-
-## Theory
 
 ### AMQP Architecture Components
 RabbitMQ is built on the **AMQP** protocol. It separates message publishers from message queues using **Exchanges**:
@@ -164,28 +153,44 @@ startConsumer();
 
 ## Interview Questions
 
-### Beginner
-* **What is RabbitMQ and what protocol does it use?**
-  *Answer*: RabbitMQ is an open-source message broker that routes and queues messages. It is built on the **AMQP** (Advanced Message Queuing Protocol) standard.
+**Q:** What is RabbitMQ and what protocol does it use?
 
-### Intermediate
-* **What is the difference between Direct and Topic exchanges in RabbitMQ?**
-  *Answer*: A **Direct** exchange routes messages to queues based on an exact match of the routing key. A **Topic** exchange routes messages using wildcard patterns: `*` matches exactly one word, and `#` matches zero or more words, supporting complex routing.
+> **Answer:**
+> RabbitMQ is an open-source message broker that routes and queues messages. It is built on the **AMQP** (Advanced Message Queuing Protocol) standard.
 
-### Advanced
-* **What are message acknowledgments in RabbitMQ, and what is the difference between `ack`, `nack`, and `reject`?**
-  *Answer*: Acknowledgments are confirmations sent by consumers to RabbitMQ:
-  * **`ack`**: Confirms success; RabbitMQ deletes the message.
-  * **`nack`**: Signals failure; can reject multiple messages and optionally requeue them.
-  * **`reject`**: Signals failure for a single message, optionally requeuing it or routing it to a Dead Letter Queue (DLQ).
+**Q:** What is the difference between Direct and Topic exchanges in RabbitMQ?
 
-### Senior Architect
-* **How would you architecture a high-availability RabbitMQ cluster that guarantees message persistence and prevents data loss during broker failovers?**
-  *Answer*: To ensure high availability and durability:
-  1. **Quorum Queues**: Configure queues as **Quorum Queues** instead of classic queues. Quorum queues replicate data across multiple cluster nodes using the Raft consensus algorithm, protecting data if a broker crashes.
-  2. **Configure Publisher Confirms**: Enable publisher confirms on the channel (`channel.confirmSelect()`). This ensures the broker sends an acknowledgment to the producer once the message is written to disk, preventing data loss in transit.
-  3. **Persist Messages**: Set `persistent: true` in publishing options, and set `durable: true` when declaring exchanges and queues to ensure they survive broker restarts.
-  4. **Connection Heartbeats**: Configure connection heartbeats to detect network drops and automatically reconnect.
+> **Answer:**
+> A **Direct** exchange routes messages to queues based on an exact match of the routing key. A **Topic** exchange routes messages using wildcard patterns: `*` matches exactly one word, and `#` matches zero or more words, supporting complex routing.
+
+**Q:** What are message acknowledgments in RabbitMQ, and what is the difference between `ack`, `nack`, and `reject`?
+
+> **Answer:**
+> Acknowledgments are confirmations sent by consumers to RabbitMQ:
+
+**Q:** `ack`
+
+> **Answer:**
+> 
+
+**Q:** `nack`
+
+> **Answer:**
+> 
+
+**Q:** `reject`
+
+> **Answer:**
+> 
+
+**Q:** How would you architecture a high-availability RabbitMQ cluster that guarantees message persistence and prevents data loss during broker failovers?
+
+> **Answer:**
+> To ensure high availability and durability:
+> 1. **Quorum Queues**: Configure queues as **Quorum Queues** instead of classic queues. Quorum queues replicate data across multiple cluster nodes using the Raft consensus algorithm, protecting data if a broker crashes.
+> 2. **Configure Publisher Confirms**: Enable publisher confirms on the channel (`channel.confirmSelect()`). This ensures the broker sends an acknowledgment to the producer once the message is written to disk, preventing data loss in transit.
+> 3. **Persist Messages**: Set `persistent: true` in publishing options, and set `durable: true` when declaring exchanges and queues to ensure they survive broker restarts.
+> 4. **Connection Heartbeats**: Configure connection heartbeats to detect network drops and automatically reconnect.
 
 ---
-Previous : [70_Event_Driven_Architecture.md] | Index : [00_index.md] | Next : [72_Kafka.md]
+Previous : [70_Event_Driven_Architecture.md](70_Event_Driven_Architecture.md) | Index : [00_index.md](00_index.md) | Next : [72_Kafka.md](72_Kafka.md)

@@ -1,16 +1,6 @@
 # Mongoose
 
-## What You Will Learn
-* What an Object Document Mapper (ODM) is and its performance overhead.
-* Defining Mongoose Schemas, Models, and validation rules.
-* Working with Mongoose Hooks (pre-save, post-save, pre-validate).
-* Optimizing query performance using `.lean()` and select projections.
-* Relational joins in MongoDB using `.populate()`.
-
-## Why This Matters
 Mongoose is the standard ODM for MongoDB in Node.js. It simplifies development by enforcing schemas and validation. However, Mongoose wraps query results in complex JavaScript Document objects containing virtuals, getters, setters, and state tracking. This overhead can slow down read operations. Knowing when to use optimizations like `.lean()` is key to building high-performance APIs.
-
-## Theory
 
 ### What is an ODM?
 An **Object Document Mapper (ODM)** is an abstraction layer that maps application objects (like JavaScript classes) to database documents. Mongoose provides:
@@ -135,27 +125,31 @@ exports.getUsers = async (req, res, next) => {
 
 ## Interview Questions
 
-### Beginner
-* **What is Mongoose and why is it used?**
-  *Answer*: Mongoose is an Object Document Mapper (ODM) for MongoDB and Node.js. It is used to enforce schema validation, define model constraints, and run lifecycle hooks (like pre-save logic) on MongoDB's schema-less collections.
+**Q:** What is Mongoose and why is it used?
 
-### Intermediate
-* **What is Mongoose middleware (hooks), and when would you use a `pre('save')` hook?**
-  *Answer*: Mongoose hooks are functions that run automatically before or after specific lifecycle events (like save, validate, or delete). You use a `pre('save')` hook to perform tasks automatically before writing data to the database, such as hashing passwords or generating slug fields.
+> **Answer:**
+> Mongoose is an Object Document Mapper (ODM) for MongoDB and Node.js. It is used to enforce schema validation, define model constraints, and run lifecycle hooks (like pre-save logic) on MongoDB's schema-less collections.
 
-### Advanced
-* **Explain how Mongoose's `.lean()` option improves application performance. What are the limitations of using it?**
-  *Answer*: By default, Mongoose wraps query results in complex Document objects containing virtuals, change-trackers, and custom methods. The `.lean()` method bypasses this wrapping step, returning plain JavaScript objects instead. This improves query performance up to 4x and reduces memory overhead. 
-  The limitation is that the returned objects are read-only; they do not support Mongoose features like virtuals, custom methods, change tracking, or calling `.save()`.
+**Q:** What is Mongoose middleware (hooks), and when would you use a `pre('save')` hook?
 
-### Senior Architect
-* **In a high-throughput read-heavy API, explain why Mongoose's `.populate()` method can cause severe database bottlenecks, and discuss how you optimize relational querying in MongoDB.**
-  *Answer*: Mongoose's `.populate()` method does not perform join operations at the database level (since MongoDB lacks native relational joins). Instead, Mongoose executes a separate `find()` query behind the scenes for every populated reference ID returned in the original query. If you query 100 documents and populate 2 fields on each, Mongoose can execute up to 201 database queries, degrading API latency.
-  
-  To optimize relational queries:
-  1. Use MongoDB's native **Aggregation Pipeline** with the `$lookup` operator. This performs the join operation on the database server in a single query, which is much faster.
-  2. **Denormalize Data**: Embed frequently accessed relational data directly inside the document (e.g. storing a user's name directly in the order document) if the data does not change frequently, eliminating the need to query or populate it.
-  3. Cache populated results in a fast key-value store like Redis to avoid hitting the database for duplicate requests.
+> **Answer:**
+> Mongoose hooks are functions that run automatically before or after specific lifecycle events (like save, validate, or delete). You use a `pre('save')` hook to perform tasks automatically before writing data to the database, such as hashing passwords or generating slug fields.
+
+**Q:** Explain how Mongoose's `.lean()` option improves application performance. What are the limitations of using it?
+
+> **Answer:**
+> By default, Mongoose wraps query results in complex Document objects containing virtuals, change-trackers, and custom methods. The `.lean()` method bypasses this wrapping step, returning plain JavaScript objects instead. This improves query performance up to 4x and reduces memory overhead.
+> The limitation is that the returned objects are read-only; they do not support Mongoose features like virtuals, custom methods, change tracking, or calling `.save()`.
+
+**Q:** In a high-throughput read-heavy API, explain why Mongoose's `.populate()` method can cause severe database bottlenecks, and discuss how you optimize relational querying in MongoDB.
+
+> **Answer:**
+> Mongoose's `.populate()` method does not perform join operations at the database level (since MongoDB lacks native relational joins). Instead, Mongoose executes a separate `find()` query behind the scenes for every populated reference ID returned in the original query. If you query 100 documents and populate 2 fields on each, Mongoose can execute up to 201 database queries, degrading API latency.
+> 
+> To optimize relational queries:
+> 1. Use MongoDB's native **Aggregation Pipeline** with the `$lookup` operator. This performs the join operation on the database server in a single query, which is much faster.
+> 2. **Denormalize Data**: Embed frequently accessed relational data directly inside the document (e.g. storing a user's name directly in the order document) if the data does not change frequently, eliminating the need to query or populate it.
+> 3. Cache populated results in a fast key-value store like Redis to avoid hitting the database for duplicate requests.
 
 ---
-Previous : [37_MongoDB.md] | Index : [00_index.md] | Next : [39_PostgreSQL.md]
+Previous : [37_MongoDB.md](37_MongoDB.md) | Index : [00_index.md](00_index.md) | Next : [39_PostgreSQL.md](39_PostgreSQL.md)

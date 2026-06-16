@@ -1,16 +1,6 @@
 # File System Module
 
-## What You Will Learn
-* The three API models of the `fs` module (Synchronous, Callbacks, Promises).
-* The performance and memory implications of loading entire files into memory.
-* Managing files (reading, writing, copying, deleting) and directories.
-* Extracting file metadata (sizes, permissions, directory flags).
-* Watching files and directories using `fs.watch` and `fs.watchFile`.
-
-## Why This Matters
 Filesystem operations are a common performance bottleneck in backend applications. Loading a large file (like a 2GB database log) into memory using standard file read APIs will consume all available V8 heap memory and crash your server. Knowing how to choose the right `fs` API and manage system resources is essential for building stable applications.
-
-## Theory
 
 ### The Three API Styles of the `fs` Module
 Node.js provides three ways to interact with the filesystem:
@@ -110,29 +100,33 @@ performPromiseRead();
 
 ## Interview Questions
 
-### Beginner
-* **What is the difference between `fs.readFile` and `fs.readFileSync`?**
-  *Answer*: `fs.readFileSync` runs synchronously, blocking the main execution thread and halting other operations until the file is read. `fs.readFile` runs asynchronously, offloading the I/O operation to the Libuv thread pool so the main thread can continue running other code.
+**Q:** What is the difference between `fs.readFile` and `fs.readFileSync`?
 
-### Intermediate
-* **What are file descriptors, and how can they cause application crashes when using file watch APIs?**
-  *Answer*: A file descriptor is an index reference maintained by the operating system kernel to identify open files, sockets, or pipes. When you watch a large directory tree using `fs.watch`, Node.js allocates a file descriptor for each watched path. If the directory contains thousands of files, this can exhaust the operating system's maximum file descriptor limit, causing the application to crash with an `EMFILE` error.
+> **Answer:**
+> `fs.readFileSync` runs synchronously, blocking the main execution thread and halting other operations until the file is read. `fs.readFile` runs asynchronously, offloading the I/O operation to the Libuv thread pool so the main thread can continue running other code.
 
-### Advanced
-* **Why does the `fs` module use background threads if Node.js is single-threaded? Where do these threads come from?**
-  *Answer*: The main thread of Node.js runs only JavaScript. However, standard operating system filesystem operations do not have native asynchronous non-blocking APIs in Unix kernels (unlike network sockets). To prevent filesystem calls from blocking the main thread, Libuv manages a pool of background worker threads (defaulting to 4 threads). When an asynchronous file operation is called, Libuv delegates the work to one of these threads, freeing the main thread to run JavaScript.
+**Q:** What are file descriptors, and how can they cause application crashes when using file watch APIs?
 
-### Senior Architect
-* **In high-concurrency production systems, what issues arise when using `fs.watch` to detect real-time configurations files updates, and how do you build a resilient, cross-platform file-watcher?**
-  *Answer*: Native `fs.watch` has several issues:
-  1. It can trigger duplicate events for a single file save (due to editor write-rename sequences).
-  2. It behaves inconsistently across platforms (e.g., reporting file names on Windows but returning empty fields on some Linux kernels).
-  3. It does not support recursive subdirectory watching natively on Linux.
-  
-  To build a resilient watcher:
-  - Do not use `fs.watch` directly. Use a mature wrapper library like `chokidar` that abstracts platform events.
-  - Implement a **debouncing** mechanism to ignore rapid duplicate events.
-  - Add error handling for `EMFILE` limits and implement a fallback to polling mode (like `fs.watchFile`) if file descriptor limits are exceeded.
+> **Answer:**
+> A file descriptor is an index reference maintained by the operating system kernel to identify open files, sockets, or pipes. When you watch a large directory tree using `fs.watch`, Node.js allocates a file descriptor for each watched path. If the directory contains thousands of files, this can exhaust the operating system's maximum file descriptor limit, causing the application to crash with an `EMFILE` error.
+
+**Q:** Why does the `fs` module use background threads if Node.js is single-threaded? Where do these threads come from?
+
+> **Answer:**
+> The main thread of Node.js runs only JavaScript. However, standard operating system filesystem operations do not have native asynchronous non-blocking APIs in Unix kernels (unlike network sockets). To prevent filesystem calls from blocking the main thread, Libuv manages a pool of background worker threads (defaulting to 4 threads). When an asynchronous file operation is called, Libuv delegates the work to one of these threads, freeing the main thread to run JavaScript.
+
+**Q:** In high-concurrency production systems, what issues arise when using `fs.watch` to detect real-time configurations files updates, and how do you build a resilient, cross-platform file-watcher?
+
+> **Answer:**
+> Native `fs.watch` has several issues:
+> 1. It can trigger duplicate events for a single file save (due to editor write-rename sequences).
+> 2. It behaves inconsistently across platforms (e.g., reporting file names on Windows but returning empty fields on some Linux kernels).
+> 3. It does not support recursive subdirectory watching natively on Linux.
+> 
+> To build a resilient watcher:
+> - Do not use `fs.watch` directly. Use a mature wrapper library like `chokidar` that abstracts platform events.
+> - Implement a **debouncing** mechanism to ignore rapid duplicate events.
+> - Add error handling for `EMFILE` limits and implement a fallback to polling mode (like `fs.watchFile`) if file descriptor limits are exceeded.
 
 ---
-Previous : [11_ES_Modules.md] | Index : [00_index.md] | Next : [13_Path_Module.md]
+Previous : [11_ES_Modules.md](11_ES_Modules.md) | Index : [00_index.md](00_index.md) | Next : [13_Path_Module.md](13_Path_Module.md)

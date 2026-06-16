@@ -1,16 +1,6 @@
 # Child Processes
 
-## What You Will Learn
-* Spawning external operating system processes using the `child_process` module.
-* Comparing `exec`, `execFile`, `spawn`, and `fork` execution models.
-* Handling high-volume process output using streams vs. buffers.
-* Communicating between Node.js processes using `fork` IPC.
-* Security risks of command injection and mitigation strategies.
-
-## Why This Matters
 Node.js is great for I/O operations but is not designed for running external system binaries, executing shell scripts, or processing heavy calculations. The `child_process` module allows your application to execute system commands (like running python scripts, invoking image converters, or executing shell scripts) safely in a background process without blocking the event loop.
-
-## Theory
 
 ### The Four Child Process Methods
 Node.js provides four ways to create child processes, each optimized for different use cases:
@@ -126,26 +116,30 @@ setTimeout(runForkDemo, 1000); // Run after files write
 
 ## Interview Questions
 
-### Beginner
-* **What are the four main methods in the `child_process` module?**
-  *Answer*: The four main methods are `exec` (runs a command in a shell and buffers output), `execFile` (runs an executable directly and buffers output), `spawn` (spawns a process asynchronously and streams output), and `fork` (spawns a Node.js instance with a built-in IPC channel).
+**Q:** What are the four main methods in the `child_process` module?
 
-### Intermediate
-* **Why can using `exec` cause application crashes when running commands that return large outputs? How do you resolve it?**
-  *Answer*: `exec` buffers the command's entire output in memory. By default, this buffer is limited to 1MB. If the output exceeds this limit, the process is terminated with a `maxBuffer exceeded` error, which can crash the application. You resolve this by using the `spawn` method, which streams the output in chunks, keeping memory usage low.
+> **Answer:**
+> The four main methods are `exec` (runs a command in a shell and buffers output), `execFile` (runs an executable directly and buffers output), `spawn` (spawns a process asynchronously and streams output), and `fork` (spawns a Node.js instance with a built-in IPC channel).
 
-### Advanced
-* **What is Command Injection, and how do `spawn` or `execFile` defend against it compared to `exec`?**
-  *Answer*: Command Injection occurs when an attacker appends shell command characters (like `;`, `&&`, or `|`) to user inputs, forcing the shell to execute malicious commands. 
-  `exec` runs commands inside a shell, which parses these characters and executes the injected code. `spawn` and `execFile` do not spawn a shell; they execute the binary directly and pass all parameters as elements of an arguments array. The OS treats these parameters strictly as literal strings, preventing command injection.
+**Q:** Why can using `exec` cause application crashes when running commands that return large outputs? How do you resolve it?
 
-### Senior Architect
-* **How would you architecture a high-performance image-processing microservice in Node.js that executes CPU-intensive CLI commands (like FFmpeg or ImageMagick) under heavy concurrent load?**
-  *Answer*: To build a secure, high-performance image processing service:
-  1. **Use Spawn**: Use `spawn` to stream file data directly to the CLI command's standard input (`stdin`) and read the processed output from standard output (`stdout`), avoiding writing temporary files to disk.
-  2. **Implement Pool Throttling**: Spawning OS processes is resource-intensive. Limit the number of concurrent child processes (using a semaphore or queue system) to prevent process creation from exhausting system CPU and RAM.
-  3. **Validate Inputs**: Sanitize all parameters, file paths, and metadata variables passed to the command arguments to prevent injection attacks.
-  4. **Manage Timeouts**: Configure execution timeout limits on child processes. If a command runs longer than a safe threshold (e.g. 30 seconds), terminate the child process using `child.kill('SIGKILL')` to free up system resources.
+> **Answer:**
+> `exec` buffers the command's entire output in memory. By default, this buffer is limited to 1MB. If the output exceeds this limit, the process is terminated with a `maxBuffer exceeded` error, which can crash the application. You resolve this by using the `spawn` method, which streams the output in chunks, keeping memory usage low.
+
+**Q:** What is Command Injection, and how do `spawn` or `execFile` defend against it compared to `exec`?
+
+> **Answer:**
+> Command Injection occurs when an attacker appends shell command characters (like `;`, `&&`, or `|`) to user inputs, forcing the shell to execute malicious commands.
+> `exec` runs commands inside a shell, which parses these characters and executes the injected code. `spawn` and `execFile` do not spawn a shell; they execute the binary directly and pass all parameters as elements of an arguments array. The OS treats these parameters strictly as literal strings, preventing command injection.
+
+**Q:** How would you architecture a high-performance image-processing microservice in Node.js that executes CPU-intensive CLI commands (like FFmpeg or ImageMagick) under heavy concurrent load?
+
+> **Answer:**
+> To build a secure, high-performance image processing service:
+> 1. **Use Spawn**: Use `spawn` to stream file data directly to the CLI command's standard input (`stdin`) and read the processed output from standard output (`stdout`), avoiding writing temporary files to disk.
+> 2. **Implement Pool Throttling**: Spawning OS processes is resource-intensive. Limit the number of concurrent child processes (using a semaphore or queue system) to prevent process creation from exhausting system CPU and RAM.
+> 3. **Validate Inputs**: Sanitize all parameters, file paths, and metadata variables passed to the command arguments to prevent injection attacks.
+> 4. **Manage Timeouts**: Configure execution timeout limits on child processes. If a command runs longer than a safe threshold (e.g. 30 seconds), terminate the child process using `child.kill('SIGKILL')` to free up system resources.
 
 ---
-Previous : [49_Cluster_Module.md] | Index : [00_index.md] | Next : [51_Memory_Management.md]
+Previous : [49_Cluster_Module.md](49_Cluster_Module.md) | Index : [00_index.md](00_index.md) | Next : [51_Memory_Management.md](51_Memory_Management.md)

@@ -1,16 +1,6 @@
 # Nginx
 
-## What You Will Learn
-* The role of Nginx in production Node.js architectures.
-* Configuring Nginx as a Reverse Proxy and Load Balancer.
-* Implementing SSL Termination at the proxy boundary.
-* Forwarding client metadata (IPs, protocols) to Node.js applications.
-* Serving static files directly using Nginx.
-
-## Why This Matters
 Exposing a Node.js process directly to internet traffic is a security and performance risk. Node.js is not optimized for SSL termination (which is CPU-intensive) or serving static files (which blocks the event loop with disk I/O). Placing Nginx in front of Node.js as a reverse proxy secures your application, terminates SSL certificates, caches static assets, and load-balances traffic across multiple Node instances.
-
-## Theory
 
 ### What is Nginx?
 **Nginx** is a high-performance web server, reverse proxy, load balancer, and HTTP cache. It utilizes an asynchronous, event-driven architecture that allows it to handle thousands of concurrent connections with low memory usage.
@@ -140,31 +130,35 @@ http {
 
 ## Interview Questions
 
-### Beginner
-* **What is Nginx, and what is its role when deployed in front of Node.js?**
-  *Answer*: Nginx is a high-performance web server and reverse proxy. When deployed in front of Node.js, it acts as a gateway that routes client requests, load-balances traffic across Node instances, terminates SSL certificates, and serves static files directly, improving security and performance.
+**Q:** What is Nginx, and what is its role when deployed in front of Node.js?
 
-### Intermediate
-* **Why should you configure Nginx to forward `X-Real-IP` and `X-Forwarded-For` headers to your Node.js application?**
-  *Answer*: When Nginx acts as a reverse proxy, it forwards requests to Node.js locally. By default, Node reads the request's origin IP as `127.0.0.1` (the proxy's local IP). Forwarding `X-Real-IP` and `X-Forwarded-For` headers ensures the Node application can identify the client's actual IP address, enabling accurate request logging and rate limiting.
+> **Answer:**
+> Nginx is a high-performance web server and reverse proxy. When deployed in front of Node.js, it acts as a gateway that routes client requests, load-balances traffic across Node instances, terminates SSL certificates, and serves static files directly, improving security and performance.
 
-### Advanced
-* **What is SSL Termination, and why is it recommended to handle it at the Nginx layer rather than inside Node.js?**
-  *Answer*: SSL Termination is the process of decrypting SSL-encrypted HTTPS traffic at the network boundary, forwarding decrypted HTTP traffic to the backend, and encrypting responses. 
-  It is recommended to handle it at the Nginx layer because SSL decryption is CPU-intensive. Handling encryption inside Node.js consumes CPU cycles on the single-threaded event loop, which blocks request processing. Nginx is optimized to handle SSL termination efficiently using background worker threads.
+**Q:** Why should you configure Nginx to forward `X-Real-IP` and `X-Forwarded-For` headers to your Node.js application?
 
-### Senior Architect
-* **How would you configure Nginx to handle WebSocket connections and HTTP/2 proxying concurrently, explaining the configuration directives required?**
-  *Answer*: To handle WebSockets and HTTP/2 concurrently:
-  1. **HTTP/2 Configuration**: Enable HTTP/2 on the server listener directive: `listen 443 ssl http2;`. Nginx terminates HTTP/2 and forwards standard HTTP/1.1 requests to Node.js backend.
-  2. **WebSocket Upgrade Headers**: WebSockets start as a standard HTTP request and upgrade to a TCP stream using handshake headers. Configure Nginx to forward these headers inside the proxy location block:
-     ```nginx
-     proxy_http_version 1.1;
-     proxy_set_header Upgrade $http_upgrade;
-     proxy_set_header Connection "upgrade";
-     ```
-     - `proxy_http_version 1.1` is required because WebSockets require HTTP/1.1 to handshake.
-     - `Upgrade` and `Connection` headers tell Nginx to keep the TCP socket open, allowing two-way real-time communication between the client and Node.js.
+> **Answer:**
+> When Nginx acts as a reverse proxy, it forwards requests to Node.js locally. By default, Node reads the request's origin IP as `127.0.0.1` (the proxy's local IP). Forwarding `X-Real-IP` and `X-Forwarded-For` headers ensures the Node application can identify the client's actual IP address, enabling accurate request logging and rate limiting.
+
+**Q:** What is SSL Termination, and why is it recommended to handle it at the Nginx layer rather than inside Node.js?
+
+> **Answer:**
+> SSL Termination is the process of decrypting SSL-encrypted HTTPS traffic at the network boundary, forwarding decrypted HTTP traffic to the backend, and encrypting responses.
+> It is recommended to handle it at the Nginx layer because SSL decryption is CPU-intensive. Handling encryption inside Node.js consumes CPU cycles on the single-threaded event loop, which blocks request processing. Nginx is optimized to handle SSL termination efficiently using background worker threads.
+
+**Q:** How would you configure Nginx to handle WebSocket connections and HTTP/2 proxying concurrently, explaining the configuration directives required?
+
+> **Answer:**
+> To handle WebSockets and HTTP/2 concurrently:
+> 1. **HTTP/2 Configuration**: Enable HTTP/2 on the server listener directive: `listen 443 ssl http2;`. Nginx terminates HTTP/2 and forwards standard HTTP/1.1 requests to Node.js backend.
+> 2. **WebSocket Upgrade Headers**: WebSockets start as a standard HTTP request and upgrade to a TCP stream using handshake headers. Configure Nginx to forward these headers inside the proxy location block:
+> ```nginx
+> proxy_http_version 1.1;
+> proxy_set_header Upgrade $http_upgrade;
+> proxy_set_header Connection "upgrade";
+> ```
+> - `proxy_http_version 1.1` is required because WebSockets require HTTP/1.1 to handshake.
+> - `Upgrade` and `Connection` headers tell Nginx to keep the TCP socket open, allowing two-way real-time communication between the client and Node.js.
 
 ---
-Previous : [79_AWS_Deployment.md] | Index : [00_index.md] | Next : [81_Reverse_Proxy.md]
+Previous : [79_AWS_Deployment.md](79_AWS_Deployment.md) | Index : [00_index.md](00_index.md) | Next : [81_Reverse_Proxy.md](81_Reverse_Proxy.md)

@@ -1,16 +1,6 @@
 # Swagger/OpenAPI
 
-## What You Will Learn
-* The difference between Swagger and the OpenAPI Specification (OAS).
-* Designing API contracts: paths, parameters, schemas, and components.
-* Generating documentation dynamically using `swagger-jsdoc` comments.
-* Serving interactive Swagger documentation pages using `swagger-ui-express`.
-* The benefits of API contracts for team alignment and contract testing.
-
-## Why This Matters
 Exposing APIs without clear documentation makes integration difficult for frontend developers and external clients. Instead of writing and maintaining static document files that quickly become outdated, you can use OpenAPI standards to generate interactive documentation directly from your code. This ensures your documentation updates automatically when you change routes and models, and provides clients with an interactive testing dashboard.
-
-## Theory
 
 ### Swagger vs. OpenAPI
 * **OpenAPI**: The official specification standard (a schema definition format) used to describe RESTful APIs in YAML or JSON.
@@ -181,40 +171,55 @@ app.listen(3000, () => {
 
 ## Interview Questions
 
-### Beginner
-* **What is the difference between OpenAPI and Swagger?**
-  *Answer*: OpenAPI is the official specification standard (the schema definition format) used to describe RESTful APIs. Swagger refers to the suite of open-source tools (like Swagger UI and Swagger Editor) built to write, render, and consume these OpenAPI specifications.
+**Q:** What is the difference between OpenAPI and Swagger?
 
-### Intermediate
-* **What are Components in an OpenAPI specification, and why are they used?**
-  *Answer*: Components are reusable object definitions (such as request/response payloads or error schemas) defined at the root of the OpenAPI specification. They are used to prevent code duplication, allowing multiple routes to reference the same object schema (e.g. `#/components/schemas/User`) instead of defining the structure repeatedly.
+> **Answer:**
+> OpenAPI is the official specification standard (the schema definition format) used to describe RESTful APIs. Swagger refers to the suite of open-source tools (like Swagger UI and Swagger Editor) built to write, render, and consume these OpenAPI specifications.
 
-### Advanced
-* **How do you document secure endpoints that require JWT Authorization headers inside an OpenAPI specification? Provide the configuration layout.**
-  *Answer*: You define the security scheme under `components.securitySchemes` in your Swagger options, and then apply it globally or to specific routes under the `security` property:
-  ```yaml
-  # Definition under components
-  components:
-    securitySchemes:
-      BearerAuth:
-        type: http
-        scheme: bearer
-        bearerFormat: JWT
+**Q:** What are Components in an OpenAPI specification, and why are they used?
 
-  # Applied to routes
-  security:
-    - BearerAuth: []
-  ```
-  This configuration enables a lock icon next to secure routes in the Swagger UI, allowing developers to enter their JWT tokens and send authenticated requests.
+> **Answer:**
+> Components are reusable object definitions (such as request/response payloads or error schemas) defined at the root of the OpenAPI specification. They are used to prevent code duplication, allowing multiple routes to reference the same object schema (e.g. `#/components/schemas/User`) instead of defining the structure repeatedly.
 
-### Senior Architect
-* **How would you implement a "Design-First" API development workflow, and how does it compare to a "Code-First" workflow in terms of team collaboration and contract testing?**
-  *Answer*: 
-  * **Design-First Workflow**: The API contract (OpenAPI YAML/JSON file) is written and approved *before* writing any code. Developers use this file to generate mock servers, client libraries, and write tests concurrently.
-  * **Code-First Workflow**: Developers write the application code and route handlers first, and then generate the API documentation from the code structure (e.g., using `swagger-jsdoc` comments).
-  * **Comparison**:
-    - *Collaboration*: Design-First is superior for team alignment because frontend and backend teams agree on the interface contract before coding starts, preventing API structure mismatches during integration.
-    - *Testing*: Design-First enables **Contract Testing** (using tools like Prism or Dredd) to verify that both the backend implementation and frontend requests comply with the defined OpenAPI specification automatically, ensuring API compatibility. Code-First is easier to start with but makes contract enforcement harder.
+**Q:** How do you document secure endpoints that require JWT Authorization headers inside an OpenAPI specification? Provide the configuration layout.
+
+> **Answer:**
+> You define the security scheme under `components.securitySchemes` in your Swagger options, and then apply it globally or to specific routes under the `security` property:
+> ```yaml
+> # Definition under components
+> components:
+> securitySchemes:
+> BearerAuth:
+> type: http
+> scheme: bearer
+> bearerFormat: JWT
+> 
+> # Applied to routes
+> security:
+> - BearerAuth: []
+> ```
+> This configuration enables a lock icon next to secure routes in the Swagger UI, allowing developers to enter their JWT tokens and send authenticated requests.
+
+**Q:** How would you implement a "Design-First" API development workflow, and how does it compare to a "Code-First" workflow in terms of team collaboration and contract testing?
+
+> **Answer:**
+> 
+
+**Q:** Design-First Workflow
+
+> **Answer:**
+> 
+
+**Q:** Code-First Workflow
+
+> **Answer:**
+> 
+
+**Q:** Comparison
+
+> **Answer:**
+> - *Collaboration*: Design-First is superior for team alignment because frontend and backend teams agree on the interface contract before coding starts, preventing API structure mismatches during integration.
+> - *Testing*: Design-First enables **Contract Testing** (using tools like Prism or Dredd) to verify that both the backend implementation and frontend requests comply with the defined OpenAPI specification automatically, ensuring API compatibility. Code-First is easier to start with but makes contract enforcement harder.
 
 ---
-Previous : [67_Supertest.md] | Index : [00_index.md] | Next : [69_Microservices.md]
+Previous : [67_Supertest.md](67_Supertest.md) | Index : [00_index.md](00_index.md) | Next : [69_Microservices.md](69_Microservices.md)

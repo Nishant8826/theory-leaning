@@ -1,16 +1,6 @@
 # Express.js
 
-## What You Will Learn
-* The structural components of an Express.js application.
-* Creating routes and using route parameters (`req.params`, `req.query`).
-* Grouping routes logically using `express.Router()`.
-* Mounting static file directories and mounting sub-applications.
-* Under-the-hood routing optimizations.
-
-## Why This Matters
 Express is the most popular framework in the Node.js ecosystem. While it simplifies building APIs, a poor understanding of its routing mechanics can lead to duplicate route definitions, slow route lookups as the app grows, and unhandled errors that crash the server. Knowing how to structure Express routers keeps your codebase clean and fast.
-
-## Theory
 
 ### The Core Express Architecture
 Express is a minimalist, unopinionated routing and middleware web framework. Its architecture is built around three core concepts:
@@ -114,34 +104,38 @@ app.listen(PORT, () => {
 
 ## Interview Questions
 
-### Beginner
-* **What is the purpose of `express.Router()`?**
-  *Answer*: `express.Router()` creates modular, isolated route handlers. You can define routes on a sub-router and mount it on a path prefix in the main application, helping to organize the codebase.
+**Q:** What is the purpose of `express.Router()`?
 
-### Intermediate
-* **How do you access path variables and query string parameters in Express?**
-  *Answer*: Path variables (e.g. `/users/:id`) are accessed via `req.params.id`. Query string parameters (e.g. `?status=active`) are accessed via `req.query.status`.
+> **Answer:**
+> `express.Router()` creates modular, isolated route handlers. You can define routes on a sub-router and mount it on a path prefix in the main application, helping to organize the codebase.
 
-### Advanced
-* **Explain how Express processes routing lookups under the hood, and how defining too many flat routes can degrade performance.**
-  *Answer*: Express maintains an internal stack array (`app._router.stack`) of route and middleware entries. Each route is compiled into a regular expression using the `path-to-regexp` library. 
-  When a request arrives, Express loops through this stack sequentially and runs matches against the path. If you define thousands of flat routes directly on the main application, Express must perform hundreds of regular expression evaluations for every request, which blocks the event loop and degrades routing performance. Using nested sub-routers limits search paths and reduces this overhead.
+**Q:** How do you access path variables and query string parameters in Express?
 
-### Senior Architect
-* **How would you architecture a dynamic sub-app mounting pattern in a multi-tenant Node.js application, where separate tenants load isolated routing configurations dynamically at runtime?**
-  *Answer*: To mount sub-apps dynamically:
-  1. Define each tenant's API as an isolated Express application class or module.
-  2. Implement a master Express gateway application.
-  3. Create a tenant-resolution middleware that identifies the tenant based on the request domain or headers (e.g., `tenant-a.domain.com` or `X-Tenant-ID`).
-  4. Cache the initialized tenant sub-applications in a map in memory.
-  5. Route traffic dynamically using a custom routing handler that delegates request execution to the resolved sub-app using:
-     ```javascript
-     app.use((req, res, next) => {
-       const tenantApp = getTenantSubApp(req.tenantId);
-       tenantApp(req, res, next); // Delegates execution
-     });
-     ```
-  This architecture isolates routes, middleware configurations, and databases for each tenant while sharing a single parent process listener.
+> **Answer:**
+> Path variables (e.g. `/users/:id`) are accessed via `req.params.id`. Query string parameters (e.g. `?status=active`) are accessed via `req.query.status`.
+
+**Q:** Explain how Express processes routing lookups under the hood, and how defining too many flat routes can degrade performance.
+
+> **Answer:**
+> Express maintains an internal stack array (`app._router.stack`) of route and middleware entries. Each route is compiled into a regular expression using the `path-to-regexp` library.
+> When a request arrives, Express loops through this stack sequentially and runs matches against the path. If you define thousands of flat routes directly on the main application, Express must perform hundreds of regular expression evaluations for every request, which blocks the event loop and degrades routing performance. Using nested sub-routers limits search paths and reduces this overhead.
+
+**Q:** How would you architecture a dynamic sub-app mounting pattern in a multi-tenant Node.js application, where separate tenants load isolated routing configurations dynamically at runtime?
+
+> **Answer:**
+> To mount sub-apps dynamically:
+> 1. Define each tenant's API as an isolated Express application class or module.
+> 2. Implement a master Express gateway application.
+> 3. Create a tenant-resolution middleware that identifies the tenant based on the request domain or headers (e.g., `tenant-a.domain.com` or `X-Tenant-ID`).
+> 4. Cache the initialized tenant sub-applications in a map in memory.
+> 5. Route traffic dynamically using a custom routing handler that delegates request execution to the resolved sub-app using:
+> ```javascript
+> app.use((req, res, next) => {
+> const tenantApp = getTenantSubApp(req.tenantId);
+> tenantApp(req, res, next); // Delegates execution
+> });
+> ```
+> This architecture isolates routes, middleware configurations, and databases for each tenant while sharing a single parent process listener.
 
 ---
-Previous : [23_REST_APIs.md] | Index : [00_index.md] | Next : [25_Middleware.md]
+Previous : [23_REST_APIs.md](23_REST_APIs.md) | Index : [00_index.md](00_index.md) | Next : [25_Middleware.md](25_Middleware.md)

@@ -1,16 +1,6 @@
 # Docker
 
-## What You Will Learn
-* Containerization concepts: Virtual Machines vs. Containers.
-* Writing production-grade, multi-stage Dockerfiles for Node.js.
-* Optimizing layer caching to speed up container builds.
-* Securing containers using the non-root `node` user.
-* Utilizing `.dockerignore` to reduce image sizes.
-
-## Why This Matters
 If you deploy Node.js applications by copy-pasting source code directly to a virtual server, you will experience environmental drift (where code works locally but crashes in production due to different system packages or Node versions). Docker packages your application, runtime, and system dependencies into a single container image, guaranteeing consistent execution across all environments.
-
-## Theory
 
 ### Containers vs. Virtual Machines
 * **Virtual Machines (VMs)**: Include a full guest operating system, virtual device drivers, and a hypervisor. This makes VMs heavy, slow to boot (minutes), and resource-intensive (several gigabytes of RAM).
@@ -120,28 +110,32 @@ CMD ["node", "server.js"]
 
 ## Interview Questions
 
-### Beginner
-* **What is the difference between a Virtual Machine and a Docker Container?**
-  *Answer*: A Virtual Machine runs a full guest operating system, virtual device drivers, and a hypervisor, making it resource-intensive and slow to boot. A Docker container shares the host operating system's kernel and runs as an isolated process, making it lightweight, fast to boot, and memory-efficient.
+**Q:** What is the difference between a Virtual Machine and a Docker Container?
 
-### Intermediate
-* **How does Docker's layer caching work, and how do you structure a Dockerfile to optimize build times?**
-  *Answer*: Docker executes Dockerfile instructions sequentially and caches the output of each instruction as a layer. If a file or instruction has not changed, Docker reuses the cached layer. 
-  To optimize build times, copy dependency configuration files (`package.json`, `package-lock.json`) and run dependency installation commands (`npm ci`) *before* copying the rest of the application code. This ensures that Docker reuses the cached dependencies layer on subsequent builds unless your dependencies change.
+> **Answer:**
+> A Virtual Machine runs a full guest operating system, virtual device drivers, and a hypervisor, making it resource-intensive and slow to boot. A Docker container shares the host operating system's kernel and runs as an isolated process, making it lightweight, fast to boot, and memory-efficient.
 
-### Advanced
-* **What are Multi-Stage builds in Docker, and why are they recommended for Node.js production container images?**
-  *Answer*: Multi-Stage builds allow you to define multiple temporary build stages in a single `Dockerfile`. 
-  They are recommended for production because they allow you to install development dependencies, compile TypeScript, and run tests in an initial build stage, and then copy *only* the compiled production JavaScript files and production `node_modules` into the final, lightweight runtime container image. This keeps the final image size small (often reducing it from 1GB to 150MB) and secures it by removing development source files and compilers.
+**Q:** How does Docker's layer caching work, and how do you structure a Dockerfile to optimize build times?
 
-### Senior Architect
-* **Why can starting a Node.js application inside a Docker container using `npm start` prevent the process from shutting down gracefully? How do you resolve this?**
-  *Answer*: When you start an application using `npm start`, npm spawns a child process to run your Node script. The npm process runs as PID 1 (the primary process inside the container) and does not forward operating system signals (like `SIGTERM` or `SIGINT`) to the child Node.js process. 
-  When the orchestrator (like Kubernetes) sends a `SIGTERM` to stop the container, the Node.js application never receives it, preventing it from executing graceful shutdown routines. The container eventually terminates abruptly via a `SIGKILL` signal, aborting active transactions.
-  
-  To resolve this:
-  1. Start the application using `node` directly in the CMD directive: `CMD ["node", "server.js"]`.
-  2. Use a lightweight init tool (like `tini`) as the container entrypoint to manage PID 1 signal forwarding automatically.
+> **Answer:**
+> Docker executes Dockerfile instructions sequentially and caches the output of each instruction as a layer. If a file or instruction has not changed, Docker reuses the cached layer.
+> To optimize build times, copy dependency configuration files (`package.json`, `package-lock.json`) and run dependency installation commands (`npm ci`) *before* copying the rest of the application code. This ensures that Docker reuses the cached dependencies layer on subsequent builds unless your dependencies change.
+
+**Q:** What are Multi-Stage builds in Docker, and why are they recommended for Node.js production container images?
+
+> **Answer:**
+> Multi-Stage builds allow you to define multiple temporary build stages in a single `Dockerfile`.
+> They are recommended for production because they allow you to install development dependencies, compile TypeScript, and run tests in an initial build stage, and then copy *only* the compiled production JavaScript files and production `node_modules` into the final, lightweight runtime container image. This keeps the final image size small (often reducing it from 1GB to 150MB) and secures it by removing development source files and compilers.
+
+**Q:** Why can starting a Node.js application inside a Docker container using `npm start` prevent the process from shutting down gracefully? How do you resolve this?
+
+> **Answer:**
+> When you start an application using `npm start`, npm spawns a child process to run your Node script. The npm process runs as PID 1 (the primary process inside the container) and does not forward operating system signals (like `SIGTERM` or `SIGINT`) to the child Node.js process.
+> When the orchestrator (like Kubernetes) sends a `SIGTERM` to stop the container, the Node.js application never receives it, preventing it from executing graceful shutdown routines. The container eventually terminates abruptly via a `SIGKILL` signal, aborting active transactions.
+> 
+> To resolve this:
+> 1. Start the application using `node` directly in the CMD directive: `CMD ["node", "server.js"]`.
+> 2. Use a lightweight init tool (like `tini`) as the container entrypoint to manage PID 1 signal forwarding automatically.
 
 ---
-Previous : [74_Scaling_NodeJS.md] | Index : [00_index.md] | Next : [76_Kubernetes.md]
+Previous : [74_Scaling_NodeJS.md](74_Scaling_NodeJS.md) | Index : [00_index.md](00_index.md) | Next : [76_Kubernetes.md](76_Kubernetes.md)

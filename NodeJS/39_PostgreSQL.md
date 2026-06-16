@@ -1,16 +1,6 @@
 # PostgreSQL
 
-## What You Will Learn
-* The core principles of Relational Databases (SQL, Schemas, Tables, Joins).
-* Understanding the ACID transaction properties (Atomicity, Consistency, Isolation, Durability).
-* Initializing database connection pools in Node.js using the native `pg` driver.
-* Preventing SQL Injection vulnerabilities using Parameterized Queries.
-* Executing basic SQL CRUD operations in Node.js.
-
-## Why This Matters
 While NoSQL databases like MongoDB are popular, relational databases like PostgreSQL are the standard choice for applications requiring complex query joins, strong data consistency, and transactional guarantees. Understanding how to manage PostgreSQL connection pools and write secure, parameterized SQL queries is essential for building secure, enterprise-grade backend systems.
-
-## Theory
 
 ### Relational Databases and SQL
 Relational databases organize data into rigid, pre-defined tables. Tables are linked together using **Foreign Keys**, allowing you to combine data from multiple tables using `JOIN` statements. You query the data using **SQL (Structured Query Language)**.
@@ -156,45 +146,65 @@ runDemo();
 
 ## Interview Questions
 
-### Beginner
-* **What does ACID stand for in database transactions?**
-  *Answer*: ACID stands for:
-  * **Atomicity**: Guarantees that all operations within a transaction succeed or all fail together.
-  * **Consistency**: Ensures the database remains in a valid state after updates.
-  * **Isolation**: Prevents concurrent transactions from interfering with each other.
-  * **Durability**: Guarantees that changes are saved to disk once committed, surviving server crashes.
+**Q:** What does ACID stand for in database transactions?
 
-### Intermediate
-* **What is SQL Injection, and how do parameterized queries prevent it?**
-  *Answer*: SQL Injection occurs when untrusted user input is concatenated directly into a SQL query string, allowing attackers to execute arbitrary database commands. Parameterized queries prevent this by separating the query template from the parameter values. The database engine pre-compiles the query template, and then treats the parameters strictly as lookup values, preventing them from being executed as code.
+> **Answer:**
+> ACID stands for:
 
-### Advanced
-* **Why should you use a connection Pool instead of individual client instances in a production web application?**
-  *Answer*: Opening a new database connection for every query requires a full TCP handshake, SSL negotiation, and database user authentication, which takes time and resources. 
-  A connection `Pool` keeps a set of persistent database connections open in memory. The application can borrow an active connection, execute the query, and return it to the pool instantly. This reduces connection overhead and improves response times.
+**Q:** Atomicity
 
-### Senior Architect
-* **How would you implement a secure multi-query transaction in Node.js using the `pg` pool, ensuring that resources are cleaned up safely if an error occurs halfway through execution?**
-  *Answer*: To run a secure transaction:
-  1. Borrow a single client from the pool using `pool.connect()`. Do not use `pool.query()` directly, as that runs queries on separate connections.
-  2. Implement a try/catch block. Inside the `try` block, run `BEGIN` to start the transaction, execute the queries using the client instance, and run `COMMIT` to save changes.
-  3. Inside the `catch` block, run `ROLLBACK` to revert any changes if an error occurred.
-  4. Inside the `finally` block, call `client.release()` to return the connection back to the pool, preventing connection leaks.
-  
-  ```javascript
-  const client = await pool.connect();
-  try {
-    await client.query('BEGIN');
-    await client.query('UPDATE accounts SET balance = balance - $1 WHERE id = $2', [100, 1]);
-    await client.query('UPDATE accounts SET balance = balance + $1 WHERE id = $2', [100, 2]);
-    await client.query('COMMIT');
-  } catch (err) {
-    await client.query('ROLLBACK');
-    throw err;
-  } finally {
-    client.release(); // Crucial!
-  }
-  ```
+> **Answer:**
+> 
+
+**Q:** Consistency
+
+> **Answer:**
+> 
+
+**Q:** Isolation
+
+> **Answer:**
+> 
+
+**Q:** Durability
+
+> **Answer:**
+> 
+
+**Q:** What is SQL Injection, and how do parameterized queries prevent it?
+
+> **Answer:**
+> SQL Injection occurs when untrusted user input is concatenated directly into a SQL query string, allowing attackers to execute arbitrary database commands. Parameterized queries prevent this by separating the query template from the parameter values. The database engine pre-compiles the query template, and then treats the parameters strictly as lookup values, preventing them from being executed as code.
+
+**Q:** Why should you use a connection Pool instead of individual client instances in a production web application?
+
+> **Answer:**
+> Opening a new database connection for every query requires a full TCP handshake, SSL negotiation, and database user authentication, which takes time and resources.
+> A connection `Pool` keeps a set of persistent database connections open in memory. The application can borrow an active connection, execute the query, and return it to the pool instantly. This reduces connection overhead and improves response times.
+
+**Q:** How would you implement a secure multi-query transaction in Node.js using the `pg` pool, ensuring that resources are cleaned up safely if an error occurs halfway through execution?
+
+> **Answer:**
+> To run a secure transaction:
+> 1. Borrow a single client from the pool using `pool.connect()`. Do not use `pool.query()` directly, as that runs queries on separate connections.
+> 2. Implement a try/catch block. Inside the `try` block, run `BEGIN` to start the transaction, execute the queries using the client instance, and run `COMMIT` to save changes.
+> 3. Inside the `catch` block, run `ROLLBACK` to revert any changes if an error occurred.
+> 4. Inside the `finally` block, call `client.release()` to return the connection back to the pool, preventing connection leaks.
+> 
+> ```javascript
+> const client = await pool.connect();
+> try {
+> await client.query('BEGIN');
+> await client.query('UPDATE accounts SET balance = balance - $1 WHERE id = $2', [100, 1]);
+> await client.query('UPDATE accounts SET balance = balance + $1 WHERE id = $2', [100, 2]);
+> await client.query('COMMIT');
+> } catch (err) {
+> await client.query('ROLLBACK');
+> throw err;
+> } finally {
+> client.release(); // Crucial!
+> }
+> ```
 
 ---
-Previous : [38_Mongoose.md] | Index : [00_index.md] | Next : [40_ORM_Concepts.md]
+Previous : [38_Mongoose.md](38_Mongoose.md) | Index : [00_index.md](00_index.md) | Next : [40_ORM_Concepts.md](40_ORM_Concepts.md)

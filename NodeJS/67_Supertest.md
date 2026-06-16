@@ -1,16 +1,6 @@
 # Supertest
 
-## What You Will Learn
-* How Supertest tests HTTP servers without binding physical TCP ports.
-* Simulating GET, POST, PUT, and DELETE API requests.
-* Sending request parameters, custom headers, and query strings.
-* Asserting response status codes, headers, and JSON payloads.
-* Integrating Supertest into Jest integration test suites.
-
-## Why This Matters
 If you test your HTTP APIs by spinning up your Express server on a physical port (e.g. port 3000) for every test run, you will experience slow test execution, port collisions (e.g. "port already in use" errors if tests run concurrently), and need to manage server shutdowns. Supertest resolves this by executing requests against your Express app in memory, making API tests fast and reliable.
-
-## Theory
 
 ### In-Memory HTTP Testing
 Supertest wraps a library called **Superagent**.
@@ -133,43 +123,47 @@ describe('POST /api/v1/orders Integration Tests', () => {
 
 ## Interview Questions
 
-### Beginner
-* **What is Supertest and why is it used in Node.js testing?**
-  *Answer*: Supertest is an HTTP assertion library used to test Node.js web servers. It is used to simulate HTTP requests (GET, POST, PUT, DELETE) and assert response status codes, headers, and payloads without needing to bind the server to a physical network port.
+**Q:** What is Supertest and why is it used in Node.js testing?
 
-### Intermediate
-* **Why should you pass the Express `app` instance directly to Supertest instead of starting the server using `app.listen()`?**
-  *Answer*: Passing the `app` instance directly allows Supertest to execute requests against the Express listener in memory. Starting the server using `app.listen()` binds the application to a physical network port, which increases execution times and can cause port collisions when tests run concurrently.
+> **Answer:**
+> Supertest is an HTTP assertion library used to test Node.js web servers. It is used to simulate HTTP requests (GET, POST, PUT, DELETE) and assert response status codes, headers, and payloads without needing to bind the server to a physical network port.
 
-### Advanced
-* **How do you set custom authorization headers and query string parameters in a Supertest request chain? Provide a code example.**
-  *Answer*: You set custom headers using the `.set(name, value)` method and query string parameters using the `.query(params)` method:
-  ```javascript
-  const res = await request(app)
-    .get('/api/resource')
-    .set('Authorization', 'Bearer token123') // Header
-    .query({ status: 'active', limit: 10 })   // Query parameters (?status=active&limit=10)
-    .expect(200);
-  ```
+**Q:** Why should you pass the Express `app` instance directly to Supertest instead of starting the server using `app.listen()`?
 
-### Senior Architect
-* **How would you architecture a mock authentication pipeline in your Supertest integration test suite, allowing developers to bypass authentication checks for specific test runs without polluting production controller code?**
-  *Answer*: To implement a mock authentication pipeline:
-  1. **Decouple Auth Middleware**: Abstract your authentication middleware registration so that it depends on the environment.
-  2. **Implement Test Auth Mocking**: In your test suite configuration, mock the module that exports the authentication middleware using `jest.mock()`.
-  3. Configure the mock middleware to inspect the incoming headers for a specific test marker (e.g. `X-Test-User-ID`), resolve the corresponding test user record, attach it to `req.user`, and call `next()`, bypassing the actual JWT decryption and database lookup:
-     ```javascript
-     // __mocks__/authMiddleware.js
-     module.exports = (req, res, next) => {
-       const testUserId = req.headers['x-test-user-id'];
-       if (testUserId) {
-         req.user = { id: parseInt(testUserId, 10), role: 'user' };
-         return next();
-       }
-       // Fallback to standard auth checks if header is missing
-     };
-     ```
-  This architecture allows you to test protected endpoints and simulate different user contexts easily by simply setting the `X-Test-User-ID` header in your Supertest chain, keeping production controller code clean.
+> **Answer:**
+> Passing the `app` instance directly allows Supertest to execute requests against the Express listener in memory. Starting the server using `app.listen()` binds the application to a physical network port, which increases execution times and can cause port collisions when tests run concurrently.
+
+**Q:** How do you set custom authorization headers and query string parameters in a Supertest request chain? Provide a code example.
+
+> **Answer:**
+> You set custom headers using the `.set(name, value)` method and query string parameters using the `.query(params)` method:
+> ```javascript
+> const res = await request(app)
+> .get('/api/resource')
+> .set('Authorization', 'Bearer token123') // Header
+> .query({ status: 'active', limit: 10 })   // Query parameters (?status=active&limit=10)
+> .expect(200);
+> ```
+
+**Q:** How would you architecture a mock authentication pipeline in your Supertest integration test suite, allowing developers to bypass authentication checks for specific test runs without polluting production controller code?
+
+> **Answer:**
+> To implement a mock authentication pipeline:
+> 1. **Decouple Auth Middleware**: Abstract your authentication middleware registration so that it depends on the environment.
+> 2. **Implement Test Auth Mocking**: In your test suite configuration, mock the module that exports the authentication middleware using `jest.mock()`.
+> 3. Configure the mock middleware to inspect the incoming headers for a specific test marker (e.g. `X-Test-User-ID`), resolve the corresponding test user record, attach it to `req.user`, and call `next()`, bypassing the actual JWT decryption and database lookup:
+> ```javascript
+> // __mocks__/authMiddleware.js
+> module.exports = (req, res, next) => {
+> const testUserId = req.headers['x-test-user-id'];
+> if (testUserId) {
+> req.user = { id: parseInt(testUserId, 10), role: 'user' };
+> return next();
+> }
+> // Fallback to standard auth checks if header is missing
+> };
+> ```
+> This architecture allows you to test protected endpoints and simulate different user contexts easily by simply setting the `X-Test-User-ID` header in your Supertest chain, keeping production controller code clean.
 
 ---
-Previous : [66_Jest.md] | Index : [00_index.md] | Next : [68_Swagger_OpenAPI.md]
+Previous : [66_Jest.md](66_Jest.md) | Index : [00_index.md](00_index.md) | Next : [68_Swagger_OpenAPI.md](68_Swagger_OpenAPI.md)

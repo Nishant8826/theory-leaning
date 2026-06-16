@@ -1,16 +1,6 @@
 # Testing Fundamentals
 
-## What You Will Learn
-* The Testing Pyramid structure (Unit, Integration, End-to-End tests).
-* The Test-Driven Development (TDD) cycle (Red, Green, Refactor).
-* Key testing concepts: Mocking, Stubbing, and Spying.
-* Analyzing Code Coverage metrics (Statements, Branches, Functions, Lines).
-* The difference between Unit Testing and Integration Testing.
-
-## Why This Matters
 Writing tests is not just about finding bugs. A comprehensive test suite acts as a safety net, allowing you to refactor code, upgrade dependencies, and deploy updates to production with confidence. Understanding testing fundamentals prevents you from writing fragile, slow test suites that hinder development.
-
-## Theory
 
 ### The Testing Pyramid
 The **Testing Pyramid** is a framework that describes the optimal distribution of test types in an application:
@@ -165,28 +155,32 @@ runPaymentServiceTests();
 
 ## Interview Questions
 
-### Beginner
-* **What are the three main tiers of the Testing Pyramid?**
-  *Answer*: The three tiers are **Unit Tests** (tests isolated functions or modules, fast and cheap), **Integration Tests** (tests how multiple modules interact, slower), and **End-to-End (E2E) Tests** (tests the entire application flow from the UI to the database, slow and fragile).
+**Q:** What are the three main tiers of the Testing Pyramid?
 
-### Intermediate
-* **What is the difference between a stub and a mock in test development?**
-  *Answer*: A **stub** provides predefined, hardcoded responses to method calls during a test, bypassing the actual dependency call. A **mock** simulates the behavior of a dependency and verifies that the system calls it correctly, validating that specific methods were called with the correct arguments.
+> **Answer:**
+> The three tiers are **Unit Tests** (tests isolated functions or modules, fast and cheap), **Integration Tests** (tests how multiple modules interact, slower), and **End-to-End (E2E) Tests** (tests the entire application flow from the UI to the database, slow and fragile).
 
-### Advanced
-* **Explain the Test-Driven Development (TDD) cycle and discuss how it improves application architecture.**
-  *Answer*: The TDD cycle consists of three steps:
-  1. **Red**: Write a failing test for a feature before writing the code.
-  2. **Green**: Write the minimum code required to make the test pass.
-  3. **Refactor**: Clean up and optimize the code while verifying the test remains green.
-  TDD improves architecture because writing tests first forces you to design decoupled, modular components with clear interfaces, preventing tight coupling and making the codebase easier to maintain.
+**Q:** What is the difference between a stub and a mock in test development?
 
-### Senior Architect
-* **How would you structure a test database cleanup strategy in an integration testing pipeline that runs concurrently under Jest, preventing tests from colliding or leaving dirty states?**
-  *Answer*: To run database integration tests concurrently without collisions:
-  1. **Database Isolation**: Instead of sharing a single test database, configure the test runner (like Jest) to dynamically spawn an isolated database schema or a temporary Docker container database for each concurrent test worker. Use Jest worker IDs to name schemas: `test_db_${process.env.JEST_WORKER_ID}`.
-  2. **Transaction Rollback**: Run each test case inside an isolated database transaction. Start a transaction in the `beforeEach` hook, execute the test queries, and rollback the transaction in the `afterEach` hook. This prevents data from being written to disk, keeping tables clean.
-  3. **Global Cleanup**: Register global `afterAll` teardown hooks that drop the temporary schemas and close database connection pools, preventing connection leaks.
+> **Answer:**
+> A **stub** provides predefined, hardcoded responses to method calls during a test, bypassing the actual dependency call. A **mock** simulates the behavior of a dependency and verifies that the system calls it correctly, validating that specific methods were called with the correct arguments.
+
+**Q:** Explain the Test-Driven Development (TDD) cycle and discuss how it improves application architecture.
+
+> **Answer:**
+> The TDD cycle consists of three steps:
+> 1. **Red**: Write a failing test for a feature before writing the code.
+> 2. **Green**: Write the minimum code required to make the test pass.
+> 3. **Refactor**: Clean up and optimize the code while verifying the test remains green.
+> TDD improves architecture because writing tests first forces you to design decoupled, modular components with clear interfaces, preventing tight coupling and making the codebase easier to maintain.
+
+**Q:** How would you structure a test database cleanup strategy in an integration testing pipeline that runs concurrently under Jest, preventing tests from colliding or leaving dirty states?
+
+> **Answer:**
+> To run database integration tests concurrently without collisions:
+> 1. **Database Isolation**: Instead of sharing a single test database, configure the test runner (like Jest) to dynamically spawn an isolated database schema or a temporary Docker container database for each concurrent test worker. Use Jest worker IDs to name schemas: `test_db_${process.env.JEST_WORKER_ID}`.
+> 2. **Transaction Rollback**: Run each test case inside an isolated database transaction. Start a transaction in the `beforeEach` hook, execute the test queries, and rollback the transaction in the `afterEach` hook. This prevents data from being written to disk, keeping tables clean.
+> 3. **Global Cleanup**: Register global `afterAll` teardown hooks that drop the temporary schemas and close database connection pools, preventing connection leaks.
 
 ---
-Previous : [62_NoSQL_Injection.md] | Index : [00_index.md] | Next : [64_Unit_Testing.md]
+Previous : [62_NoSQL_Injection.md](62_NoSQL_Injection.md) | Index : [00_index.md](00_index.md) | Next : [64_Unit_Testing.md](64_Unit_Testing.md)

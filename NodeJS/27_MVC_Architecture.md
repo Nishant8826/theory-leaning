@@ -1,15 +1,6 @@
 # MVC Architecture
 
-## What You Will Learn
-* The first-principles structure of Model-View-Controller (MVC) architecture.
-* Decoupling route definitions from controller logic.
-* The roles and boundaries of Models, Views, and Controllers.
-* Codebase folder structure layout for large production-grade projects.
-
-## Why This Matters
 When starting out, it is easy to write all routing, database queries, and response formatting inside a single file. However, as the application grows, this creates a "spaghetti codebase" that is difficult to understand, impossible to unit test, and prone to conflicts among developers. MVC provides a standard structure that separates concerns, keeping code clean and maintainable.
-
-## Theory
 
 ### The MVC Structural Pattern
 MVC separates application concerns into three distinct layers:
@@ -130,29 +121,45 @@ module.exports = router;
 
 ## Interview Questions
 
-### Beginner
-* **What does MVC stand for, and what is the primary role of each component?**
-  *Answer*: MVC stands for Model-View-Controller.
-  * **Model**: Manages data structures, validation schemas, and database queries.
-  * **View**: Formats and presents the output data (e.g. templates or JSON responses) to the client.
-  * **Controller**: Orchestrates the process: receives client input, calls the model, and passes the output to the view.
+**Q:** What does MVC stand for, and what is the primary role of each component?
 
-### Intermediate
-* **Why should Models be kept protocol-agnostic (never referencing `req` or `res`)?**
-  *Answer*: Models handle data access and business rules, which should be independent of the delivery mechanism. If a Model references `req` or `res`, it becomes tightly coupled to Express. Keeping it protocol-agnostic allows you to reuse the Model class in CLI tools, background workers, or unit tests without importing Express.
+> **Answer:**
+> MVC stands for Model-View-Controller.
 
-### Advanced
-* **What are the architectural benefits of decoupling route definitions from controller functions, and how does this improve unit testing?**
-  *Answer*: Decoupling route definitions from controllers isolates routing configurations from business logic. This separation allows you to test controller functions independently by mocking the `req`, `res`, and `next` parameters, without needing to spin up an HTTP server or route requests through the entire Express stack, simplifying unit testing.
+**Q:** Model
 
-### Senior Architect
-* **In a highly scaled enterprise codebase, why can standard MVC patterns lead to fat controllers and bloated models? How do you refactor MVC into a Clean Architecture or Service-Repository pattern?**
-  *Answer*: In large enterprise systems, business logic often overlaps multiple data queries, leading to bloated controllers that handle transaction orchestration and data formatting, and models that house complex business validation rules.
-  
-  To solve this, we introduce the **Service-Repository** pattern to decouple the MVC layers further:
-  1. **Repository Layer**: Acts as an abstraction over the ORM or database queries, exposing simple methods (like `userRepository.findById(id)`).
-  2. **Service Layer**: Houses the actual business logic. It coordinates transactions, updates multiple models, and sends notifications (e.g., `registrationService.registerUser(data)`).
-  3. **Controller Layer**: Becomes a lightweight interface that simply parses request inputs, calls the appropriate Service, and formats the output, keeping the codebase clean and modular.
+> **Answer:**
+> 
+
+**Q:** View
+
+> **Answer:**
+> 
+
+**Q:** Controller
+
+> **Answer:**
+> 
+
+**Q:** Why should Models be kept protocol-agnostic (never referencing `req` or `res`)?
+
+> **Answer:**
+> Models handle data access and business rules, which should be independent of the delivery mechanism. If a Model references `req` or `res`, it becomes tightly coupled to Express. Keeping it protocol-agnostic allows you to reuse the Model class in CLI tools, background workers, or unit tests without importing Express.
+
+**Q:** What are the architectural benefits of decoupling route definitions from controller functions, and how does this improve unit testing?
+
+> **Answer:**
+> Decoupling route definitions from controllers isolates routing configurations from business logic. This separation allows you to test controller functions independently by mocking the `req`, `res`, and `next` parameters, without needing to spin up an HTTP server or route requests through the entire Express stack, simplifying unit testing.
+
+**Q:** In a highly scaled enterprise codebase, why can standard MVC patterns lead to fat controllers and bloated models? How do you refactor MVC into a Clean Architecture or Service-Repository pattern?
+
+> **Answer:**
+> In large enterprise systems, business logic often overlaps multiple data queries, leading to bloated controllers that handle transaction orchestration and data formatting, and models that house complex business validation rules.
+> 
+> To solve this, we introduce the **Service-Repository** pattern to decouple the MVC layers further:
+> 1. **Repository Layer**: Acts as an abstraction over the ORM or database queries, exposing simple methods (like `userRepository.findById(id)`).
+> 2. **Service Layer**: Houses the actual business logic. It coordinates transactions, updates multiple models, and sends notifications (e.g., `registrationService.registerUser(data)`).
+> 3. **Controller Layer**: Becomes a lightweight interface that simply parses request inputs, calls the appropriate Service, and formats the output, keeping the codebase clean and modular.
 
 ---
-Previous : [26_Routing.md] | Index : [00_index.md] | Next : [28_Environment_Variables.md]
+Previous : [26_Routing.md](26_Routing.md) | Index : [00_index.md](00_index.md) | Next : [28_Environment_Variables.md](28_Environment_Variables.md)

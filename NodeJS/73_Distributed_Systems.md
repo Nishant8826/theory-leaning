@@ -1,15 +1,6 @@
 # Distributed Systems
 
-## What You Will Learn
-* The CAP Theorem (Consistency, Availability, Partition Tolerance).
-* Consensus protocols (Raft vs. Paxos) in clustered architectures.
-* Preventing cascading failures in distributed networks.
-* Designing and implementing the **Circuit Breaker** pattern.
-
-## Why This Matters
 In a distributed systems network, network partitions (communication drops between servers) are inevitable. If a downstream service (like a shipping API) becomes slow or goes down, calls from upstream services will queue up, consuming memory and file descriptors until the entire system crashes (a cascading failure). Designing resilient distributed systems requires implementing safety nets like the Circuit Breaker pattern.
-
-## Theory
 
 ### The CAP Theorem
 The **CAP Theorem** states that a distributed data store can simultaneously provide at most two of these three guarantees:
@@ -180,28 +171,32 @@ runDemo();
 
 ## Interview Questions
 
-### Beginner
-* **What is the CAP Theorem in distributed systems?**
-  *Answer*: The CAP Theorem states that a distributed system can simultaneously guarantee at most two of these three properties: **Consistency** (all nodes return the most recent write), **Availability** (every request returns a non-error response), and **Partition Tolerance** (the system continues to operate despite network drops).
+**Q:** What is the CAP Theorem in distributed systems?
 
-### Intermediate
-* **What is a cascading failure in a microservices architecture, and how does a circuit breaker prevent it?**
-  *Answer*: A cascading failure occurs when a downstream service becomes slow or goes down, causing upstream services to queue up requests while waiting for responses. This consumes CPU, RAM, and sockets, eventually crashing the upstream services and propagating the failure. A circuit breaker prevents this by failing requests instantly ("fail-fast") once a failure threshold is exceeded, saving resources.
+> **Answer:**
+> The CAP Theorem states that a distributed system can simultaneously guarantee at most two of these three properties: **Consistency** (all nodes return the most recent write), **Availability** (every request returns a non-error response), and **Partition Tolerance** (the system continues to operate despite network drops).
 
-### Advanced
-* **Explain the three states of a Circuit Breaker and the conditions required to transition between them.**
-  *Answer*: The three states are:
-  1. **CLOSED**: Normal state; requests pass through. Transitions to **OPEN** if failures exceed the threshold (e.g. 5 errors).
-  2. **OPEN**: Requests fail instantly without calling the service. Transitions to **HALF_OPEN** once the cooldown period expires.
-  3. **HALF_OPEN**: Allows a limited number of test requests through. If any test request fails, it transitions back to **OPEN**. If all test requests succeed, it resets to **CLOSED**.
+**Q:** What is a cascading failure in a microservices architecture, and how does a circuit breaker prevent it?
 
-### Senior Architect
-* **How would you architecture a distributed consensus strategy inside a multi-region Node.js state-store cluster, explaining the difference between Raft leader election and Paxos replication?**
-  *Answer*: To run a multi-region consensus state-store:
-  1. **Consensus Role**: Clustered data stores (like Etcd or Consul) use consensus algorithms to ensure that all independent nodes agree on a single database state, preventing split-brain scenarios.
-  2. **Raft Leader Election**: Raft simplifies consensus by electing a single **Leader** node. The leader accepts all writes, replicates them to follower nodes, and commits them only when a majority of followers acknowledge the write. If the leader goes down, followers elect a new leader automatically using randomized timers.
-  3. **Paxos Replication**: Paxos is a more complex, multi-leader algorithm. It splits nodes into Proposers, Acceptors, and Learners. A proposer proposes a write, acceptors accept it if it is the highest numbered proposal, and learners commit it. 
-  4. *Architectural choice*: Use Raft for metadata stores (like configuration files or routing registries) where a single leader simplifies consistency checks. Use Paxos or Multi-Paxos in wide-area multi-region clusters where you want multiple active nodes to accept writes concurrently.
+> **Answer:**
+> A cascading failure occurs when a downstream service becomes slow or goes down, causing upstream services to queue up requests while waiting for responses. This consumes CPU, RAM, and sockets, eventually crashing the upstream services and propagating the failure. A circuit breaker prevents this by failing requests instantly ("fail-fast") once a failure threshold is exceeded, saving resources.
+
+**Q:** Explain the three states of a Circuit Breaker and the conditions required to transition between them.
+
+> **Answer:**
+> The three states are:
+> 1. **CLOSED**: Normal state; requests pass through. Transitions to **OPEN** if failures exceed the threshold (e.g. 5 errors).
+> 2. **OPEN**: Requests fail instantly without calling the service. Transitions to **HALF_OPEN** once the cooldown period expires.
+> 3. **HALF_OPEN**: Allows a limited number of test requests through. If any test request fails, it transitions back to **OPEN**. If all test requests succeed, it resets to **CLOSED**.
+
+**Q:** How would you architecture a distributed consensus strategy inside a multi-region Node.js state-store cluster, explaining the difference between Raft leader election and Paxos replication?
+
+> **Answer:**
+> To run a multi-region consensus state-store:
+> 1. **Consensus Role**: Clustered data stores (like Etcd or Consul) use consensus algorithms to ensure that all independent nodes agree on a single database state, preventing split-brain scenarios.
+> 2. **Raft Leader Election**: Raft simplifies consensus by electing a single **Leader** node. The leader accepts all writes, replicates them to follower nodes, and commits them only when a majority of followers acknowledge the write. If the leader goes down, followers elect a new leader automatically using randomized timers.
+> 3. **Paxos Replication**: Paxos is a more complex, multi-leader algorithm. It splits nodes into Proposers, Acceptors, and Learners. A proposer proposes a write, acceptors accept it if it is the highest numbered proposal, and learners commit it.
+> 4. *Architectural choice*: Use Raft for metadata stores (like configuration files or routing registries) where a single leader simplifies consistency checks. Use Paxos or Multi-Paxos in wide-area multi-region clusters where you want multiple active nodes to accept writes concurrently.
 
 ---
-Previous : [72_Kafka.md] | Index : [00_index.md] | Next : [74_Scaling_NodeJS.md]
+Previous : [72_Kafka.md](72_Kafka.md) | Index : [00_index.md](00_index.md) | Next : [74_Scaling_NodeJS.md](74_Scaling_NodeJS.md)

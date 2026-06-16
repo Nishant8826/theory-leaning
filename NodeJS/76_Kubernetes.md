@@ -1,16 +1,6 @@
 # Kubernetes
 
-## What You Will Learn
-* Orchestration concepts: Pods, Deployments, Services, and Ingress.
-* Setting up Liveness Probes vs. Readiness Probes for Node.js apps.
-* Injecting environment variables dynamically using ConfigMaps and Secrets.
-* Scaling container workloads using Horizontal Pod Autoscalers (HPA).
-* Managing pod termination lifecycles and utilizing `preStop` hooks.
-
-## Why This Matters
 Docker packages your application, but running containers in production requires management. You need a system that monitors container health, automatically restarts crashed instances, load-balances client traffic, and scales resources dynamically. Kubernetes (K8s) is the industry-standard container orchestration platform. Understanding how to configure K8s YAML manifests ensures your Node.js services run reliably.
-
-## Theory
 
 ### Core Kubernetes Concepts
 * **Pod**: The smallest deployable unit in Kubernetes, containing one or more tightly coupled containers sharing network and storage resources.
@@ -150,26 +140,30 @@ spec:
 
 ## Interview Questions
 
-### Beginner
-* **What is a Pod in Kubernetes?**
-  *Answer*: A Pod is the smallest deployable unit in Kubernetes. It represents a single instance of a running process in your cluster and can contain one or more tightly coupled containers sharing network and storage resources.
+**Q:** What is a Pod in Kubernetes?
 
-### Intermediate
-* **What is the difference between a Liveness Probe and a Readiness Probe?**
-  *Answer*: A Liveness Probe checks if the container is running. If it fails, Kubernetes kills and restarts the container. A Readiness Probe checks if the container is ready to accept network traffic. If it fails, Kubernetes pulls the container out of the Service load-balancing pool, preventing clients from receiving errors while the container recovers.
+> **Answer:**
+> A Pod is the smallest deployable unit in Kubernetes. It represents a single instance of a running process in your cluster and can contain one or more tightly coupled containers sharing network and storage resources.
 
-### Advanced
-* **Why is a `preStop` hook containing a `sleep` command necessary for achieving zero-downtime rolling updates in Kubernetes deployments?**
-  *Answer*: When a pod is deleted during updates, Kubernetes asynchronously updates the Service endpoints to stop routing traffic to the pod. However, this network routing update takes a few seconds to propagate across all cluster nodes. 
-  If Kubernetes sends a `SIGTERM` to the container immediately, the process stops accepting new requests while still receiving traffic in transit, causing connection errors. A `preStop` hook containing a `sleep 10` command pauses container shutdown, allowing routing updates to propagate and active requests to drain cleanly before `SIGTERM` is sent.
+**Q:** What is the difference between a Liveness Probe and a Readiness Probe?
 
-### Senior Architect
-* **How would you architecture a auto-scaling Kubernetes cluster for a high-concurrency Node.js WebSocket service? What scaling policies, Ingress configurations, and telemetry are required?**
-  *Answer*: To scale WebSockets in Kubernetes:
-  1. **Configure Ingress**: WebSockets are stateful, long-lived TCP connections. Use an Ingress controller (like Nginx Ingress) configured with **session affinity** (sticky sessions) if using HTTP fallback polling, or configure Layer 4 routing (TCP load balancing) to bypass HTTP parsing overhead.
-  2. **Tuning Termination Grace Period**: WebSocket connections can last for hours. Set a large `terminationGracePeriodSeconds` (e.g. 300 seconds) in your pod specifications to allow clients to disconnect slowly during deployments without being cut off.
-  3. **Auto-scaling Policies**: Standard CPU-based scaling fails for WebSockets because active connections consume memory (RAM) but minimal CPU. Configure the **Horizontal Pod Autoscaler (HPA)** to scale based on custom metrics like the active connection count or memory usage.
-  4. **Telemetry and Monitoring**: Instrument Node.js pods with Prometheus metrics tracking active socket counts, heap memory, and socket disconnect events to manage scale.
+> **Answer:**
+> A Liveness Probe checks if the container is running. If it fails, Kubernetes kills and restarts the container. A Readiness Probe checks if the container is ready to accept network traffic. If it fails, Kubernetes pulls the container out of the Service load-balancing pool, preventing clients from receiving errors while the container recovers.
+
+**Q:** Why is a `preStop` hook containing a `sleep` command necessary for achieving zero-downtime rolling updates in Kubernetes deployments?
+
+> **Answer:**
+> When a pod is deleted during updates, Kubernetes asynchronously updates the Service endpoints to stop routing traffic to the pod. However, this network routing update takes a few seconds to propagate across all cluster nodes.
+> If Kubernetes sends a `SIGTERM` to the container immediately, the process stops accepting new requests while still receiving traffic in transit, causing connection errors. A `preStop` hook containing a `sleep 10` command pauses container shutdown, allowing routing updates to propagate and active requests to drain cleanly before `SIGTERM` is sent.
+
+**Q:** How would you architecture a auto-scaling Kubernetes cluster for a high-concurrency Node.js WebSocket service? What scaling policies, Ingress configurations, and telemetry are required?
+
+> **Answer:**
+> To scale WebSockets in Kubernetes:
+> 1. **Configure Ingress**: WebSockets are stateful, long-lived TCP connections. Use an Ingress controller (like Nginx Ingress) configured with **session affinity** (sticky sessions) if using HTTP fallback polling, or configure Layer 4 routing (TCP load balancing) to bypass HTTP parsing overhead.
+> 2. **Tuning Termination Grace Period**: WebSocket connections can last for hours. Set a large `terminationGracePeriodSeconds` (e.g. 300 seconds) in your pod specifications to allow clients to disconnect slowly during deployments without being cut off.
+> 3. **Auto-scaling Policies**: Standard CPU-based scaling fails for WebSockets because active connections consume memory (RAM) but minimal CPU. Configure the **Horizontal Pod Autoscaler (HPA)** to scale based on custom metrics like the active connection count or memory usage.
+> 4. **Telemetry and Monitoring**: Instrument Node.js pods with Prometheus metrics tracking active socket counts, heap memory, and socket disconnect events to manage scale.
 
 ---
-Previous : [75_Docker.md] | Index : [00_index.md] | Next : [77_CI_CD.md]
+Previous : [75_Docker.md](75_Docker.md) | Index : [00_index.md](00_index.md) | Next : [77_CI_CD.md](77_CI_CD.md)

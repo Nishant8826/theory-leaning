@@ -1,16 +1,6 @@
 # GitHub Actions
 
-## What You Will Learn
-* The structural components of GitHub Actions (Workflows, Jobs, Steps, Actions, and Runners).
-* Defining pipeline triggers: `push`, `pull_request`, and `workflow_dispatch`.
-* Setting up the Node.js runner environment using `actions/setup-node`.
-* Caching `node_modules` dependencies to optimize build speeds.
-* Writing a complete CI workflow configuration file.
-
-## Why This Matters
 GitHub Actions integrates CI/CD automation directly into your GitHub repository. You do not need to manage external build servers (like Jenkins) or configure complex webhooks. By writing a simple YAML file in `.github/workflows/`, GitHub automatically executes tests, audits code, and builds containers on every pull request, protecting your codebase from bugs.
-
-## Theory
 
 ### Workflows, Jobs, Steps, and Runners
 * **Workflow**: An automated process defined in a YAML file inside the `.github/workflows/` directory.
@@ -127,41 +117,45 @@ jobs:
 
 ## Interview Questions
 
-### Beginner
-* **What is a Workflow and a Job in GitHub Actions?**
-  *Answer*: A workflow is an automated process defined in a YAML configuration file inside the `.github/workflows/` directory. A job is a set of execution steps (commands or actions) that runs on a clean instance of a runner virtual machine.
+**Q:** What is a Workflow and a Job in GitHub Actions?
 
-### Intermediate
-* **How do you cache `node_modules` dependencies in GitHub Actions, and why is this useful?**
-  *Answer*: You cache dependencies by setting `cache: 'npm'` in the `actions/setup-node` step. This is useful because it stores the downloaded packages in a cache folder between runs. If `package-lock.json` has not changed, the runner restores the packages instantly instead of downloading them from the npm registry, saving bandwidth and reducing build times.
+> **Answer:**
+> A workflow is an automated process defined in a YAML configuration file inside the `.github/workflows/` directory. A job is a set of execution steps (commands or actions) that runs on a clean instance of a runner virtual machine.
 
-### Advanced
-* **Explain how matrix builds work in GitHub Actions and how you would configure one to test an API across different operating systems and Node.js versions.**
-  *Answer*: A matrix build allows you to run multiple configurations of a job concurrently by defining variables (like OS and Node versions) in a matrix. GitHub automatically generates and runs separate jobs for every possible combination:
-  ```yaml
-  strategy:
-    matrix:
-      os: [ubuntu-latest, windows-latest]
-      node-version: [18.x, 20.x]
-  runs-on: ${{ matrix.os }}
-  ```
-  This configuration runs 4 parallel jobs testing the application across Ubuntu/Windows and Node 18/20, ensuring cross-platform compatibility.
+**Q:** How do you cache `node_modules` dependencies in GitHub Actions, and why is this useful?
 
-### Senior Architect
-* **How would you architecture a deployment pipeline in GitHub Actions that builds a Docker image and deploys it to AWS EKS (Kubernetes), ensuring secrets are injected securely without storing static AWS Access Keys in the repository?**
-  *Answer*: To deploy to EKS without static AWS keys:
-  1. **Configure OIDC**: Set up an OpenID Connect (OIDC) trust relationship between your AWS IAM account and GitHub Actions. This allows GitHub to authenticate with AWS dynamically.
-  2. **Assume IAM Role**: In your workflow file, use the official `aws-actions/configure-aws-credentials` action to assume an IAM Role dynamically using short-lived tokens:
-     ```yaml
-     - name: Configure AWS credentials
-       uses: aws-actions/configure-aws-credentials@v4
-       with:
-         role-to-assume: arn:aws:iam::1234567890:role/github-actions-deploy-role
-         aws-region: us-east-1
-         audience: sts.amazonaws.com
-     ```
-  3. **Build and Push**: Authenticate with AWS ECR using the resolved session and push the Docker image.
-  4. **Deploy**: Configure `kubectl` to update the EKS deployment using the short-lived AWS session, completing the rollout safely without storing static credentials in GitHub.
+> **Answer:**
+> You cache dependencies by setting `cache: 'npm'` in the `actions/setup-node` step. This is useful because it stores the downloaded packages in a cache folder between runs. If `package-lock.json` has not changed, the runner restores the packages instantly instead of downloading them from the npm registry, saving bandwidth and reducing build times.
+
+**Q:** Explain how matrix builds work in GitHub Actions and how you would configure one to test an API across different operating systems and Node.js versions.
+
+> **Answer:**
+> A matrix build allows you to run multiple configurations of a job concurrently by defining variables (like OS and Node versions) in a matrix. GitHub automatically generates and runs separate jobs for every possible combination:
+> ```yaml
+> strategy:
+> matrix:
+> os: [ubuntu-latest, windows-latest]
+> node-version: [18.x, 20.x]
+> runs-on: ${{ matrix.os }}
+> ```
+> This configuration runs 4 parallel jobs testing the application across Ubuntu/Windows and Node 18/20, ensuring cross-platform compatibility.
+
+**Q:** How would you architecture a deployment pipeline in GitHub Actions that builds a Docker image and deploys it to AWS EKS (Kubernetes), ensuring secrets are injected securely without storing static AWS Access Keys in the repository?
+
+> **Answer:**
+> To deploy to EKS without static AWS keys:
+> 1. **Configure OIDC**: Set up an OpenID Connect (OIDC) trust relationship between your AWS IAM account and GitHub Actions. This allows GitHub to authenticate with AWS dynamically.
+> 2. **Assume IAM Role**: In your workflow file, use the official `aws-actions/configure-aws-credentials` action to assume an IAM Role dynamically using short-lived tokens:
+> ```yaml
+> - name: Configure AWS credentials
+> uses: aws-actions/configure-aws-credentials@v4
+> with:
+> role-to-assume: arn:aws:iam::1234567890:role/github-actions-deploy-role
+> aws-region: us-east-1
+> audience: sts.amazonaws.com
+> ```
+> 3. **Build and Push**: Authenticate with AWS ECR using the resolved session and push the Docker image.
+> 4. **Deploy**: Configure `kubectl` to update the EKS deployment using the short-lived AWS session, completing the rollout safely without storing static credentials in GitHub.
 
 ---
-Previous : [77_CI_CD.md] | Index : [00_index.md] | Next : [79_AWS_Deployment.md]
+Previous : [77_CI_CD.md](77_CI_CD.md) | Index : [00_index.md](00_index.md) | Next : [79_AWS_Deployment.md](79_AWS_Deployment.md)

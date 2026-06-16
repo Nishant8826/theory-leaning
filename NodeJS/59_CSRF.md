@@ -1,15 +1,6 @@
 # CSRF
 
-## What You Will Learn
-* How Cross-Site Request Forgery (CSRF) attacks exploit browser cookie behaviors.
-* Distinguishing between GET and POST CSRF attack vectors.
-* Defensive mitigation strategies: SameSite Cookie attributes and Anti-CSRF tokens.
-* Implementing CSRF token generation and validation middleware in Express.
-
-## Why This Matters
 If your web application uses cookie-based authentication, it is vulnerable to CSRF attacks by default. An attacker can create a malicious site that tricks logged-in users into clicking a link or form that automatically triggers requests (like transferring money or changing passwords) on your server using their active cookies. Implementing anti-CSRF protections is essential for securing authenticated actions.
-
-## Theory
 
 ### What is CSRF?
 **CSRF (Cross-Site Request Forgery)** is an attack that forces an authenticated user to execute unwanted actions on a web application in which they are currently logged in.
@@ -133,27 +124,39 @@ app.listen(3000, () => console.log('CSRF protected server running on port 3000')
 
 ## Interview Questions
 
-### Beginner
-* **What is a CSRF (Cross-Site Request Forgery) attack?**
-  *Answer*: A CSRF attack is an exploit where an attacker tricks a logged-in user's browser into sending unauthorized requests to a web application using the user's active session cookies.
+**Q:** What is a CSRF (Cross-Site Request Forgery) attack?
 
-### Intermediate
-* **How does the `SameSite` cookie attribute defend against CSRF attacks?**
-  *Answer*: The `SameSite` attribute tells the browser whether to send cookies along with cross-site requests. Setting it to `Lax` or `Strict` instructs the browser to withhold the cookie on cross-origin subrequests (like form submissions or script loads), preventing attackers from exploiting the active session.
+> **Answer:**
+> A CSRF attack is an exploit where an attacker tricks a logged-in user's browser into sending unauthorized requests to a web application using the user's active session cookies.
 
-### Advanced
-* **Explain the Double-Submit Cookie pattern for CSRF protection and why it is useful for stateless architectures.**
-  *Answer*: In the Double-Submit Cookie pattern:
-  1. The server generates a random token and writes it to a client cookie.
-  2. When making a state-changing request, the client reads the token from the cookie and appends it to the request (e.g. in a custom header like `X-CSRF-Token`).
-  3. The server compares the token in the cookie with the token in the header. If they match, the request is authorized.
-  This pattern is useful for stateless architectures because the server does not need to store the token in its memory or database to validate it; it only compares the two incoming values.
+**Q:** How does the `SameSite` cookie attribute defend against CSRF attacks?
 
-### Senior Architect
-* **How does utilizing stateless JWT authorization headers (e.g., Bearer tokens) instead of HTTP cookies mitigate CSRF vulnerabilities, and what new security trade-offs does this introduce?**
-  *Answer*: 
-  * **Mitigation**: Unlike cookies, which browsers append to requests automatically, custom headers (like `Authorization: Bearer <Token>`) must be set explicitly using JavaScript. Because cross-origin form submissions and resource tags cannot set custom headers, the attack lacks the required token, eliminating the CSRF vulnerability.
-  * **Trade-offs**: Storing JWTs in client-side storage (like `localStorage` or `sessionStorage`) so JavaScript can read and set the headers makes them vulnerable to **XSS (Cross-Site Scripting)** attacks. If an attacker injects a malicious script, they can steal the token, compromising the user's account. This shifts the security risk from CSRF to XSS mitigation.
+> **Answer:**
+> The `SameSite` attribute tells the browser whether to send cookies along with cross-site requests. Setting it to `Lax` or `Strict` instructs the browser to withhold the cookie on cross-origin subrequests (like form submissions or script loads), preventing attackers from exploiting the active session.
+
+**Q:** Explain the Double-Submit Cookie pattern for CSRF protection and why it is useful for stateless architectures.
+
+> **Answer:**
+> In the Double-Submit Cookie pattern:
+> 1. The server generates a random token and writes it to a client cookie.
+> 2. When making a state-changing request, the client reads the token from the cookie and appends it to the request (e.g. in a custom header like `X-CSRF-Token`).
+> 3. The server compares the token in the cookie with the token in the header. If they match, the request is authorized.
+> This pattern is useful for stateless architectures because the server does not need to store the token in its memory or database to validate it; it only compares the two incoming values.
+
+**Q:** How does utilizing stateless JWT authorization headers (e.g., Bearer tokens) instead of HTTP cookies mitigate CSRF vulnerabilities, and what new security trade-offs does this introduce?
+
+> **Answer:**
+> 
+
+**Q:** Mitigation
+
+> **Answer:**
+> 
+
+**Q:** Trade-offs
+
+> **Answer:**
+> 
 
 ---
-Previous : [58_CORS.md] | Index : [00_index.md] | Next : [60_XSS.md]
+Previous : [58_CORS.md](58_CORS.md) | Index : [00_index.md](00_index.md) | Next : [60_XSS.md](60_XSS.md)

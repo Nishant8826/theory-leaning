@@ -1,16 +1,6 @@
 # Load Balancing
 
-## What You Will Learn
-* The role of a Load Balancer in modern scaling architectures.
-* Common load balancing algorithms: Round Robin, Least Connections, and IP Hash.
-* How to configure Nginx upstream groups to balance Node.js backend instances.
-* Implementing active and passive health checks for backend instances.
-* Managing session state across balanced servers (Sticky Sessions vs. Stateless).
-
-## Why This Matters
 As your Node.js application scales, a single server instance becomes a performance bottleneck and a single point of failure. Load balancing allows you to distribute incoming HTTP/TCP traffic across a pool of redundant Node.js servers. This horizontal scaling model ensures high availability, fault tolerance, and smooth application delivery under high concurrent loads.
-
-## Theory
 
 ### Load Balancing Algorithms
 A load balancer decides which server gets an incoming request based on its configured algorithm:
@@ -169,21 +159,25 @@ server.listen(port, () => {
 
 ## Interview Questions
 
-### Beginner
-* **What is the primary function of a load balancer?**
-  *Answer*: A load balancer sits between client devices and backend servers, distributing incoming network or application traffic across multiple servers. This ensures no single server becomes overwhelmed, enhancing application throughput and reliability.
+**Q:** What is the primary function of a load balancer?
 
-### Intermediate
-* **Explain the difference between Round Robin and Least Connections load balancing algorithms.**
-  *Answer*: Round Robin sends incoming requests to backend servers sequentially in a loop, regardless of how many active jobs each server is currently running. Least Connections checks the current connection table of each backend server and routes the incoming request to the server with the lowest count of active TCP connections, making it more effective for variable-duration requests.
+> **Answer:**
+> A load balancer sits between client devices and backend servers, distributing incoming network or application traffic across multiple servers. This ensures no single server becomes overwhelmed, enhancing application throughput and reliability.
 
-### Advanced
-* **Why are sticky sessions problematic for horizontal scaling, and how does a stateless architecture solve this?**
-  *Answer*: Sticky sessions force a load balancer to route a specific client's requests to the exact same backend server instance. This can cause uneven distribution of load (hot spotting) and makes auto-scaling difficult, as removing a server drops active connections/states. A stateless architecture moves all state (e.g. user session data) to a centralized store (like Redis), allowing any backend instance to handle any request, making horizontal scaling simple and resilient.
+**Q:** Explain the difference between Round Robin and Least Connections load balancing algorithms.
 
-### Senior Architect
-* **How would you configure Nginx to gracefully handle a sudden crash of one of your backend Node.js microservices? Explain the directives used.**
-  *Answer*: In Nginx's `upstream` block, you use the `max_fails` and `fail_timeout` directives. For example, `server 127.0.0.1:3001 max_fails=3 fail_timeout=15s;` tells Nginx that if communications with this server fail 3 times within 15 seconds, Nginx should mark the server as unavailable for the next 15 seconds. During this window, Nginx routes incoming traffic to other active servers. When the 15-second timer expires, Nginx will try to send a real user request to the server to check if it has recovered, achieving automatic, passive failover and recovery.
+> **Answer:**
+> Round Robin sends incoming requests to backend servers sequentially in a loop, regardless of how many active jobs each server is currently running. Least Connections checks the current connection table of each backend server and routes the incoming request to the server with the lowest count of active TCP connections, making it more effective for variable-duration requests.
+
+**Q:** Why are sticky sessions problematic for horizontal scaling, and how does a stateless architecture solve this?
+
+> **Answer:**
+> Sticky sessions force a load balancer to route a specific client's requests to the exact same backend server instance. This can cause uneven distribution of load (hot spotting) and makes auto-scaling difficult, as removing a server drops active connections/states. A stateless architecture moves all state (e.g. user session data) to a centralized store (like Redis), allowing any backend instance to handle any request, making horizontal scaling simple and resilient.
+
+**Q:** How would you configure Nginx to gracefully handle a sudden crash of one of your backend Node.js microservices? Explain the directives used.
+
+> **Answer:**
+> In Nginx's `upstream` block, you use the `max_fails` and `fail_timeout` directives. For example, `server 127.0.0.1:3001 max_fails=3 fail_timeout=15s;` tells Nginx that if communications with this server fail 3 times within 15 seconds, Nginx should mark the server as unavailable for the next 15 seconds. During this window, Nginx routes incoming traffic to other active servers. When the 15-second timer expires, Nginx will try to send a real user request to the server to check if it has recovered, achieving automatic, passive failover and recovery.
 
 ---
-Previous : [81_Reverse_Proxy.md] | Index : [00_index.md] | Next : [83_Observability.md]
+Previous : [81_Reverse_Proxy.md](81_Reverse_Proxy.md) | Index : [00_index.md](00_index.md) | Next : [83_Observability.md](83_Observability.md)

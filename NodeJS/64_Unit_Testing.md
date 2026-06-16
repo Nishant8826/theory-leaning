@@ -1,16 +1,6 @@
 # Unit Testing
 
-## What You Will Learn
-* Designing isolated unit tests for individual functions and classes.
-* Writing assertions for synchronous and asynchronous code.
-* Mocking module dependencies and database clients using Jest.
-* Utilizing Jest mock functions (`jest.fn()`) and spy methods (`jest.spyOn()`).
-* Boundary testing: validating error throws and invalid parameters.
-
-## Why This Matters
 Unit tests are the foundation of your testing suite. Because they execute in memory and mock all external resources (like databases and API servers), they run in milliseconds, giving you instant feedback during development. Writing effective unit tests keeps your code modular and makes refactoring safe and fast.
-
-## Theory
 
 ### Unit Testing Isolation
 A **Unit Test** verifies the behavior of a single unit of source code (such as a function, method, or class) in isolation.
@@ -153,38 +143,42 @@ describe('UserService Unit Tests', () => {
 
 ## Interview Questions
 
-### Beginner
-* **What is a unit test, and what is its primary rule?**
-  *Answer*: A unit test is a test that verifies the behavior of a single, isolated function or class. The primary rule of unit testing is isolation: the code under test must not interact with external systems (like databases, networks, or filesystems), and all dependencies must be mocked.
+**Q:** What is a unit test, and what is its primary rule?
 
-### Intermediate
-* **What is the difference between `jest.mock()` and `jest.spyOn()`?**
-  *Answer*: `jest.mock('module-name')` replaces an entire module with a mock version, preventing its real implementation from running. `jest.spyOn(object, 'method')` wraps an existing object method in a spy, recording execution statistics (like call counts and arguments) while preserving the original implementation (unless you explicitly mock the return value).
+> **Answer:**
+> A unit test is a test that verifies the behavior of a single, isolated function or class. The primary rule of unit testing is isolation: the code under test must not interact with external systems (like databases, networks, or filesystems), and all dependencies must be mocked.
 
-### Advanced
-* **How do you test that an asynchronous function throws an error (rejects) when using Jest? Provide a code example.**
-  *Answer*: You can test that an asynchronous function rejects by using `await` with Jest's `.rejects.toThrow()` matcher:
-  ```javascript
-  test('Should throw error on rejection', async () => {
-    const failingFunction = async () => { throw new Error('Failed'); };
-    await expect(failingFunction()).rejects.toThrow('Failed');
-  });
-  ```
-  This ensures that the test runner awaits the Promise resolution and asserts the thrown error correctly.
+**Q:** What is the difference between `jest.mock()` and `jest.spyOn()`?
 
-### Senior Architect
-* **How would you configure Jest to handle module resolution aliases (e.g. importing files using `@/services/user` paths) and isolate module mocks dynamically across isolated test files?**
-  *Answer*: To configure Jest for module aliases and dynamic mocks:
-  1. Configure `moduleNameMapper` in your `jest.config.js` to map alias paths to physical directories:
-     ```javascript
-     module.exports = {
-       moduleNameMapper: {
-         '^@/(.*)$': '<rootDir>/src/$1'
-       }
-     };
-     ```
-  2. To isolate mocks dynamically across files, ensure Jest is configured to run tests in parallel processes (the default behavior). Each test file executes in its own isolated OS process with its own V8 context, preventing mocks declared in one file from bleeding into other test files.
-  3. Use `jest.doMock()` inside test cases if you need to define dynamic, context-specific module mocks at runtime inside the same file, bypassing the standard hoisted `jest.mock()` configuration.
+> **Answer:**
+> `jest.mock('module-name')` replaces an entire module with a mock version, preventing its real implementation from running. `jest.spyOn(object, 'method')` wraps an existing object method in a spy, recording execution statistics (like call counts and arguments) while preserving the original implementation (unless you explicitly mock the return value).
+
+**Q:** How do you test that an asynchronous function throws an error (rejects) when using Jest? Provide a code example.
+
+> **Answer:**
+> You can test that an asynchronous function rejects by using `await` with Jest's `.rejects.toThrow()` matcher:
+> ```javascript
+> test('Should throw error on rejection', async () => {
+> const failingFunction = async () => { throw new Error('Failed'); };
+> await expect(failingFunction()).rejects.toThrow('Failed');
+> });
+> ```
+> This ensures that the test runner awaits the Promise resolution and asserts the thrown error correctly.
+
+**Q:** How would you configure Jest to handle module resolution aliases (e.g. importing files using `@/services/user` paths) and isolate module mocks dynamically across isolated test files?
+
+> **Answer:**
+> To configure Jest for module aliases and dynamic mocks:
+> 1. Configure `moduleNameMapper` in your `jest.config.js` to map alias paths to physical directories:
+> ```javascript
+> module.exports = {
+> moduleNameMapper: {
+> '^@/(.*)$': '<rootDir>/src/$1'
+> }
+> };
+> ```
+> 2. To isolate mocks dynamically across files, ensure Jest is configured to run tests in parallel processes (the default behavior). Each test file executes in its own isolated OS process with its own V8 context, preventing mocks declared in one file from bleeding into other test files.
+> 3. Use `jest.doMock()` inside test cases if you need to define dynamic, context-specific module mocks at runtime inside the same file, bypassing the standard hoisted `jest.mock()` configuration.
 
 ---
-Previous : [63_Testing_Fundamentals.md] | Index : [00_index.md] | Next : [65_Integration_Testing.md]
+Previous : [63_Testing_Fundamentals.md](63_Testing_Fundamentals.md) | Index : [00_index.md](00_index.md) | Next : [65_Integration_Testing.md](65_Integration_Testing.md)

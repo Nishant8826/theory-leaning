@@ -1,16 +1,6 @@
 # Async/Await
 
-## What You Will Learn
-* How `async/await` acts as syntactic sugar over Promises.
-* How the V8 engine suspends and resumes execution of `async` functions.
-* Handling errors cleanly using `try/catch` blocks.
-* Identifying and fixing the sequential execution bottleneck.
-* Tracing the execution order of `async/await` functions.
-
-## Why This Matters
 `async/await` allows you to write asynchronous code that reads like synchronous code, making it easier to read and maintain. However, misusing `await` can introduce performance bottlenecks, such as running independent tasks sequentially rather than in parallel, which slows down your application.
-
-## Theory
 
 ### Syntactic Sugar over Promises
 The `async` and `await` keywords do not introduce a new execution model. Under the hood, they compile to standard Promises and generator functions:
@@ -144,35 +134,39 @@ runAll();
 
 ## Interview Questions
 
-### Beginner
-* **What is the relation between Promises and `async/await`?**
-  *Answer*: `async/await` is syntactic sugar built on top of Promises. A function marked with the `async` keyword always returns a Promise, and the `await` keyword pauses the execution of that function until the awaited Promise resolves, returning the result.
+**Q:** What is the relation between Promises and `async/await`?
 
-### Intermediate
-* **How do you handle errors when using `async/await`?**
-  *Answer*: You handle errors by wrapping the `await` statement inside standard `try/catch` blocks. If the awaited Promise rejects, the rejection reason is thrown as an error that can be caught in the `catch` block.
+> **Answer:**
+> `async/await` is syntactic sugar built on top of Promises. A function marked with the `async` keyword always returns a Promise, and the `await` keyword pauses the execution of that function until the awaited Promise resolves, returning the result.
 
-### Advanced
-* **What is the sequential execution bottleneck in `async/await`, and how do you resolve it? Provide code examples.**
-  *Answer*: The sequential execution bottleneck occurs when multiple independent asynchronous operations are executed one after the other using separate `await` statements, compounding their latency. 
-  You resolve this by starting all independent operations concurrently and waiting for them to settle using `Promise.all` or `Promise.allSettled`:
-  ```javascript
-  // Slow (Sequential)
-  const data1 = await callAPI1();
-  const data2 = await callAPI2();
+**Q:** How do you handle errors when using `async/await`?
 
-  // Fast (Parallel)
-  const [data1, data2] = await Promise.all([callAPI1(), callAPI2()]);
-  ```
+> **Answer:**
+> You handle errors by wrapping the `await` statement inside standard `try/catch` blocks. If the awaited Promise rejects, the rejection reason is thrown as an error that can be caught in the `catch` block.
 
-### Senior Architect
-* **Explain how V8 executes `async/await` under the hood. Specifically, trace how the execution context is suspended, how it yields control to the event loop, and how it resumes.**
-  *Answer*: When V8 compiles an `async` function, it converts the function into a generator that yields Promises. When execution reaches an `await <Promise>` statement:
-  1. The engine evaluates the expression next to `await` and wraps it in a Promise if it is a primitive value.
-  2. It saves the function's execution context (including local variables and the instruction pointer) on the heap.
-  3. It registers a microtask callback that resumes the function's execution when the Promise settles.
-  4. Control is returned back to the caller of the `async` function (or the main event loop if called at the root level).
-  5. When the Promise resolves, its callback is pushed to the Promise microtask queue. When the Call Stack clears, V8 drains this queue, restores the saved execution context, and resumes execution from the saved instruction pointer, writing the resolved value to the target variable.
+**Q:** What is the sequential execution bottleneck in `async/await`, and how do you resolve it? Provide code examples.
+
+> **Answer:**
+> The sequential execution bottleneck occurs when multiple independent asynchronous operations are executed one after the other using separate `await` statements, compounding their latency.
+> You resolve this by starting all independent operations concurrently and waiting for them to settle using `Promise.all` or `Promise.allSettled`:
+> ```javascript
+> // Slow (Sequential)
+> const data1 = await callAPI1();
+> const data2 = await callAPI2();
+> 
+> // Fast (Parallel)
+> const [data1, data2] = await Promise.all([callAPI1(), callAPI2()]);
+> ```
+
+**Q:** Explain how V8 executes `async/await` under the hood. Specifically, trace how the execution context is suspended, how it yields control to the event loop, and how it resumes.
+
+> **Answer:**
+> When V8 compiles an `async` function, it converts the function into a generator that yields Promises. When execution reaches an `await <Promise>` statement:
+> 1. The engine evaluates the expression next to `await` and wraps it in a Promise if it is a primitive value.
+> 2. It saves the function's execution context (including local variables and the instruction pointer) on the heap.
+> 3. It registers a microtask callback that resumes the function's execution when the Promise settles.
+> 4. Control is returned back to the caller of the `async` function (or the main event loop if called at the root level).
+> 5. When the Promise resolves, its callback is pushed to the Promise microtask queue. When the Call Stack clears, V8 drains this queue, restores the saved execution context, and resumes execution from the saved instruction pointer, writing the resolved value to the target variable.
 
 ---
-Previous : [19_Promises.md] | Index : [00_index.md] | Next : [21_HTTP_Module.md]
+Previous : [19_Promises.md](19_Promises.md) | Index : [00_index.md](00_index.md) | Next : [21_HTTP_Module.md](21_HTTP_Module.md)

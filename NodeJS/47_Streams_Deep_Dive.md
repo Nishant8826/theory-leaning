@@ -1,17 +1,6 @@
 # Streams Deep Dive
 
-## What You Will Learn
-* How the **Backpressure** flow control mechanism manages stream throughput.
-* Configuring **`highWaterMark`** limits for memory management.
-* Handling the **`drain`** event on Writable streams.
-* Building Custom Readable, Writable, and Transform streams.
-* Utilizing **`objectMode`** to stream JavaScript objects.
-* Writing robust stream pipelines using `stream.pipeline()`.
-
-## Why This Matters
 While piping streams using `.pipe()` works for simple tasks, writing custom streams or handling high-throughput pipelines requires understanding stream internals. If you do not manage backpressure, a fast data source can overwhelm a slow data destination, causing the application to accumulate data in memory buffers, resulting in memory leaks and crashes.
-
-## Theory
 
 ### HighWaterMark and Backpressure
 * **`highWaterMark`**: The maximum size (in bytes for binary streams, or count for object streams) of the internal buffer that a stream holds. The default is 16KB for standard streams and 64KB for filesystem streams.
@@ -137,29 +126,33 @@ runPipeline();
 
 ## Interview Questions
 
-### Beginner
-* **What is the difference between `.pipe()` and `stream.pipeline()`?**
-  *Answer*: `.pipe()` connects a Readable stream to a Writable stream but does not handle errors or clean up resources automatically if one of the streams fails. `stream.pipeline()` handles errors in a single location and automatically destroys all streams in the chain if an error occurs, preventing resource leaks.
+**Q:** What is the difference between `.pipe()` and `stream.pipeline()`?
 
-### Intermediate
-* **What is Backpressure in Node.js streams and how does the runtime handle it?**
-  *Answer*: Backpressure is a flow-control mechanism that occurs when a Writable stream cannot write data as fast as a Readable stream is sending it. When the Writable stream's internal buffer (`highWaterMark`) is full, `.write()` returns `false`. The event loop pauses the Readable stream until the Writable stream clears its buffer and emits a `'drain'` event, resuming the flow.
+> **Answer:**
+> `.pipe()` connects a Readable stream to a Writable stream but does not handle errors or clean up resources automatically if one of the streams fails. `stream.pipeline()` handles errors in a single location and automatically destroys all streams in the chain if an error occurs, preventing resource leaks.
 
-### Advanced
-* **Explain how `objectMode` works in Node.js streams and how the `highWaterMark` option behaves differently when it is enabled.**
-  *Answer*: By default, streams only accept binary buffers or strings. Setting `objectMode: true` allows streams to accept raw JavaScript objects. 
-  When `objectMode` is disabled, the `highWaterMark` limit is measured in **bytes** (defaulting to 16KB). When `objectMode` is enabled, the `highWaterMark` limit is measured in the **number of objects** (defaulting to 16 objects), regardless of the memory size of each object.
+**Q:** What is Backpressure in Node.js streams and how does the runtime handle it?
 
-### Senior Architect
-* **How would you build a custom transform stream that parses high-throughput JSON logs, extracts specific keys, and gzip-compresses the output in a memory-bounded pipeline?**
-  *Answer*: To build this transform stream:
-  1. Inherit from the `Transform` class.
-  2. Configure `writableObjectMode: false` (to accept raw byte chunks) and `readableObjectMode: false` (to output binary compressed chunks).
-  3. Implement the `_transform` method:
-     - Accumulate chunks until a complete JSON line delimiter is found.
-     - Parse the JSON string: `const log = JSON.parse(line)`.
-     - Extract the required fields, format them as a string, and pass the string to the next stream using `this.push(formattedString)`.
-  4. Use `stream.pipeline()` to connect a file read stream, your custom parser transform, a `zlib.createGzip()` transform, and a file write stream. This pipeline automatically manages backpressure and cleans up all stream resources if an error occurs.
+> **Answer:**
+> Backpressure is a flow-control mechanism that occurs when a Writable stream cannot write data as fast as a Readable stream is sending it. When the Writable stream's internal buffer (`highWaterMark`) is full, `.write()` returns `false`. The event loop pauses the Readable stream until the Writable stream clears its buffer and emits a `'drain'` event, resuming the flow.
+
+**Q:** Explain how `objectMode` works in Node.js streams and how the `highWaterMark` option behaves differently when it is enabled.
+
+> **Answer:**
+> By default, streams only accept binary buffers or strings. Setting `objectMode: true` allows streams to accept raw JavaScript objects.
+> When `objectMode` is disabled, the `highWaterMark` limit is measured in **bytes** (defaulting to 16KB). When `objectMode` is enabled, the `highWaterMark` limit is measured in the **number of objects** (defaulting to 16 objects), regardless of the memory size of each object.
+
+**Q:** How would you build a custom transform stream that parses high-throughput JSON logs, extracts specific keys, and gzip-compresses the output in a memory-bounded pipeline?
+
+> **Answer:**
+> To build this transform stream:
+> 1. Inherit from the `Transform` class.
+> 2. Configure `writableObjectMode: false` (to accept raw byte chunks) and `readableObjectMode: false` (to output binary compressed chunks).
+> 3. Implement the `_transform` method:
+> - Accumulate chunks until a complete JSON line delimiter is found.
+> - Parse the JSON string: `const log = JSON.parse(line)`.
+> - Extract the required fields, format them as a string, and pass the string to the next stream using `this.push(formattedString)`.
+> 4. Use `stream.pipeline()` to connect a file read stream, your custom parser transform, a `zlib.createGzip()` transform, and a file write stream. This pipeline automatically manages backpressure and cleans up all stream resources if an error occurs.
 
 ---
-Previous : [46_Event_Loop_Deep_Dive.md] | Index : [00_index.md] | Next : [48_Worker_Threads.md]
+Previous : [46_Event_Loop_Deep_Dive.md](46_Event_Loop_Deep_Dive.md) | Index : [00_index.md](00_index.md) | Next : [48_Worker_Threads.md](48_Worker_Threads.md)

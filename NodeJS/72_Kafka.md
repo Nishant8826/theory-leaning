@@ -1,16 +1,6 @@
 # Kafka
 
-## What You Will Learn
-* The architecture of Apache Kafka as a distributed commit log.
-* Core components: Producers, Topics, Partitions, Consumer Groups, and Offsets.
-* Key differences between Kafka and RabbitMQ.
-* Connecting to Kafka in Node.js using the `kafkajs` library.
-* Managing partition scaling and consumer rebalancing.
-
-## Why This Matters
 For high-volume, real-time data streaming (like tracking user clickstreams, processing financial transactions, or gathering system metrics), traditional message queues like RabbitMQ can struggle. Kafka is a distributed event streaming platform designed for high throughput. It stores events in a partitionable commit log, allowing multiple consumers to read and replay events independently at scale.
-
-## Theory
 
 ### Kafka Architecture: Distributed Commit Log
 Kafka does not use exchanges and queues. Instead, it stores events in a **Topic**, which is structured as a partitioned commit log:
@@ -144,30 +134,41 @@ runConsumer().catch(console.error);
 
 ## Interview Questions
 
-### Beginner
-* **What is a Topic and a Partition in Apache Kafka?**
-  *Answer*: A topic is a named category or feed to which events are published. A partition is a physical, ordered log segment within a topic. Topics are divided into multiple partitions distributed across cluster nodes to support parallel processing.
+**Q:** What is a Topic and a Partition in Apache Kafka?
 
-### Intermediate
-* **What is a Consumer Group in Kafka, and how does it scale data processing?**
-  *Answer*: A consumer group is a collection of consumers that collaborate to read events from a topic. Kafka ensures that each partition in the topic is assigned to exactly one consumer in the group, allowing multiple instances to process events in parallel without duplicating messages.
+> **Answer:**
+> A topic is a named category or feed to which events are published. A partition is a physical, ordered log segment within a topic. Topics are divided into multiple partitions distributed across cluster nodes to support parallel processing.
 
-### Advanced
-* **Compare Kafka and RabbitMQ. In what scenario would you choose Kafka over RabbitMQ?**
-  *Answer*: 
-  * **RabbitMQ**: A message broker that routes messages using complex rules and deletes them once acknowledged (push model). Ideal for task queues and simple transactional notifications.
-  * **Kafka**: A distributed commit log that stores events permanently in partitions, allowing consumers to pull and replay events (pull model).
-  * *Selection Criteria*: Choose **Kafka** for high-volume, real-time data streaming (like activity logs, clickstreams, or telemetry metrics) where you need high write throughput, event replay capabilities, or want to distribute data to multiple systems independently.
+**Q:** What is a Consumer Group in Kafka, and how does it scale data processing?
 
-### Senior Architect
-* **How would you handle a "poison pill" message (a malformed event that crashes the consumer during JSON parsing) in a Kafka consumer loop, ensuring the pipeline continues processing subsequent events?**
-  *Answer*: A poison pill message will cause the consumer callback to throw an exception repeatedly. Because Kafkajs will not commit the offset until the callback completes, the consumer gets stuck retrying the same malformed message, blocking the entire partition.
-  To resolve this:
-  1. Implement a try/catch block around the JSON parsing and message processing logic.
-  2. If an exception occurs:
-     - Log the error details and message payload immediately.
-     - Publish the malformed message payload to a separate **Dead Letter Topic** (DLT) in Kafka.
-     - Call the commit offset method manually or return successfully from the callback to allow the consumer to advance to the next message, preventing the pipeline from hanging.
+> **Answer:**
+> A consumer group is a collection of consumers that collaborate to read events from a topic. Kafka ensures that each partition in the topic is assigned to exactly one consumer in the group, allowing multiple instances to process events in parallel without duplicating messages.
+
+**Q:** Compare Kafka and RabbitMQ. In what scenario would you choose Kafka over RabbitMQ?
+
+> **Answer:**
+> 
+
+**Q:** RabbitMQ
+
+> **Answer:**
+> 
+
+**Q:** Kafka
+
+> **Answer:**
+> * *Selection Criteria*: Choose **Kafka** for high-volume, real-time data streaming (like activity logs, clickstreams, or telemetry metrics) where you need high write throughput, event replay capabilities, or want to distribute data to multiple systems independently.
+
+**Q:** How would you handle a "poison pill" message (a malformed event that crashes the consumer during JSON parsing) in a Kafka consumer loop, ensuring the pipeline continues processing subsequent events?
+
+> **Answer:**
+> A poison pill message will cause the consumer callback to throw an exception repeatedly. Because Kafkajs will not commit the offset until the callback completes, the consumer gets stuck retrying the same malformed message, blocking the entire partition.
+> To resolve this:
+> 1. Implement a try/catch block around the JSON parsing and message processing logic.
+> 2. If an exception occurs:
+> - Log the error details and message payload immediately.
+> - Publish the malformed message payload to a separate **Dead Letter Topic** (DLT) in Kafka.
+> - Call the commit offset method manually or return successfully from the callback to allow the consumer to advance to the next message, preventing the pipeline from hanging.
 
 ---
-Previous : [71_RabbitMQ.md] | Index : [00_index.md] | Next : [73_Distributed_Systems.md]
+Previous : [71_RabbitMQ.md](71_RabbitMQ.md) | Index : [00_index.md](00_index.md) | Next : [73_Distributed_Systems.md](73_Distributed_Systems.md)

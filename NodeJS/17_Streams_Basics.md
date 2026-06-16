@@ -1,16 +1,6 @@
 # Streams Basics
 
-## What You Will Learn
-* What a stream is and why it is critical for performance.
-* How streams solve memory overhead issues by processing data in chunks.
-* The four primary types of streams (Readable, Writable, Duplex, Transform).
-* Piping stream outputs using `.pipe()`.
-* Practical stream implementations for reading and writing files.
-
-## Why This Matters
 If you read a large file (like a 2GB log file or video export) into memory using standard file APIs, your application will crash with an Out of Memory error. Streams allow you to process data chunk-by-chunk as it arrives from the operating system or network, keeping your application's memory footprint low (often just a few megabytes) regardless of file size.
-
-## Theory
 
 ### What is a Stream?
 A **Stream** is an abstract interface in Node.js for working with streaming data. Instead of loading an entire file or network response into memory all at once, streams read and write data in small, sequential chunks.
@@ -112,34 +102,37 @@ fileWrite.on('finish', () => {
 
 ## Interview Questions
 
-### Beginner
-* **What is a stream in Node.js, and what is its primary benefit?**
-  *Answer*: A stream is an interface in Node.js for reading or writing data chunk-by-chunk. Its primary benefit is memory efficiency, allowing you to process large files or network payloads without loading the entire dataset into memory at once.
+**Q:** What is a stream in Node.js, and what is its primary benefit?
 
-### Intermediate
-* **Name the four main types of streams and provide a real-world example of each.**
-  *Answer*: 
-  1. **Readable**: Source of data (e.g., `fs.createReadStream` to read files).
-  2. **Writable**: Destination for data (e.g., `fs.createWriteStream` to write files).
-  3. **Duplex**: Can both read and write (e.g., `net.Socket` to communicate over TCP).
-  4. **Transform**: Modifies data as it passes through (e.g., `zlib.createGzip` to compress files).
+> **Answer:**
+> A stream is an interface in Node.js for reading or writing data chunk-by-chunk. Its primary benefit is memory efficiency, allowing you to process large files or network payloads without loading the entire dataset into memory at once.
 
-### Advanced
-* **What does the `.pipe()` method do, and how does it help manage stream speed differences?**
-  *Answer*: The `.pipe()` method connects the output of a Readable stream to the input of a Writable stream. It automatically manages the flow of data so that a fast Readable stream does not overwhelm a slow Writable stream (a condition known as **backpressure**). If the destination stream cannot keep up, `.pipe()` pauses the source stream until the destination is ready to receive more data.
+**Q:** Name the four main types of streams and provide a real-world example of each.
 
-### Senior Architect
-* **Discuss the potential memory risks when using `.pipe()` in Node.js without attaching error handlers. How does the modern `stream.pipeline` API solve these risks?**
-  *Answer*: The `.pipe()` method does not automatically clean up or destroy streams if an error occurs. If an error is thrown in the middle of a chain (e.g. `source.pipe(transform).pipe(dest)`), the streams remain open in memory, leading to file descriptor leaks and memory leaks.
-  
-  To solve this, modern Node.js introduces `stream.pipeline()`. This utility function pipes streams together and automatically destroys all streams in the chain if any of them errors or closes. It also accepts a callback at the end to handle errors in a single location, making it the standard choice for production stream pipelines:
-  ```javascript
-  const { pipeline } = require('stream');
-  pipeline(source, transform, dest, (err) => {
-    if (err) console.error('Pipeline failed:', err);
-    else console.log('Pipeline succeeded');
-  });
-  ```
+> **Answer:**
+> 1. **Readable**: Source of data (e.g., `fs.createReadStream` to read files).
+> 2. **Writable**: Destination for data (e.g., `fs.createWriteStream` to write files).
+> 3. **Duplex**: Can both read and write (e.g., `net.Socket` to communicate over TCP).
+> 4. **Transform**: Modifies data as it passes through (e.g., `zlib.createGzip` to compress files).
+
+**Q:** What does the `.pipe()` method do, and how does it help manage stream speed differences?
+
+> **Answer:**
+> The `.pipe()` method connects the output of a Readable stream to the input of a Writable stream. It automatically manages the flow of data so that a fast Readable stream does not overwhelm a slow Writable stream (a condition known as **backpressure**). If the destination stream cannot keep up, `.pipe()` pauses the source stream until the destination is ready to receive more data.
+
+**Q:** Discuss the potential memory risks when using `.pipe()` in Node.js without attaching error handlers. How does the modern `stream.pipeline` API solve these risks?
+
+> **Answer:**
+> The `.pipe()` method does not automatically clean up or destroy streams if an error occurs. If an error is thrown in the middle of a chain (e.g. `source.pipe(transform).pipe(dest)`), the streams remain open in memory, leading to file descriptor leaks and memory leaks.
+> 
+> To solve this, modern Node.js introduces `stream.pipeline()`. This utility function pipes streams together and automatically destroys all streams in the chain if any of them errors or closes. It also accepts a callback at the end to handle errors in a single location, making it the standard choice for production stream pipelines:
+> ```javascript
+> const { pipeline } = require('stream');
+> pipeline(source, transform, dest, (err) => {
+> if (err) console.error('Pipeline failed:', err);
+> else console.log('Pipeline succeeded');
+> });
+> ```
 
 ---
-Previous : [16_Buffers.md] | Index : [00_index.md] | Next : [18_Callbacks.md]
+Previous : [16_Buffers.md](16_Buffers.md) | Index : [00_index.md](00_index.md) | Next : [18_Callbacks.md](18_Callbacks.md)

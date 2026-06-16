@@ -1,16 +1,6 @@
 # Reverse Proxy
 
-## What You Will Learn
-* The difference between a Forward Proxy and a Reverse Proxy.
-* The security and performance benefits of Reverse Proxies.
-* Routing requests to microservices using path-based routing.
-* Rewriting request paths at the gateway boundary.
-* Throttling request volume at the proxy layer.
-
-## Why This Matters
 Exposing multiple microservice ports to clients complicates client development and creates security risks. A Reverse Proxy acts as a single gateway. It presents a unified endpoint to the public, routes requests to internal microservices based on paths, terminates SSL, and rewrites URLs on the fly, keeping your internal network secure and simple.
-
-## Theory
 
 ### Forward Proxy vs. Reverse Proxy
 * **Forward Proxy (Client-side)**: Acts on behalf of the client. It intercepts outgoing requests from clients to the internet, obscuring the client's identity (e.g. VPNs or corporate web filters).
@@ -120,28 +110,32 @@ http {
 
 ## Interview Questions
 
-### Beginner
-* **What is the difference between a Forward Proxy and a Reverse Proxy?**
-  *Answer*: A forward proxy acts on behalf of clients, intercepting outgoing requests to hide the client's identity or filter traffic. A reverse proxy acts on behalf of servers, intercepting incoming requests from the internet to route them to internal backend servers, securing the network.
+**Q:** What is the difference between a Forward Proxy and a Reverse Proxy?
 
-### Intermediate
-* **What is path-based routing in a reverse proxy?**
-  *Answer*: Path-based routing is a configuration where the reverse proxy routes client requests to different backend microservices based on the URL path prefix (e.g. routing `/users` to the User Service and `/billing` to the Billing Service), presenting a single, unified domain to the public.
+> **Answer:**
+> A forward proxy acts on behalf of clients, intercepting outgoing requests to hide the client's identity or filter traffic. A reverse proxy acts on behalf of servers, intercepting incoming requests from the internet to route them to internal backend servers, securing the network.
 
-### Advanced
-* **Why is it useful to rewrite URL paths at the reverse proxy layer, and what Nginx directive is used to implement this?**
-  *Answer*: URL rewriting allows the proxy to strip out path prefixes (like `/api/v1/users/`) before forwarding requests to the microservices. This keeps the microservice routers simple and decoupled from the gateway's public routing paths. In Nginx, you implement this using the **`rewrite`** directive with regular expression capture groups.
+**Q:** What is path-based routing in a reverse proxy?
 
-### Senior Architect
-* **How would you architecture a high-availability reverse proxy gateway cluster using Nginx and Keepalived to ensure the gateway itself does not become a single point of failure?**
-  *Answer*: To build a high-availability reverse proxy cluster:
-  1. **Spawn Redundant Proxies**: Deploy two identical Nginx proxy servers: Nginx Active and Nginx Passive.
-  2. **Install Keepalived**: Run Keepalived daemon on both Nginx servers. Keepalived uses the **Virtual Router Redundancy Protocol (VRRP)** to monitor the health of the Nginx processes.
-  3. **Virtual IP (VIP)**: Configure a single, shared Virtual IP address (VIP) for the cluster. The domain's DNS points to this VIP.
-  4. **Failover Execution**: 
-     - Under normal conditions, Keepalived assigns the VIP to the Active Nginx server.
-     - If the Active Nginx server crashes or loses network connection, the Keepalived daemon on the Passive Nginx server detects the failure (via missed heartbeat signals) and assigns the VIP to itself instantly (~1-2 seconds).
-     - Traffic is routed to the Passive server without DNS changes, ensuring high availability.
+> **Answer:**
+> Path-based routing is a configuration where the reverse proxy routes client requests to different backend microservices based on the URL path prefix (e.g. routing `/users` to the User Service and `/billing` to the Billing Service), presenting a single, unified domain to the public.
+
+**Q:** Why is it useful to rewrite URL paths at the reverse proxy layer, and what Nginx directive is used to implement this?
+
+> **Answer:**
+> URL rewriting allows the proxy to strip out path prefixes (like `/api/v1/users/`) before forwarding requests to the microservices. This keeps the microservice routers simple and decoupled from the gateway's public routing paths. In Nginx, you implement this using the **`rewrite`** directive with regular expression capture groups.
+
+**Q:** How would you architecture a high-availability reverse proxy gateway cluster using Nginx and Keepalived to ensure the gateway itself does not become a single point of failure?
+
+> **Answer:**
+> To build a high-availability reverse proxy cluster:
+> 1. **Spawn Redundant Proxies**: Deploy two identical Nginx proxy servers: Nginx Active and Nginx Passive.
+> 2. **Install Keepalived**: Run Keepalived daemon on both Nginx servers. Keepalived uses the **Virtual Router Redundancy Protocol (VRRP)** to monitor the health of the Nginx processes.
+> 3. **Virtual IP (VIP)**: Configure a single, shared Virtual IP address (VIP) for the cluster. The domain's DNS points to this VIP.
+> 4. **Failover Execution**:
+> - Under normal conditions, Keepalived assigns the VIP to the Active Nginx server.
+> - If the Active Nginx server crashes or loses network connection, the Keepalived daemon on the Passive Nginx server detects the failure (via missed heartbeat signals) and assigns the VIP to itself instantly (~1-2 seconds).
+> - Traffic is routed to the Passive server without DNS changes, ensuring high availability.
 
 ---
-Previous : [80_Nginx.md] | Index : [00_index.md] | Next : [82_Load_Balancing.md]
+Previous : [80_Nginx.md](80_Nginx.md) | Index : [00_index.md](00_index.md) | Next : [82_Load_Balancing.md](82_Load_Balancing.md)

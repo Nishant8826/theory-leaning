@@ -1,16 +1,6 @@
 # Cluster Module
 
-## What You Will Learn
-* Scaling Node.js servers using the native `cluster` module.
-* The architectural roles of the Master (Primary) and Worker processes.
-* TCP Port Sharing and Connection Routing strategies (Round-Robin vs. Shared Socket).
-* Monitoring worker processes and implementing crash recovery for zero downtime.
-* Inter-Process Communication (IPC) within process clusters.
-
-## Why This Matters
 By default, Node.js runs on a single CPU core. If you deploy a Node.js server to an 8-core cloud machine without clustering, 7 cores will sit idle while the single active core struggles under heavy traffic. The `cluster` module allows you to spawn multiple worker processes that share the same network port, utilizing all available CPU capacity to maximize request throughput.
-
-## Theory
 
 ### Master and Worker Process Architecture
 The cluster module works by spawning multiple copies of your application process:
@@ -114,30 +104,42 @@ else {
 
 ## Interview Questions
 
-### Beginner
-* **What is the purpose of the `cluster` module in Node.js?**
-  *Answer*: The `cluster` module is used to scale Node.js applications horizontally across multi-core systems by spawning multiple copy worker processes that share the same network port.
+**Q:** What is the purpose of the `cluster` module in Node.js?
 
-### Intermediate
-* **How can multiple worker processes listen on the same port without causing a port collision error?**
-  *Answer*: The worker processes do not call the OS kernel to bind to the port directly. When a worker calls `server.listen()`, the cluster module intercepts the call. The primary process binds to the port, accepts incoming connections, and distributes them to the workers over internal IPC channels, preventing port collisions.
+> **Answer:**
+> The `cluster` module is used to scale Node.js applications horizontally across multi-core systems by spawning multiple copy worker processes that share the same network port.
 
-### Advanced
-* **Explain the difference between Round-Robin and Shared Socket connection routing strategies in the `cluster` module. Which one is default on Linux?**
-  *Answer*: 
-  * **Round-Robin** (Default on Linux/macOS): The primary process accepts all incoming TCP connections and distributes the client socket handles to idle workers in a round-robin sequence, ensuring an even load distribution.
-  * **Shared Socket** (Default on Windows): The primary process creates the listening socket and passes it to all workers. The workers compete to accept incoming connections directly. This can result in uneven load distribution because the fastest worker handles the majority of the traffic.
+**Q:** How can multiple worker processes listen on the same port without causing a port collision error?
 
-### Senior Architect
-* **How would you execute a zero-downtime application reload in a clustered Node.js environment when deploying code updates to production?**
-  *Answer*: To perform a zero-downtime reload (often called a rolling reload):
-  1. Retrieve the list of active worker processes from the primary process.
-  2. Iterate through the workers one-by-one, reloading them sequentially:
-     - Send a custom IPC message to Worker 1 instructing it to shut down.
-     - Worker 1 calls `server.close()` to stop accepting new requests, drains active requests, and then exits.
-     - The primary process catches Worker 1's exit, forks a new worker (running the updated code), and waits for it to become online and ready.
-     - Once the new worker is online, repeat the process for Worker 2, and so on.
-  This sequential rolling upgrade ensures that there are always active workers online to handle traffic, enabling zero-downtime deployments.
+> **Answer:**
+> The worker processes do not call the OS kernel to bind to the port directly. When a worker calls `server.listen()`, the cluster module intercepts the call. The primary process binds to the port, accepts incoming connections, and distributes them to the workers over internal IPC channels, preventing port collisions.
+
+**Q:** Explain the difference between Round-Robin and Shared Socket connection routing strategies in the `cluster` module. Which one is default on Linux?
+
+> **Answer:**
+> 
+
+**Q:** Round-Robin
+
+> **Answer:**
+> 
+
+**Q:** Shared Socket
+
+> **Answer:**
+> 
+
+**Q:** How would you execute a zero-downtime application reload in a clustered Node.js environment when deploying code updates to production?
+
+> **Answer:**
+> To perform a zero-downtime reload (often called a rolling reload):
+> 1. Retrieve the list of active worker processes from the primary process.
+> 2. Iterate through the workers one-by-one, reloading them sequentially:
+> - Send a custom IPC message to Worker 1 instructing it to shut down.
+> - Worker 1 calls `server.close()` to stop accepting new requests, drains active requests, and then exits.
+> - The primary process catches Worker 1's exit, forks a new worker (running the updated code), and waits for it to become online and ready.
+> - Once the new worker is online, repeat the process for Worker 2, and so on.
+> This sequential rolling upgrade ensures that there are always active workers online to handle traffic, enabling zero-downtime deployments.
 
 ---
-Previous : [48_Worker_Threads.md] | Index : [00_index.md] | Next : [50_Child_Processes.md]
+Previous : [48_Worker_Threads.md](48_Worker_Threads.md) | Index : [00_index.md](00_index.md) | Next : [50_Child_Processes.md](50_Child_Processes.md)

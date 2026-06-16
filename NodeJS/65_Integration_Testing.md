@@ -1,16 +1,6 @@
 # Integration Testing
 
-## What You Will Learn
-* The goals of Integration Testing in backend architectures.
-* Setting up a test database pipeline (Docker Postgres/MongoDB).
-* Enforcing database state isolation between concurrent test runs.
-* Seeding mock data and cleaning tables dynamically.
-* Writing integration tests for Express routers and database pools.
-
-## Why This Matters
 Unit tests verify code logic in isolation, but they do not guarantee that your application will work in production. A unit test will not tell you if a SQL query has a syntax error, if a database index is missing, or if a routing middleware fails to pass a context parameter. Integration tests verify the entire request path, including database queries and routing configurations, ensuring your systems work together.
-
-## Theory
 
 ### The Purpose of Integration Testing
 An **Integration Test** verifies that multiple units of code (such as routing, middleware, controllers, database models, and databases) interact correctly.
@@ -154,35 +144,45 @@ describe('User Routing Integration Tests', () => {
 
 ## Interview Questions
 
-### Beginner
-* **What is the difference between a unit test and an integration test?**
-  *Answer*: A unit test verifies the behavior of a single function or class in isolation, mocking all external dependencies. An integration test verifies the interaction between multiple components (e.g. routing, controllers, database models, and databases) and performs physical I/O operations (like database queries).
+**Q:** What is the difference between a unit test and an integration test?
 
-### Intermediate
-* **Why must database connection pools be closed in the `afterAll` hook of your integration test suites?**
-  *Answer*: Node.js processes remain active as long as there are pending handles on the event loop (like open TCP sockets or database connections). If you do not close connection pools in the `afterAll` hook, the connections remain active, preventing the Node.js test process from exiting when tests complete.
+> **Answer:**
+> A unit test verifies the behavior of a single function or class in isolation, mocking all external dependencies. An integration test verifies the interaction between multiple components (e.g. routing, controllers, database models, and databases) and performs physical I/O operations (like database queries).
 
-### Advanced
-* **Compare database state isolation using table truncation vs. transaction rollbacks. What are the key trade-offs in test execution speed and capabilities?**
-  *Answer*: 
-  * **Truncation**: Deletes all rows from tables (`TRUNCATE`) after each test.
-    * *Pros*: Simple, guarantees a clean database state, and handles nested transactions in code.
-    * *Cons*: Slow; executing truncation queries between hundreds of tests adds significant I/O overhead.
-  * **Transaction Rollbacks**: Wraps each test in a database transaction (`BEGIN`) and rolls it back (`ROLLBACK`) in the teardown.
-    * *Pros*: Extremely fast because data changes are kept in memory and never written to disk, reducing execution times.
-    * *Cons*: Does not support testing code that handles its own database transaction lifecycle or writes to separate connection pools.
+**Q:** Why must database connection pools be closed in the `afterAll` hook of your integration test suites?
 
-### Senior Architect
-* **How would you architecture a local integration testing pipeline inside a Docker Compose environment that spins up your Node.js application, database container, and Redis cache, runs tests concurrently, and teardowns cleanly?**
-  *Answer*: To build a Docker-based integration testing pipeline:
-  1. Define a `docker-compose.test.yml` file containing the service containers:
-     - `app-test`: Node.js container executing test commands.
-     - `db-test`: PostgreSQL container.
-     - `redis-test`: Redis container.
-  2. Configure `app-test` environment variables to connect to `db-test` and `redis-test` containers dynamically using their service hostnames.
-  3. Implement a wait script (e.g., `wait-for-it.sh` or `pg_isready` checks) in the container startup command to ensure that the database is fully initialized and accepting connections before running the tests.
-  4. Run the test suite: `docker-compose -f docker-compose.test.yml up --build --exit-code-from app-test`.
-  5. The `--exit-code-from app-test` flag tells Docker Compose to monitor the test exit code. Once the tests complete, the pipeline automatically shuts down and deletes all containers, networks, and volumes (`docker-compose down -v`), ensuring a clean cleanup.
+> **Answer:**
+> Node.js processes remain active as long as there are pending handles on the event loop (like open TCP sockets or database connections). If you do not close connection pools in the `afterAll` hook, the connections remain active, preventing the Node.js test process from exiting when tests complete.
+
+**Q:** Compare database state isolation using table truncation vs. transaction rollbacks. What are the key trade-offs in test execution speed and capabilities?
+
+> **Answer:**
+> 
+
+**Q:** Truncation
+
+> **Answer:**
+> * *Pros*: Simple, guarantees a clean database state, and handles nested transactions in code.
+> * *Cons*: Slow; executing truncation queries between hundreds of tests adds significant I/O overhead.
+
+**Q:** Transaction Rollbacks
+
+> **Answer:**
+> * *Pros*: Extremely fast because data changes are kept in memory and never written to disk, reducing execution times.
+> * *Cons*: Does not support testing code that handles its own database transaction lifecycle or writes to separate connection pools.
+
+**Q:** How would you architecture a local integration testing pipeline inside a Docker Compose environment that spins up your Node.js application, database container, and Redis cache, runs tests concurrently, and teardowns cleanly?
+
+> **Answer:**
+> To build a Docker-based integration testing pipeline:
+> 1. Define a `docker-compose.test.yml` file containing the service containers:
+> - `app-test`: Node.js container executing test commands.
+> - `db-test`: PostgreSQL container.
+> - `redis-test`: Redis container.
+> 2. Configure `app-test` environment variables to connect to `db-test` and `redis-test` containers dynamically using their service hostnames.
+> 3. Implement a wait script (e.g., `wait-for-it.sh` or `pg_isready` checks) in the container startup command to ensure that the database is fully initialized and accepting connections before running the tests.
+> 4. Run the test suite: `docker-compose -f docker-compose.test.yml up --build --exit-code-from app-test`.
+> 5. The `--exit-code-from app-test` flag tells Docker Compose to monitor the test exit code. Once the tests complete, the pipeline automatically shuts down and deletes all containers, networks, and volumes (`docker-compose down -v`), ensuring a clean cleanup.
 
 ---
-Previous : [64_Unit_Testing.md] | Index : [00_index.md] | Next : [66_Jest.md]
+Previous : [64_Unit_Testing.md](64_Unit_Testing.md) | Index : [00_index.md](00_index.md) | Next : [66_Jest.md](66_Jest.md)

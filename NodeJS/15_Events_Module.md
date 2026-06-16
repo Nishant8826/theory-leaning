@@ -1,16 +1,6 @@
 # Events Module
 
-## What You Will Learn
-* The design and purpose of the `EventEmitter` class.
-* Implementing the Publisher-Subscriber (Pub/Sub) pattern in Node.js.
-* Key APIs (`on`, `once`, `emit`, `removeListener`, `removeAllListeners`).
-* Debugging memory leaks caused by dangling event listeners.
-* Understanding that EventEmitter executes callbacks synchronously by default.
-
-## Why This Matters
 Much of the Node.js core architecture is built around event emitters. For example, Streams, HTTP servers, and database connectors all inherit from `EventEmitter`. If you do not understand how event listeners are registered and cleaned up, you will introduce memory leaks as listeners accumulate over time.
-
-## Theory
 
 ### The Publisher-Subscriber Pattern
 The `EventEmitter` class implements the Publisher-Subscriber (Pub/Sub) pattern. An emitter (publisher) triggers a named event, and all registered listener functions (subscribers) are executed in response.
@@ -120,27 +110,31 @@ console.log(`Listeners count after cleanup: ${globalConfigEmitter.listenerCount(
 
 ## Interview Questions
 
-### Beginner
-* **What is an EventEmitter in Node.js?**
-  *Answer*: `EventEmitter` is a core Node.js class from the `events` module that enables communication between objects. It allows objects to emit named events that trigger registered callback functions (listeners).
+**Q:** What is an EventEmitter in Node.js?
 
-### Intermediate
-* **Are event emitter callbacks executed synchronously or asynchronously when emitted? Prove it.**
-  *Answer*: They are executed synchronously. When `emitter.emit('event')` is called, the emitter iterates over all registered listener functions and executes them sequentially on the main thread, blocking further execution of the script until all listeners have returned.
+> **Answer:**
+> `EventEmitter` is a core Node.js class from the `events` module that enables communication between objects. It allows objects to emit named events that trigger registered callback functions (listeners).
 
-### Advanced
-* **What is the `MaxListenersExceededWarning` warning, what causes it, and how do you resolve the underlying issue?**
-  *Answer*: This warning occurs when more than 10 listeners are registered for a single event on an emitter. It is a safety feature designed to help developers identify memory leaks. 
-  To resolve the underlying issue, ensure you remove event listeners when they are no longer needed (e.g. on client disconnect or scope termination). If you genuinely need more than 10 listeners, you can increase the limit using `emitter.setMaxListeners(n)`.
+**Q:** Are event emitter callbacks executed synchronously or asynchronously when emitted? Prove it.
 
-### Senior Architect
-* **How would you design a distributed event architecture where local event emitter instances sync events across multiple Node.js server processes running in a cluster?**
-  *Answer*: You cannot use local `EventEmitter` instances to sync events across processes because they are confined to a single process's memory space. 
-  To sync events across a cluster:
-  1. Integrate an external message broker or store (like Redis Pub/Sub, RabbitMQ, or Kafka) to act as a shared event bus.
-  2. Implement a wrapper class where each server process instantiates a local `EventEmitter` and subscribes to the Redis Pub/Sub channel.
-  3. When an event is emitted locally, publish the event payload to Redis.
-  4. The other server processes receive the event from Redis and trigger their local `EventEmitter` instances to execute their local listeners, coordinating execution across the cluster.
+> **Answer:**
+> They are executed synchronously. When `emitter.emit('event')` is called, the emitter iterates over all registered listener functions and executes them sequentially on the main thread, blocking further execution of the script until all listeners have returned.
+
+**Q:** What is the `MaxListenersExceededWarning` warning, what causes it, and how do you resolve the underlying issue?
+
+> **Answer:**
+> This warning occurs when more than 10 listeners are registered for a single event on an emitter. It is a safety feature designed to help developers identify memory leaks.
+> To resolve the underlying issue, ensure you remove event listeners when they are no longer needed (e.g. on client disconnect or scope termination). If you genuinely need more than 10 listeners, you can increase the limit using `emitter.setMaxListeners(n)`.
+
+**Q:** How would you design a distributed event architecture where local event emitter instances sync events across multiple Node.js server processes running in a cluster?
+
+> **Answer:**
+> You cannot use local `EventEmitter` instances to sync events across processes because they are confined to a single process's memory space.
+> To sync events across a cluster:
+> 1. Integrate an external message broker or store (like Redis Pub/Sub, RabbitMQ, or Kafka) to act as a shared event bus.
+> 2. Implement a wrapper class where each server process instantiates a local `EventEmitter` and subscribes to the Redis Pub/Sub channel.
+> 3. When an event is emitted locally, publish the event payload to Redis.
+> 4. The other server processes receive the event from Redis and trigger their local `EventEmitter` instances to execute their local listeners, coordinating execution across the cluster.
 
 ---
-Previous : [14_OS_Module.md] | Index : [00_index.md] | Next : [16_Buffers.md]
+Previous : [14_OS_Module.md](14_OS_Module.md) | Index : [00_index.md](00_index.md) | Next : [16_Buffers.md](16_Buffers.md)

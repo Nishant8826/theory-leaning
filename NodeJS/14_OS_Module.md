@@ -1,15 +1,6 @@
 # OS Module
 
-## What You Will Learn
-* Retrieving system information (CPU cores, memory, uptime, platforms).
-* Interrogating network interface structures using `os.networkInterfaces()`.
-* How to use the `os` module to dynamically scale clusters.
-* Monitoring memory consumption limits to prevent container failures.
-
-## Why This Matters
 Production applications should not be configured blindly. If your server spawns a fixed number of process clusters (e.g., 8 processes) without querying the host hardware, it will crash due to resource exhaustion on small virtual machines (e.g., 1-core containers) or waste CPU capacity on larger hardware (e.g., 64-core bare-metal servers). The `os` module allows your runtime to adapt to the host environment dynamically.
-
-## Theory
 
 ### System Interaction Layer
 Node.js interacts with the host operating system through its C++ bindings and Libuv. The `os` module exposes APIs to query the operating system kernel for hardware statistics and configurations.
@@ -96,29 +87,33 @@ for (const interfaceName in networkInterfaces) {
 
 ## Interview Questions
 
-### Beginner
-* **What does the `os` module do in Node.js?**
-  *Answer*: The `os` module provides operating system-related utility methods and properties. It allows developers to query details about the host machine, including CPU cores, memory limits, network interfaces, and temp folder directories.
+**Q:** What does the `os` module do in Node.js?
 
-### Intermediate
-* **How does `os.cpus()` help you optimize Node.js application scaling?**
-  *Answer*: `os.cpus()` returns an array containing details about each CPU core available on the host machine. By checking its length (`os.cpus().length`), you can dynamically determine the optimal number of worker processes to spawn when using the `cluster` module, ensuring you utilize all CPU capacity.
+> **Answer:**
+> The `os` module provides operating system-related utility methods and properties. It allows developers to query details about the host machine, including CPU cores, memory limits, network interfaces, and temp folder directories.
 
-### Advanced
-* **Why might `os.cpus()` return a core count of 16 in a containerized environment (like a Kubernetes Pod) where the CPU limit is explicitly set to 2? What are the consequences?**
-  *Answer*: The `os` module queries the underlying host operating system kernel directly. A container shares the host kernel, so `os.cpus()` returns the total cores of the physical host machine (16) instead of the container's virtualized resource limits (2). 
-  If the application spawns 16 worker processes based on this core count, the host kernel will throttle the container's CPU usage to enforce the 2-core limit. This results in extreme context-switching overhead among the 16 processes, degrading performance.
+**Q:** How does `os.cpus()` help you optimize Node.js application scaling?
 
-### Senior Architect
-* **How would you build a lightweight process watchdog inside a Node.js server that monitors system resources and triggers alerts or graceful shutdown routines if memory drops below a safe limit?**
-  *Answer*: To build a lightweight watchdog:
-  1. Initialize a periodic check using `setInterval` (e.g. every 10 seconds).
-  2. Query system metrics using `os.freemem()` and `os.totalmem()`, and process memory using `process.memoryUsage().rss`.
-  3. Define a threshold (e.g., if free memory drops below 10% of total memory, or if the process RSS memory exceeds 90% of the V8 allocation limit).
-  4. If the threshold is exceeded:
-     - Log a critical alert with system metrics.
-     - Temporarily fail health check endpoints (e.g., `/health`) to stop load balancers from routing new requests to this instance.
-     - Wait for active requests to drain, then terminate the process with code 1 (`process.exit(1)`), allowing your container orchestrator (e.g., Kubernetes) to restart the container cleanly.
+> **Answer:**
+> `os.cpus()` returns an array containing details about each CPU core available on the host machine. By checking its length (`os.cpus().length`), you can dynamically determine the optimal number of worker processes to spawn when using the `cluster` module, ensuring you utilize all CPU capacity.
+
+**Q:** Why might `os.cpus()` return a core count of 16 in a containerized environment (like a Kubernetes Pod) where the CPU limit is explicitly set to 2? What are the consequences?
+
+> **Answer:**
+> The `os` module queries the underlying host operating system kernel directly. A container shares the host kernel, so `os.cpus()` returns the total cores of the physical host machine (16) instead of the container's virtualized resource limits (2).
+> If the application spawns 16 worker processes based on this core count, the host kernel will throttle the container's CPU usage to enforce the 2-core limit. This results in extreme context-switching overhead among the 16 processes, degrading performance.
+
+**Q:** How would you build a lightweight process watchdog inside a Node.js server that monitors system resources and triggers alerts or graceful shutdown routines if memory drops below a safe limit?
+
+> **Answer:**
+> To build a lightweight watchdog:
+> 1. Initialize a periodic check using `setInterval` (e.g. every 10 seconds).
+> 2. Query system metrics using `os.freemem()` and `os.totalmem()`, and process memory using `process.memoryUsage().rss`.
+> 3. Define a threshold (e.g., if free memory drops below 10% of total memory, or if the process RSS memory exceeds 90% of the V8 allocation limit).
+> 4. If the threshold is exceeded:
+> - Log a critical alert with system metrics.
+> - Temporarily fail health check endpoints (e.g., `/health`) to stop load balancers from routing new requests to this instance.
+> - Wait for active requests to drain, then terminate the process with code 1 (`process.exit(1)`), allowing your container orchestrator (e.g., Kubernetes) to restart the container cleanly.
 
 ---
-Previous : [13_Path_Module.md] | Index : [00_index.md] | Next : [15_Events_Module.md]
+Previous : [13_Path_Module.md](13_Path_Module.md) | Index : [00_index.md](00_index.md) | Next : [15_Events_Module.md](15_Events_Module.md)

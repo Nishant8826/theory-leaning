@@ -1,16 +1,6 @@
 # Observability
 
-## What You Will Learn
-* The difference between Monitoring and Observability.
-* The Three Pillars of Observability: Logs, Metrics, and Traces (M.E.L.T.).
-* White-box monitoring vs. Black-box monitoring.
-* The concepts of Spans, Trace IDs, and Span Context.
-* Instrumenting Node.js applications using OpenTelemetry (OTel).
-
-## Why This Matters
 In a distributed Node.js microservice architecture, troubleshooting failures becomes extremely complex. Standard tools like local log files are insufficient because a single user request might cross five different network boundaries. Observability allows you to infer the internal state of your system by analyzing its external outputs (telemetry data), allowing you to pinpoint performance bottlenecks and locate silent failures in real-time.
-
-## Theory
 
 ### Monitoring vs. Observability
 * **Monitoring**: Focuses on the *known-unknowns*. It asks: *"Is the CPU usage above 80%?"* or *"Is the HTTP 500 error rate high?"* It alerts you when pre-defined thresholds are crossed.
@@ -133,25 +123,29 @@ node --import ./instrumentation.js server.js
 
 ## Interview Questions
 
-### Beginner
-* **What is the difference between a Trace and a Span in observability?**
-  *Answer*: A trace represents the entire end-to-end execution path of a transaction or request as it moves through a system. A span represents a single, named unit of work within that trace (e.g., an HTTP request handler execution, a database query, or a function execution). A trace is composed of a tree of nested spans.
+**Q:** What is the difference between a Trace and a Span in observability?
 
-### Intermediate
-* **Why should you use structured JSON logging instead of plain text logs in production Node.js applications?**
-  *Answer*: Plain text logs are difficult for log management systems (like Elasticsearch or Grafana Loki) to parse and query dynamically. Structured JSON logs format each log entry as a clean JSON object, making it easy to index, filter, and aggregate log data by specific parameters (e.g., HTTP status code, request duration, error levels, or trace IDs) across millions of entries.
+> **Answer:**
+> A trace represents the entire end-to-end execution path of a transaction or request as it moves through a system. A span represents a single, named unit of work within that trace (e.g., an HTTP request handler execution, a database query, or a function execution). A trace is composed of a tree of nested spans.
 
-### Advanced
-* **What is context propagation in distributed tracing, and how does Node.js implement it under the hood?**
-  *Answer*: Context propagation is the process of passing trace metadata (like Trace ID and parent Span ID) across service boundaries (e.g. via HTTP headers or message queue envelopes). In Node.js, since executions are asynchronous and callback-based, OpenTelemetry relies on **AsyncLocalStorage** from the `async_hooks` module to maintain and propagate trace context across asynchronous boundaries (promises, callbacks, timers) without manually threading trace variables through every function call.
+**Q:** Why should you use structured JSON logging instead of plain text logs in production Node.js applications?
 
-### Senior Architect
-* **How would you architecture a low-overhead telemetry collection pipeline for a fleet of high-throughput Node.js microservices?**
-  *Answer*: To minimize the CPU and memory overhead on the production Node.js servers:
-  1. **Local Agent / Collector Daemon**: Deploy an **OpenTelemetry Collector** as a sidecar container (in Kubernetes) or a local daemon on each virtual machine host.
-  2. **Fast Internal Protocols**: Configure the Node.js application's OTel SDK to export metrics and traces over **gRPC or HTTP/protobuf** (`otlp`) pointing directly to the local collector daemon.
-  3. **Batching and Buffering**: Configure OTel SDK exports to run asynchronously with a batch processor, buffering spans in memory and flushing them at set intervals or batch sizes, rather than sending a network request per span.
-  4. **Dynamic Sampling**: Implement trace sampling policies (e.g. 1% of successful requests and 100% of failed requests) at the SDK or collector level to reduce storage and network load without losing critical debug context.
+> **Answer:**
+> Plain text logs are difficult for log management systems (like Elasticsearch or Grafana Loki) to parse and query dynamically. Structured JSON logs format each log entry as a clean JSON object, making it easy to index, filter, and aggregate log data by specific parameters (e.g., HTTP status code, request duration, error levels, or trace IDs) across millions of entries.
+
+**Q:** What is context propagation in distributed tracing, and how does Node.js implement it under the hood?
+
+> **Answer:**
+> Context propagation is the process of passing trace metadata (like Trace ID and parent Span ID) across service boundaries (e.g. via HTTP headers or message queue envelopes). In Node.js, since executions are asynchronous and callback-based, OpenTelemetry relies on **AsyncLocalStorage** from the `async_hooks` module to maintain and propagate trace context across asynchronous boundaries (promises, callbacks, timers) without manually threading trace variables through every function call.
+
+**Q:** How would you architecture a low-overhead telemetry collection pipeline for a fleet of high-throughput Node.js microservices?
+
+> **Answer:**
+> To minimize the CPU and memory overhead on the production Node.js servers:
+> 1. **Local Agent / Collector Daemon**: Deploy an **OpenTelemetry Collector** as a sidecar container (in Kubernetes) or a local daemon on each virtual machine host.
+> 2. **Fast Internal Protocols**: Configure the Node.js application's OTel SDK to export metrics and traces over **gRPC or HTTP/protobuf** (`otlp`) pointing directly to the local collector daemon.
+> 3. **Batching and Buffering**: Configure OTel SDK exports to run asynchronously with a batch processor, buffering spans in memory and flushing them at set intervals or batch sizes, rather than sending a network request per span.
+> 4. **Dynamic Sampling**: Implement trace sampling policies (e.g. 1% of successful requests and 100% of failed requests) at the SDK or collector level to reduce storage and network load without losing critical debug context.
 
 ---
-Previous : [82_Load_Balancing.md] | Index : [00_index.md] | Next : [84_Monitoring.md]
+Previous : [82_Load_Balancing.md](82_Load_Balancing.md) | Index : [00_index.md](00_index.md) | Next : [84_Monitoring.md](84_Monitoring.md)
