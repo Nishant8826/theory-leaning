@@ -561,17 +561,17 @@ Example: `s = "ace"`, `t = "abcde"` → `true`
 
 ```javascript
 function isSubsequence(s, t) {
-  let sPtr = 0; // Pointer for s
-  let tPtr = 0; // Pointer for t
+  let i = 0; // Pointer for s
+  let j = 0; // Pointer for t
 
-  while (sPtr < s.length && tPtr < t.length) {
-    if (s[sPtr] === t[tPtr]) {
-      sPtr++; // Match! Move s pointer
+  while (i < s.length && j < t.length) {
+    if (s[i] === t[j]) {
+      i++; // Match! Move s pointer
     }
-    tPtr++; // Always move t pointer
+    j++; // Always move t pointer
   }
 
-  return sPtr === s.length; // Did we match all characters of s?
+  return i === s.length; // Did we match all characters of s?
 }
 
 console.log(isSubsequence("ace", "abcde"));  // true
