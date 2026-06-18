@@ -63,14 +63,6 @@ All answers are wrapped in `<details>` tags to enable active recall. Try to answ
     2. Timeout (Macrotask)
     ```
 
-*   **Common Mistakes:**
-    *   Thinking `setTimeout(fn, 0)` executes exactly after 0 milliseconds. It only schedules the task; execution waits until the Call Stack and all pending microtasks are cleared.
-    *   Assuming JavaScript is multi-threaded because it handles concurrent tasks. The runtime leverages system-level multi-threading (via the browser or libuv), but the JS code itself always executes on a single main thread.
-
-*   **Follow-up Questions:**
-    *   *What is CPU starvation, and how does a long synchronous loop affect the event loop?* It freezes the entire application because the Call Stack is never cleared, preventing the event loop from picking up any microtasks or macrotasks.
-    *   *In what order do microtasks run if a promise handler itself schedules another promise?* The newly scheduled promise is appended to the current Microtask Queue and will still execute in the same cycle before the event loop yields to the Macrotask Queue.
-
 </details>
 
 <hr/>
@@ -117,13 +109,6 @@ All answers are wrapped in `<details>` tags to enable active recall. Try to answ
     7.  The loop proceeds. Since there are `setImmediate` tasks, it exits the Poll Phase and transitions to the **Check Phase**, executing the immediate callback: printing `2. Immediate (Check Phase)`.
     8.  In the next loop iteration, the timer expires, and the **Timers Phase** runs: printing `1. Timeout (Timer Phase)`.
 
-*   **Common Mistakes:**
-    *   Starving the event loop by calling recursive `process.nextTick()` chains. Since V8 must drain the microtask queue completely before passing to the next phase, recursive nextTicks will lock the loop indefinitely, preventing I/O operations or timers from running.
-
-*   **Follow-up Questions:**
-    *   *How does the thread pool size affect the Poll phase?* If the libuv thread pool (default 4 threads) is saturated with heavy disk I/O or cryptography tasks, incoming I/O callbacks will be delayed in the Poll phase.
-    *   *How can you change the thread pool size in libuv?* By setting the environment variable `process.env.UV_THREADPOOL_SIZE`.
-
 </details>
 
 <hr/>
@@ -158,13 +143,6 @@ All answers are wrapped in `<details>` tags to enable active recall. Try to answ
     1. setImmediate
     ```
     *Explanation:* Inside an I/O callback, the nextTick queue is drained immediately when the active operation ends. Only then does the event loop move forward to the Check phase where `setImmediate` is executed.
-
-*   **Common Mistakes:**
-    *   Confusing `setImmediate` with `process.nextTick` based on names. Historically, "next tick" sounds like the next cycle of the loop, but it actually executes immediately. "Immediate" sounds like it should execute instantly, but it is actually queued for the Check phase later in the loop.
-
-*   **Follow-up Questions:**
-    *   *What happens if setImmediate is called in the main module (not inside an I/O callback) alongside setTimeout(..., 0)?* The execution order is non-deterministic (depends on system load) because the event loop starts and might reach the Timers phase before or after the timer registration completes.
-    *   *Is process.nextTick safe to run recursively?* No, it blocks the event loop because it continuously queues tasks in the microtask queue, which must be fully drained before any phase can run.
 
 </details>
 
@@ -218,63 +196,214 @@ All answers are wrapped in `<details>` tags to enable active recall. Try to answ
     6. Inside function: End
     ```
 
-*   **Common Mistakes:**
-    *   Expecting code *after* an await to print before code *outside* the function calls. Even if a Promise is already resolved, `await` forces execution to yield to the microtask queue, pushing the remaining statements to the next microtask cycle.
-
-*   **Follow-up Questions:**
-    *   *What happens if the awaited promise rejects?* The remainder of the function is still scheduled as a microtask, but control jumps directly to the `catch` block.
-    *   *If we await a non-promise value like await 42, does it still suspend execution?* Yes, the value is wrapped in `Promise.resolve(42)` and yielding occurs, pushing the next line to the microtask queue.
-
 </details>
 
 <hr/>
 
-### ❓ Q5. What is the difference between streams and buffers and which holds complete data like images?
+### ❓ Q5. What is the difference between streams and buffers and which holds complete data like images? (Hinglish Explained)
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-*   Both streams and buffers are used to handle binary data, but they differ fundamentally in memory allocation and data processing patterns:
+*   **Both streams and buffers are binary data ko handle karne ke liye use hote hain, par inka tarika aur memory allocation bilkul alag hota hai:**
 
     1.  **Buffer:**
-        *   **Definition:** A fixed-size chunk of memory allocated outside the V8 JavaScript engine heap, storing raw binary bytes.
-        *   **Data Handling:** Holds the **complete** dataset in memory at once.
-        *   **Use Case:** Storing and editing complete files, like loading an entire image to crop/resize, parsing a config file, or manipulating small strings of bytes.
+        *   **Definition:** RAM (memory) ka ek temporary, fixed-size block hota hai (V8 engine heap se bahar) jo binary bytes store karta hai.
+        *   **Data Handling:** Yeh **poore data** ko ek sath memory mein hold karta hai.
+        *   **Use Case:** Files ko modify/edit karne ke liye, jaise poori image ko load karke crop/resize karna, config file parse karna, ya bytes ko manipulate karna.
     2.  **Stream:**
-        *   **Definition:** A data-handling concept where data is processed chunk-by-chunk over time rather than loaded all at once.
-        *   **Data Handling:** Never keeps the entire data block in memory; it processes chunks sequentially, maintaining a tiny memory footprint.
-        *   **Use Case:** Transferring large files (videos, logs, database exports) across networks or file systems.
+        *   **Definition:** Yeh data ko ek sath memory me load karne ki jagah **chunk-by-chunk (chote-chote tukdo mein)** process karne ka tarika hai.
+        *   **Data Handling:** Yeh kabhi bhi poore data block ko RAM me nahi rakhta, jisse memory consumption minimal rehta hai.
+        *   **Use Case:** Large files (videos, server logs, database exports) ko network ya file system par transfer karne ke liye.
 
     **Which holds complete data like images?**
-    A **Buffer** holds complete data. When you read an image file using `fs.readFile()`, Node.js returns a Buffer containing the complete binary contents of the image in RAM. A **Stream** is used to *transport* that image data chunk-by-chunk (e.g., from an S3 bucket or local disk straight to an HTTP response) without consuming server memory.
+    **Buffer** complete data ko hold karta hai. Jab aap `fs.readFile()` se image read karte hain, toh Node.js RAM mein us image ka complete binary Buffer return karta hai. Jabki **Stream** us image data ko chunk-by-chunk transport karne ke liye use hota hai (jaise S3 bucket se user response tak bhejte waqt bina server RAM waste kiye).
 
 *   **Real-world Example:**
-    *   **Using Buffer (Memory Intensive):**
+    *   **Using Buffer (Memory Intensive - Server crash ka darr):**
         ```javascript
         const fs = require('fs');
-        // Loads the ENTIRE 500MB image into RAM. High risk of OOM under load.
+        // Pura 500MB image RAM me load ho jayega. High traffic me OOM crash ho sakta hai.
         fs.readFile('heavy_image.png', (err, buffer) => {
           if (err) throw err;
-          console.log("Buffer length:", buffer.length); // Complete image in memory
+          console.log("Buffer length:", buffer.length); // Pura image memory me hai
         });
         ```
-    *   **Using Stream (Memory Optimized):**
+    *   **Using Stream (Memory Optimized - Safe for production):**
         ```javascript
         const fs = require('fs');
         const http = require('http');
         
         http.createServer((req, res) => {
           const stream = fs.createReadStream('heavy_image.png');
-          // Pipes chunks directly to the response. Max memory used is just highWaterMark (default 64KB)
+          // Chunks (default 64KB) ko directly response me pipe (flow) karega. RAM save hogi.
           stream.pipe(res);
         }).listen(3000);
         ```
 
-*   **Common Mistakes:**
-    *   Reading large user uploads (like profile pictures or documents) into memory buffers on server endpoints. Under heavy concurrent traffic, this leads to Out-Of-Memory (OOM) errors and crashes the Node.js process. Always stream uploads directly to secure object storage (like AWS S3).
+</details>
 
-*   **Follow-up Questions:**
-    *   *What is backpressure in streams?* It occurs when the reader/writable stream consumes data slower than the writer/readable stream produces it, leading to buffer accumulation.
-    *   *How does pipeline avoid memory issues?* The `stream.pipeline` function automatically handles backpressure and cleans up system descriptors when streams throw errors.
+<hr/>
+
+### ❓ Q6. For the following event loop snippet, predict and explain the execution order.
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+*   Here is the event loop code snippet to analyze:
+    ```javascript
+    const fs = require('fs');
+
+    console.log("start");
+
+    setTimeout(() => {
+      console.log("setTimeOut");
+    }, 1000);
+
+    setImmediate(() => {
+      console.log("setImmediate");
+    });
+
+    fs.readFile(__filename, () => {
+      console.log("polling");
+    });
+
+    process.nextTick(() => {
+      console.log("nextTick");
+    });
+
+    console.log("end");
+    ```
+
+    **Execution Order Tracing:**
+    1.  `console.log("start")` executes synchronously. Prints: `start`.
+    2.  `setTimeout` is registered with a 1000ms delay.
+    3.  `setImmediate` registers a callback to execute in the Check phase.
+    4.  `fs.readFile` requests an asynchronous read operation from the OS/libuv thread pool.
+    5.  `process.nextTick` registers its callback in the high-priority nextTick microtask queue.
+    6.  `console.log("end")` executes synchronously. Prints: `end`.
+    7.  **Draining Microtasks:** The call stack is now empty. The nextTick queue is immediately drained, printing: `nextTick`.
+    8.  **First Event Loop Cycle:**
+        *   The loop checks the Check Phase because `setImmediate` is scheduled. It executes it and prints: `setImmediate`.
+    9.  **Subsequent Cycles:**
+        *   Once the file system reads the file, the Poll Phase receives the callback event and prints: `polling`.
+        *   Finally, after 1000ms have elapsed, the timer expires and the Timers Phase executes the callback, printing: `setTimeOut`.
+
+    **Final Output:**
+    ```text
+    start
+    end
+    nextTick
+    setImmediate
+    polling
+    setTimeOut
+    ```
+
+*   **Real-world Example:**
+    This execution sequence demonstrates that `process.nextTick` runs immediately after the synchronous block, long before standard event loop phases like Check (`setImmediate`), Poll (`polling`), or Timers (`setTimeout`), and that timers with non-zero delays yield execution to immediate and I/O tasks.
+
+</details>
+
+<hr/>
+
+### ❓ Q7. Predict the console output order for the following async/await block.
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+*   Here is the async/await execution snippet to analyze:
+    ```javascript
+    const fs = require('fs');
+
+    async function run() {
+      try {
+        console.log("a");
+        const resp = await fs.promises.readFile(__filename, "utf8");
+        console.log("b");
+      } catch (err) {}
+    }
+
+    console.log("c");
+    run();
+    ```
+
+    **Execution Steps Tracing:**
+    1.  `console.log("c")` runs synchronously first. Prints: `c`.
+    2.  `run()` is called. Execution enters the async function synchronously.
+    3.  `console.log("a")` runs synchronously. Prints: `a`.
+    4.  `await fs.promises.readFile(...)` is encountered. The async execution of `run()` is suspended, and the remaining lines (logging `b`) are scheduled as a callback in the Microtask Queue once the file promise resolves.
+    5.  Control returns to the main thread. Since there are no further synchronous lines to execute, the thread yields.
+    6.  Once the file system completes the read operation, the promise resolves. V8 pushes the remaining part of `run()` onto the microtask queue, which is executed by the Event Loop. Prints: `b`.
+
+    **Final Output:**
+    ```text
+    c
+    a
+    b
+    ```
+
+    **Alternative Scenario (Calling `run()` before `console.log("c")`):**
+    If the code was structured as:
+    ```javascript
+    run();
+    console.log("c");
+    ```
+    1.  `run()` is called. Prints: `a`.
+    2.  `await` suspends execution and yields control back.
+    3.  Main thread resumes and runs `console.log("c")`. Prints: `c`.
+    4.  The file read completes, triggering the microtask execution. Prints: `b`.
+    *Alternative Output:* `a` -> `c` -> `b`.
+
+*   **Real-world Example:**
+    This highlights that `async` functions execute synchronously *until* the first `await` is hit. The `await` returns control back to the outer execution context, and anything after it is deferred as a microtask.
+
+</details>
+
+<hr/>
+
+### ❓ Q8. What is the output of the following closure snippet, and how does it work?
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+*   Here is the closure snippet to analyze:
+    ```javascript
+    function outer() {
+      let a = "name";
+      return function inner() {
+        a = "class";
+        console.log(a);
+      };
+    }
+
+    const resp = outer();
+    resp();
+    ```
+
+    **Execution Flow:**
+    1.  `const resp = outer()` executes the `outer` function.
+    2.  A variable `a` is declared in the local scope of `outer` and initialized with `"name"`.
+    3.  `outer` returns the function definition of `inner` and finishes execution. Its local execution stack is destroyed.
+    4.  However, because of **closures**, the returned `inner` function maintains a reference to its lexical environment (the scope in which it was declared), which includes the variable `a`.
+    5.  `resp()` invokes the `inner` function.
+    6.  Inside `inner`, `a = "class"` modifies the variable `a` inside the lexical scope of `outer`.
+    7.  `console.log(a)` outputs `"class"`.
+
+    **Final Output:**
+    ```text
+    class
+    ```
+
+*   **Real-world Example:**
+    Closures are heavily used in JavaScript to create private variables or stateful factories:
+    ```javascript
+    function createCounter() {
+      let count = 0; // Private variable
+      return {
+        increment: () => ++count,
+        getCount: () => count
+      };
+    }
+    const counter = createCounter();
+    console.log(counter.increment()); // 1
+    console.log(counter.getCount());  // 1
+    ```
 
 </details>
 
@@ -282,7 +411,7 @@ All answers are wrapped in `<details>` tags to enable active recall. Try to answ
 
 ## 2. React & Frontend Integration
 
-### ❓ Q6. What do useMemo and useCallback each do in React?
+### ❓ Q9. What do useMemo and useCallback each do in React?
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -334,18 +463,11 @@ All answers are wrapped in `<details>` tags to enable active recall. Try to answ
     ```
     *Behavior:* Clicking "Increment Count" triggers a re-render of `Dashboard`. Because `handleClick` is wrapped in `useCallback` and has no dependencies, its reference does not change, and `TaskButton` does **not** re-render. Similarly, `maxItem` does not recalculate.
 
-*   **Common Mistakes:**
-    *   Using `useMemo` and `useCallback` everywhere. Both hooks add memory overhead and dependency array checks. Wrapping a simple computation (like `a + b`) or a standard inline button handler makes code *slower* and harder to maintain. Only use them for heavy processing or to preserve referential integrity.
-
-*   **Follow-up Questions:**
-    *   *What is the relationship between useCallback(fn, deps) and useMemo?* `useCallback(fn, deps)` is equivalent to `useMemo(() => fn, deps)`.
-    *   *What does shallow comparison mean in React.memo?* It checks if the new props have the exact same memory reference (for objects/arrays/functions) or values (for primitives) as the old props.
-
 </details>
 
 <hr/>
 
-### ❓ Q7. What are SSR and CSR and which is more SEO-friendly?
+### ❓ Q10. What are SSR and CSR and which is more SEO-friendly?
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -390,62 +512,47 @@ All answers are wrapped in `<details>` tags to enable active recall. Try to answ
         </html>
         ```
 
-*   **Common Mistakes:**
-    *   Assuming SSR means there is no JS executing in the browser. In SSR, the browser still downloads a JavaScript bundle to handle interactivity (hydration).
-    *   Accessing browser-only globals (like `window`, `document`, or `localStorage`) in components during SSR. Since this code also executes on the Node.js server, it will throw reference errors. These must be placed inside `useEffect` or client-only gates.
-
-*   **Follow-up Questions:**
-    *   *What is static hydration mismatch?* It occurs when the server-rendered HTML doesn't match the first client-side render tree, often caused by using non-deterministic states like `Date.now()` or random IDs during render.
-    *   *What is Static Site Generation (SSG)?* A rendering method where HTML pages are pre-built at compile-time, combining the speed of static hosting with the SEO benefits of SSR.
-
 </details>
 
 ---
 
 ## 3. Database Engineering & Caching
 
-### ❓ Q8. What are ACID properties in databases?
+### ❓ Q11. What are ACID properties in databases? (Hinglish Explained)
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-*   ACID is a set of properties that guarantee database transactions are processed reliably, preserving data integrity even during system failures:
+*   **ACID properties database transactions ko reliably process karne ke rules hain, jo system failure ke waqt bhi data integrity (correctness) banaye rakhte hain:**
 
-    1.  **Atomicity ("All or Nothing"):**
-        *   Ensures that a transaction is treated as a single unit of work. Either all operations inside the transaction succeed (commit), or the entire transaction is aborted and rolled back to its original state.
-    2.  **Consistency:**
-        *   Guarantees that a transaction can only transition the database from one valid state to another, enforcing all schema constraints, foreign keys, triggers, and unique index rules.
-    3.  **Isolation:**
-        *   Ensures that concurrent execution of transactions leaves the database in the same state as if they had run sequentially. It prevents transactions from seeing incomplete states of other transactions, managed via isolation levels.
-    4.  **Durability:**
-        *   Guarantees that once a transaction has committed, its changes are permanently written to non-volatile storage (disk/SSD). They will not be lost even in the event of a system crash, power outage, or OS failure.
+    1.  **Atomicity ("All or Nothing" - Sab kuch ya kuch bhi nahi):**
+        *   Transaction ko ek single unit mana jata hai. Ya toh transaction ke saare SQL commands execute honge (Commit), ya fir ek bhi execute nahi hoga aur purani state par rollback ho jayega. Beech ka koi rasta nahi hota.
+    2.  **Consistency (Consistency bani rahe):**
+        *   Transaction complete hone ke baad database hamesha ek valid state se dusri valid state mein hi jayega. Saare rules, foreign keys, triggers, aur constraints strictly follow honge.
+    3.  **Isolation (Alag-alag execution):**
+        *   Jab ek sath multiple transactions chal rahe hon, toh wo ek dusre ke intermediate (adhure) data ko nahi dekh sakte. Har transaction ko lagta hai ki wo database par akela execute ho raha hai. Isko Isolation Levels ke through manage kiya jata hai.
+    4.  **Durability (Hamesha ke liye save):**
+        *   Ek baar transaction `COMMIT` (save) ho gaya, toh uska data permanently disk/SSD par save ho jata hai. Iske baad agar database crash ho jaye, light chali jaye, ya OS restart ho jaye, tab bhi data lost nahi hoga.
 
-*   **Real-world Example:**
-    A transaction transferring $100 from Account A to Account B:
+*   **Real-world Example (BookMyShow Movie Ticket Booking):**
+    Imagine aap BookMyShow par **Seat A1** book kar rahe hain jiske liye aapko **Rs 300** pay karne hain.
     ```sql
     START TRANSACTION;
-    -- 1. Deduct money from A
-    UPDATE accounts SET balance = balance - 100 WHERE id = 'A' AND balance >= 100;
-    -- 2. Add money to B
-    UPDATE accounts SET balance = balance + 100 WHERE id = 'B';
+    -- 1. User ke bank account se Rs 300 deduct karo
+    UPDATE bank_accounts SET balance = balance - 300 WHERE user_id = 'Aman';
+    -- 2. Seat A1 ko booked status par set karo
+    UPDATE seats SET status = 'BOOKED', booked_by = 'Aman' WHERE seat_number = 'A1';
     COMMIT;
     ```
-    *   *Atomicity:* If the server crashes after step 1 but before step 2, the database rolls back step 1, ensuring money does not disappear.
-    *   *Consistency:* If Account B's ID does not exist, the transaction fails due to foreign key constraints.
-    *   *Isolation:* A third transaction checking Account A's balance concurrently won't see intermediate states.
-    *   *Durability:* Once `COMMIT` returns success, the changes are stored in the write-ahead log (WAL) on disk, guaranteeing they survive sudden reboot events.
-
-*   **Common Mistakes:**
-    *   Confusing "Consistency" in ACID with "Consistency" in the CAP Theorem. ACID Consistency is about database schema rules and constraints. CAP Consistency is about replication synchronization across multiple distributed nodes.
-
-*   **Follow-up Questions:**
-    *   *What is Write-Ahead Logging (WAL)?* A family of techniques where changes are written to a log file on disk before they are applied to the database files, ensuring durability and recovery.
-    *   *How does InnoDB manage Isolation without locking every reader?* By using Multi-Version Concurrency Control (MVCC), which presents readers with historical snapshots of data.
+    *   **Atomicity:** Agar Step 1 chalne ke baad (paise cut gaye) aur Step 2 se pehle server crash ho jaye, toh database transaction ko automatically rollback kar dega. Aman ke paise bank account me wapas aa jayenge aur ticket book nahi hoga.
+    *   **Consistency:** Database me rule hai ki ek seat par ek hi user map ho sakta hai (Unique Constraint). Transaction se pehle aur baad me yeh rule strictly check hota hai.
+    *   **Isolation:** Agar Aman aur Rohit ek hi exact millisecond par Seat A1 book karne ka try karte hain, toh database isolation / row locks use karega. Jab tak Aman ka transaction chal raha hai, Rohit ka transaction wait karega. Rohit ko tab tak Seat A1 booked nahi dikhegi jab tak Aman ka confirm ya fail nahi ho jata.
+    *   **Durability:** Jaise hi payment successfully complete ho jati hai aur screen par ticket confirm ho jata hai (COMMIT), data disk/SSD par permanently save ho jata hai. Iske baad agar BookMyShow ke servers down bhi ho jayein, restart hone par aapka ticket booked hi rahega.
 
 </details>
 
 <hr/>
 
-### ❓ Q9. How should composite indexes be structured for effectiveness?
+### ❓ Q12. How should composite indexes be structured for effectiveness?
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -477,70 +584,102 @@ All answers are wrapped in `<details>` tags to enable active recall. Try to answ
         -   `played_at` (Sort) is second, avoiding filesort.
         -   `score` (Range) is third.
 
-*   **Common Mistakes:**
-    *   Creating multiple single-column indexes on columns that are queried together. Databases can rarely combine multiple indexes effectively. A single composite index is far more performant.
-    *   Placing high-cardinality range fields at the front of a composite index.
-
-*   **Follow-up Questions:**
-    *   *What is an Index Skip Scan?* An optimization where the database can use a composite index even when the leftmost column is omitted from the WHERE clause, provided that column has low cardinality.
-    *   *Does the order of columns in the SQL WHERE clause matter?* No, the database query parser automatically reorders query criteria to match indexes; however, the order of columns *within* the index declaration itself is critical.
-
 </details>
 
 <hr/>
 
-### ❓ Q10. How can a slow query be optimized?
+### ❓ Q13. How can a slow query be optimized? (Hinglish Explained)
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-*   Optimizing slow queries requires a structured diagnostic and remediation workflow:
+*   Slow queries ko optimize karne ke liye hum 4 primary levels par approach karte hain:
 
-    1.  **Locate the Bottleneck:** Identify queries exceeding threshold durations using the database **Slow Query Log** or Application Performance Monitoring (APM) tools.
-    2.  **Analyze the Execution Plan:** Prepend the query with `EXPLAIN` or `EXPLAIN ANALYZE` (MySQL 8.0+) to inspect:
-        *   `type`: Look for `ALL` (Full Table Scan) or `index` (Full Index Scan) which are slow. Aim for `const`, `ref`, or `range`.
-        *   `key`: The index actually chosen. Check if it is `NULL`.
-        *   `rows`: The estimated number of rows examined.
-        *   `Extra`: Watch out for `Using filesort` or `Using temporary`.
-    3.  **Optimize Indexing:**
-        *   Add indexes to columns used in `WHERE`, `JOIN`, `ORDER BY`, and `GROUP BY` clauses.
-        *   Construct composite indexes following the Left-to-Right and ESR rules.
-        *   Create **Covering Indexes** (where all selected columns are inside the index tree) to avoid lookup disk jumps to the main table.
-    4.  **Rewrite the Query:**
-        *   Avoid `SELECT *`; retrieve only necessary columns to reduce I/O and network payload.
-        *   Make queries **Sargable** (Search Argument Able). Do not apply functions to indexed columns. E.g., change `WHERE YEAR(created_at) = 2026` to `WHERE created_at >= '2026-01-01' AND created_at < '2027-01-01'`.
-        *   Avoid wildcards at the start of search patterns (e.g. `LIKE '%abc'`), which disable index scans.
-    5.  **Refactor Schema & Cache:**
-        *   Denormalize highly relational tables if joins are bottlenecking.
-        *   Cache persistent, read-heavy query results in Redis.
+    1.  **Diagnosis (Pata lagana ki problem kahan hai):**
+        *   Slow Query Log ya APM tools se slow queries ko locate karein.
+        *   Query ke aage `EXPLAIN` lagakar **Execution Plan** check karein ki data fetch kaise ho raha hai. (E.g., `type: ALL` to nahi hai? `key` NULL to nahi hai?).
+    2.  **Database Level - Indexing lagana:**
+        *   `WHERE`, `JOIN`, `ORDER BY` aur `GROUP BY` ke columns par indexes lagayein.
+        *   Composite indexes banate waqt **ESR Rule** (Equality, Sort, Range) follow karein.
+        *   **Covering Indexes** use karein taaki query ka saara selected data index tree se hi mil jaye aur disk par main table lookup na karna pade.
+    3.  **Query Level - Query rewrite karna (Avoiding SELECT *):**
+        *   **`SELECT *` bilkul use na karein:** Hamesha wahi columns mangayein jinhe use karna hai. Yeh network payload aur database disk I/O ko fast karta hai.
+        *   Queries ko **Sargable** banayein. E.g., `WHERE DATE(created_at) = '2026-06-16'` (non-sargable) ki jagah ranges use karein `WHERE created_at >= '2026-06-16 00:00:00' AND ...` (sargable) taaki index use ho sake.
+    4.  **Application Level - Solving N+1 Query & Caching:**
+        *   **N+1 Query Problem solve karein:** Loop ke andar database query call karne ke bajaye (N+1 queries), **JOINs** ya ORM ki **Eager Loading** (e.g., Prisma's `include` ya Sequelize's `include`) ka use karein. Yeh database round-trips ko 101 se seedhe 1 ya 2 par le aayega.
+        *   Read-heavy aur database calculation-heavy data ko **Redis** me cache (Cache-Aside pattern) karein.
 
-*   **Real-world Example:**
-    *   *Slow Non-Sargable Query:*
-        ```sql
-        SELECT id, name FROM users WHERE DATE(created_at) = '2026-06-16';
+*   **Real-world Example (N+1 Query vs Eager Loading):**
+    *   *Bad Pattern (N+1 Queries - loop me call karna):*
+        ```javascript
+        // 1 query to get all posts (say 100 posts)
+        const posts = await db.query('SELECT * FROM posts'); 
+        for (let post of posts) {
+          // 100 queries inside loop to get author details (N queries)
+          const author = await db.query('SELECT * FROM users WHERE id = ?', [post.authorId]);
+        }
+        // Total queries = 1 + 100 = 101 queries!
         ```
-        *Explain:* Applying the `DATE()` function prevents the database from using an index on `created_at`.
-    *   *Optimized Sargable Query:*
-        ```sql
-        SELECT id, name FROM users 
-        WHERE created_at >= '2026-06-16 00:00:00' 
-          AND created_at <= '2026-06-16 23:59:59';
+    *   *Good Pattern (Eager Loading / JOIN - single query):*
+        ```javascript
+        // Single optimized JOIN query
+        const postsWithAuthors = await db.query(`
+          SELECT p.id, p.title, u.name as author_name 
+          FROM posts p 
+          JOIN users u ON p.authorId = u.id
+        `);
+        // Total queries = Only 1 query!
         ```
-        *Index:* `CREATE INDEX idx_created_at ON users(created_at);`
-        *Result:* The database performs an efficient index range scan (`type: range`), scanning only matching rows.
-
-*   **Common Mistakes:**
-    *   Adding indexes to tables without measuring performance. Writing indexes slows down INSERT, UPDATE, and DELETE operations.
-    *   Failing to run `ANALYZE TABLE` to update index statistics, causing the query optimizer to make incorrect plans based on stale metrics.
-
-*   **Follow-up Questions:**
-    *   *What is the difference between a filesort and an index sort?* An index sort retrieves rows pre-sorted by the index tree. A filesort happens in memory (or temp files on disk) because the database has to sort unsorted rows.
-    *   *How does table fragmentation affect query performance?* Over time, insertions and deletions leave gaps in index files, requiring more disk seeks to read data. Running `OPTIMIZE TABLE` defragments the table.
 
 </details>
 
 <hr/>
 
-### ❓ Q11. What is the security issue with constructing a SQL query by embedding an email variable directly?
+### ❓ Q14. What is a Query Execution Plan, and how do you analyze it? (Hinglish Explained)
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+*   **Query Execution Plan** database engine (jaise MySQL ya PostgreSQL) dwara generate kiya gaya ek sequence of steps (roadmap) hota hai jo batata hai ki database query ka data fetch karne ke liye kaunsa raasta lega. Database optimizer is plan ko table ke metrics, indexes, aur filter conditions ke aadhar par banata hai.
+
+    **How to Generate and Analyze Plan in MySQL (Hinglish):**
+    Apni query statement ke pehle `EXPLAIN` ya `EXPLAIN ANALYZE` keyword lagayein.
+
+    **Key Output Fields to Review (Important check points):**
+    1.  **`type` (Access Method - Data kaise dhoondha ja raha hai):**
+        *   `ALL` (Full Table Scan): Sabse bekar. Poore table ki ek-ek row ko disk par scan karta hai.
+        *   `const`/`eq_ref`: Sabse best. Unique Primary Key lookup.
+        *   `ref`/`range`: Acha hai. Index search ya specific range scan.
+    2.  **`key` (Selected Index):** Kaunsa index search ke liye select hua. Agar `NULL` hai, toh matlab index use hi nahi ho raha.
+    3.  **`rows` (Estimated rows):** Database ko kitne records check karne padenge. Row count jitna zyada hoga, query utni slow hogi.
+    4.  **`Extra` (Additional info):**
+        *   `Using index`: Bohat badhiya! Pura data index tree se hi mil gaya, table disk par jump nahi karna pada (Covering Index).
+        *   `Using filesort`: Kharab sign. Database ko manual sorting karni pad rahi hai (slow performance).
+        *   `Using temporary`: Kharab sign. Database ko temporary table banana pad raha hai results filter karne ke liye.
+
+*   **Real-world Example (GPS Navigator analogy):**
+    Jaise Google Maps batata hai ki shortest root kaunsa hai (highway se jana hai ya galiyon se), vaise hi Execution Plan database ka map hai.
+    *   **Without Index (Highway block - Galiyon se jana):**
+        ```sql
+        EXPLAIN SELECT * FROM orders WHERE status = 'SHIPPED';
+        ```
+        *Output Plan:*
+        - `type`: `ALL` (Har order ko check karega)
+        - `key`: `NULL` (Koi map/index nahi hai)
+        - `rows`: `984,212` (Lagbhag 10 lakh rows scan karega - Very Slow)
+    *   **With Index (Highway clear):**
+        ```sql
+        CREATE INDEX idx_status ON orders(status);
+        EXPLAIN SELECT * FROM orders WHERE status = 'SHIPPED';
+        ```
+        *Output Plan:*
+        - `type`: `ref` (Directly status match karega)
+        - `key`: `idx_status` (Index highway use karega)
+        - `rows`: `1,420` (Sirf matching rows ko scan karega - Instant Output)
+
+</details>
+
+<hr/>
+
+### ❓ Q15. What is the security issue with constructing a SQL query by embedding an email variable directly?
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -561,26 +700,18 @@ All answers are wrapped in `<details>` tags to enable active recall. Try to answ
         *Resulting SQL:* `SELECT * FROM users WHERE email = 'attacker@khelo.com' OR '1'='1'`
         *Consequence:* The condition `'1'='1'` is always true, returning all users in the database and bypassing authentication.
 
-    *   **Secure Code (Prepared Statement):**
+    *   **Secure Code (Prepared Statement for `SELECT * FROM users WHERE email="rnishant@gmail.com"`):**
         ```javascript
         const query = 'SELECT * FROM users WHERE email = ?';
-        db.query(query, [req.body.email]);
+        db.query(query, ['rnishant@gmail.com']);
         ```
-        *Attack Input:* `attacker@khelo.com' OR '1'='1`
-        *Resulting Action:* The database searches for a user whose email string is literally `attacker@khelo.com' OR '1'='1'`, rendering the injection attempt completely harmless.
-
-*   **Common Mistakes:**
-    *   Relying solely on regex parsing, character escaping, or client-side validation to clean strings. Attackers can bypass filters using alternative encodings. Parameterization is the only reliable defense.
-
-*   **Follow-up Questions:**
-    *   *Do modern ORMs (like Prisma or Sequelize) protect against SQLi?* Yes, they use parameterized queries automatically under the hood for their default query methods.
-    *   *What is Blind SQL Injection?* An exploit where the attacker cannot see data directly on the screen, but reconstructs database contents by asking the database true/false questions and observing differences in page rendering or server response delays.
+        *Resulting Action:* The database searches for a user whose email string is literally `rnishant@gmail.com`, rendering any query manipulation attempts completely harmless.
 
 </details>
 
 <hr/>
 
-### ❓ Q12. Why is Redis faster than disk-backed databases?
+### ❓ Q16. Why is Redis faster than disk-backed databases?
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -602,19 +733,11 @@ All answers are wrapped in `<details>` tags to enable active recall. Try to answ
         -   HDD read/write latency: ~5-15 milliseconds.
     *   When fetching a user session, MySQL must execute a query, verify indexes, and potentially fetch database blocks from disk (or buffers). Redis reads the session key from RAM directly via a hash table lookup, completing the operation instantly.
 
-*   **Common Mistakes:**
-    *   Assuming Redis has no persistence. Redis can save data to disk using RDB (periodic point-in-time snapshots) and AOF (append-only logs of every write command) in the background without affecting the performance of the main execution thread.
-    *   Running heavy blocking commands (like `KEYS *` or `FLUSHALL`) on production instances. Since Redis is single-threaded, these commands block the main thread, freezing all other client requests.
-
-*   **Follow-up Questions:**
-    *   *What is the alternative to using KEYS * in production?* Use the `SCAN` command, which iterates over keys incrementally without blocking the server.
-    *   *What is Redis Eviction?* When Redis memory reaches its configured limit, it removes keys according to a policy (like LRU - Least Recently Used, or LFU - Least Frequently Used) to make room for new data.
-
 </details>
 
 <hr/>
 
-### ❓ Q13. When generating a query and retrieving data from Redis, how do we retrieve data from Redis?
+### ❓ Q17. When generating a query and retrieving data from Redis, how do we retrieve data from Redis?
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -659,13 +782,193 @@ All answers are wrapped in `<details>` tags to enable active recall. Try to answ
     }
     ```
 
-*   **Common Mistakes:**
-    *   Failing to set a TTL (Time-To-Live) on cached items. Without a TTL, stale data stays in Redis indefinitely, consuming RAM and eventually causing Out-Of-Memory errors.
-    *   Failing to invalidate the cache when data is updated in the primary database. If user profiles are updated, your code must delete the cache key (`redis.del(cacheKey)`) or update it.
+</details>
 
-*   **Follow-up Questions:**
-    *   *What is Cache Penetration?* A scenario where requests target keys that do not exist in either the cache or the primary database, forcing database lookups for every request. Mitigate by caching empty values with short TTLs or using Bloom filters.
-    *   *What is Cache Stampede?* When a highly popular cache key expires, and multiple concurrent requests try to fetch the data from the database simultaneously, overloading the database. Mitigate using lock/mutex wrappers.
+<hr/>
+
+### ❓ Q18. How do you implement Redis SET (with TTL) and GET commands in Node.js?
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+*   To perform basic operations in Redis using Node.js, we commonly use the `ioredis` or `redis` npm libraries. Writing data with a expiration window (TTL) helps prevent memory exhaustion.
+
+    **Core Commands:**
+    1.  **`SET` with TTL:** Writes a key-value pair to Redis and assigns it an expiration lifetime. This is handled using options like `EX` (seconds) or `PX` (milliseconds), or by using the specific `SETEX` command.
+    2.  **`GET`:** Retrieves the value of a string-based key. If the key does not exist or has expired, it returns `null`.
+
+*   **Real-world Example:**
+    ```javascript
+    const Redis = require('ioredis');
+    const redis = new Redis(); // Connects to localhost:6379 by default
+
+    async function handleSessionCache() {
+      const key = "session:user:101";
+      const value = JSON.stringify({ username: "rnishant", role: "admin" });
+      const ttlInSeconds = 300; // 5 minutes
+
+      // 1. SET key with value and TTL (using option syntax or setex)
+      // Syntax A (Modern SET with EX option):
+      const setResp = await redis.set(key, value, 'EX', ttlInSeconds);
+      console.log("SET response:", setResp); // Prints: "OK"
+
+      // Syntax B (Classic SETEX wrapper):
+      // await redis.setex(key, ttlInSeconds, value);
+
+      // 2. GET key from Redis
+      const cachedVal = await redis.get(key);
+      if (cachedVal) {
+        const userObj = JSON.parse(cachedVal);
+        console.log("GET response (Username):", userObj.username); // Prints: "rnishant"
+      } else {
+        console.log("Cache missed or expired.");
+      }
+    }
+    ```
+
+</details>
+
+<hr/>
+
+### ❓ Q19. Write the database transaction logic for a secure wallet transfer between two users (`deductAmount` and `creditAmount`).
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+*   A wallet transfer must execute atomically (all or nothing) and securely (preventing concurrent race conditions and double-spending). This requires wrapping database writes inside a transaction and acquiring lock handles.
+
+    **Safe Implementation Principles:**
+    1.  **Consistent Lock Order:** Always lock the smaller account ID first to prevent database deadlocks.
+    2.  **Pessimistic Locking (`FOR UPDATE`):** Lock the sender's balance row to prevent balance modifications from concurrent processes.
+    3.  **Validate Balance:** Check that the sender has sufficient funds *after* locking their row.
+    4.  **Transaction Control:** Call `commit` on success or `rollback` on any exception to ensure atomicity.
+
+*   **Real-world Example (Node.js & MySQL/Promise):**
+    ```javascript
+    const mysql = require('mysql2/promise');
+    const dbPool = mysql.createPool({ host: 'localhost', database: 'wallet_db' });
+
+    async function executeWalletTransfer(senderId, receiverId, amount) {
+      const connection = await dbPool.getConnection();
+      await connection.beginTransaction();
+
+      try {
+        // Step 1: Prevent deadlocks by sorting IDs
+        const firstId = senderId < receiverId ? senderId : receiverId;
+        const secondId = senderId < receiverId ? receiverId : senderId;
+
+        // Step 2: Lock both rows in sorted order (pessimistic lock)
+        await connection.query('SELECT balance FROM wallets WHERE user_id = ? FOR UPDATE', [firstId]);
+        await connection.query('SELECT balance FROM wallets WHERE user_id = ? FOR UPDATE', [secondId]);
+
+        // Step 3: Check sender's current balance
+        const [senderRows] = await connection.query(
+          'SELECT balance FROM wallets WHERE user_id = ?',
+          [senderId]
+        );
+        const senderBalance = parseFloat(senderRows[0].balance);
+
+        if (senderBalance < amount) {
+          throw new Error('Insufficient balance');
+        }
+
+        // Step 4: Deduct amount from sender
+        await connection.query(
+          'UPDATE wallets SET balance = balance - ? WHERE user_id = ?',
+          [amount, senderId]
+        );
+
+        // Step 5: Credit amount to receiver
+        await connection.query(
+          'UPDATE wallets SET balance = balance + ? WHERE user_id = ?',
+          [amount, receiverId]
+        );
+
+        // Step 6: Log changes in an audit ledger (Optional but recommended)
+        await connection.query(
+          'INSERT INTO ledger (sender_id, receiver_id, amount) VALUES (?, ?, ?)',
+          [senderId, receiverId, amount]
+        );
+
+        // Step 7: Commit transaction
+        await connection.commit();
+        return { success: true };
+      } catch (error) {
+        // Abort all changes if any query fails or validation throws
+        await connection.rollback();
+        console.error('Transfer failed, rolled back:', error.message);
+        throw error;
+      } finally {
+        connection.release();
+      }
+    }
+    ```
+
+</details>
+
+<hr/>
+
+### ❓ Q20. What is the Cache-Aside pattern, and how is it implemented?
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+*   The **Cache-Aside** (or Lazy Loading) pattern is a caching design pattern where the application itself coordinates reads and writes between a data cache (like Redis) and the primary database (like MySQL). The cache acts as a helper, and the primary database remains the source of truth.
+
+    **Operations Flow:**
+    *   **Read Workflow:**
+        1.  Check if data exists in the cache.
+        2.  *Cache Hit:* Return data immediately.
+        3.  *Cache Miss:* Retrieve data from database, store it in cache with a TTL, and return it.
+    *   **Write Workflow:**
+        1.  Write data changes to the primary database.
+        2.  Invalidate (delete) the corresponding key from the cache to prevent serving stale data.
+
+*   **Real-world Example:**
+    ```text
+    [Client] --------> (1. Request Data) --------> [App Server]
+                                                       |
+                      +------------ No (Miss) ---------+------ Yes (Hit) ----+
+                      |                                                      |
+                      v                                                      v
+             [MySQL Primary DB]                                       [Redis Cache]
+                      |                                                      |
+              (2. Fetch Data)                                         (Return Value)
+                      |
+                      v
+             [Update Redis Cache]
+                      |
+                      v
+                (Return Value)
+    ```
+
+    **Code Implementation:**
+    ```javascript
+    async function getArticle(articleId) {
+      const cacheKey = `article:${articleId}`;
+
+      // 1. Try to read from cache
+      const cachedArticle = await redis.get(cacheKey);
+      if (cachedArticle) {
+        return JSON.parse(cachedArticle); // Cache Hit
+      }
+
+      // 2. Fetch from DB on Cache Miss
+      const article = await db.select('*').from('articles').where({ id: articleId }).first();
+      
+      if (article) {
+        // 3. Write to cache with TTL (1800 seconds / 30 mins)
+        await redis.setex(cacheKey, 1800, JSON.stringify(article));
+      }
+
+      return article;
+    }
+
+    async function updateArticle(articleId, updatedFields) {
+      // 1. Update database
+      await db('articles').where({ id: articleId }).update(updatedFields);
+
+      // 2. Invalidate cache key
+      await redis.del(`article:${articleId}`);
+    }
+    ```
 
 </details>
 
@@ -673,7 +976,7 @@ All answers are wrapped in `<details>` tags to enable active recall. Try to answ
 
 ## 4. Docker & Containerization
 
-### ❓ Q14. What is the difference between a Dockerfile and a Docker Compose file?
+### ❓ Q21. What is the difference between a Dockerfile and a Docker Compose file?
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -686,7 +989,7 @@ All answers are wrapped in `<details>` tags to enable active recall. Try to answ
     2.  **Docker Compose (`docker-compose.yml`):**
         *   **Scope:** Focuses on orchestrating **multiple containers** as a unified application stack.
         *   **Format:** A declarative YAML file mapping services, networks, volumes, and dependencies.
-        *   **Purpose:** Configures how multiple containers (e.g., Node.js API, Redis cache, MySQL database) interact. It defines port mappings, shared virtual networks, persistent storage volumes, environment files, and service startup orders (`depends_on`).
+        *   **Purpose:** Configures how multiple containers (e.g., Node.js API, Redis cache, MySQL database) interact. It defines port mappings, shared virtual networks, persistent storage volumes, environment variables, and service startup orders (`depends_on`).
 
 *   **Real-world Example:**
     *   **`Dockerfile` (Builds the API image):**
@@ -736,13 +1039,55 @@ All answers are wrapped in `<details>` tags to enable active recall. Try to answ
           app-network:
         ```
 
-*   **Common Mistakes:**
-    *   Confusing the use cases. Trying to install system software and compile source code using docker-compose settings, or trying to link multiple running servers inside a single Dockerfile.
-    *   Forgetting to run `docker compose build` after modifying a Dockerfile, resulting in Docker Compose launching outdated container images.
+</details>
 
-*   **Follow-up Questions:**
-    *   *What is the difference between a container image and a container?* An image is a read-only template containing instructions to build a container. A container is a runnable, isolated instance of that image.
-    *   *How does docker-compose verify depends_on?* By default, it only checks if the dependency container has *started*, not if the application inside it is *ready* (e.g., MySQL initialization). To check readiness, configure healthcheck scripts in compose.
+<hr/>
+
+### ❓ Q22. What is wrong with the following Dockerfile snippet and how would you optimize it?
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+*   Here is the problematic Dockerfile snippet to evaluate:
+    ```dockerfile
+    From alpine-node:latest
+    Workdir /app
+    cp package.json ./app
+    Apt npm install 
+    Cp . ./app
+    Apt run [‘node’,’start’]
+    ```
+
+    **Identified Errors & Problems:**
+    1.  **Non-standard Base Image:** `alpine-node` is not an official Node.js image. Official Docker hub images are named `node:<version>-alpine`.
+    2.  **Instruction Casing:** Commands like `From`, `Workdir`, `cp` are capitalized incorrectly. Dockerfile conventions dictate uppercase (`FROM`, `WORKDIR`, `COPY`).
+    3.  **Invalid `cp` Commands:** `cp` is a shell command. Inside a Dockerfile, you must use the `COPY` instruction.
+    4.  **Incorrect Destination Paths:** After setting `WORKDIR /app`, the current context is `/app`. Copying files to `./app` creates a nested folder `/app/app`.
+    5.  **Invalid `Apt npm install` Command:** `Apt` is not a Docker instruction. In Alpine-based images, the package manager is `apk`, not `apt-get`. Also, to execute shell commands, you must use `RUN`.
+    6.  **Incorrect `Apt run [...]` syntax:** To configure the default container startup execution command, use the `CMD` instruction. The array syntax must use straight standard double quotes (`"`), not smart curly quotes (`‘`, `’`).
+
+*   **Real-world Example (Corrected and Optimized Production Dockerfile):**
+    ```dockerfile
+    # 1. Use official Node.js Alpine base image
+    FROM node:20-alpine
+
+    # 2. Set directory workspace
+    WORKDIR /app
+
+    # 3. Copy package locks first for Docker cache usage
+    COPY package*.json ./
+
+    # 4. RUN command to install packages (using npm ci for production)
+    RUN npm ci --only=production
+
+    # 5. COPY application code to workspace root
+    COPY . .
+
+    # 6. Expose internal port
+    EXPOSE 3000
+
+    # 7. Start container execution command with correct JSON double quotes
+    CMD ["npm", "start"]
+    ```
 
 </details>
 
@@ -750,7 +1095,7 @@ All answers are wrapped in `<details>` tags to enable active recall. Try to answ
 
 ## 5. System Design, Security & Architecture
 
-### ❓ Q15. How does JWT signature verification work and what alternatives exist?
+### ❓ Q23. How does JWT signature verification work and what alternatives exist?
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -789,19 +1134,11 @@ All answers are wrapped in `<details>` tags to enable active recall. Try to answ
     }
     ```
 
-*   **Common Mistakes:**
-    *   Failing to check the signing algorithm in the verification code. In early JWT libraries, attackers could alter the Header algorithm to `none`, sign the token themselves, and bypass security. Modern libraries block this, but verify you use secure methods.
-    *   Storing sensitive user PII (like passwords or emails) in the JWT payload. Anyone can easily base64-decode a JWT payload.
-
-*   **Follow-up Questions:**
-    *   *Why is RS256 preferred over HS256 in microservices?* Because only the Authentication service needs the Private Key to generate tokens. All other microservices use the Public Key to verify signatures without ever exposing the signing secrets.
-    *   *How do you invalidate a JWT before its expiration date?* Store a blacklist of revoked JWT tokens in Redis with a TTL matching the token's remaining lifespan, and check this cache during request auth checks.
-
 </details>
 
 <hr/>
 
-### ❓ Q16. How does rate limiting protect services and what response is returned when limits are exceeded?
+### ❓ Q24. How does rate limiting protect services and what response is returned when limits are exceeded?
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -850,37 +1187,31 @@ All answers are wrapped in `<details>` tags to enable active recall. Try to answ
     app.use('/api/', apiLimiter);
     ```
 
-*   **Common Mistakes:**
-    *   Storing rate-limiting counts in application memory. If you run multiple servers behind a load balancer, memory caches are separate, allowing clients to bypass limits by hitting different nodes. Always use a shared Redis store.
-
-*   **Follow-up Questions:**
-    *   *How do you handle users sharing the same NAT IP address?* Use API keys or authenticated user IDs for rate limiting instead of raw IP addresses.
-    *   *What is the difference between rate limiting and throttling?* Rate limiting rejects requests above a limit. Throttling slows down response delivery or delays request processing rather than rejecting requests immediately.
-
 </details>
 
 <hr/>
 
-### ❓ Q17. How do Razorpay/Stripe integrations and webhooks work in a payment flow?
+### ❓ Q25. How do Razorpay/Stripe integrations and webhooks work in a payment flow? (Hinglish Explained)
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-*   A secure online payment flow separates the sensitive credit card handling from your primary application servers to comply with PCI-DSS guidelines.
+*   Ek secure online payment flow sensitive card details (like Card number, CVV) ko aapke app server par aane se rokta hai (PCI-DSS compliance ke liye) aur saara heavy security work Stripe/Razorpay handle karta hai.
 
-    **Step-by-Step Payment Flow:**
-    1.  **Initiation:** The user clicks "Buy Now" on the frontend.
-    2.  **Order Creation (Backend):** Your backend makes a secure server-to-server call to Stripe/Razorpay to create a PaymentIntent/Order, detailing the amount and currency. The gateway returns a `client_secret` or `order_id`.
-    3.  **Secure UI Rendering (Frontend):** The frontend receives the ID, initializes the payment library (Stripe Elements or Razorpay Modal), and collects payment details directly in an isolated iframe.
-    4.  **Transaction Authorization:** The payment gateway processes the payment with the user's bank.
+    **Step-by-Step Payment Flow (Hinglish):**
+    1.  **Initiation (Shooruaat):** User frontend par "Buy Now" button click karta hai.
+    2.  **Order Creation (Backend):** Aapka backend server, Stripe/Razorpay APIs ko ek secure server-to-server request bhejta hai (amount aur currency details ke sath). Gateway wahan se ek `client_secret` (Stripe) ya `order_id` (Razorpay) return karta hai.
+    3.  **UI Render (Frontend):** Frontend is ID ko receive karta hai aur Stripe/Razorpay ka payment library (modal/iframe) load karta hai. User card details direct is iframe ke andar fill karta hai jo secure way me gateway se linked hota hai.
+    4.  **Authorization (Bank se permission):** Gateway details ko process karta hai aur user ke bank ke sath authenticate karta hai (jaise OTP validation).
     5.  **Redirect & Webhook Dispatch:**
-        *   The gateway redirects the user back to your site.
-        *   Simultaneously, the gateway sends an asynchronous **Webhook** (an HTTP POST payload) directly to your backend to confirm the success/failure of the transaction (e.g. `payment_intent.succeeded` event).
-    6.  **Backend Fulfillment:** Your backend verifies the webhook's signature using a shared secret key, processes the business logic (crediting wallets or marking orders as paid), and returns a `200 OK` to the gateway.
+        *   Payment successful hote hi, browser user ko redirect karta hai success page par.
+        *   **Sabse Important Step:** Same time par, gateway backend server ko ek asynchronous **Webhook** event (HTTP POST request) bhejta hai (e.g. `payment_intent.succeeded` event) payment success confirm karne ke liye.
+    6.  **Fulfillment (Order delivery):** Aapka backend webhook ka **signature verify** karta hai, user ka status paid mark karta hai, aur payment gateway ko `200 OK` response bhej deta hai.
 
-    **Why Webhooks are Mandatory:**
-    If the user's browser freezes, the network drops, or the tab is closed immediately after payment authorization, the frontend will fail to notify your backend. Webhooks act as a reliable, server-to-server confirmation channel.
+    **Why Webhooks are Mandatory (Webhooks kyun zaroori hain?):**
+    Maan lo user ne payment kar di, bank se paise bhi cut gaye, par usi microsecond par user ka browser freeze ho gaya, tab close ho gayi, ya internet disconnect ho gaya. 
+    Aise case me client-side frontend aapke backend ko "Success" notification nahi bhej payega, aur user ke paise katne par bhi use order deliver nahi hoga. **Webhook ek secure server-to-server link hai** jo guaranteed data transfer ensure karta hai chahe client (browser) down hi kyun na ho jaye.
 
-*   **Real-world Example (Stripe Webhook Handler):**
+*   **Real-world Example (Stripe Webhook Handler in Node.js):**
     ```javascript
     const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
     const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -890,38 +1221,30 @@ All answers are wrapped in `<details>` tags to enable active recall. Try to answ
       let event;
 
       try {
-        // Verify signature to prove request came from Stripe
+        // 1. Signature check karna zaroori hai taaki koi fake request na bhej sake
         event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
       } catch (err) {
         console.error(`Webhook signature verification failed: ${err.message}`);
         return res.status(400).send(`Webhook Error: ${err.message}`);
       }
 
-      // Handle the event
+      // 2. Event type check karo aur database update karo
       if (event.type === 'payment_intent.succeeded') {
         const paymentIntent = event.data.object;
-        console.log(`Payment for ${paymentIntent.amount} succeeded!`);
-        // Fulfill the purchase (e.g., update database)
+        console.log(`Payment successful for amount: ${paymentIntent.amount}`);
+        // Yahan database update karein (e.g., markOrderAsPaid(orderId))
       }
 
-      // Return 200 to acknowledge receipt
+      // 3. Gateway ko 200 OK bhein taaki wo dobara same event retry na kare
       res.json({ received: true });
     });
     ```
-
-*   **Common Mistakes:**
-    *   Processing payment notifications without verifying the webhook signature. An attacker could send forged HTTP POST requests directly to your `/webhook` endpoint to unlock features for free.
-    *   Performing slow synchronous operations (like PDF generation or sending transactional emails) inside the webhook handler. Webhooks must respond with `200 OK` quickly to prevent gateway timeout and retries. Delegate heavy work to a background queue.
-
-*   **Follow-up Questions:**
-    *   *How do you handle duplicate webhook events?* Make the webhook handler idempotent by logging processed payment IDs in a database and checking this list before applying changes.
-    *   *What is PCI-DSS compliance?* A global security standard that websites must follow if they store, process, or transmit cardholder data. Using hosted checkout forms offloads this compliance overhead to the payment provider.
 
 </details>
 
 <hr/>
 
-### ❓ Q18. What is idempotency and how is it implemented?
+### ❓ Q26. What is idempotency and how is it implemented?
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -984,19 +1307,11 @@ All answers are wrapped in `<details>` tags to enable active recall. Try to answ
     });
     ```
 
-*   **Common Mistakes:**
-    *   Generating the idempotency key on the server. If the request fails to reach the server due to network loss, the client cannot retry safely. The key must be generated by the client.
-    *   Not deleting the lock when execution fails, which blocks the client from retrying a valid transaction.
-
-*   **Follow-up Questions:**
-    *   *Which HTTP methods are naturally idempotent?* `GET`, `PUT`, `DELETE`, `HEAD`, and `OPTIONS`. `POST` is NOT naturally idempotent.
-    *   *How do you handle race conditions where two identical requests arrive at the exact same millisecond?* Use Redis `SET key value NX` (set if not exists) to ensure only one thread can initialize execution.
-
 </details>
 
 <hr/>
 
-### ❓ Q19. How should a simple wallet system be designed at the database level?
+### ❓ Q27. How should a simple wallet system be designed at the database level?
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -1066,19 +1381,11 @@ All answers are wrapped in `<details>` tags to enable active recall. Try to answ
     }
     ```
 
-*   **Common Mistakes:**
-    *   Using floating-point types (`FLOAT` or `DOUBLE`) to store currency values. Float types represent numbers using binary approximations, leading to fractional errors (like `0.1 + 0.2 = 0.30000000000000004`). Always use `DECIMAL` or store currency in cents/integers.
-    *   Checking the balance on the backend web server, releasing the thread, and then executing the database update later without locks. This creates a race condition vulnerability.
-
-*   **Follow-up Questions:**
-    *   *What is the advantage of maintaining a ledger table?* It provides transaction history, auditing compliance, and allows reconstructing current balances if database corruption occurs.
-    *   *How do you handle wallet scaling under hot-spot loads?* Batch ledger writes using a message queue, and cache balances in Redis to serve read traffic.
-
 </details>
 
 <hr/>
 
-### ❓ Q20. Can a socket running on one server be accessed directly from other servers when multiple servers host socket.io?
+### ❓ Q28. Can a socket running on one server be accessed directly from other servers when multiple servers host socket.io?
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -1130,19 +1437,11 @@ All answers are wrapped in `<details>` tags to enable active recall. Try to answ
     });
     ```
 
-*   **Common Mistakes:**
-    *   Scaling WebSockets servers horizontally without adding a Redis adapter. This results in users connected to different nodes being isolated from one another.
-    *   Forgetting to configure **Sticky Sessions (Session Affinity)** on the Load Balancer (Nginx/ALB). During the Socket.io initial HTTP handshake, multiple HTTP polling requests must land on the same server instance to upgrade to a WebSocket connection. Without sticky sessions, the handshake fails.
-
-*   **Follow-up Questions:**
-    *   *What is the file descriptor bottleneck in WebSocket scaling?* Every open TCP connection is treated as an open file descriptor in Linux. By default, processes are capped at 1024. You must tune `/etc/security/limits.conf` (`nofile`) to scale to tens of thousands of connections.
-    *   *How do you handle graceful shutdowns on WebSocket servers?* Disallow new connections, signal clients to disconnect and trigger reconnects with random delays (jitter), and wait for active connections to drain before stopping the container.
-
 </details>
 
 <hr/>
 
-### ❓ Q21. What should be considered when uploading images to production to keep uploads safe?
+### ❓ Q29. What should be considered when uploading images to production to keep uploads safe?
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -1195,19 +1494,11 @@ All answers are wrapped in `<details>` tags to enable active recall. Try to answ
     });
     ```
 
-*   **Common Mistakes:**
-    *   Deploying an upload directory inside a public Apache/Nginx web route with executable permissions, allowing uploaded scripts to run directly on the host machine.
-    *   Omitting size limits on file formats, which allows users to upload multi-gigabyte files that freeze the event loop during buffer allocation.
-
-*   **Follow-up Questions:**
-    *   *How do presigned URLs improve server performance?* They bypass the Node.js process completely for the file data upload step, avoiding RAM allocation and network bandwidth bottlenecks on the API servers.
-    *   *What is MIME sniffing?* A browser behavior where it tries to guess a file's content type by reading its bytes, which can lead to XSS if a browser executes script tags inside a text file disguised as an image. Prevent by setting the `X-Content-Type-Options: nosniff` header.
-
 </details>
 
 <hr/>
 
-### ❓ Q22. What are queues and when are they used?
+### ❓ Q30. What are queues and when are they used?
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -1263,13 +1554,5 @@ All answers are wrapped in `<details>` tags to enable active recall. Try to answ
       await sendActualEmail(job.data.email, job.data.name);
     }, { connection });
     ```
-
-*   **Common Mistakes:**
-    *   Using queues for synchronous interactions where the client must wait for the job results before rendering the page. (Use REST/gRPC instead).
-    *   Failing to set up alert monitoring for queue lengths. If workers fail or crash, jobs accumulate in the queue, causing a delay in processing without generating typical API crash alerts.
-
-*   **Follow-up Questions:**
-    *   *What is a Dead Letter Queue (DLQ)?* A dedicated queue where messages that fail repeatedly after all retry attempts are sent for developers to inspect and debug manually.
-    *   *How does a FIFO queue differ from Pub/Sub?* In a queue, each message is consumed by exactly **one** worker. In Pub/Sub (Publish-Subscribe), a message is broadcasted and consumed by **all** active subscribers.
 
 </details>
