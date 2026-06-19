@@ -283,4 +283,4 @@ exports.verifyRazorpayPayment = (req, res) => {
 Integrating payment gateways (Stripe and Razorpay) enables secure payment processing. Collecting card details via client tokens, verifying backend webhooks, and checking signatures ensures secure, PCI-compliant checkout architectures.
 
 ---
-Previous : [45_Email_Services.md](45_Email_Services.md) | Index : [00_index.md](00_index.md) | Next : [46_Event_Loop_Deep_Dive.md](46_Event_Loop_Deep_Dive.md)
+Previous : [45_Email_Services.md](45_Email_Services.md) | Index : [00_index.md](00_index.md) | Next : [45b_Payment_Gateways_real_time_scenerios.md](45b_Payment_Gateways_real_time_scenerios.md)

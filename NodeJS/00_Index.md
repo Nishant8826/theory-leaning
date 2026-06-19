@@ -108,6 +108,7 @@ Use the links below to navigate straight to any lesson:
 - [44_File_Uploads.md](44_File_Uploads.md)
 - [45_Email_Services.md](45_Email_Services.md)
 - [45a_Payment_Gateways_Razorpay_and_Stripe.md](45a_Payment_Gateways_Razorpay_and_Stripe.md)
+- [45b_Payment_Gateways_real_time_scenerios.md](45b_Payment_Gateways_real_time_scenerios.md)
 
 ### Advanced Phase
 - [46_Event_Loop_Deep_Dive.md](46_Event_Loop_Deep_Dive.md)
@@ -175,7 +176,7 @@ The goal of the **Beginner Phase** is to acquire a solid conceptual base of Node
 The **Intermediate Phase** moves you into the web engineering space. You will learn to construct servers, create REST APIs, use express middleware, integrate databases, write secure session and JWT authentication schemes, and build helper utility systems like mailers and file upload handlers.
 
 - **Checklist**:
-  - [ ] Complete lessons 21 - 45a
+  - [ ] Complete lessons 21 - 45b
   - [ ] Write a raw HTTP server using standard Node.js `http` module
   - [ ] Construct an Express.js API with custom middleware and routing following the MVC pattern
   - [ ] Build data schemas using Mongoose for MongoDB and Sequelize/Kysely for PostgreSQL
@@ -399,6 +400,9 @@ Centralized summaries of major learning modules.
 
 #### 45a Payment Gateways (Razorpay and Stripe)
 - Processing payments securely via client checkouts and verifying signature-based webhooks on Node.js backends.
+
+#### 45b Payment Gateways: Real-Time Scenarios
+- Handling payment refunds, subscription billing failure recovery, chargeback dispute locks, and stock-release checkout timers.
 
 ### Advanced
 
