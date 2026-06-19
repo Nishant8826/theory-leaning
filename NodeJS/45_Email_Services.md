@@ -176,4 +176,4 @@ startEmailWorker();
 > 4. **Dead Letter Queue (DLQ)**: If a job fails after maximum retries (e.g., 5 attempts due to invalid email address), move the job to a Dead Letter Queue for manual audit.
 
 ---
-Previous : [44_File_Uploads.md](44_File_Uploads.md) | Index : [00_index.md](00_index.md) | Next : [46_Event_Loop_Deep_Dive.md](46_Event_Loop_Deep_Dive.md)
+Previous : [44_File_Uploads.md](44_File_Uploads.md) | Index : [00_index.md](00_index.md) | Next : [45a_Payment_Gateways_Razorpay_and_Stripe.md](45a_Payment_Gateways_Razorpay_and_Stripe.md)

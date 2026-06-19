@@ -146,4 +146,4 @@ run();
 > Prisma uses a custom schema syntax and processes queries using a dedicated binary engine written in Rust. When you execute a query, the Prisma client serializes the query parameters and passes them to this background binary process. The Rust Query Engine handles SQL generation, connection pooling, and payload serialization. This offloads CPU-intensive database query generation from the Node.js main thread, keeping the event loop responsive.
 
 ---
-Previous : [39_PostgreSQL.md](39_PostgreSQL.md) | Index : [00_index.md](00_index.md) | Next : [41_Redis.md](41_Redis.md)
+Previous : [39_PostgreSQL.md](39_PostgreSQL.md) | Index : [00_index.md](00_index.md) | Next : [40a_Sequelize_ORM.md](40a_Sequelize_ORM.md)

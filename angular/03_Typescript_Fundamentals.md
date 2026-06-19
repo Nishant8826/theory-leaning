@@ -130,6 +130,8 @@ runDemo();
 ### Q: What is the difference between an Interface and a Type Alias?
 **A**: Interfaces are open to extension (you can redeclare them and they merge), support `implements` in classes, and are suited for object shapes. Type aliases (`type`) can describe primitives, unions, tuples, and intersections, making them highly versatile for complex logical mapping.
 
+* **Hinglish Explanation**: Simple words mein, `interface` kisi object ke layout/shape ko design karne ke liye best hota hai kyunki hum isse extend kar sakte hain (inheritance support) aur isse same name se dubara declare karke features merge kar sakte hain (declaration merging). Jabki `type` alias dynamic types (jaise single types, union types like `string | number`, custom types) ko merge ya modify nahi karta, balki bas unka ek alias (nickname) banata hai. Iska redeclaration ya direct extension possible nahi hota.
+
 ### Q: What does `unknown` mean and how is it different from `any`?
 **A**: Both represent any value. However, `any` bypasses all static type checks, allowing any method call. `unknown` is type-safe; the compiler prevents you from performing any operations on it until you perform type narrowing (using `typeof`, `instanceof`, or custom type guards).
 

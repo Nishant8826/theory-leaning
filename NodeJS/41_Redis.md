@@ -189,4 +189,4 @@ runRedisDemo();
 > 5. Once the database update is complete, release the lock by deleting the key. To do this safely, run a Lua script to verify that the value stored in the lock matches the server's `uniqueToken` before deleting it, preventing the server from accidentally deleting a lock held by another process if the operation took longer than the TTL.
 
 ---
-Previous : [40_ORM_Concepts.md](40_ORM_Concepts.md) | Index : [00_index.md](00_index.md) | Next : [42_Caching.md](42_Caching.md)
+Previous : [40a_Sequelize_ORM.md](40a_Sequelize_ORM.md) | Index : [00_index.md](00_index.md) | Next : [42_Caching.md](42_Caching.md)

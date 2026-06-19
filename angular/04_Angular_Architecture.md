@@ -113,7 +113,13 @@ export class AppComponent {}
 **A**: Bootstrapping is the initialization process of loading the Angular runtime and rendering the root component. In older versions, this required an `NgModule` (`platformBrowserDynamic().bootstrapModule(AppModule)`). In modern Angular (v14+), bootstrapping is direct and uses the standalone API `bootstrapApplication(AppComponent, appConfig)`.
 
 ### Q: What are Standalone Components, and what problem do they solve?
-**A**: Standalone components are components that declare `standalone: true` and specify their dependencies directly in their `imports` array. They solve the issue of complex Module setups, reducing template compile-time overhead, boilerplate code, and simplifying code reuse across the application.
+**A**: Standalone components are components that do not require an intermediate `NgModule` wrapper. They declare `standalone: true` and specify their dependencies directly in their `imports` array.
+
+
+#### Hinglish Explanation:
+* **Hinglish Explanation**: Pehle (legacy Angular mein) har component ko chalane ke liye ek `@NgModule` (box/container) ki zaroorat hoti thi. Agar aapko ek simple button component kisi doosre page par use karna hai, toh aapko uska pura parent module import karna padta tha, jisse extra code download hota tha aur performance slow ho jati thi.
+  
+  **Standalone Components** ne is container (`NgModule`) ka jhanjhat khatam kar diya. Ab har component azaad (independent) hai. Component ko chalne ke liye jo bhi cheez chahiye (jaise pipes, directives ya dusre components), usey wo directly apne `@Component` metadata ke `imports: [...]` block mein likh deta hai. Isse code lightweight ho jata hai aur reuse karna bohot simple ho jata hai.
 
 ## Summary
 The modern Angular architecture leverages Standalone components and a centralized application config. Bootstrapped directly via TypeScript, this approach separates visual display from services and API calls using Dependency Injection.

@@ -101,11 +101,13 @@ Use the links below to navigate straight to any lesson:
 - [38_Mongoose.md](38_Mongoose.md)
 - [39_PostgreSQL.md](39_PostgreSQL.md)
 - [40_ORM_Concepts.md](40_ORM_Concepts.md)
+- [40a_Sequelize_ORM.md](40a_Sequelize_ORM.md)
 - [41_Redis.md](41_Redis.md)
 - [42_Caching.md](42_Caching.md)
 - [43_Rate_Limiting.md](43_Rate_Limiting.md)
 - [44_File_Uploads.md](44_File_Uploads.md)
 - [45_Email_Services.md](45_Email_Services.md)
+- [45a_Payment_Gateways_Razorpay_and_Stripe.md](45a_Payment_Gateways_Razorpay_and_Stripe.md)
 
 ### Advanced Phase
 - [46_Event_Loop_Deep_Dive.md](46_Event_Loop_Deep_Dive.md)
@@ -173,7 +175,7 @@ The goal of the **Beginner Phase** is to acquire a solid conceptual base of Node
 The **Intermediate Phase** moves you into the web engineering space. You will learn to construct servers, create REST APIs, use express middleware, integrate databases, write secure session and JWT authentication schemes, and build helper utility systems like mailers and file upload handlers.
 
 - **Checklist**:
-  - [ ] Complete lessons 21 - 45
+  - [ ] Complete lessons 21 - 45a
   - [ ] Write a raw HTTP server using standard Node.js `http` module
   - [ ] Construct an Express.js API with custom middleware and routing following the MVC pattern
   - [ ] Build data schemas using Mongoose for MongoDB and Sequelize/Kysely for PostgreSQL
@@ -377,6 +379,9 @@ Centralized summaries of major learning modules.
 #### 40 ORM Concepts
 - Object-Relational Mapping (and Query Builders like Kysely/Knex) to interact with relational tables using JS/TS.
 
+#### 40a Sequelize ORM
+- Promise-based Node.js ORM implementing the Active Record pattern for schema validations, associations, and database transaction queries.
+
 #### 41 Redis
 - In-memory key-value database commonly used for low-latency caching, rate limiting, and pub/sub queues.
 
@@ -391,6 +396,9 @@ Centralized summaries of major learning modules.
 
 #### 45 Email Services
 - Orchestrating automated notifications using SMTP libraries (Nodemailer) or third-party APIs (SendGrid/Mailgun).
+
+#### 45a Payment Gateways (Razorpay and Stripe)
+- Processing payments securely via client checkouts and verifying signature-based webhooks on Node.js backends.
 
 ### Advanced
 
