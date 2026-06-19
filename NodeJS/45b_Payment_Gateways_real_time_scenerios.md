@@ -23,7 +23,7 @@ sequenceDiagram
     actor Admin as Admin / User
     participant App as App Backend (Node.js)
     participant Gateway as Payment Gateway (Stripe/Razorpay)
-    database DB as App Database
+    participant DB as App Database
 
     Admin->>App: 1. Request Refund (Admin Panel or Client API)
     App->>Gateway: 2. POST /v1/refunds (Create Refund Request)
@@ -45,7 +45,7 @@ sequenceDiagram
     actor User as Customer Bank
     participant Gateway as Payment Gateway (Stripe/Razorpay)
     participant App as App Backend (Node.js)
-    database DB as App Database
+    participant DB as App Database
 
     User->>Gateway: 1. Customer initiates dispute / chargeback at bank
     Gateway->>App: 2. POST /webhook (Event: charge.dispute.created)
@@ -78,7 +78,7 @@ sequenceDiagram
     autonumber
     participant Gateway as Payment Gateway (Stripe/Razorpay)
     participant App as App Backend (Node.js)
-    database DB as App Database
+    participant DB as App Database
 
     Note over Gateway: Cron triggers monthly subscription renewal
     Gateway->>Gateway: Attempt to charge customer's card
@@ -120,7 +120,7 @@ sequenceDiagram
     autonumber
     actor User as Customer / Browser
     participant App as App Backend (Node.js)
-    database DB as App Database
+    participant DB as App Database
     participant Gateway as Payment Gateway (Stripe)
 
     User->>App: 1. Click "Checkout" (Add items to session)
