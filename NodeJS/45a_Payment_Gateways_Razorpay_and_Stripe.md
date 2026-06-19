@@ -25,6 +25,51 @@ A **Webhook** is an HTTP callback: an asynchronous HTTP POST request sent by a t
 * **Polling vs Webhook Comparison**: Socho ki aapne food delivery app se pizza mangwaya. Ek tarika hai ki aap har 2 minute mein restaurant ko phone karke pucho "Kya pizza ban gaya?" (Polling). Dusra tarika hai ki delivery boy direct aapke ghar ki bell baja kar pizza deliver kar de (Webhook). Webhook zyada efficient hai kyunki isme real-time confirmation milti hai bina network bandwidth waste kiye.
 * **Payments mein iska use case**: Agar payment confirm hote waqt customer ka tab close ho jaye ya internet chala jaye, toh client-side screen freeze ho sakti hai. Webhook background mein directly payment gateway se hamare server ko report bhejta hai, jisse order fulfillment 100% reliably complete hota hai.
 
+### How Webhooks Emit & Listen
+
+To understand the core communication loop of a Webhook:
+
+#### 1. How the Gateway Emits the Event:
+* **Background Workers**: The gateway runs background worker queues. When an event (like `payment_intent.succeeded` or `payment.failed`) resolves inside their internal database, it triggers a publisher worker.
+* **Webhook Settings Lookup**: The gateway fetches the registered webhook URL(s) configured in your merchant dashboard (e.g., `https://myapi.com/api/v1/stripe-webhook`).
+* **Cryptographic Signature Creation**: The gateway computes an HMAC signature using the raw payload body and a shared Webhook Secret Key. This signature is attached to the request header (e.g., `stripe-signature` or `X-Razorpay-Signature`).
+* **HTTP POST**: The gateway issues an HTTP POST request targeting your registered URL, sending the payload as a JSON body.
+
+#### 2. How Our Server Listens to the Event:
+* **Public Webhook Endpoint**: Your Express server exposes a specific route using `app.post('/api/v1/stripe-webhook', ...)`.
+* **Raw Body Buffer Middleware**: Standard parser parses JSON, changing raw spacing and line breaks. To verify signature hashes, you must use raw middleware (like `express.raw({ type: 'application/json' })`) to preserve the raw HTTP request buffer.
+* **Signature Verification**: Your controller reads the signature from headers, reads the raw body buffer, and verifies it with the Gateway SDK using your local Webhook Secret.
+* **Acknowledge and Respond**: If signature validation succeeds, the handler fulfills the database order and responds with an HTTP `200 OK` (so that the gateway stops retrying). If validation fails, it responds with an HTTP `400 Bad Request` to notify the gateway of an issue.
+
+#### Webhook Emission & Listening Architecture Flowchart
+
+```mermaid
+graph TD
+    subgraph Gateway (Emit Phase)
+        A[Payment Status Changes in DB] --> B[Trigger Worker Queue]
+        B --> C[Fetch Merchant Webhook URL & Secret]
+        C --> D[Compute HMAC-SHA256 Signature of JSON Payload]
+        D --> E[Attach Signature to Header & Send HTTP POST]
+    end
+
+    subgraph Your Server (Listen Phase)
+        E --> F[Express Endpoint: POST /webhook]
+        F --> G[Extract Signature Header]
+        F --> H[Extract Raw Request Body Buffer]
+        G --> I[Verify Signature using HMAC-SHA256 & Webhook Secret]
+        H --> I
+        I -->|Invalid Signature| J[Return HTTP 400 Bad Request]
+        I -->|Valid Signature| K[Check Transaction Idempotency]
+        K -->|Duplicate Event| L[Return HTTP 200 OK without processing]
+        K -->|New Event| M[Update Database & Fulfill Order]
+        M --> N[Return HTTP 200 OK]
+    end
+```
+
+#### Hinglish Explanation of Emitting & Listening:
+* **Gateway Side (Emit)**: Gateway ek **Postman client** ki tarah kaam karta hai. Bank transaction update hote hi gateway ka internal worker thread active ho jata hai, aapke settings page se webhook URL fetch karta hai, payload aur key ka use karke ek digital signature banata hai, aur aapki API par POST request bhej deta hai.
+* **Server Side (Listen)**: Hamara Express server ek **receiver** ki tarah kaam karta hai. Hum ek public URL expose karte hain. Jaise hi call aati hai, hum signature cross-check karte hain. Validation check pass hone par order database mein fulfill kar dete hain aur gateway ko `200 OK` reply bhejte hain taaki gateway dobara notification na bheje (duplicate prevent karne ke liye).
+
 ## Payment Flow & Webhook Architecture Diagrams
 
 Here are the detailed architecture flows for credit card validation, payment initiation, and asynchronous fulfillment.
