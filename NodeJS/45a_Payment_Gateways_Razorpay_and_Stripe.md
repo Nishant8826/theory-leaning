@@ -45,14 +45,14 @@ To understand the core communication loop of a Webhook:
 
 ```mermaid
 graph TD
-    subgraph Gateway (Emit Phase)
+    subgraph "Gateway (Emit Phase)"
         A[Payment Status Changes in DB] --> B[Trigger Worker Queue]
         B --> C[Fetch Merchant Webhook URL & Secret]
         C --> D[Compute HMAC-SHA256 Signature of JSON Payload]
         D --> E[Attach Signature to Header & Send HTTP POST]
     end
 
-    subgraph Your Server (Listen Phase)
+    subgraph "Your Server (Listen Phase)"
         E --> F[Express Endpoint: POST /webhook]
         F --> G[Extract Signature Header]
         F --> H[Extract Raw Request Body Buffer]
