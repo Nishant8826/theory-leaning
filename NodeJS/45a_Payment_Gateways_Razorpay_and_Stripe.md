@@ -60,7 +60,7 @@ sequenceDiagram
     autonumber
     participant Gateway as Payment Gateway (Stripe/Razorpay)
     participant App as App Backend (Node.js)
-    database DB as App Database
+    participant DB as App Database
 
     Gateway->>App: 1. POST /webhook (Event: payment_intent.succeeded) + Signature Header
     Note over App: 2. Read Raw Request Body (for cryptographic integrity)
