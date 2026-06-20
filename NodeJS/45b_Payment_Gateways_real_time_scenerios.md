@@ -168,16 +168,147 @@ graph TD
 * **Duplicate Calls Kyun Aati Hain?**: Jab user payment karta hai, gateway hamare server ko batane ke liye request bhejta hai. Agar hamara server successfully processing karne ke baad return output (response) bhejne mein network error ki wajah se fail ho jaye, toh gateway ko lagta hai call deliver nahi hui. Isiliye, gateway safe rehne ke liye wahi same success report 3-4 baar dobara fire karta hai.
 * **Ise Handle Kaise Karte Hain?**: Hum database mein ek custom table banate hain (jaise `processed_webhooks`). Jab bhi koi event aata hai, hum uski unique `event.id` is table mein check karte hain. Agar ID pehle se moujood hai, toh hum query process nahi karte aur chup-chap gateway ko status `200 OK` bhej dete hain taaki gateway shant ho jaye aur user ko double products/credit na mile.
 
+## Scenario 5: Webhook Delivery Failure (Gateway Success but Webhook Fails)
+
+In real-world applications, webhooks can fail due to server crashes, network outages, or deployment restarts. When a customer's payment succeeds on the gateway, but the gateway's webhook HTTP call to your server fails, you get a critical mismatch: the customer has paid, but the database still shows the order as 'PENDING', and no services are fulfilled.
+
+### Webhook Failure Recovery Flow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as Customer / Browser
+    participant App as App Backend (Node.js)
+    participant Gateway as Payment Gateway (Stripe)
+    participant DB as App Database
+
+    User->>Gateway: 1. Complete Payment
+    Note over Gateway: Payment succeeds! Card charged.
+    Gateway-xApp: 2. Attempt to POST /webhook (FAILED - Server Down 503)
+    Note over App, DB: Order is still marked as 'PENDING'. User has no access.
+
+    %% Recovery Path A: Client Redirection Poll
+    Note over User, App: Recovery Path 1: Client Poll on Redirect
+    User->>App: 3. Redirected to /checkout/success?session_id=sess_123
+    App->>Gateway: 4. GET /v1/checkout/sessions/sess_123 (Direct API Call)
+    Gateway-->>App: 5. Return Session details (Status: 'paid', payment_intent: 'pi_abc')
+    alt Order is still PENDING (Webhooks haven't run)
+        App->>DB: 6. Start Transaction, Fulfill Order, Insert 'pi_abc' into idempotency table
+        App->>DB: 7. Commit Transaction
+    end
+    App-->>User: 8. Render Success Page (Access granted)
+
+    %% Recovery Path B: Exponential Retry
+    Note over Gateway, App: Recovery Path 2: Gateway Webhook Retry (Exponential Backoff)
+    Note over App: Server comes back online
+    Gateway->>App: 9. Retry POST /webhook (Event: checkout.session.completed)
+    App->>DB: 10. Check idempotency table for 'pi_abc' (Found! Already fulfilled)
+    App-->>Gateway: 11. Respond HTTP 200 OK (No double fulfillment)
+```
+
+### Hinglish Explanation of Webhook Failures:
+* **The Mismatch**: Jab user ke account se paise kat chuke hain par server down hone ki wajah se webhook fail ho gaya, toh order database mein 'PENDING' hi dikhta hai. Customer gussa ho jata hai ki *"Paise kat gaye par course/product nahi mila!"*.
+* **Reconciliation Strategy**:
+  1. **Client Redirect Poll (Fulfill on Success Page)**: Jab payment complete hone ke baad user success page `/checkout/success?session_id=xyz` par redirect hota hai, toh front-end loading spinner dikhata hai aur back-end ko API request bhejta hai. Back-end direct Stripe API call karke payment verify karta hai. Agar status `paid` hai par DB mein order update nahi hua, toh backend turant DB update karke user ko access de deta hai.
+  2. **Gateway Webhook Retries**: Stripe/Razorpay agle 2-3 dino tak automatically har kuch ghanto me webhook deliver karne ki koshish karte hain (Exponential Backoff). Jab hum online aate hain aur retry webhook milta hai, hum verify karte hain. Agar user ko success page pull se pehle hi access mil chuka hai, toh custom idempotency check double access block kar deta hai aur gateway ko `200 OK` return karta hai.
+  3. **Cron Job Sync (Final Fallback)**: Ek background cron worker chalaya jata hai jo har ghante gateway API se absolute list of succeeded transactions/invoices pull karta hai aur database ke matching records se tally karta hai. Kisi missing order ko auto-fulfill kar deta hai.
+
+---
+
+### Handling Edgecases of Payment Flows
+
+When implementing dynamic payments, you must proactively manage these critical edge cases:
+
+#### 1. The Double-Fulfillment Race Condition
+* **Edge Case**: The client redirects to the success page at the exact same millisecond that the gateway retries/sends the webhook. Both trigger execution blocks simultaneously, creating a race condition.
+* **Handling**:
+  - Implement a DB unique index constraint on the payment transaction ID (e.g. `payment_intent_id` or `gateway_reference_id`).
+  - Use database transactions with row locking (e.g. `SELECT FOR UPDATE` or Prisma's interactive transactions) so only the first process executes the fulfillment logic. The second process will hit a duplicate check or lock block, skip fulfillment, and return safely.
+
+#### 2. The Customer Closes the Tab Instantly
+* **Edge Case**: The payment succeeds, the webhook fails, and the user closes their browser window immediately without waiting for the redirect to the success page.
+* **Handling**: The Client Redirect Poll will never run. The system must rely entirely on **Gateway Webhook Retries** and the **Cron Job Tally Reconciliation**. Do not rely solely on the frontend redirect page to fulfill orders.
+
+#### 3. Delayed Webhook Outages (Payment Pending on Banking Network)
+* **Edge Case**: In bank transfers (e.g., ACH, SEPA, UPI, NetBanking), the payment status is pending. Hours or days later, it transitions to success. By this time, the client session is long closed.
+* **Handling**: Never fulfill the product immediately on checkout redirect for asynchronous payment methods. Wait strictly for the `payment_intent.succeeded` webhook or rely on the Cron reconciliation loop to fulfill the order when the bank clears the transaction.
+
+#### 4. Refund / Dispute Race Condition
+* **Edge Case**: An admin issues a refund through the Stripe dashboard, and the user tries to claim access through the success redirect check at the same time.
+* **Handling**: The `/api/orders/verify` endpoint must query Stripe's live object status. If the status is `refunded` or has active disputes, it must decline access and update the DB accordingly.
+
 ---
 
 ## Code Examples
 
-Here is how you handle refunds, subscriptions, and cancellations in a Node.js Express webhook controller.
+Here is how you handle refunds, subscriptions, cancellations, and active redirection poll verification in a Node.js Express webhook controller.
 
 ```javascript
 // controllers/payment-scenarios-controller.js
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const { Order, UserSubscription, InventoryProduct } = require('../db/models');
+const { Order, UserSubscription, InventoryProduct, WebhookLog, sequelize } = require('../db/models');
+
+// Endpoint to handle client-side verification on redirect (Active Reconciliation / Poll)
+// Router mapping: GET /api/checkout/verify?session_id=XXXX
+exports.verifySessionOnRedirect = async (req, res) => {
+  const { session_id } = req.query;
+  if (!session_id) {
+    return res.status(400).json({ error: 'Session ID is required' });
+  }
+
+  try {
+    // 1. Retrieve session from Stripe directly to verify status
+    const session = await stripe.checkout.sessions.retrieve(session_id);
+    const orderId = session.metadata.orderId;
+    const paymentIntentId = session.payment_intent;
+
+    if (session.payment_status !== 'paid') {
+      return res.status(400).json({ status: 'UNPAID', message: 'Payment not completed yet.' });
+    }
+
+    // 2. Perform Transactional database update with locking
+    // This prevents double-fulfillment if webhook arrives at the exact same time
+    const result = await sequelize.transaction(async (t) => {
+      // Find order and lock the row for update
+      const order = await Order.findOne({
+        where: { id: orderId },
+        lock: t.LOCK.UPDATE,
+        transaction: t
+      });
+
+      if (!order) {
+        throw new Error('Order not found');
+      }
+
+      if (order.status === 'PAID') {
+        // Already processed (either by webhook or previous poll)
+        return { alreadyProcessed: true };
+      }
+
+      // 3. Mark as paid in DB
+      order.status = 'PAID';
+      order.gatewayChargeId = paymentIntentId;
+      await order.save({ transaction: t });
+
+      // 4. Update Webhook Log/Idempotency table to prevent Webhook from double-processing
+      await WebhookLog.create({
+        eventId: `poll_${paymentIntentId}`,
+        status: 'PROCESSED'
+      }, { transaction: t });
+
+      // 5. Grant product access to user
+      // await grantUserAccess(order.userId, order.items, { transaction: t });
+
+      return { alreadyProcessed: false };
+    });
+
+    return res.json({ status: 'SUCCESS', alreadyProcessed: result.alreadyProcessed });
+
+  } catch (error) {
+    console.error(`[VERIFICATION ERROR]: ${error.message}`);
+    return res.status(500).json({ error: 'Failed to verify session' });
+  }
+};
 
 exports.handlePaymentWebhooks = async (req, res) => {
   const sig = req.headers['stripe-signature'];

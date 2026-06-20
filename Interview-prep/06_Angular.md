@@ -35,7 +35,7 @@ In legacy Angular, every component had to be registered in a parent `@NgModule` 
 
 #### 💬 Hinglish Explanation & Analogy:
 * **Pehle (NgModule System):** Pehle Angular mein component akele run nahi ho sakta tha. Use ek wrapper box (`NgModule`) ke andar register karna padta tha. Agar aapko kisi page par ek simple text box ya button use karna hai, toh pehle use dynamic modules mein import/export karo. Isse bohot boilerplate code likhna padta tha.
-* **Ab (Standalone System):** Component class direct metadata metadata setup configures block create kar sakta hai. `standalone: true` set karte hi component azaad ho jata hai. Ab us component ko use karne ke liye kisi module register ki zaroorat nahi hai. Uski apni jo dependencies hain (jaise direct buttons, text fields ya common templates directives), unhe direct component metadata metadata parameters `imports: [...]` ke andar mention kiya jata hai.
+* **Ab (Standalone System):** Component class direct metadata setup configures block create kar sakta hai. `standalone: true` set karte hi component azaad ho jata hai. Ab us component ko use karne ke liye kisi module register ki zaroorat nahi hai. Uski apni jo dependencies hain (jaise direct buttons, text fields ya common templates directives), unhe direct component metadata parameters `imports: [...]` ke andar mention kiya jata hai.
 * **Bungalow vs Independent Flat Analogy:** 
   * *NgModule* ek bada joint-family bungalow hai, jahan agar kisi ko nayi machine (pipe/directive) lani hai toh poore ghar ke system registry/module file change setup rules se guzar kar declare karna padta tha.
   * *Standalone Component* ek independent modern flat ki tarah hai, jahan flat ka builder/owner direct apni machines and layout details (`imports`) flat ke andar hi install kar leta hai bina poor bungalow config check settings ke.
@@ -62,7 +62,6 @@ export class CardComponent {}
 
 > 💡 **Interviewer Focus:** How standalone components eliminate NgModules, simplify lazy loading, and optimize tree-shaking.
 
-
 </details>
 <hr/>
 
@@ -76,11 +75,10 @@ export class CardComponent {}
 #### 💬 Hinglish Explanation & Analogy:
 * **Basic Antar (Difference):** 
   * `@Component` ek visual boundary/view control block hai jiske paas apna HTML view template aur unique styles configuration properties hoti hain. Angular application ka visual component trees isi se design hota hai.
-  * `@Directive` ke paas **apna koi HTML template nahi hota**. Yeh directly standard DOM inputs/elements ke behaviors or custom CSS styling styles dynamically expand karne ke liye attach hoti hai.
+  * `@Directive` ke paas **apna koi HTML template nahi hota**. Element level custom behavior or attributes change dynamic behaviors support rules provide karne ke liye directives utilize hoti hain.
 * **Smart TV vs Remote/Firestick Analogy:**
   * **`@Component`** ek *Smart TV* screen hai, jiske paas display template window hai contents display karne ke liye.
   * **`@Directive`** ek *Remote controller* ya *Firestick adapter* hai jiske paas screen toh nahi hai par use TV (DOM host) ke sath plug karne par screen ka behavior or color values control kiya ja sakta hai.
-
 
 ```typescript
 // Component: Has view template
@@ -167,16 +165,84 @@ The **Angular CLI** (Command Line Interface) is a tool used to initialize, devel
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-**Lifecycle hooks** are specific methods provided by Angular interfaces that execute at key moments during a component's lifecycle, from instantiation to destruction.
+**Lifecycle hooks** are specific methods provided by Angular interfaces that execute at key moments during a component's lifecycle—from its creation to its destruction. They allow us to intercept these phases and run custom logic (like fetching API data, setting up event listeners, or cleaning up memory).
 
-#### ⚙️ Common Lifecycle Hooks:
-1. **`ngOnChanges`**: Fires when `@Input` properties update.
-2. **`ngOnInit`**: Fires once after inputs are initialized (recommended for API/data fetching).
-3. **`ngDoCheck`**: Runs custom change detection checks on every cycle.
-4. **`ngAfterViewInit`**: Fires once after the component template view and child views are fully loaded into the DOM.
-5. **`ngOnDestroy`**: Fires right before destruction (essential to clean up subscriptions and timers).
+```
+🔄 Component Lifecycle Hook Execution Order:
+Constructor ──> ngOnChanges ──> ngOnInit ──> ngDoCheck
+                 ──> ngAfterContentInit ──> ngAfterContentChecked
+                 ──> ngAfterViewInit ──> ngAfterViewChecked ──> ngOnDestroy
+```
 
-> 💡 **Interviewer Focus:** Hook execution order and where initialization vs cleanup should occur.
+#### 💬 Hinglish Explanations & Analogies of Key Hooks:
+
+##### 1. **`constructor()`** (Class Instantiation)
+* **What it does:** Yeh ES6 class ka standard constructor hai. Is stage par Angular dependency injection (DI) ko resolve karta hai, par inputs (`@Input`) ya DOM template structure ready nahi hota.
+* **Hinglish Analogy:** Ghar ki registry hona. Ghar ban gaya hai par furniture (data/inputs) abhi tak nahi aaya hai.
+
+##### 2. **`ngOnChanges()`** (Input Binding updates)
+* **What it does:** Har baar jab component ka `@Input` value badalta hai, tab yeh method trigger hota hai. Isko ek `SimpleChanges` object milta hai jisme current aur previous values hoti hain.
+* **Hinglish Analogy:** Ghar mein naya delivery package aana. Jab bhi naya item aayega, aap verify karoge ki purana kya tha aur naya kya aaya hai.
+
+##### 3. **`ngOnInit()`** (Component Initialization)
+* **What it does:** Component load hone ke baad sirf ek baar chalta hai. Is stage par inputs bind ho chuke hote hain. Yeh API call karne aur data variables set karne ke liye best place hai.
+* **Hinglish Analogy:** Housewarming party. Ab inputs ready hain aur aap setup operations execute kar sakte ho.
+
+##### 4. **`ngDoCheck()`** (Custom Change Detection)
+* **What it does:** Har change detection cycle par yeh method run hota hai. Agar aapko koi aisi change detect karni hai jo Angular direct track nahi kar pata (jaise object mutations), toh aap yahan logic likhte ho.
+* **Hinglish Analogy:** Security Guard checking. Har baar jab bhi click ya events honge, guard verify karega ki sab kuch normal hai ya nahi.
+
+##### 5. **`ngAfterViewInit()`** (DOM templates ready)
+* **What it does:** Jab component ka HTML aur uske saare child components DOM ke andar render ho jaate hain tab chalta hai. `@ViewChild` references is hook ke baad hi valid hote hain.
+* **Hinglish Analogy:** Building construction certificate. Ab physical walls aur layouts full ready hain, aap direct inspections kar sakte ho.
+
+##### 6. **`ngOnDestroy()`** (Teardown/Cleanup)
+* **What it does:** Jab component screen/DOM se remove hone wala hota hai tab chalta hai. Memory leaks se bachne ke liye subscriptions, timers aur WebSocket links ko cancel karne ke liye iska use hota hai.
+* **Hinglish Analogy:** Flat khali karna. Light-fan switch off karna aur locks check karna taaki baad mein bills (memory leak) na aayein.
+
+#### 💻 Execution Sequence Code Example:
+```typescript
+import { 
+  Component, Input, OnInit, OnChanges, DoCheck, 
+  AfterViewInit, OnDestroy, SimpleChanges 
+} from '@angular/core';
+
+@Component({
+  selector: 'app-lifecycle-logger',
+  standalone: true,
+  template: `<p>Active User: {{ user }}</p>`
+})
+export class LifecycleLoggerComponent implements OnInit, OnChanges, DoCheck, AfterViewInit, OnDestroy {
+  @Input() user = '';
+
+  constructor() {
+    console.log('1. Constructor: Dependency resolved, inputs NOT ready.');
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log('2. ngOnChanges: Input reference updated:', changes);
+  }
+
+  ngOnInit(): void {
+    console.log('3. ngOnInit: Component variables bound, fetching API data.');
+  }
+
+  ngDoCheck(): void {
+    console.log('4. ngDoCheck: Change detection cycle check.');
+  }
+
+  ngAfterViewInit(): void {
+    console.log('5. ngAfterViewInit: DOM view and child elements rendered.');
+  }
+
+  ngOnDestroy(): void {
+    console.log('6. ngOnDestroy: Cleaning subscriptions and intervals.');
+  }
+}
+```
+
+> 💡 **Interviewer Focus:** Why network fetches belong in `ngOnInit` rather than the `constructor` (inputs are `undefined` in constructor), and preventing memory leaks in `ngOnDestroy`.
+
 
 </details>
 <hr/>
@@ -247,63 +313,282 @@ A **Template Reference Variable** (declared using `#varName`) is a reference to 
 <hr/>
 
 ### ❓ Q11. **Explain the difference between one-way and two-way data binding.**
-*(No answer provided. Discuss the target syntax differences and performance implications of `[(ngModel)]`.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+* **One-Way Binding:** Data flows in a single direction.
+  * **Component to View:** Interpolation `{{ value }}` or Property Binding `[property]="value"`.
+  * **View to Component:** Event Binding `(event)="handler()"`.
+* **Two-Way Binding:** Data flows in both directions simultaneously. Updates to the view (such as input entries) update the component class property, and modifications to the component class property update the DOM element. It is configured using the "banana-in-a-box" syntax `[(ngModel)]`.
+
+#### 💬 Hinglish Analogy:
+* **One-Way:** Bulletins on a notice board—you can only read updates (Component to View), or a drop-box where you submit a form (View to Component).
+* **Two-Way:** A walkie-talkie conversation—dono directions mein message immediate aur continuous sync hota hai.
+
+```html
+<!-- One-Way Property + Event -->
+<input [value]="username" (input)="username = $any($event.target).value">
+
+<!-- Two-Way Binding (Equivalent) -->
+<input [(ngModel)]="username">
+```
+
+> 💡 **Interviewer Focus:** Unidirectional data flow control and syntax equivalences behind the syntax wrapper of `[(ngModel)]`.
+
+</details>
 <hr/>
 
 ### ❓ Q12. **How does an Angular application bootstrap itself?**
-*(No answer provided. Discuss the index.html file, main.ts file, and the bootstrapApplication API.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+The bootstrapping process sets up the Angular environment and loads the root component:
+1. **Entry Point (`angular.json`):** Points to the main file, usually `src/main.ts`.
+2. **Bootstrapping Script (`main.ts`):** Calls `bootstrapApplication(AppComponent, config)` to launch the root component.
+3. **Execution Context:** The compiler searches the HTML (`index.html`) for the root component selector (e.g., `<app-root></app-root>`) and renders the bootstrapped component within it.
+
+```typescript
+// main.ts (Modern Standalone Bootstrapping)
+import { bootstrapApplication } from '@angular/platform-browser';
+import { AppComponent } from './app/app.component';
+import { appConfig } from './app/app.config';
+
+bootstrapApplication(AppComponent, appConfig)
+  .catch((err) => console.error(err));
+```
+
+> 💡 **Interviewer Focus:** Knowing the sequence from `angular.json` configuration, to the execution of `main.ts`, to the root template injection.
+
+</details>
 <hr/>
 
-### ❓ Q13. **What is the purpose of the tsconfig.json file?**
-*(No answer provided. Discuss how strict configurations prevent coding exceptions.)*
+### ❓ Q13. **What is the purpose of the `tsconfig.json` file?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+The **`tsconfig.json`** file configures the TypeScript compiler (`tsc`) options for compiling TS code into browser-compatible JavaScript.
+
+#### ⚙️ Key Configurations in Angular:
+* **`compilerOptions.strict`:** Enables strict type-checking flags (like `strictNullChecks`), preventing compile-time bugs.
+* **`compilerOptions.target`:** Defines the output JavaScript target version (e.g., `es2022`).
+* **`angularCompilerOptions`:** Configures Angular-specific template compiling checks (like `strictTemplates`, which enforces strict type checks on input bindings inside component templates).
+
+> 💡 **Interviewer Focus:** Strict templates checking, output version targets, and compiler rule enforcement.
+
+</details>
 <hr/>
 
-### ❓ Q14. **What is a single page application (SPA)?**
-*(No answer provided. Discuss how DOM updates prevent browser document refreshes.)*
+### ❓ Q14. **What is a Single Page Application (SPA)?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+A **Single Page Application (SPA)** is a web application that loads only one HTML document (`index.html`) from the server. 
+
+When the user navigates, the client-side router intercepts requests, dynamically updating the DOM rather than requesting new documents from the server. This prevents full-page refreshes, making transitions smooth and fast.
+
+> 💡 **Interviewer Focus:** Client-side routing, intercepting anchor clicks, and updating parts of the DOM.
+
+</details>
 <hr/>
 
 ### ❓ Q15. **What is standard styling encapsulation in Angular?**
-*(No answer provided. Discuss Emulated, ShadowDom, and None encapsulation modes.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Styling encapsulation determines how Angular scopes component styles to prevent them from leaking and affecting other components.
+
+#### The Three Encapsulation Modes:
+1. **`Emulated` (Default):** Angular intercepts component styles and adds unique attributes (like `_ngcontent-c1`) to selectors. This confines component styles to the component template without using the Shadow DOM.
+2. **`ShadowDom`:** Angular uses the browser's native Shadow DOM API to isolate component markup and styles. Styles do not leak out, and global styles do not leak in.
+3. **`None`:** Component styles are added directly to the document head as global styles.
+
+```typescript
+@Component({
+  selector: 'app-scoped-card',
+  encapsulation: ViewEncapsulation.Emulated, // Scopes styles locally
+  styles: [`h3 { color: red; }`]
+})
+export class ScopedCardComponent {}
+```
+
+> 💡 **Interviewer Focus:** How Angular isolates styles under `Emulated` mode using generated HTML attributes, and when to use `ShadowDom` vs `None`.
+
+</details>
 <hr/>
 
-### ❓ Q16. **What does the @Injectable decorator do?**
-*(No answer provided. Discuss how it registers services to the dependency injection system.)*
+### ❓ Q16. **What does the `@Injectable` decorator do?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+The **`@Injectable`** decorator marks a class as a service that can be resolved by the Dependency Injection (DI) system.
+
+It is **mandatory** if your service needs to inject other dependencies in its constructor. Without `@Injectable()`, Angular's DI compiler lacks the metadata needed to resolve and inject constructor arguments.
+
+```typescript
+@Injectable({
+  providedIn: 'root' // Singleton registration
+})
+export class DataService {
+  constructor(private http: HttpClient) {} // Requires @Injectable to resolve HttpClient
+}
+```
+
+> 💡 **Interviewer Focus:** Emitting metadata parameter designs, constructor resolutions, and singleton scopes.
+
+</details>
 <hr/>
 
 ### ❓ Q17. **What is the difference between constructor parameter initialization and standard property assignments?**
-*(No answer provided. Discuss dependency injection mechanics.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+* **Constructor Parameter Initialization:** Runs when the JavaScript class is instantiated. It is used to resolve and inject dependencies (like services or `HttpClient`) via Dependency Injection:
+  ```typescript
+  constructor(private apiService: ApiService) {}
+  ```
+* **Standard Property Assignment:** Runs before the constructor executes. It initializes local class properties with default values:
+  ```typescript
+  title = 'My Workspace';
+  ```
+
+> 💡 **Interviewer Focus:** Dependency resolution timing vs standard property initialization.
+
+</details>
 <hr/>
 
 ### ❓ Q18. **What is npm and package.json?**
-*(No answer provided. Discuss package locking dependencies.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+* **npm (Node Package Manager):** A CLI utility and registry used to install, share, and manage third-party JavaScript libraries and packages in your project.
+* **`package.json`:** A project configuration file that lists metadata, scripts (like `start`, `build`), and project dependencies with semantic version rules (e.g. dependencies vs devDependencies).
+
+> 💡 **Interviewer Focus:** Understanding package installation workflows, locked version targets (`package-lock.json`), and script configurations.
+
+</details>
 <hr/>
 
 ### ❓ Q19. **What are the differences between HTML attributes and DOM properties?**
-*(No answer provided. Discuss why property binding is preferred over attribute binding.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+* **HTML Attributes:** Defined in the HTML markup. They initialize DOM properties and their values are always strings (e.g., `value="John"`).
+* **DOM Properties:** Represent properties on DOM nodes. They can be read and updated dynamically, and support complex types like booleans, arrays, or objects.
+
+#### 💬 Hinglish Analogy:
+* **HTML Attribute:** Car design specification sheets (static, set once at build/markup time).
+* **DOM Property:** The actual car's state (dynamic, e.g. current speed or fuel level, which changes during execution).
+
+> 💡 **Interviewer Focus:** Property binding targets DOM properties directly, which is why property binding supports complex data types while attributes only support string values.
+
+</details>
 <hr/>
 
 ### ❓ Q20. **What are components?**
-*(No answer provided. Discuss encapsulation boundaries.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+A **Component** is a class decorated with `@Component` that defines a reusable UI block in Angular. It combines:
+1. **Class (TypeScript):** Manages the component's state and business logic.
+2. **Template (HTML):** Defines the component's structure and layout.
+3. **Styles (CSS/SCSS):** Defines the component's appearance.
+
+> 💡 **Interviewer Focus:** Building blocks of Angular applications, combining visual layouts with local state logic.
+
+</details>
 <hr/>
 
 ### ❓ Q21. **How do you define input properties?**
-*(No answer provided. Discuss `@Input` decorators and input signals.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+There are two ways to define inputs in Angular:
+1. **Classic Decorator (`@Input()`):** Declares a property that a parent component can bind to:
+   ```typescript
+   @Input() userId: string = '';
+   ```
+2. **Modern Input Signal (`input()`):** Declares a read-only signal input (introduced in Angular 17.1+). This enables fine-grained change detection and compile-time validation:
+   ```typescript
+   userId = input<string>(''); // Returns a Signal
+   ```
+
+> 💡 **Interviewer Focus:** Decorator-based inputs vs Signal-based inputs, and how signals provide better type safety and change detection.
+
+</details>
 <hr/>
 
 ### ❓ Q22. **What are template expression bindings?**
-*(No answer provided. Discuss expression limits and side effects.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+**Template expression bindings** evaluate expressions (such as variables, object lookups, or logic conditions) inside interpolation double braces `{{ expression }}`.
+
+#### ⚠️ Rules and Constraints:
+* Expressions must not have side effects (cannot use assignment operators like `=`, `+=`, or increment operators like `++`).
+* Keep expressions simple. Do not call expensive methods inside template expressions, as they run on every change detection cycle, slowing down the application.
+
+> 💡 **Interviewer Focus:** Execution frequency, avoiding side-effects, and keeping template bindings simple.
+
+</details>
 <hr/>
 
 ### ❓ Q23. **What is the standard workspace folder structure generated by the CLI?**
-*(No answer provided. Discuss src, assets, and app layout directories.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+* **`/src`**: Contains source code.
+  * **`/app`**: Component, service, directive, and routing configuration files.
+  * **`/assets`**: Static assets (images, fonts, JSON configuration files).
+  * **`index.html`**: The single HTML page.
+  * **`main.ts`**: The main application entry point.
+* **`angular.json`**: CLI project configuration file.
+* **`tsconfig.json`**: TypeScript compiler configuration file.
+* **`package.json`**: Project scripts and dependency manifest.
+
+> 💡 **Interviewer Focus:** Layout conventions, and where key build and environment settings live.
+
+</details>
 <hr/>
 
 ### ❓ Q24. **How do you define inline styles vs external style sheets in components?**
-*(No answer provided. Discuss component metadata configurations.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+* **Inline Styles:** Defined directly within the `@Component` decorator metadata using the `styles` array. Best for short, component-specific styles:
+  ```typescript
+  styles: [`h1 { font-weight: bold; }`]
+  ```
+* **External Stylesheets:** Point to external styling files (like `.css` or `.scss`) using the `styleUrls` (or `styleUrl` in modern versions) property:
+  ```typescript
+  styleUrl: './app.component.scss'
+  ```
+
+> 💡 **Interviewer Focus:** Knowing the style metadata options in the component decorator.
+
+</details>
 <hr/>
 
 ### ❓ Q25. **What are standalone dependencies?**
-*(No answer provided. Discuss importing CommonModule or individual directives.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+**Standalone dependencies** are components, directives, or pipes that a standalone component imports directly in its `@Component` metadata:
+
+```typescript
+@Component({
+  selector: 'app-nav',
+  standalone: true,
+  imports: [CommonModule, RouterModule, UserProfileComponent], // Standalone dependencies
+  template: `<app-user-profile></app-user-profile>`
+})
+export class NavComponent {}
+```
+
+Unlike legacy applications, standalone components explicitly list their template dependencies, keeping components modular and easy to test.
+
+> 💡 **Interviewer Focus:** Eliminating NgModules by declaring template dependencies directly at the component level.
+
+</details>
 <hr/>
 
 ## 🟡 Intermediate Level
@@ -379,28 +664,188 @@ Prior to Angular 17, structural directives like `*ngIf` and `*ngFor` were import
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-Components can communicate in three ways:
-1. **Parent to Child:** The parent passes data to the child component using property binding on the child's input properties (`@Input()` decorators or signal inputs).
-2. **Child to Parent:** The child component raises events using an `@Output()` property binding configured as an `EventEmitter`. The parent listens to this event.
-3. **Unrelated Components:** Communication is managed using shared services. Services use RxJS streams (like `BehaviorSubject`) or Angular `Signals` to broadcast state changes application-wide.
+Components can communicate in three main ways depending on their relationship in the component tree:
 
+---
+
+### 📥 1. Parent-to-Child Communication (Using Inputs)
+* **Concept:** The parent component passes data down to the child component using property binding on the child's input properties (either using the classic `@Input()` decorator or modern `input()` signals).
+* **💬 Hinglish Explanation:** Parent component child component ko metadata variables ya variables attributes data pass karta hai. Child component in inputs ko read kar sakta hai. Modern Angular mein signal-based inputs (`input()`) data checks ko aur simple bana dete hain.
+
+#### 💻 Code Example:
 ```typescript
-// Child Component
-@Component({
-  selector: 'app-child',
-  template: `<button (click)="notifyParent()">Notify</button>`
-})
-export class ChildComponent {
-  @Input() data = '';
-  @Output() trigger = new EventEmitter<string>();
+// child.component.ts (Child)
+import { Component, Input, input } from '@angular/core';
 
-  notifyParent() {
-    this.trigger.emit('Action completed');
+@Component({
+  selector: 'app-child-inputs',
+  standalone: true,
+  template: `
+    <div class="box">
+      <p>Classic Input Value: {{ username }}</p>
+      <p>Signal Input Value: {{ age() }}</p>
+    </div>
+  `
+})
+export class ChildInputsComponent {
+  // Classic decorator input
+  @Input() username = '';
+
+  // Modern Signal input (Read-only reactive signal)
+  age = input<number>(0); 
+}
+
+// parent.component.ts (Parent)
+import { Component } from '@angular/core';
+import { ChildInputsComponent } from './child.component';
+
+@Component({
+  selector: 'app-parent-inputs',
+  standalone: true,
+  imports: [ChildInputsComponent],
+  template: `
+    <h2>Parent Component</h2>
+    <!-- Passing data down via property bindings -->
+    <app-child-inputs [username]="currentAdmin" [age]="adminAge"></app-child-inputs>
+  `
+})
+export class ParentInputsComponent {
+  currentAdmin = 'Alice Smith';
+  adminAge = 28;
+}
+```
+
+---
+
+### 📤 2. Child-to-Parent Communication (Using Outputs & EventEmitters)
+* **Concept:** The child component notifies the parent component about events or interactions by emitting an event using an `@Output()` property combined with `EventEmitter` (or the modern `output()` function). The parent listens to this event in its template.
+* **💬 Hinglish Explanation:** Child component parent component ko messages/events trigger karke updates data return bhejta hai. Jaise child component ka submit button click hone par event emit hota hai, aur parent component use listen karke function run karta hai.
+
+#### 💻 Code Example:
+```typescript
+// child.component.ts (Child)
+import { Component, Output, EventEmitter, output } from '@angular/core';
+
+@Component({
+  selector: 'app-child-outputs',
+  standalone: true,
+  template: `
+    <button (click)="triggerAlert()">Notify Parent (Classic)</button>
+    <button (click)="triggerSignalAlert()">Notify Parent (Modern)</button>
+  `
+})
+export class ChildOutputsComponent {
+  // Classic Output
+  @Output() alert = new EventEmitter<string>();
+
+  // Modern Output API
+  signalAlert = output<string>();
+
+  triggerAlert() {
+    this.alert.emit('Classic Event Triggered!');
+  }
+
+  triggerSignalAlert() {
+    this.signalAlert.emit('Modern Output Event Triggered!');
+  }
+}
+
+// parent.component.ts (Parent)
+import { Component } from '@angular/core';
+import { ChildOutputsComponent } from './child.component';
+
+@Component({
+  selector: 'app-parent-outputs',
+  standalone: true,
+  imports: [ChildOutputsComponent],
+  template: `
+    <h2>Parent listener</h2>
+    <!-- Listening to event bindings emitted by child -->
+    <app-child-outputs 
+      (alert)="onAlertReceived($event)"
+      (signalAlert)="onAlertReceived($event)">
+    </app-child-outputs>
+  `
+})
+export class ParentOutputsComponent {
+  onAlertReceived(message: string) {
+    console.log(`Parent received message: ${message}`);
   }
 }
 ```
 
-> 💡 **Interviewer Focus:** Input/Output pipelines, EventEmitter logic, and when to delegate to a shared service wrapper.
+---
+
+### 🌐 3. Unrelated Components Communication (Using Shared Services)
+* **Concept:** When components do not share a parent-child relationship, they communicate by injecting a shared singleton service. The service exposes a stream (using RxJS `BehaviorSubject`) or a reactive Angular `Signal` that components can subscribe/bind to.
+* **💬 Hinglish Explanation:** Agar do components bilkul alag hain (unrelated), toh wo direct dynamic communication nahi kar sakte. Unke liye ek shared common service banayi jaati hai (providedIn: 'root' ke saath). Ek component service ki state change karta hai aur doosra component use auto-receive (subscribe/read) kar leta hai.
+
+#### 💻 Code Example:
+```typescript
+// theme.service.ts (Shared Service)
+import { Injectable, signal } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ThemeService {
+  // Option A: Signals (Modern)
+  themeSignal = signal<'light' | 'dark'>('light');
+
+  // Option B: RxJS BehaviorSubject (Classic)
+  private themeSubject = new BehaviorSubject<'light' | 'dark'>('light');
+  theme$ = this.themeSubject.asObservable();
+
+  toggleTheme() {
+    const nextTheme = this.themeSignal() === 'light' ? 'dark' : 'light';
+    this.themeSignal.set(nextTheme);
+    this.themeSubject.next(nextTheme);
+  }
+}
+
+// component-a.component.ts (Updates State)
+import { Component } from '@angular/core';
+import { ThemeService } from './theme.service';
+
+@Component({
+  selector: 'app-comp-a',
+  standalone: true,
+  template: `<button (click)="themeService.toggleTheme()">Toggle System Theme</button>`
+})
+export class ComponentA {
+  // Inject service via constructor
+  constructor(public themeService: ThemeService) {}
+}
+
+// component-b.component.ts (Reads State)
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ThemeService } from './theme.service';
+
+@Component({
+  selector: 'app-comp-b',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
+    <div [class]="currentThemeSignal()">
+      <p>Active Theme (Signal): {{ currentThemeSignal() }}</p>
+      <p>Active Theme (RxJS): {{ themeService.theme$ | async }}</p>
+    </div>
+  `
+})
+export class ComponentB {
+  currentThemeSignal;
+  
+  // Inject service via constructor and map the signal
+  constructor(public themeService: ThemeService) {
+    this.currentThemeSignal = this.themeService.themeSignal;
+  }
+}
+```
+
+> 💡 **Interviewer Focus:** Input/Output pipelines, structural hierarchies traversal rules, and using centralized services vs local bindings for state isolation.
+
 
 </details>
 <hr/>
@@ -409,27 +854,104 @@ export class ChildComponent {
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-A **Pipe** is a class decorated with `@Pipe` that transforms raw data into formatted values directly inside HTML templates.
+### 📌 1. Pipe Kya Hai? (What is a Pipe?)
+Angular me **Pipe** ek simple tarika hai template HTML me dynamic data ko format karke represent karne ka. Ye actual value ko backend me change nahi karta, sirf user ko look-and-feel badal ke dikhata hai.
+* **Syntax:** `{{ rawData | pipeName : arguments }}`
+* **Example:** `{{ 'hello world' | uppercase }}` transforms to `HELLO WORLD`.
 
-#### Differences:
-* **Pure Pipe (Default):** Runs only when its input reference changes (e.g. string/number change or array reference change). Results are cached, making pure pipes highly performant.
-* **Impure Pipe:** Runs on every change detection cycle, regardless of whether inputs have changed. This allows it to detect mutations inside arrays (like `items.push()`), but can cause serious performance issues.
+---
+
+### 🎭 2. Real-Life Analogy: Lallan (Pure) vs Babban (Impure)
+
+* **Pure Pipe (Smart & Lazy Lallan):** 
+  * Lallan ek smart ladka hai jo memory/caching ka use karta hai. Agar aapne isse pucha: *"Tell the length of 'Apple'"*, ye calculate karke bolega *"5"* aur ise brain me save (cache) kar lega.
+  * Agar aap isse 10 bar aur puchoge *"Tell the length of 'Apple'"*, ye recalculate nahi karega, balki turant memory se *"5"* bol dega.
+  * Lallan tabhi dobara dimaag chalayega jab input change ho (jaise aapne pucha *"Mango"*).
+* **Impure Pipe (Anxious Babban):** 
+  * Babban bahut hi hyperactive aur anxious hai. Agar aapne isse pucha: *"Tell the length of 'Apple'"*, ye calculate karke bolega *"5"*.
+  * Lekin Babban har second, har mouse movement par, ya page pe kahi bhi click karne par, bar-bar calculate karta rahega ki *"Apple ka length 5 hi hai na?"*. Isse system CPU overload ho jata hai.
+
+---
+
+### ⚔️ 3. Pure vs Impure Pipes (Core Comparison)
+
+| Parameter | Pure Pipe (Default) | Impure Pipe (`pure: false`) |
+|---|---|---|
+| **Trigger Rule** | Tabhi execute hota hai jab input ka **Reference Change** ho. | Har **Change Detection Cycle** (click, keypress, API response, mouse scroll) par execute hota hai. |
+| **Caching / Memoization** | **Yes.** Previous output ko store rakhta hai agar input same ho. | **No.** Har baar fresh calculation karta hai. |
+| **Use Case** | Formatting dates, currency, numbers, text transforms (strings, numbers, booleans). | Jab array ya object ke andar ki details mutate ho rahi hon bina reference badle (e.g., `list.push(item)`). |
+| **Performance** | **Very High Performance** 🚀 (Very lightweight). | **Poor Performance** ⚠️ (Can freeze the UI if doing heavy calculations). |
+
+---
+
+### 💻 4. Code Implementation Example
+
+#### Option A: Pure Pipe (Default behaviour)
+Agar aap pure pipe me array pass karoge aur array me `.push()` se naya item add karoge, toh Pure Pipe run **nahi** hoga, kyunki array ka reference change nahi hua.
 
 ```typescript
-// Pure Pipe: Only runs if reference changes
+import { Pipe, PipeTransform } from '@angular/core';
+
 @Pipe({
-  name: 'pureLength',
-  pure: true,
+  name: 'searchFilter',
+  pure: true, // Default true hota hai
   standalone: true
 })
-export class LengthPipe implements PipeTransform {
-  transform(value: string): number {
-    return value.length;
+export class SearchFilterPipe implements PipeTransform {
+  transform(items: string[], searchText: string): string[] {
+    console.log('Pure Pipe executed!'); // Tabhi chalega jab list ya text ka dynamic reference badlega
+    if (!items || !searchText) return items;
+    return items.filter(item => item.toLowerCase().includes(searchText.toLowerCase()));
   }
 }
 ```
+* **Why it won't update on mutation:**
+  ```typescript
+  // Component code:
+  items = ['Apple', 'Banana'];
+  
+  addItem() {
+    this.items.push('Mango'); // Pure pipe will NOT execute because array reference is same!
+    // isko chalane ke liye reference badalna padega: 
+    // this.items = [...this.items, 'Mango'];
+  }
+  ```
 
-> 💡 **Interviewer Focus:** Input reference caching, change detection cycles, and the performance impact of impure pipes.
+#### Option B: Impure Pipe (`pure: false`)
+Impure pipe check karega ki array ke andar koi elements push huye hain ya nahi, chahe reference same hi kyun na ho.
+
+```typescript
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'searchFilterImpure',
+  pure: false, // ⚠️ Impure banata hai
+  standalone: true
+})
+export class SearchFilterImpurePipe implements PipeTransform {
+  transform(items: string[], searchText: string): string[] {
+    console.log('Impure Pipe executed on every tick!'); // Har event/click par chalega
+    if (!items || !searchText) return items;
+    return items.filter(item => item.toLowerCase().includes(searchText.toLowerCase()));
+  }
+}
+```
+* **Why it updates on mutation:**
+  ```typescript
+  // Component code:
+  items = ['Apple', 'Banana'];
+  
+  addItem() {
+    this.items.push('Mango'); // Impure pipe WILL execute and show Mango instantly!
+  }
+  ```
+
+---
+
+### ⚠️ Impure Pipes Performance Alert!
+Impure pipes ko build karte waqt humesha dhyan rakhe ki isme heavy looping ya heavy calculations na ho. Agar aapne ek bada array filter impure pipe me daal diya, toh har cursor click/mouse hover par browser slow ho jayega.
+
+> 💡 **Interviewer Focus:** Input reference caching, change detection cycles, why standard filter pipes are generally avoided in Angular (instead using component-level logic or signals), and the performance footprint of impure pipes.
 
 </details>
 <hr/>
@@ -521,7 +1043,7 @@ export class TruncatePipe implements PipeTransform {
 </details>
 <hr/>
 
-### ❓ Q34. **How does `HttpClient` handle error propagation using RxJS catchError?**
+### ❓ Q34. **How does `HttpClient` handle error propagation using RxJS `catchError`?**
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
@@ -546,67 +1068,322 @@ inject(HttpClient).get<User[]>('/api/users').pipe(
 <hr/>
 
 ### ❓ Q35. **What is the difference between element and host bindings?**
-*(No answer provided. Discuss HostBinding and HostListener vs standard DOM modifications.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+* **Element Bindings:** Bind properties or events of elements *within* the component's own template (e.g., `<button [disabled]="isDisabled">`).
+* **Host Bindings:** Bind properties or listen to events of the **host element** itself (the element on which the component or directive is declared). This is managed using the `@HostBinding` and `@HostListener` decorators or the `host` configuration property in modern metadata.
+
+```typescript
+@Directive({
+  selector: '[appActive]',
+  standalone: true,
+  host: {
+    '[class.active]': 'isActive', // Host property binding
+    '(click)': 'toggleActive()' // Host event listener
+  }
+})
+export class ActiveDirective {
+  isActive = false;
+  toggleActive() { this.isActive = !this.isActive; }
+}
+```
+
+> 💡 **Interviewer Focus:** Understanding styling encapsulation, host interaction scopes, and modern metadata binding declarations.
+
+</details>
 <hr/>
 
 ### ❓ Q36. **Explain what routing guards do.**
-*(No answer provided. Discuss intercepting routes during navigation flows.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+**Route Guards** run code before navigation completes to determine if a route transition is allowed to proceed (e.g., to prevent anonymous users from accessing private pages).
+
+#### 🛡️ Modern Functional Guards:
+In modern Angular, guards are defined as functions (like `CanActivateFn`) rather than classes:
+
+```typescript
+export const authGuard: CanActivateFn = (route, state) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+  
+  if (authService.isLoggedIn()) {
+    return true;
+  }
+  
+  return router.parseUrl('/login'); // Redirect
+};
+```
+
+> 💡 **Interviewer Focus:** Route interception lifecycle, authorization checks, and dynamic redirection returning UrlTree values.
+
+</details>
 <hr/>
 
 ### ❓ Q37. **How do you pass queries and query parameters?**
-*(No answer provided. Discuss ActivatedRoute snapshot access.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+* **Setting Query Parameters:** Pass query parameters using the `queryParams` property in `routerLink` or programmatically via the `Router` service:
+  ```html
+  <a [routerLink]="['/products']" [queryParams]="{ category: 'shoes' }">Shoes</a>
+  ```
+* **Reading Query Parameters:** Inject **`ActivatedRoute`** and subscribe to the `queryParamMap` observable:
+  ```typescript
+  route = inject(ActivatedRoute);
+  category$ = this.route.queryParamMap.pipe(map(params => params.get('category')));
+  ```
+
+> 💡 **Interviewer Focus:** Observable param flows, reading query string tokens, and passing options programmatically.
+
+</details>
 <hr/>
 
 ### ❓ Q38. **What is the purpose of HTTP interceptors?**
-*(No answer provided. Discuss appending request tokens globally.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+**HTTP Interceptors** run code to inspect and modify outgoing requests and incoming responses globally. 
+
+#### Common Use Cases:
+* Appending Authorization tokens (like JWT) in headers.
+* Intercepting network errors (like 401s) to trigger silent token refreshes.
+* Injecting default base backend URLs.
+* Managing load spinners and tracking progress dynamically.
+
+> 💡 **Interviewer Focus:** Global request pipeline control, header injection, and functional interceptor architecture.
+
+</details>
 <hr/>
 
 ### ❓ Q39. **How do you manage nested route setups?**
-*(No answer provided. Discuss children route lists and nested router outlets.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Nested (child) routes let you render parent pages containing nested subviews. They are configured using the **`children`** array in route definitions. 
+
+The parent component template must declare a **`<router-outlet></router-outlet>`** where the active child component is rendered.
+
+```typescript
+export const routes: Route[] = [{
+  path: 'settings',
+  component: SettingsComponent,
+  children: [
+    { path: 'profile', component: ProfileSettingsComponent },
+    { path: 'security', component: SecuritySettingsComponent }
+  ]
+}];
+```
+
+> 💡 **Interviewer Focus:** Nested layout design, path inheritance, and using child router outlets.
+
+</details>
 <hr/>
 
 ### ❓ Q40. **What is the difference between a custom directive and standard component?**
-*(No answer provided. Discuss style decoration options.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+* **Standard Component:** Represents a complete layout component with its own visual template and styling. Used to build independent, reusable UI views (like `<app-sidebar>`).
+* **Custom Directive:** Class with no template. It attaches custom styling or behavior to an **existing element** (like custom validation checks or hover color changes).
+
+> 💡 **Interviewer Focus:** Visual layouts (components) vs enriching existing DOM element behaviors (directives).
+
+</details>
 <hr/>
 
-### ❓ Q41. **Explain the trackBy function for template lists.**
-*(No answer provided. Discuss tracking item IDs to optimize DOM updates.)*
+### ❓ Q41. **Explain the `trackBy` function for template lists.**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+When rendering a list using `*ngFor`, Angular checks item identity references to update the DOM. If you update the list array reference, Angular destroys and recreates all DOM nodes by default, which can cause lag.
+
+Providing a **`trackBy`** function tells Angular to track items by a custom unique identifier (like an `id` or index) rather than their reference. This allows Angular to update only modified items in the DOM, keeping rendering fast.
+
+```typescript
+trackByProductId(index: number, product: Product): number {
+  return product.id; // Tracks items by ID
+}
+```
+**In HTML:**
+```html
+<li *ngFor="let p of products; trackBy: trackByProductId">{{ p.name }}</li>
+```
+
+> 💡 **Interviewer Focus:** Minimizing DOM updates, list rendering performance, and how modern built-in control flow `@for` handles this natively.
+
+</details>
 <hr/>
 
 ### ❓ Q42. **What is view encapsulation and what is its default mode?**
-*(No answer provided. Discuss why Emulated encapsulation is standard.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+**View Encapsulation** scopes component styles to prevent them from leaking out and affecting other parts of the application. 
+
+Its default mode is **`ViewEncapsulation.Emulated`**, which scopes styles locally by generating unique attributes (like `_nghost-c0` and `_ngcontent-c0`) on elements at compile time.
+
+> 💡 **Interviewer Focus:** Knowing the default mode (`Emulated`) and how compiled HTML attributes isolate style boundaries.
+
+</details>
 <hr/>
 
 ### ❓ Q43. **How do you share state using simple services?**
-*(No answer provided. Discuss BehaviorSubject state patterns.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+To share state between components using a service, configure a root injectable service containing a private state variable and expose it via public methods or reactive streams:
+
+1. **Signals Approach (Modern):** Expose read-only signals and mutate values using methods:
+   ```typescript
+   private stateSignal = signal<User | null>(null);
+   user = this.stateSignal.asReadonly();
+   updateUser(u: User) { this.stateSignal.set(u); }
+   ```
+2. **RxJS Approach:** Use a `BehaviorSubject` to multicast state updates to subscribers:
+   ```typescript
+   private state$ = new BehaviorSubject<User | null>(null);
+   user$ = this.state$.asObservable();
+   updateUser(u: User) { this.state$.next(u); }
+   ```
+
+> 💡 **Interviewer Focus:** Decoupling state logic from views, and exposing data reactively via Signals or RxJS observables.
+
+</details>
 <hr/>
 
 ### ❓ Q44. **What is the difference between a Subject and a BehaviorSubject?**
-*(No answer provided. Discuss value caching and default initial states.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+* **`Subject`:** Does not hold a state value. It acts as an event emitter, sending values to active subscribers only. New subscribers do not receive past values.
+* **`BehaviorSubject`:** Holds a state value and requires an initial value. It caches its latest emitted value, sending it to new subscribers immediately upon subscription. You can read its current value synchronously at any time using `.value` or `.getValue()`.
+
+> 💡 **Interviewer Focus:** State management vs event streams, and initial value requirements.
+
+</details>
 <hr/>
 
 ### ❓ Q45. **What are standalone components dependencies routing?**
-*(No answer provided. Discuss configuring routes inside providers.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Standalone components configure routing dependencies directly in their route setup. 
+
+Instead of registering routing modules, routes are passed directly to `provideRouter()` during bootstrapping. Individual route destinations load dynamically using the `loadComponent` dynamic import syntax.
+
+```typescript
+export const appRoutes: Route[] = [
+  {
+    path: 'dashboard',
+    loadComponent: () => import('./dashboard/dashboard.component').then(m => m.DashboardComponent)
+  }
+];
+```
+
+> 💡 **Interviewer Focus:** Dynamic imports, lazy-loading standalone targets, and bootstrapping routing without `RouterModule`.
+
+</details>
 <hr/>
 
 ### ❓ Q46. **What is the difference between view providers and standard providers?**
-*(No answer provided. Discuss child component access scopes.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+* **`providers`**: Dependencies are available to the component, its template, and all child components projected into it via `<ng-content>`.
+* **`viewProviders`**: Dependencies are restricted to the component and its template views. Children projected via `<ng-content>` cannot access these dependencies, preserving encapsulation boundaries.
+
+> 💡 **Interviewer Focus:** Restricting dependency access scopes in projected content.
+
+</details>
 <hr/>
 
 ### ❓ Q47. **How do you resolve dynamic resources using route resolvers?**
-*(No answer provided. Discuss fetching data before page transitions finish.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+A **Route Resolver** fetches data *before* navigation completes, ensuring page transitions only occur once the necessary data is loaded.
+
+#### ⚙️ Modern Functional Resolver:
+```typescript
+export const productResolver: ResolveFn<Product> = (route, state) => {
+  const api = inject(ProductService);
+  const id = route.paramMap.get('id')!;
+  return api.getProductDetails(id); // Router blocks until this emits
+};
+```
+**Route Registration:**
+```typescript
+{ path: 'product/:id', component: ProductComponent, resolve: { product: productResolver } }
+```
+
+> 💡 **Interviewer Focus:** Data pre-loading, routing lifecycles, and functional resolver designs.
+
+</details>
 <hr/>
 
 ### ❓ Q48. **What is the purpose of custom directives?**
-*(No answer provided. Discuss styling and behavior additions.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Custom directives attach styling, layout modifications, or behavior to elements dynamically. They make code dry by encapsulating common DOM interactions:
+
+```typescript
+@Directive({ selector: '[appAutoCollapse]', standalone: true })
+export class AutoCollapseDirective {
+  @HostListener('mouseleave') onLeave() {
+    // Perform collapse animation logic on the host element
+  }
+}
+```
+
+> 💡 **Interviewer Focus:** Encapsulating common element behaviors to make templates cleaner and more reusable.
+
+</details>
 <hr/>
 
 ### ❓ Q49. **How do you handle event bubbling inside HostListeners?**
-*(No answer provided. Discuss event stopPropagation calls.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+To prevent event bubbling (propagation up the DOM tree) within a `@HostListener`, capture the event object (using `$event`) in the decorator arguments and call **`stopPropagation()`** or **`preventDefault()`** directly inside the handler method:
+
+```typescript
+@HostListener('click', ['$event'])
+onClick(event: Event) {
+  event.stopPropagation(); // Stops event bubbling up to parent nodes
+}
+```
+
+> 💡 **Interviewer Focus:** Capturing the event object dynamically in decorators, and managing event propagation.
+
+</details>
 <hr/>
 
 ### ❓ Q50. **What is the difference between dynamic and static components?**
-*(No answer provided. Discuss ViewContainerRef and dynamically loading components.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+* **Static Components:** Declared directly in component templates using selector tags (e.g. `<app-header></app-header>`). They are instantiated and destroyed automatically by Angular.
+* **Dynamic Components:** Instantiated programmatically at runtime. You use a container reference (**`ViewContainerRef`**) to inject and instantiate components on-demand (e.g., dynamically displaying custom alerts or modals based on API conditions).
+
+```typescript
+@Component({ ... })
+export class ModalWrapperComponent {
+  container = inject(ViewContainerRef);
+
+  loadModal() {
+    this.container.clear();
+    const componentRef = this.container.createComponent(ModalComponent);
+    componentRef.instance.message = 'Dynamic Modal Loaded!';
+  }
+}
+```
+
+> 💡 **Interviewer Focus:** Programmatic view generation, using `ViewContainerRef`, and managing dynamic component references.
+
+</details>
 <hr/>
 
 ## 🔴 Advanced Level
@@ -868,67 +1645,377 @@ Unlike the legacy `trackBy` function, the new `@for` syntax requires `track` by 
 <hr/>
 
 ### ❓ Q60. **How do you configure dynamic validation updates in Reactive Forms?**
-*(No answer provided. Discuss updateValueAndValidity API calls.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+To dynamically change validator constraints at runtime:
+1. Access the specific control reference.
+2. Call **`setValidators([...])`** (or `clearValidators()`) to configure new constraints.
+3. Call **`updateValueAndValidity()`** to force the control to re-evaluate its state and status.
+
+```typescript
+updateValidation(isRequired: boolean) {
+  const emailControl = this.profileForm.get('email')!;
+  
+  if (isRequired) {
+    emailControl.setValidators([Validators.required, Validators.email]);
+  } else {
+    emailControl.clearValidators();
+  }
+  
+  emailControl.updateValueAndValidity(); // Forces re-validation
+}
+```
+
+> 💡 **Interviewer Focus:** Runtime validator changes, cleaning filters, and calling `updateValueAndValidity()`.
+
+</details>
 <hr/>
 
-### ❓ Q61. **Explain the difference between throttleTime and debounceTime.**
-*(No answer provided. Discuss RxJS event filtering.)*
+### ❓ Q61. **Explain the difference between `throttleTime` and `debounceTime`.**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+* **`debounceTime(X)`:** Delays emissions from the source observable. It only emits a value if a specified window of time (X milliseconds) passes without any new emissions.
+  * *Use Case:* Search boxes. Prevents making API calls while the user is still typing.
+* **`throttleTime(X)`:** Emits the first value, then ignores subsequent values for a specified window of time (X milliseconds).
+  * *Use Case:* Click limits. Prevents double-clicking a submit button by ignoring consecutive clicks.
+
+> 💡 **Interviewer Focus:** Event rate limits, search optimizations, and button click protection.
+
+</details>
 <hr/>
 
 ### ❓ Q62. **What are Route Guards resolvers and how do they differ from guards?**
-*(No answer provided. Discuss data pre-loading vs navigation blockers.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+* **Route Guards (`CanActivateFn`):** Determine *if* a user can access a route (returns `true` or `false`/`UrlTree`). They do not load data; they simply block or allow access.
+* **Route Resolvers (`ResolveFn`):** Fetch data *before* navigation completes. If the user is allowed to access the route, the resolver fetches the data, passing it to the routed component so it is available immediately upon load.
+
+> 💡 **Interviewer Focus:** Navigation blocking (guards) vs pre-loading data (resolvers).
+
+</details>
 <hr/>
 
 ### ❓ Q63. **How do you configure micro-frontend federations?**
-*(No answer provided. Discuss loading external modules on demand.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Micro-frontend federation allows a shell application to load compiled components from remote applications at runtime:
+
+1. **Build Tool Configuration (`webpack.config` or `esbuild` configurations):** Use `@angular-architects/module-federation` to configure the host (shell) and remotes:
+   * **Host:** Maps remote entry URLs to scope keys.
+   * **Remotes:** Expose entry files containing lazy-loaded components or routing definitions.
+2. **Dynamic Route Configurations:** Load remote components on-demand using the router:
+   ```typescript
+   {
+     path: 'dashboard',
+     loadChildren: () => loadRemoteModule({
+       type: 'module',
+       remoteEntry: 'http://localhost:4201/remoteEntry.js',
+       exposedModule: './DashboardModule'
+     }).then(m => m.DashboardModule)
+   }
+   ```
+
+> 💡 **Interviewer Focus:** Decoupled deployment pipelines, using `loadRemoteModule`, and sharing common dependencies.
+
+</details>
 <hr/>
 
 ### ❓ Q64. **Explain what the NgRx Effects pattern handles.**
-*(No answer provided. Discuss handling asynchronous side-effects in NgRx stores.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+In NgRx, components dispatch Actions to update state. However, components should not handle side effects (like HTTP requests or storage actions) directly.
+
+The **NgRx Effects** pattern handles asynchronous operations outside components:
+1. An Effect listens for specific **Actions** dispatched to the store.
+2. It performs the asynchronous operation (such as calling a backend service).
+3. Once the operation completes, the Effect dispatches a **new Action** (containing the success payload or error) to update the store via Reducers.
+
+This keeps components thin and focused strictly on rendering UI templates.
+
+> 💡 **Interviewer Focus:** Decoupling side effects from components, routing actions, and using RxJS streams to update the store.
+
+</details>
 <hr/>
 
 ### ❓ Q65. **How do you implement optimistic UI updates using state management?**
-*(No answer provided. Discuss updating local state immediately while sending requests to backend.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+An **optimistic UI update** updates the UI state immediately under the assumption that the backend operation will succeed, making the application feel faster.
+
+#### ⚙️ Implementation Workflow:
+1. The user triggers an action (like liking a post).
+2. The UI state updates immediately, and the component starts the backend API request.
+3. **If the request succeeds:** Do nothing. The UI state is already correct.
+4. **If the request fails:** The catch block intercepts the error, rolls back the state change to its previous value, and displays an error message.
+
+```typescript
+likePost(postId: number) {
+  const previousState = this.store.posts();
+  
+  // 1. Optimistic Update (immediate UI update)
+  this.store.setLiked(postId, true);
+
+  // 2. Call backend
+  this.api.likePost(postId).subscribe({
+    error: () => {
+      // 3. Rollback on failure
+      this.store.setPosts(previousState);
+      this.toast.error('Failed to save like. Please try again.');
+    }
+  });
+}
+```
+
+> 💡 **Interviewer Focus:** Improving perceived performance, caching previous state, and handling rollbacks.
+
+</details>
 <hr/>
 
 ### ❓ Q66. **What is structural directives context?**
-*(No answer provided. Discuss TemplateRef and ViewContainerRef contexts.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Structural directives (like `*ngIf` or `*ngFor`) use a **context object** to pass values from the directive to the template variables declared in the host element.
+
+For example, when writing `let item of items`, the directive instantiates the template with a context object. The object uses the **`$implicit`** property to bind default values, and named properties to bind other values (like `index` or `first` in `*ngFor` loops).
+
+```typescript
+// Custom structural directive passing context data
+this.viewContainer.createEmbeddedView(this.templateRef, {
+  $implicit: 'Default Value',
+  index: 0
+});
+```
+
+> 💡 **Interviewer Focus:** Template variables rendering, binding custom fields, and using `$implicit`.
+
+</details>
 <hr/>
 
 ### ❓ Q67. **How do you configure cross-origin resource sharing (CORS) locally?**
-*(No answer provided. Discuss proxy.conf.json configuration setups.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+CORS issues occur when your frontend (e.g. `http://localhost:4200`) requests resources from a backend running on a different domain or port (e.g. `http://localhost:8080`) during development.
+
+To bypass CORS locally, configure an Angular dev proxy:
+1. Create a `proxy.conf.json` file in the root of your workspace:
+   ```json
+   {
+     "/api": {
+       "target": "http://localhost:8080",
+       "secure": false,
+       "changeOrigin": true
+     }
+   }
+   ```
+2. Register the proxy file in `angular.json` under the serve architect options:
+   ```json
+   "serve": {
+     "options": {
+       "proxyConfig": "proxy.conf.json"
+     }
+   }
+   ```
+3. Update your HTTP calls to use relative paths (e.g., `/api/users`), which the dev server will route to the backend target.
+
+> 💡 **Interviewer Focus:** Dev proxies, path rewrites, and target server routing.
+
+</details>
 <hr/>
 
 ### ❓ Q68. **What is the difference between dynamic imports and standard imports?**
-*(No answer provided. Discuss lazy loading code bundles.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+* **Standard Imports (`import { X } from './module'`):** Evaluated at compile time. The imported code is included in the main bundle and loaded immediately when the application starts, even if it is not used.
+* **Dynamic Imports (`import('./module')`):** Evaluated at runtime. Next.js/Webpack splits the imported code into a separate chunk, loading it over the network only when the import function is executed. This is standard in lazy-loaded routes and components.
+
+> 💡 **Interviewer Focus:** Bundle splitting, reducing initial load times, and dynamic compilation.
+
+</details>
 <hr/>
 
 ### ❓ Q69. **Explain change detection tree checks optimizations.**
-*(No answer provided. Discuss NgZone bypass runOutsideAngular calls.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+To prevent performance issues from frequent change detection checks:
+1. **Use `ChangeDetectionStrategy.OnPush`:** Skips checking component subtrees unless their inputs receive new references.
+2. **Run Code Outside Angular (`NgZone.runOutsideAngular`):** Runs tasks (like animations, Canvas redraws, or mouse movement listeners) without triggering change detection:
+   ```typescript
+   this.ngZone.runOutsideAngular(() => {
+     // High-frequency task runs here without triggering change detection
+   });
+   ```
+3. **Use Signals:** Enables fine-grained reactivity, allowing Angular to update only modified DOM nodes directly without traversing the entire component tree.
+
+> 💡 **Interviewer Focus:** Fine-grained reactivity, using `runOutsideAngular` to run tasks outside Angular's zone, and `OnPush` performance strategies.
+
+</details>
 <hr/>
 
 ### ❓ Q70. **What is compile-time lazy loading?**
-*(No answer provided. Discuss code-splitting configurations.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+**Compile-time lazy loading** is code-splitting configured during compilation. 
+
+The compiler identifies dynamic imports (e.g., in router configurations like `loadComponent: () => import('./profile')`) and builds them into separate JavaScript files. 
+
+These files are not included in the main bundle, and are loaded by the browser only when the user navigates to those specific routes.
+
+> 💡 **Interviewer Focus:** Code-splitting rules, router integrations, and improving initial load times.
+
+</details>
 <hr/>
 
 ### ❓ Q71. **How do you configure custom route strategies?**
-*(No answer provided. Discuss RouteReuseStrategy overrides.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Angular destroys the active component when navigating away from a route. If a user returns to that route, Angular creates a new instance of the component from scratch.
+
+To preserve component state across navigations (e.g., to prevent destroying a dashboard view), implement a custom **`RouteReuseStrategy`**:
+
+```typescript
+import { RouteReuseStrategy, ActivatedRouteSnapshot, DetachedRouteHandle } from '@angular/router';
+
+export class CustomRouteReuseStrategy implements RouteReuseStrategy {
+  private handlers: { [key: string]: DetachedRouteHandle } = {};
+
+  shouldDetach(route: ActivatedRouteSnapshot): boolean { return true; } // Cache this route
+  store(route: ActivatedRouteSnapshot, handle: DetachedRouteHandle): void {
+    this.handlers[route.routeConfig?.path || ''] = handle; // Save instance
+  }
+  shouldAttach(route: ActivatedRouteSnapshot): boolean {
+    return !!this.handlers[route.routeConfig?.path || ''];
+  }
+  retrieve(route: ActivatedRouteSnapshot): DetachedRouteHandle | null {
+    return this.handlers[route.routeConfig?.path || ''] || null;
+  }
+  shouldReuseRoute(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot): boolean {
+    return future.routeConfig === curr.routeConfig;
+  }
+}
+```
+
+Register your custom strategy in `app.config.ts`:
+```typescript
+providers: [{ provide: RouteReuseStrategy, useClass: CustomRouteReuseStrategy }]
+```
+
+> 💡 **Interviewer Focus:** Caching components to preserve state across navigations, and implementing `RouteReuseStrategy` methods.
+
+</details>
 <hr/>
 
-### ❓ Q72. **What is the difference between valueChanges and statusChanges?**
-*(No answer provided. Discuss forms status streams.)*
+### ❓ Q72. **What is the difference between `valueChanges` and `statusChanges`?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+* **`valueChanges`:** An RxJS observable that emits a value whenever a form control's value changes (such as keyboard entries in input fields).
+* **`statusChanges`:** An RxJS observable that emits a validation status (e.g., `VALID`, `INVALID`, `PENDING`, or `DISABLED`) whenever control validation runs.
+
+```typescript
+this.profileForm.get('email')!.statusChanges.subscribe(status => {
+  console.log(`Email validation status is: ${status}`);
+});
+```
+
+> 💡 **Interviewer Focus:** Forms streams, tracking input values vs tracking validation states.
+
+</details>
 <hr/>
 
 ### ❓ Q73. **How do you mock HTTP services in unit tests?**
-*(No answer provided. Discuss HttpTestingController assertions.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+To test services that make HTTP requests without hitting real servers, mock `HttpClient` using **`provideHttpClientTesting()`** and the **`HttpTestingController`**:
+
+```typescript
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+
+describe('DataService', () => {
+  let service: DataService;
+  let httpMock: HttpTestingController;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [DataService, provideHttpClient(withInterceptors([])), provideHttpClientTesting()]
+    });
+    service = TestBed.inject(DataService);
+    httpMock = TestBed.inject(HttpTestingController);
+  });
+
+  it('should fetch users via GET', () => {
+    service.getUsers().subscribe(users => {
+      expect(users.length).toBe(2);
+    });
+
+    const req = httpMock.expectOne('/api/users');
+    expect(req.request.method).toBe('GET');
+    req.flush([{ id: 1, name: 'Alice' }, { id: 2, name: 'Bob' }]); // Mock response
+  });
+
+  afterEach(() => httpMock.verify()); // Confirm no outstanding HTTP calls
+});
+```
+
+> 💡 **Interviewer Focus:** Mocking network responses using `HttpTestingController`, using `.flush()`, and calling `.verify()` to prevent request leaks.
+
+</details>
 <hr/>
 
 ### ❓ Q74. **What is tree-shaking compilation?**
-*(No answer provided. Discuss static analysis during production builds.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+**Tree-shaking** is a build step that analyzes your import dependency graphs to identify and remove unused code from your production bundle. 
+
+It relies on static analysis of ES6 modules (using `import` and `export` statements). In Angular, using standalone components and root injectables enables tree-shaking, keeping production JavaScript bundle sizes small.
+
+> 💡 **Interviewer Focus:** Static code analysis, dead code elimination, and code modularity.
+
+</details>
 <hr/>
 
 ### ❓ Q75. **How do you configure content projection slots?**
-*(No answer provided. Discuss select attributes on ng-content elements.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Multi-slot content projection allows you to inject different pieces of content from a parent component into specific slots within a child component template.
+
+To configure slots, add the **`select`** attribute to `<ng-content>` tags inside the child component template. The `select` attribute can target CSS selectors, class names, or attributes:
+
+```html
+<!-- Child Component Template (app-card) -->
+<div class="card">
+  <div class="header">
+    <ng-content select="[card-header]"></ng-content>
+  </div>
+  <div class="body">
+    <ng-content></ng-content> <!-- Catch-all slot -->
+  </div>
+</div>
+
+<!-- Parent Component Usage -->
+<app-card>
+  <h2 card-header>Profile Details</h2> <!-- Injected into header slot -->
+  <p>Some profile text content...</p> <!-- Injected into catch-all slot -->
+</app-card>
+```
+
+> 💡 **Interviewer Focus:** Multi-slot projection setups, selecting slots using attributes/CSS classes, and DOM injection layouts.
+
+</details>
 <hr/>
 
 ## 🟣 Expert Level
@@ -1110,75 +2197,418 @@ This allows multiple development teams to deploy feature updates independently w
 </details>
 <hr/>
 
-### ❓ Q84. **Explain how to prevent ExpressionChangedAfterItHasBeenCheckedError.**
-*(No answer provided. Discuss when views update after check validations.)*
+### ❓ Q84. **Explain how to prevent `ExpressionChangedAfterItHasBeenCheckedError`.**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+This error occurs in **Development Mode** because Angular performs a verification pass after a change detection run to ensure that the view matches the model. 
+
+If a value (such as a shared service status or component property) changes between the change detection pass and the verification pass, Angular throws this error to warn you of inconsistent state.
+
+#### 🛠️ Common Solutions:
+1. **Shift Updates to a Safe Lifecycle Hook:** Do not update bound values in DOM-centric hooks (like `ngAfterViewInit` or `ngAfterContentInit`). Update values in `ngOnInit` instead, before rendering finishes.
+2. **Defer State Updates:** Wrap updates in a asynchronous task (using `setTimeout` or `Promise.resolve().then()`) to push them to the next JavaScript event loop tick:
+   ```typescript
+   setTimeout(() => this.isActive = true);
+   ```
+3. **Inject ChangeDetectorRef:** Manually call `detectChanges()` to force change detection to run:
+   ```typescript
+   this.cdr.detectChanges();
+   ```
+
+> 💡 **Interviewer Focus:** Rendering lifecycles, development vs production verification passes, and using asynchronous microtasks to defer updates.
+
+</details>
 <hr/>
 
 ### ❓ Q85. **What is dynamic route compilation?**
-*(No answer provided. Discuss loading modules using path configurations.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+**Dynamic Route Compilation** is a runtime process where the router loads route configurations on-demand (e.g., from a database or remote micro-frontend config) rather than using a static, hardcoded route tree during compilation:
+
+```typescript
+const routes: Route[] = [
+  {
+    path: 'features',
+    loadChildren: () => fetch('/api/dynamic-routes')
+      .then(res => res.json())
+      .then(config => parseRoutes(config))
+  }
+];
+```
+
+This is crucial for enterprise systems where user permissions determine which routing options are available at runtime.
+
+> 💡 **Interviewer Focus:** Fetching routes dynamically from databases, dynamic route mapping, and access control.
+
+</details>
 <hr/>
 
 ### ❓ Q86. **How do you configure custom decorators in Angular?**
-*(No answer provided. Discuss building TypeScript method/class decorators.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Custom decorators are factory functions that return a decorator function. They wrap and modify the behavior of classes, properties, or methods.
+
+#### ⚙️ Example: Custom Method Log Decorator:
+```typescript
+export function LogMethod(): MethodDecorator {
+  return function (target: any, propertyKey: string | symbol, descriptor: PropertyDescriptor) {
+    const originalMethod = descriptor.value;
+
+    descriptor.value = function (...args: any[]) {
+      console.log(`Executing ${String(propertyKey)} with arguments:`, args);
+      return originalMethod.apply(this, args); // Execute original logic
+    };
+    return descriptor;
+  };
+}
+```
+**Usage in Components:**
+```typescript
+@LogMethod()
+saveUserProfile(userId: number) {
+  // Logic here
+}
+```
+
+> 💡 **Interviewer Focus:** TypeScript meta-programming, modifying class descriptors, and using decorators to reuse cross-cutting logic.
+
+</details>
 <hr/>
 
 ### ❓ Q87. **What is the difference between Webpack and Esbuild compilers in Angular builds?**
-*(No answer provided. Discuss speed improvements and compilation processes.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+* **Webpack (Classic Compiler):** A feature-rich module bundler. It processes import trees sequentially, which can lead to slower compilation times in large projects.
+* **Esbuild (Modern Compiler):** A Go-based compiler used by default in modern Angular (17+). It compiles code in parallel, yielding up to **10x faster build speeds** and faster hot-reloading during development.
+
+> 💡 **Interviewer Focus:** Build optimizations, compilation speed improvements, and hot-reload latency.
+
+</details>
 <hr/>
 
 ### ❓ Q88. **Explain how to debug memory leaks in Angular components.**
-*(No answer provided. Discuss Chrome DevTools heap snapshot checks.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Memory leaks in Angular components are usually caused by active references that prevent the garbage collector from reclaiming the component's memory (such as active subscriptions, unclosed event listeners, or global timeouts).
+
+#### 🛠️ Debugging Steps:
+1. **Take Heap Snapshots:** Open Chrome DevTools, navigate to the **Memory** tab, and take a heap snapshot.
+2. **Interact with the App:** Open and close the suspected component (e.g. navigate to a route and back) 5–10 times.
+3. **Compare Snapshots:** Take a second heap snapshot and compare it to the first. Filter by the component's class name. If the component's constructor count remains greater than 0, it is leaking memory.
+4. **Inspect Retainers:** Inspect the component's retainer tree in the snapshot to find what is holding active references to it (e.g. an active RxJS observable subscription).
+
+> 💡 **Interviewer Focus:** Profiling heap snapshots, comparing active constructor allocations, and identifying common retainer sources.
+
+</details>
 <hr/>
 
 ### ❓ Q89. **What are route reuse strategies?**
-*(No answer provided. Discuss caching routed views to prevent destroy cycles.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+By default, Angular destroys the active component when navigating away from a route. If a user returns to that route, Angular creates a new instance of the component from scratch.
+
+To preserve component state across navigations (e.g., to prevent destroying a dashboard view), implement a custom **`RouteReuseStrategy`**:
+
+```typescript
+import { RouteReuseStrategy, ActivatedRouteSnapshot, DetachedRouteHandle } from '@angular/router';
+
+export class CustomRouteReuseStrategy implements RouteReuseStrategy {
+  private handlers: { [key: string]: DetachedRouteHandle } = {};
+
+  shouldDetach(route: ActivatedRouteSnapshot): boolean { return true; } // Cache this route
+  store(route: ActivatedRouteSnapshot, handle: DetachedRouteHandle): void {
+    this.handlers[route.routeConfig?.path || ''] = handle; // Save instance
+  }
+  shouldAttach(route: ActivatedRouteSnapshot): boolean {
+    return !!this.handlers[route.routeConfig?.path || ''];
+  }
+  retrieve(route: ActivatedRouteSnapshot): DetachedRouteHandle | null {
+    return this.handlers[route.routeConfig?.path || ''] || null;
+  }
+  shouldReuseRoute(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot): boolean {
+    return future.routeConfig === curr.routeConfig;
+  }
+}
+```
+
+Register your custom strategy in `app.config.ts`:
+```typescript
+providers: [{ provide: RouteReuseStrategy, useClass: CustomRouteReuseStrategy }]
+```
+
+> 💡 **Interviewer Focus:** Caching components to preserve state across navigations, and implementing `RouteReuseStrategy` methods.
+
+</details>
 <hr/>
 
 ### ❓ Q90. **How do you implement offline synchronization patterns?**
-*(No answer provided. Discuss IndexedDB configurations and Service Workers.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Implementing offline sync involves caching data locally when offline and syncing changes with the server when connectivity returns:
+
+1. **Local Caching:** Use **IndexedDB** (via libraries like `Dexie.js`) to store payloads locally, as it supports larger datasets than `localStorage`.
+2. **Detect Network Status:** Use the browser's `navigator.onLine` API or RxJS streams to track network connectivity status:
+   ```typescript
+   isOnline$ = merge(
+     fromEvent(window, 'online').pipe(map(() => true)),
+     fromEvent(window, 'offline').pipe(map(() => false))
+   );
+   ```
+3. **Queue Requests:** If offline, save write requests (such as form submissions or updates) to an IndexedDB queue.
+4. **Sync Queue:** When connectivity returns, read the queue, send requests sequentially to the server, and clear successful items from local storage.
+
+> 💡 **Interviewer Focus:** Using IndexedDB for offline storage, monitoring network status, and synchronization conflict resolution.
+
+</details>
 <hr/>
 
-### ❓ Q91. **What is the purpose of NgZone and how do you bypass it?**
-*(No answer provided. Discuss runOutsideAngular calls for high-frequency events.)*
+### ❓ Q91. **What is the purpose of `NgZone` and how do you bypass it?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+**`NgZone`** is a wrapper around `Zone.js` that triggers change detection across the entire application whenever an asynchronous task (such as a click, timer, or HTTP response) completes.
+
+#### ⚙️ Bypassing NgZone:
+High-frequency tasks (such as mouse move events, scroll animations, or Canvas updates) trigger change detection on every emission, which can slow down rendering. 
+
+You can bypass this by running these tasks outside Angular's zone using **`runOutsideAngular`**:
+
+```typescript
+constructor(private zone: NgZone) {}
+
+listenToScrollEvents() {
+  this.zone.runOutsideAngular(() => {
+    window.addEventListener('scroll', () => {
+      this.animateElements(); // Runs without triggering change detection
+    });
+  });
+}
+```
+
+If you need to update the UI once the task completes, re-enter Angular's zone using `run`:
+```typescript
+this.zone.run(() => { this.isAnimationDone = true; }); // Triggers change detection
+```
+
+> 💡 **Interviewer Focus:** Preventing unnecessary change detection runs, and using `runOutsideAngular` to optimize performance.
+
+</details>
 <hr/>
 
-### ❓ Q92. **How do you configure custom control value accessors (NG_VALUE_ACCESSOR)?**
-*(No answer provided. Discuss binding custom UI inputs to Reactive Forms.)*
+### ❓ Q92. **How do you configure custom control value accessors (`NG_VALUE_ACCESSOR`)?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+To bind custom input components (such as a custom color picker or star rating component) to Reactive Forms, implement the **`ControlValueAccessor`** interface and register it with the `NG_VALUE_ACCESSOR` provider token:
+
+```typescript
+import { Component, forwardRef } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+
+@Component({
+  selector: 'app-star-rating',
+  standalone: true,
+  providers: [{
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: forwardRef(() => StarRatingComponent),
+    multi: true
+  }],
+  template: `<div (click)="rate(5)">★★★★★</div>`
+})
+export class StarRatingComponent implements ControlValueAccessor {
+  rating = 0;
+  onChange = (val: number) => {};
+  onTouched = () => {};
+
+  writeValue(value: number): void { this.rating = value; } // Sets value programmatically
+  registerOnChange(fn: any): void { this.onChange = fn; } // Stores callback for updates
+  registerOnTouched(fn: any): void { this.onTouched = fn; }
+  
+  rate(val: number) {
+    this.rating = val;
+    this.onChange(val); // Notifies form model
+  }
+}
+```
+
+> 💡 **Interviewer Focus:** Implementing `ControlValueAccessor` methods, multi-providers registration, and mapping custom components to Angular forms.
+
+</details>
 <hr/>
 
 ### ❓ Q93. **What is the difference between static and dynamic hydration?**
-*(No answer provided. Discuss progressive hydration methods.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+* **Static Hydration (Standard):** Hydrates the entire page as soon as the client bundle loads, making all server-rendered elements interactive at once.
+* **Dynamic (Progressive) Hydration:** Hydrates components on-demand based on client interactions or viewport visibility. For example, a heavy comments component is not hydrated until it enters the viewport, reducing initial JavaScript execution times.
+
+> 💡 **Interviewer Focus:** Hydration timing optimizations and reducing main thread execution latency.
+
+</details>
 <hr/>
 
 ### ❓ Q94. **Explain how content security policies (CSP) are configured.**
-*(No answer provided. Discuss nonces for inline styles and scripts.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+A **Content Security Policy (CSP)** is an HTTP response header that prevents cross-site scripting (XSS) and injection attacks by restricting the sources from which the browser can load scripts, styles, and other resources.
+
+#### ⚙️ Configuration in Angular:
+1. **Enable Trusted Types:** Configure CSP header policies to only allow trusted HTML wrappers:
+   ```http
+   Content-Security-Policy: require-trusted-types-for 'script';
+   ```
+2. **Apply nonces for Inline Styles:** Angular inserts styles into the document head at runtime. To allow these inline styles without disabling CSS source protection (`unsafe-inline`), configure a **nonce** attribute in your script tags:
+   ```html
+   <meta name="csp-nonce" content="random-unique-nonce-string">
+   ```
+   Angular reads this nonce and appends it to all generated `<style>` tags automatically.
+
+> 💡 **Interviewer Focus:** Preventing script injection, using CSP headers, and configuring nonces.
+
+</details>
 <hr/>
 
 ### ❓ Q95. **How do you profile change detection cycles using Angular DevTools?**
-*(No answer provided. Discuss flame graphs and checking execution times.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+**Angular DevTools** is a browser extension used to profile change detection performance:
+
+1. **Open the Profiler Tab:** Open Angular DevTools and click the **Profiler** tab.
+2. **Record Interaction:** Click record and perform the slow interaction (like typing or scrolling).
+3. **Analyze Flame Graph:** Review the generated flame graph. Each bar represents a change detection cycle. Taller bars indicate longer execution times.
+4. **Identify Slow Components:** Click a component in the tree to view how long it took to check and what triggered the change detection run. This helps identify unnecessary checks, allowing you to optimize performance by switching components to `OnPush`.
+
+> 💡 **Interviewer Focus:** Measuring rendering bottlenecks, using the Flame Graph, and identifying slow components.
+
+</details>
 <hr/>
 
 ### ❓ Q96. **What is the compile process under Ivy?**
-*(No answer provided. Discuss incremental template compiling.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+**Ivy** is Angular's compiler and rendering engine. Its compilation process is designed to be highly optimized and tree-shakable:
+
+1. **AOT Compilation:** Compiles templates and TypeScript code into JavaScript before the browser downloads it, catching errors during the build process.
+2. **Template Compilation:** Compiles HTML templates into direct, procedural JavaScript instructions (rather than large JSON metadata structures).
+3. **Incremental Builds:** Only recompiles modified components and their direct dependencies, speeding up build times in large codebases.
+
+> 💡 **Interviewer Focus:** Procedural templates compilation, tree-shakability, and incremental build optimizations.
+
+</details>
 <hr/>
 
 ### ❓ Q97. **Explain how to configure custom template outlets.**
-*(No answer provided. Discuss NgTemplateOutlet contexts.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+You can dynamically render templates and pass context objects to them using the **`NgTemplateOutlet`** directive:
+
+```html
+<!-- Child Component Template (list.component.html) -->
+<ul>
+  <li *ngFor="let item of items">
+    <!-- Render custom template provided by parent, passing context -->
+    <ng-container *ngTemplateOutlet="itemTemplate; context: { $implicit: item }"></ng-container>
+  </li>
+</ul>
+```
+**Parent Usage:**
+```html
+<app-list [items]="users" [itemTemplate]="customUserTemplate"></app-list>
+
+<ng-template #customUserTemplate let-user>
+  <div class="user-card">
+    <h4>{{ user.name }}</h4>
+  </div>
+</ng-template>
+```
+
+> 💡 **Interviewer Focus:** Dynamically rendering templates, injecting context objects, and decoupling layouts from components.
+
+</details>
 <hr/>
 
 ### ❓ Q98. **How do you implement tree-shakability for custom components?**
-*(No answer provided. Discuss standalone exports.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+To make custom components tree-shakable:
+1. **Declare them as Standalone:** Set `standalone: true` in the `@Component` decorator.
+2. **Avoid Global Module Registrations:** Do not register components in shared module arrays.
+3. **Use ES6 Imports:** Import the component only in the components or routes where it is actually used. If a component is never imported, the bundler can safely exclude it from the final production bundle.
+
+> 💡 **Interviewer Focus:** Tree-shaking mechanisms, standalone components, and static import analysis.
+
+</details>
 <hr/>
 
 ### ❓ Q99. **What are web workers and how do you leverage them in Angular?**
-*(No answer provided. Discuss offloading heavy computations from the UI thread.)*
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+JavaScript is single-threaded. Running CPU-intensive tasks (like image processing or large calculations) on the main thread can cause the UI to freeze.
+
+**Web Workers** allow you to run these calculations on a background thread:
+1. **Generate Worker:** Create a worker file using the CLI:
+   ```bash
+   ng generate web-worker my-worker
+   ```
+2. **Offload Task:** In your component, instantiate the Web Worker and listen for messages. Send heavy tasks to the worker, and handle results once they are returned to the main thread:
+   ```typescript
+   const worker = new Worker(new URL('./my-worker.worker', import.meta.url));
+   worker.postMessage({ data: heavyData }); // Send task to worker
+   worker.onmessage = ({ data }) => {
+     console.log('Result from worker:', data);
+   };
+   ```
+
+> 💡 **Interviewer Focus:** Keeping the UI responsive, offloading tasks from the main thread, and Web Worker communication APIs.
+
+</details>
 <hr/>
 
 ### ❓ Q100. **Explain dynamic configuration loading before application boot.**
-*(No answer provided. Discuss APP_INITIALIZER tokens.)*
-<hr/>
+<details>
+<summary><b>👀 Show Answer</b></summary>
 
----
+To load configurations (such as API URLs or feature flags) before the application bootstraps:
+1. Register a provider using the **`APP_INITIALIZER`** token.
+2. Configure the provider to return a function that returns a **Promise**.
+3. Angular delays application bootstrapping until this Promise resolves, ensuring configurations are loaded and available when the application starts.
+
+```typescript
+import { APP_INITIALIZER, inject } from '@angular/core';
+
+export function initializeApp() {
+  const configService = inject(ConfigService);
+  return () => configService.loadConfig(); // Returns Promise
+}
+
+// Register in app.config.ts:
+providers: [
+  {
+    provide: APP_INITIALIZER,
+    useFactory: initializeApp,
+    multi: true
+  }
+]
+```
+
+> 💡 **Interviewer Focus:** Bootstrapping lifecycles, using the `APP_INITIALIZER` token, and delaying startup until dynamic configurations are loaded.
+
+</details>
+<hr/>
 
 ### 🧭 Navigation
 

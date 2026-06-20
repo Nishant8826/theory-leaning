@@ -240,7 +240,7 @@ export class NetworkService {}
 
 // Component Consumer
 export class Component {
-  private network = inject(NetworkService);               // Modern functional injection
+  constructor(private network: NetworkService) {}         // Inject service via constructor
 }
 ```
 

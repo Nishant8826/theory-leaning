@@ -134,6 +134,76 @@ export class ParentDashboardComponent implements AfterViewInit {
 }
 ```
 
+### Unrelated Components Communication (Using Shared Services)
+When components do not share a parent-child relationship (e.g., sibling components, or components in different routes), they communicate by injecting a shared singleton service. This service exposes either a reactive Angular Signal or an RxJS `BehaviorSubject` stream that components can subscribe/bind to.
+
+#### `theme.service.ts` (Shared Service)
+```typescript
+import { Injectable, signal } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ThemeService {
+  // Option A: Signals (Modern)
+  themeSignal = signal<'light' | 'dark'>('light');
+
+  // Option B: RxJS BehaviorSubject (Classic)
+  private themeSubject = new BehaviorSubject<'light' | 'dark'>('light');
+  theme$ = this.themeSubject.asObservable();
+
+  toggleTheme() {
+    const nextTheme = this.themeSignal() === 'light' ? 'dark' : 'light';
+    this.themeSignal.set(nextTheme);
+    this.themeSubject.next(nextTheme);
+  }
+}
+```
+
+#### `component-a.component.ts` (Updates State)
+```typescript
+import { Component } from '@angular/core';
+import { ThemeService } from './theme.service';
+
+@Component({
+  selector: 'app-comp-a',
+  standalone: true,
+  template: `<button (click)="themeService.toggleTheme()">Toggle System Theme</button>`
+})
+export class ComponentA {
+  // Inject service via constructor
+  constructor(public themeService: ThemeService) {}
+}
+```
+
+#### `component-b.component.ts` (Reads State)
+```typescript
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ThemeService } from './theme.service';
+
+@Component({
+  selector: 'app-comp-b',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
+    <div [class]="currentThemeSignal()">
+      <p>Active Theme (Signal): {{ currentThemeSignal() }}</p>
+      <p>Active Theme (RxJS): {{ themeService.theme$ | async }}</p>
+    </div>
+  `
+})
+export class ComponentB {
+  currentThemeSignal;
+
+  // Inject service via constructor and map the signal
+  constructor(public themeService: ThemeService) {
+    this.currentThemeSignal = this.themeService.themeSignal;
+  }
+}
+```
+
 ## Best Practices
 1. **Unidirectional Data Flow**: Data should always flow down (Inputs) and events should always flow up (Outputs). Avoid mutating input properties inside child components.
 2. **Use Content Projection for Wrapper UI**: Utilize `<ng-content>` for generic wrapper cards, dialog popups, or grid cells to keep layout code clean.
