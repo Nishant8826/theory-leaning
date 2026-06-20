@@ -1,312 +1,605 @@
-# Angular Master Learning Repository
+# 🅰️ Angular – Complete Revision Guide
 
-Welcome to the ultimate Angular learning roadmap. This repository is structured to guide you from an absolute beginner with zero Angular experience to a senior enterprise-level Angular architect. Every topic contains deep explanations, architecture impact, performance/scalability analysis, real-world examples, runnable code blocks, and common interview questions.
-
----
-
-## 🗺️ Angular Learning Roadmap
-
-### 📦 1. Foundation & Setup
-* [01. Introduction to Angular](./01_Introduction_to_Angular.md) - History, comparison with other frameworks (React/Vue), SPA architecture, and ecosystem overview.
-* [02. Setup and Environment](./02_Setup_and_Environment.md) - Node.js, npm, installing Angular CLI, and creating your first application.
-* [03. TypeScript Fundamentals](./03_Typescript_Fundamentals.md) - Variables, interfaces, type aliases, enums, classes, OOP, generics, decorators, async/await, and promises.
-* [04. Angular Architecture](./04_Angular_Architecture.md) - Bootstrapping flow, modularity, components vs services, and Standalone component architecture.
-
-### 🧱 2. Core Angular & Directives
-* [05. Components and Templates](./05_Components_and_Templates.md) - Component design, HTML templates, property/event binding, interpolation, two-way binding, and template reference variables.
-* [06. Pipes](./06_Pipes.md) - Transform data in templates, built-in pipes, and writing custom pure/impure pipes.
-* [07. Directives](./07_Directives.md) - Attribute, structural, and custom directives. Detailed usage of `@HostBinding` and `@HostListener`.
-* [08. Component Lifecycle](./08_Component_Lifecycle.md) - Hook execution phase and order (OnInit, OnChanges, DoCheck, AfterViewInit, OnDestroy).
-* [09. Component Communication](./09_Component_Communication.md) - Parent-child data flow, `@Input`, `@Output`, `EventEmitter`, `@ViewChild`, `@ContentChild`, `@ViewChildren`, content projection, and dynamic component loading.
-
-### ⚡ 3. Modern Signals Architecture
-* [10. Signals](./10_Signals.md) - Reactivity reinvented. Writable Signals, computed values, effects, signal inputs, and Signals vs RxJS architecture.
-
-### 💉 4. Dependency Injection & Services
-* [11. Dependency Injection](./11_Dependency_Injection.md) - Injector trees, providers (useClass, useValue, useFactory, useExisting), hierarchical injection, multi-providers, and injection tokens.
-* [12. Services and Business Logic](./12_Services_and_Business_Logic.md) - Singleton services, shared services, and partitioning business logic from presentation.
-
-### 🧭 5. Routing & Navigation
-* [13. Routing and Navigation](./13_Routing_and_Navigation.md) - Configuration, Router Outlet, route/query parameters, child routes, lazy loading, resolvers, route guards (CanActivate, CanMatch), and custom route matchers.
-
-### 📝 6. Forms
-* [14. Template-Driven Forms](./14_Template_Driven_Forms.md) - Form state tracking, `ngModel`, and custom template validation.
-* [15. Reactive Forms](./15_Reactive_Forms.md) - Programmatic forms, `FormControl`, `FormGroup`, `FormArray`, built-in validators, custom validation, async validators, and dynamic form builders.
-
-### 🌐 7. HTTP Client & RxJS
-* [16. HttpClient and API Integration](./16_HttpClient_and_API_Integration.md) - REST API interactions, interceptors (functional & class-based), error handling, retry policies, and auth flows.
-* [17. RxJS Reactive Programming](./17_RxJS_Reactive_Programming.md) - Observables, Observers, Subscriptions, Subjects (Subject, BehaviorSubject, ReplaySubject), and comprehensive operators guide.
-
-### 💾 8. State Management
-* [18. State Management](./18_State_Management.md) - Component state, Service-based state, Signal-based state, NgRx Store (Actions, Reducers, Effects, Selectors, Entity), and NgRx Signal Store.
-
-### 🛡️ 9. Security & Authentication
-* [19. Authentication and Authorization](./19_Authentication_and_Authorization.md) - JWT flow, access/refresh tokens, role-based access control, secure local/session storage.
-* [20. Angular Material](./20_Angular_Material.md) - UI design system, configuration, theming, table, dialog, and standard layouts.
-* [21. Performance Optimization](./21_Performance_Optimization.md) - Change detection optimization (OnPush), Zoneless Angular, lazy/deferred loading (`@defer`), trackBy, virtual scrolling, tree-shaking, and bundle size reduction.
-
-### 🧪 10. Advanced Concepts, Testing, & SSR
-* [22. Testing (Jasmine & Jest)](./22_Testing_Jasmine_Jest.md) - Unit testing components/services, testbeds, integration tests, E2E testing (Playwright/Cypress).
-* [23. Security Best Practices](./23_Security_Best_Practices.md) - Sanitization, DomSanitizer, XSS, CSRF protection, and CSP headers.
-* [24. SSR and Advanced Concepts](./24_SSR_and_Advanced_Concepts.md) - Server-Side Rendering (SSR), Angular Universal, Hydration, SEO, PWAs, Micro-frontends (Module Federation), and Monorepos (Nx).
-* [25. Enterprise Architecture](./25_Enterprise_Architecture.md) - Domain-Driven Design (DDD), feature folders, Smart/Dumb component separation, Core vs Shared layers, state/UI boundaries.
-* [26. Deployment and CI/CD](./26_Deployment_and_CI_CD.md) - Environment files, Dockerization, Nginx routing configs, and CI/CD pipelines (GitHub Actions, AWS, Azure, Firebase).
-* [27. Real World E-Commerce Project](./27_Real_World_ECommerce_Project.md) - Architecture, routes, state, folder hierarchy, and authentication flow for an enterprise-level shop application.
-
-### 🎯 11. Interview Preparation
-* [28. Beginner Interview Prep](./28_Interview_Prep_Beginner.md) - Elementary core concepts, installation, TypeScript, and template syntax.
-* [29. Interview Prep - Intermediate](./29_Interview_Prep_Intermediate.md) - Forms, Services, Routing, Directives, Pipes, and basic RxJS.
-* [30. Interview Prep - Advanced](./30_Interview_Prep_Advanced.md) - Performance, custom DI, complex RxJS operators, state management, and SSR.
-* [31. Scenario and System Design](./31_Interview_Prep_Scenario_and_System_Design.md) - Real-world architectural scenario answers, optimization problems, and high-level Angular system design.
+Welcome to the Angular master module revision sheet. This document aggregates all key architectural concepts, configuration commands, typescript syntax, design analogies, production best practices, and interview-prep notes from every topic in this directory, allowing you to perform a complete revision of Angular from a single index file.
 
 ---
 
-# Angular Quick Revision Notes
-
-Use these notes to refresh your entire Angular knowledge in under 30 minutes. Click any topic heading to navigate directly to its detailed file.
+## 📌 Module Navigation
+- [01. Introduction to Angular](#01-introduction-to-angular)
+- [02. Setup and Environment](#02-setup-and-environment)
+- [03. TypeScript Fundamentals](#03-typescript-fundamentals)
+- [04. Angular Architecture](#04-angular-architecture)
+- [05. Components and Templates](#05-components-and-templates)
+- [06. Pipes](#06-pipes)
+- [07. Directives](#07-directives)
+- [08. Component Lifecycle](#08-component-lifecycle)
+- [09. Component Communication](#09-component-communication)
+- [10. Signals](#10-signals)
+- [11. Dependency Injection](#11-dependency-injection)
+- [12. Services and Business Logic](#12-services-and-business-logic)
+- [13. Routing and Navigation](#13-routing-and-navigation)
+- [14. Template-Driven Forms](#14-template-driven-forms)
+- [15. Reactive Forms](#15-reactive-forms)
+- [16. HttpClient and API Integration](#16-httpclient-and-api-integration)
+- [17. RxJS Reactive Programming](#17-rxjs-reactive-programming)
+- [18. State Management](#18-state-management)
+- [19. Authentication and Authorization](#19-authentication-and-authorization)
+- [20. Angular Material](#20-angular-material)
+- [21. Performance Optimization](#21-performance-optimization)
+- [22. Testing (Jasmine & Jest)](#22-testing-jasmine--jest)
+- [23. Security Best Practices](#23-security-best-practices)
+- [24. SSR and Advanced Concepts](#24-ssr-and-advanced-concepts)
+- [25. Enterprise Architecture](#25-enterprise-architecture)
+- [26. Deployment and CI/CD](#26-deployment-and-ci-cd)
+- [27. Real World E-Commerce Project](#27-real-world-e-commerce-project)
+- [28. Beginner Interview Prep](#28-beginner-interview-prep)
+- [29. Interview Prep - Intermediate](#29-interview-prep---intermediate)
+- [30. Interview Prep - Advanced](#30-interview-prep---advanced)
+- [31. Scenario and System Design](#31-scenario-and-system-design)
 
 ---
 
-## [01. Introduction to Angular](./01_Introduction_to_Angular.md)
-* **Purpose**: Foundational overview of Angular, SPA architectures, and how it compares to React/Vue.
-* **Key Points**:
-  - Opinionated framework built with TypeScript and developed by Google.
-  - Loads a single index page and dynamically updates DOM parts using JavaScript.
-  - Bypasses legacy modules using standalone components and bootstrap configurations.
-* **Remember**: Angular provides a complete set of features out-of-the-box, enforcing strict structures across teams.
+## 01. Introduction to Angular
+🔗 **Full Lesson:** [01_Introduction_to_Angular.md](./01_Introduction_to_Angular.md)
 
-## [02. Setup and Environment](./02_Setup_and_Environment.md)
-* **Purpose**: Setting up Node.js runtime, npm registry, and installing the Angular CLI.
-* **Key Points**:
-  - The CLI manages code generation, development servers, production builds, and unit testing.
-  - Local configurations are locked in `package.json` and executed via npm scripts for CI/CD consistency.
-* **Remember**: Use `nvm` to manage Node versions and use `npx ng` to prevent global CLI version conflicts.
+* **Why It Exists**: Enforces structural standardizations across enterprise codebases. Bypasses the need to cobble together router, state, and compiler libraries manually.
+* **Real-World Analogy**: A pre-furnished **Custom Smart Home**. It comes with structural plumbing (DI), wiring (Router), and thermostat controls (HttpClient) already integrated. You only add decorations (Components).
+* **Architecture Difference (vs. React/Vue)**:
+  * **React**: A library focusing on UI rendering; leaves architecture decisions (routing, forms, state) to external packages.
+  * **Angular**: A fully-integrated enterprise framework providing all parts (DI, forms, routing, testing, HTTP client) out-of-the-box. Enforces TypeScript.
 
-## [03. TypeScript Fundamentals](./03_Typescript_Fundamentals.md)
-* **Purpose**: Adding compile-time type safety, interfaces, enums, generics, and async handling to JavaScript.
-* **Key Points**:
-  - Type narrowing (using `typeof`/`instanceof`) is required when managing dynamic `unknown` types.
-  - Generics enforce type reuse across repositories, classes, and services.
-  - TypeScript annotations are completely stripped away during build compilation (zero runtime overhead).
-* **Remember**: Avoid using `any` as it disables type checks; prefer literal unions or `unknown` structures instead.
+### Conceptual Comparison:
+```
+React Flow:   DOM Updates ──> Virtual DOM Diffing ──> Re-render Component Tree
+Angular Flow: Change Detection ──> Zone.js (or Zoneless Signals) ──> Directly update specific DOM node
+```
 
-## [04. Angular Architecture](./04_Angular_Architecture.md)
-* **Purpose**: Architectural structure of Angular applications, bootstrap phases, and standalone setups.
-* **Key Points**:
-  - Single application entry point `main.ts` calls `bootstrapApplication()` with configuration values.
-  - Decoupled architecture where templates present views and services coordinate business logic.
-  - DI injectors instantiate and supply classes to component instances dynamically.
-* **Remember**: Standalone architecture is the default standard in modern Angular, bypassing `NgModule`.
+---
 
-## [05. Components and Templates](./05_Components_and_Templates.md)
-* **Purpose**: Creating UI view blocks using component logic, templates, CSS styles, and bindings.
-* **Key Points**:
-  - Interpolation (`{{ }}`) and Property Bindings (`[src]`) pass state values down to template views.
-  - Event Bindings (`(click)`) pass events up to run methods in component classes.
-  - Template Reference Variables (`#ref`) grant direct template access to DOM element values.
-* **Remember**: Keep templates declarative and avoid running expensive helper methods in bindings.
+## 02. Setup and Environment
+🔗 **Full Lesson:** [02_Setup_and_Environment.md](./02_Setup_and_Environment.md)
 
-## [06. Pipes](./06_Pipes.md)
-* **Purpose**: Transform raw data values for display directly inside templates.
-* **Key Points**:
-  - Built-in pipes handle common formats like currencies, dates, cases, and JSON values.
-  - Pure pipes cache outputs, only executing when input primitive values or references change.
-  - The `Async` pipe automatically manages observable subscriptions, preventing memory leaks.
-* **Remember**: Avoid mutating array elements directly when using pure pipes; swap the reference array instead.
+* **Why It Exists**: Automates code scaffolding, testing environments, and optimized build compilations (tree-shaking and minification) locally and in CI/CD.
+* **Real-World Analogy**: An **Automated Factory Assembly Line**. Instead of hand-carving gears (creating files manually), you run a control panel (CLI) to output pre-tested gears directly into the chassis.
 
-## [07. Directives](./07_Directives.md)
-* **Purpose**: Attach behaviors, styles, or DOM modifications to templates.
-* **Key Points**:
-  - Attribute directives change element styling, while structural directives modify the DOM tree.
-  - Custom directives use `@HostBinding` to modify host attributes and `@HostListener` to track host events.
-* **Remember**: Always use Renderer2 or Host decorators instead of raw nativeElement mutations to support SSR.
+### Key CLI Commands:
+```bash
+npm install -g @angular/cli                              # Install Angular CLI globally
+ng new my-app --standalone --style=css                   # Generate new standalone application
+ng serve --port 4200 --open                              # Run local development server
+ng generate component components/user-profile            # Scaffolds UserProfile component files
+ng generate service services/auth                        # Scaffolds AuthService file and tests
+ng build --configuration production                      # Compile optimized production bundles
+```
 
-## [08. Component Lifecycle](./08_Component_Lifecycle.md)
-* **Purpose**: Intercepting key phases of component execution from initialization to destruction.
-* **Key Points**:
-  - `ngOnChanges` executes when inputs update, while `ngOnInit` handles initial data fetches.
-  - `ngAfterViewInit` is the first hook where component DOM queries are fully accessible.
-  - `ngOnDestroy` runs cleanup tasks, closing active connections and subscriptions.
-* **Remember**: Do not execute network requests inside constructors; always delegate them to `ngOnInit`.
+---
 
-## [09. Component Communication](./09_Component_Communication.md)
-* **Purpose**: Sharing data, events, and layouts across nested component structures.
-* **Key Points**:
-  - Unidirectional data flow: inputs (`@Input`) send data down; outputs (`@Output`) emit events up.
-  - View queries (`@ViewChild`) allow components to interact with local template children.
-  - Content projection (`<ng-content>`) allows parent templates to inject custom layouts.
-* **Remember**: Query projected children using `@ContentChild` instead of `@ViewChild` inside templates.
+## 03. TypeScript Fundamentals
+🔗 **Full Lesson:** [03_Typescript_Fundamentals.md](./03_Typescript_Fundamentals.md)
 
-## [10. Signals](./10_Signals.md)
-* **Purpose**: Fine-grained reactivity that tracks state reads and triggers targeted UI updates.
-* **Key Points**:
-  - Writable Signals track local state changes, computed signals derive cached values, and effects run side-effects.
-  - Allows components to execute without Zone.js triggers (Zoneless architecture).
-  - Exposes modern inputs using the `input()` function API.
-* **Remember**: Always invoke signals as function calls `{{ name() }}` in templates.
+* **Why It Exists**: Captures data mismatches, null values, and contract breaking at compile-time before code gets deployed to users.
+* **Real-World Analogy**: **Construction Blueprints**. Checking blueprint specifications before pouring concrete avoids realizing later that the support pillars are misaligned.
 
-## [11. Dependency Injection](./11_Dependency_Injection.md)
-* **Purpose**: Decoupling classes from their dependencies by managing class resolution centrally.
-* **Key Points**:
-  - Resolves dependencies by traversing up the hierarchical injector tree.
-  - Supports custom class mapping (`useClass`), values (`useValue`), and factory logic (`useFactory`).
-  - Injection Tokens identify non-class values like configuration parameters.
-* **Remember**: Use the modern `inject()` function to write cleaner classes and simplify inheritance.
+### Key Syntax Configurations:
+```typescript
+interface User { id: string; name: string; email: string; role: 'admin' | 'user' }
+type Response<T> = { data: T; status: number; error?: string };
 
-## [12. Services and Business Logic](./12_Services_and_Business_Logic.md)
-* **Purpose**: Encapsulating non-UI logic, computations, and API configurations.
-* **Key Points**:
-  - `@Injectable({ providedIn: 'root' })` registers services as tree-shakable global singletons.
-  - Keeps component views thin and logic architectures clean and testable.
-* **Remember**: Expose state properties as read-only computed signals or observables.
+// Generics and Union Types in Action
+function getUserData<T>(userId: string): Promise<Response<T>> {
+  return fetch(`/api/users/${userId}`).then(res => res.json());
+}
+```
 
-## [13. Routing and Navigation](./13_Routing_and_Navigation.md)
-* **Purpose**: Mapping browser URLs to component views without reloading pages.
-* **Key Points**:
-  - Configuration array routes URL paths to static or lazy-loaded components.
-  - Functional guards check permissions and block unauthorized access.
-  - Dynamic parameters and query configurations pass state values through navigation.
-* **Remember**: Lazy load route views using `loadComponent` to optimize bundle sizes.
+> [!IMPORTANT]
+> **Interface vs Type**: Use `interface` for declaring public API structures and classes (due to declaration merging and OOP extensibility). Use `type` for complex unions, tuples, or utility types.
 
-## [14. Template-Driven Forms](./14_Template_Driven_Forms.md)
-* **Purpose**: Creating and managing forms using HTML directive bindings.
-* **Key Points**:
-  - Automatically builds form models behind the scenes using `ngModel` and the parent form directive.
-  - Uses standard HTML attributes (like `required`) to handle simple validation rules.
-* **Remember**: Always set the `name` attribute on input tags when using `ngModel`.
+---
 
-## [15. Reactive Forms](./15_Reactive_Forms.md)
-* **Purpose**: Building model-driven forms that offer predictable state and type-safe validation.
-* **Key Points**:
-  - Programmatically declared using `FormControl`, `FormGroup`, and `FormArray`.
-  - Values and validation statuses flow through RxJS streams.
-  - Supports async validators to verify fields against database APIs in real-time.
-* **Remember**: Use `updateOn: 'blur'` to prevent async validators from triggering on every keystroke.
+## 04. Angular Architecture
+🔗 **Full Lesson:** [04_Angular_Architecture.md](./04_Angular_Architecture.md)
 
-## [16. HttpClient and API Integration](./16_HttpClient_and_API_Integration.md)
-* **Purpose**: Communicating with remote REST APIs over HTTP.
-* **Key Points**:
-  - Returns cold observables, meaning requests only send when subscribed to.
-  - Functional interceptors append authorization headers and handle token refresh flows globally.
-  - Supports automatic JSON parsing and type-safe response casting.
-* **Remember**: Clean up subscriptions in interceptors or handle retry strategies carefully.
+* **Why It Exists**: Replaces modular code bundling (`NgModule`) with standalone component structures to reduce boilerplate and improve tree-shaking performance.
+* **Real-World Analogy**: A **Self-Sufficient Smart Village**. Instead of a central electricity station distributing utility configurations (NgModule), each house has its own solar panels and battery backup systems (Standalone components declaring imports).
 
-## [17. RxJS Reactive Programming](./17_RxJS_Reactive_Programming.md)
-* **Purpose**: Coordinating complex asynchronous events as continuous data streams.
-* **Key Points**:
-  - Observables emit values over time, while subscriptions handle stream executions.
-  - BehaviorSubjects store and replay their latest value to new subscribers immediately.
-  - Flattening operators (`switchMap`, `mergeMap`, `concatMap`, `exhaustMap`) handle nested streams.
-* **Remember**: Use `switchMap` to cancel active search requests when new values emit.
+### Bootstrapping Flow:
+```typescript
+// main.ts
+import { bootstrapApplication } from '@angular/platform-browser';
+import { AppComponent } from './app/app.component';
+import { appConfig } from './app/app.config';
 
-## [18. State Management](./18_State_Management.md)
-* **Purpose**: Maintaining a single source of truth for application state.
-* **Key Points**:
-  - State changes are dispatched via actions, processed by reducers, and queried via selectors.
-  - Light state is managed using shared services and signals, while large apps use global stores.
-  - NgRx Signal Store provides a functional state management API built on Signals.
-* **Remember**: Keep state objects immutable, updating them using spread operators.
+bootstrapApplication(AppComponent, appConfig)
+  .catch((err) => console.error(err));
+```
 
-## [19. Authentication and Authorization](./19_Authentication_and_Authorization.md)
-* **Purpose**: Verifying user identities and managing access permissions.
-* **Key Points**:
-  - Short-lived Access Tokens authorize requests, and Refresh Tokens request new access tokens.
-  - Interceptors append JWT headers, and route guards block unauthorized navigation.
-* **Remember**: Use `CanMatch` functional guards to block lazy-loaded modules from downloading.
+---
 
-## [20. Angular Material](./20_Angular_Material.md)
-* **Purpose**: Access to pre-built Material Design UI controls.
-* **Key Points**:
-  - Implements components like data tables, dialogues, and form fields.
-  - Customize colors and layouts using SASS variables and theme configs.
-  - Accessibility behaviors are managed internally by the Angular CDK overlay engine.
-* **Remember**: Use official SCSS mixins instead of custom styles to avoid breaking upgrades.
+## 05. Components and Templates
+🔗 **Full Lesson:** [05_Components_and_Templates.md](./05_Components_and_Templates.md)
 
-## [21. Performance Optimization](./21_Performance_Optimization.md)
-* **Purpose**: Optimizing application load times and change detection checks.
-* **Key Points**:
-  - OnPush change detection strategy skips components unless inputs change.
-  - Lazy load components when they enter the viewport using `@defer` blocks.
-  - Track list loops using unique identifiers to avoid rendering list items again.
-* **Remember**: Keep change detection checks low to support Zoneless setups.
+* **Why It Exists**: Unifies presentation markup (HTML) and UI logic (TS class) into reusable, self-contained view modules.
+* **Real-World Analogy**: **Vehicle Instrument Panel**. The engine controller (TS class) updates speed displays (Property Binding) and registers driver dial adjustment events (Event Binding) synchronously.
 
-## [22. Testing (Jasmine & Jest)](./22_Testing_Jasmine_Jest.md)
-* **Purpose**: Writing unit, integration, and E2E tests to verify behavior.
-* **Key Points**:
-  - `TestBed` initializes dynamic modules to test components and services in isolation.
-  - Query elements and trigger change detection using component fixtures.
-  - E2E tools (like Playwright and Cypress) run user scenarios in real browsers.
-* **Remember**: Verify that no open network calls remain using `HttpTestingController.verify()`.
+### Binding Syntax:
+```html
+<h2>Welcome, {{ username }}</h2>                         <!-- Interpolation -->
+<img [src]="profileImageUrl" alt="Avatar">              <!-- Property Binding -->
+<button (click)="onLogout()">Log Out</button>            <!-- Event Binding -->
+<input [(ngModel)]="searchQuery" placeholder="Search">   <!-- Two-Way Binding (Forms) -->
+<div #containerElement>Container Box</div>               <!-- Template Reference Variable -->
+```
 
-## [23. Security Best Practices](./23_Security_Best_Practices.md)
-* **Purpose**: Securing applications against vulnerabilities like XSS and CSRF.
-* **Key Points**:
-  - Angular sanitizes all template inputs by default, stripping out malicious tags.
-  - `DomSanitizer` can bypass sanitization when explicitly rendering trusted content.
-  - Cookie credentials protect API communication using CSRF header checks.
-* **Remember**: Never pass raw user inputs directly into `bypassSecurityTrustHtml`.
+---
 
-## [24. SSR and Advanced Concepts](./24_SSR_and_Advanced_Concepts.md)
-* **Purpose**: Pre-rendering HTML templates on Node servers to improve SEO and load times.
-* **Key Points**:
-  - Static HTML is generated on the server and hydrated on the client.
-  - Safe execution requires platform checks before accessing browser-only APIs.
-  - Large workspaces can be managed using Nx monorepo patterns.
-* **Remember**: Wrap references to browser globals in `isPlatformBrowser` checks.
+## 06. Pipes
+🔗 **Full Lesson:** [06_Pipes.md](./06_Pipes.md)
 
-## [25. Enterprise Architecture](./25_Enterprise_Architecture.md)
-* **Purpose**: Structuring large codebases using clean layer configurations.
-* **Key Points**:
-  - Domain-Driven Design groups related features, services, and state by domain folders.
-  - Smart components manage state and APIs, while Dumb components handle UI presentation.
-  - Decoupling logic keeps features isolated and easy to test.
-* **Remember**: Do not inject services or store configurations directly into Dumb components.
+* **Why It Exists**: Formats raw variables in templates on-the-fly without polluting component controllers with formatting logic.
+* **Real-World Analogy**: **Water Filtration Nozzles**. Raw water enters the hose; different nozzles output mist, stream, or spray options without changing the source water supply.
 
-## [26. Deployment and CI/CD](./26_Deployment_and_CI_CD.md)
-* **Purpose**: Packaging, hosting, and deploying production code.
-* **Key Points**:
-  - Production builds apply deep tree-shaking to minimize bundle sizes.
-  - Docker configures container setups, and Nginx handles routing fallbacks.
-  - GitHub Actions automate builds, tests, and deployments to cloud hosts.
-* **Remember**: Always configure Nginx's `try_files` rule to support client-side routing.
+### Pure vs Impure Pipes:
+* **Pure Pipe (Default)**: Executes only when reference checks change (highly performant, uses cached calculations).
+* **Impure Pipe**: Executes on every change detection cycle (can create performance issues if doing heavy tasks).
 
-## [27. Real World E-Commerce Project](./27_Real_World_ECommerce_Project.md)
-* **Purpose**: Structuring real-world routing, state, and API integrations in a shop app.
-* **Key Points**:
-  - Domain boundaries partition shopping cart, catalog, and checkout features.
-  - Features are lazy-loaded on-demand and secured using authentication guards.
-  - Global shopping cart state is managed using the `NgRx Signal Store`.
-* **Remember**: Cache API requests to minimize redundant network calls.
+### Key Pipes Syntax:
+```html
+<p>{{ price | currency:'EUR' }}</p>                       <!-- Built-in currency pipe -->
+<p>{{ today | date:'yyyy-MM-dd' }}</p>                    <!-- Date pipe -->
+<p>{{ userData$ | async }}</p>                            <!-- Async Pipe (Auto-unsubscribe) -->
+```
 
-## [28. Beginner Interview Prep](./28_Interview_Prep_Beginner.md)
-* **Purpose**: Key topics and questions for entry-level developers.
-* **Key Points**:
-  - Covers Angular CLI commands, data bindings, and interpolation.
-  - Explains the difference between components and directives.
-  - Validates basic TypeScript syntax and standalone component structures.
-* **Remember**: Practice standard CLI commands and simple binding setups.
+---
 
-## [29. Interview Prep - Intermediate](./29_Interview_Prep_Intermediate.md)
-* **Purpose**: Intermediate questions on form validation and lifecycle hooks.
-* **Key Points**:
-  - Explains the differences between reactive and template-driven forms.
-  - Explains lifecycle hooks, custom directives, and pure/impure pipes.
-  - Focuses on basic RxJS stream management and subscription cleanups.
-* **Remember**: Review component lifecycle hooks and reactive form validations.
+## 07. Directives
+🔗 **Full Lesson:** [07_Directives.md](./07_Directives.md)
 
-## [30. Interview Prep - Advanced](./30_Interview_Prep_Advanced.md)
-* **Purpose**: Advanced questions on optimization and rendering architectures.
-* **Key Points**:
-  - Focuses on OnPush change detection, Zoneless setups, and SSR.
-  - Validates custom DI provider declarations and multi-providers.
-  - Focuses on RxJS flattening operators and silent token refresh interceptors.
-* **Remember**: Practice debugging hydration errors and change detection checks.
+* **Why It Exists**: Attaches custom interactive behaviors (Attribute) or conditionally restructures the DOM layout (Structural) directly in elements.
+* **Real-World Analogy**: **Wearable Sensor Badges**. Pinning a badge to a worker triggers notifications when they enter unauthorized zones without modifying the worker's attributes.
 
-## [31. Scenario and System Design](./31_Interview_Prep_Scenario_and_System_Design.md)
-* **Purpose**: Senior engineering scenario questions and system designs.
-* **Key Points**:
-  - Covers designing real-time dashboards and multi-tenant portals.
-  - Focuses on caching strategies, monorepo systems, and state models.
-  - Focuses on preventing layout shifts and optimizing page load speeds.
-* **Remember**: Practice modeling domain architectures and caching structures.
+### Attribute Directives and Host Decorators:
+```typescript
+@Directive({ selector: '[appHoverHighlight]', standalone: true })
+export class HoverHighlightDirective {
+  @HostBinding('style.backgroundColor') bgColor = 'transparent';
+  @HostListener('mouseenter') onMouseEnter() { this.bgColor = 'yellow'; }
+  @HostListener('mouseleave') onMouseLeave() { this.bgColor = 'transparent'; }
+}
+```
 
+---
+
+## 08. Component Lifecycle
+🔗 **Full Lesson:** [08_Component_Lifecycle.md](./08_Component_Lifecycle.md)
+
+* **Why It Exists**: Hooks developers into key runtime moments (initialization, change updates, and destruction) to execute async calls and cleanup tasks.
+* **Real-World Analogy**: **Theatrical Play Stages**. Setup lighting (ngOnInit), adjust scripts when actors speak (ngOnChanges), check positions (ngAfterViewInit), and strike the set at the end of the show (ngOnDestroy).
+
+### Lifecycle Order:
+1. `Constructor`: Class instantiated (never place API calls here).
+2. `ngOnChanges`: Triggered when `@Input` variables change references.
+3. `ngOnInit`: Component initialization (fetch data here).
+4. `ngDoCheck`: Custom check handler.
+5. `ngAfterViewInit`: HTML child template DOM queries fully initialized.
+6. `ngOnDestroy`: Cleanup phase (unsubscribe from streams, destroy timers).
+
+---
+
+## 09. Component Communication
+🔗 **Full Lesson:** [09_Component_Communication.md](./09_Component_Communication.md)
+
+* **Why It Exists**: Coordinates data sharing, UI events, and structural templating across nested parent-child component boundaries.
+* **Real-World Analogy**: **Office Walkie-Talkies**. Parent managers broadcast tasks down (Inputs), and worker components report back via alert pings (Outputs).
+
+### Communication Syntax:
+```typescript
+// Child Component
+export class ChildComponent {
+  @Input() userData!: User;
+  @Output() statusChanged = new EventEmitter<string>();
+  
+  triggerUpdate() { this.statusChanged.emit('COMPLETED'); }
+}
+```
+```html
+<!-- Parent Template -->
+<app-child [userData]="selectedUser" (statusChanged)="onStatusChange($event)"></app-child>
+```
+
+---
+
+## 10. Signals
+🔗 **Full Lesson:** [10_Signals.md](./10_Signals.md)
+
+* **Why It Exists**: Introduces fine-grained reactivity to track status reads. Only updates DOM elements affected by change, bypassing Zone.js dirty-checking overhead.
+* **Real-World Analogy**: **Spreadsheet Cells**. Changing value in cell `A1` immediately updates cell `C1` via formula without checking every other cell in the file.
+
+### Signals Syntax:
+```typescript
+const count = signal(0);                                  // Writable Signal
+const doubleCount = computed(() => count() * 2);          // Computed Signal (Cached)
+effect(() => console.log(`Count changed to: ${count()}`)); // Effect (runs on changes)
+
+count.set(5);                                             // Direct value write
+count.update(val => val + 1);                             // Calculate new state
+```
+
+---
+
+## 11. Dependency Injection
+🔗 **Full Lesson:** [11_Dependency_Injection.md](./11_Dependency_Injection.md)
+
+* **Why It Exists**: Decouples component logic from instance creations, enabling test mocking and centralizing service instances.
+* **Real-World Analogy**: A **Central Supply Closet**. Instead of every builder manufacturing their own drill (instantiating new services), they ask the supplier (DI Injector) to supply one.
+
+### DI Providers Configuration:
+```typescript
+// Service Registration
+@Injectable({ providedIn: 'root' })                       // Register globally (Singleton)
+export class NetworkService {}
+
+// Component Consumer
+export class Component {
+  private network = inject(NetworkService);               // Modern functional injection
+}
+```
+
+---
+
+## 12. Services and Business Logic
+🔗 **Full Lesson:** [12_Services_and_Business_Logic.md](./12_Services_and_Business_Logic.md)
+
+* **Why It Exists**: Prevents UI components from bloating by separating computational state, data mapping, and API networking logic.
+* **Real-World Analogy**: **Restaurant Waiter & Kitchen**. The waiter (Component) only takes orders and serves plates; the kitchen (Service) handles sourcing ingredients, cooking, and plating.
+
+### Code Pattern:
+```typescript
+@Injectable({ providedIn: 'root' })
+export class CartService {
+  private cartItems = signal<Product[]>([]);
+  public items = this.cartItems.asReadonly();
+
+  addToCart(product: Product) {
+    this.cartItems.update(current => [...current, product]);
+  }
+}
+```
+
+---
+
+## 13. Routing and Navigation
+🔗 **Full Lesson:** [13_Routing_and_Navigation.md](./13_Routing_and_Navigation.md)
+
+* **Why It Exists**: Dynamically switches page views in client code based on browser URL configurations, preventing full page reloads.
+* **Real-World Analogy**: **Airport Terminals**. The central runway stays fixed; paths route passengers to different gates (components) depending on their boarding tickets.
+
+### Route Configs & Functional Guards:
+```typescript
+export const routes: Routes = [
+  { path: 'dashboard', loadComponent: () => import('./dashboard.component').then(c => c.DashboardComponent), canActivate: [authGuard] },
+  { path: 'users/:id', component: UserDetailComponent }
+];
+
+export const authGuard: CanActivateFn = (route, state) => {
+  const router = inject(Router);
+  return inject(AuthService).isLoggedIn() ? true : router.createUrlTree(['/login']);
+};
+```
+
+---
+
+## 14. Template-Driven Forms
+🔗 **Full Lesson:** [14_Template_Driven_Forms.md](./14_Template_Driven_Forms.md)
+
+* **Why It Exists**: Quick, declarative form creation using directive bindings in HTML templates.
+* **Real-World Analogy**: **Paper Questionnaires**. Fill in inputs directly on the sheet; the formatting and fields are predefined on paper.
+
+### Form Bindings Template:
+```html
+<form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm.value)">
+  <input name="email" ngModel required email #emailInput="ngModel">
+  @if (emailInput.invalid && emailInput.touched) { <span class="error">Enter email</span> }
+  <button type="submit" [disabled]="loginForm.invalid">Submit</button>
+</form>
+```
+
+---
+
+## 15. Reactive Forms
+🔗 **Full Lesson:** [15_Reactive_Forms.md](./15_Reactive_Forms.md)
+
+* **Why It Exists**: Provides a programmatic, type-safe API to build, validate, dynamic-track, and test complex form fields inside class files.
+* **Real-World Analogy**: **Programmatic Spreadsheets**. Creating validation constraints cell-by-cell in code, checking input values, and calculating rules in real-time.
+
+### Forms Control Configurations:
+```typescript
+export class FormComponent {
+  private fb = inject(FormBuilder);
+  loginForm = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required, Validators.minLength(8)]]
+  });
+
+  submit() {
+    if (this.loginForm.valid) { console.log(this.loginForm.value); }
+  }
+}
+```
+
+---
+
+## 16. HttpClient and API Integration
+🔗 **Full Lesson:** [16_HttpClient_and_API_Integration.md](./16_HttpClient_and_API_Integration.md)
+
+* **Why It Exists**: Handles backend networking requests, automatically parses JSON payloads, and handles headers/tokens globally.
+* **Real-World Analogy**: **Registered Shipping Clerk**. Attaches custom delivery stamps (Auth headers) and signs off confirmations before letters leave the building.
+
+### Functional Interceptor and Request Call:
+```typescript
+// Functional Interceptor
+export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  const authToken = inject(AuthService).getToken();
+  const authReq = req.clone({ setHeaders: { Authorization: `Bearer ${authToken}` } });
+  return next(authReq);
+};
+```
+
+---
+
+## 17. RxJS Reactive Programming
+🔗 **Full Lesson:** [17_RxJS_Reactive_Programming.md](./17_RxJS_Reactive_Programming.md)
+
+* **Why It Exists**: Manages complex asynchronous event streams, timeouts, and API dependencies using a functional programming paradigm.
+* **Real-World Analogy**: **Assembly Conveyor Belt**. Diverts, aggregates, and transforms items along the belt (using operators) before boxing them.
+
+### Key Operators Example:
+```typescript
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+
+searchTerms$.pipe(
+  debounceTime(300),                                      // Wait for 300ms pause
+  distinctUntilChanged(),                                 // Ignore duplicate sequential entries
+  switchMap(term => this.api.search(term))                // Cancel old request, switch to new query stream
+).subscribe(results => this.displayResults(results));
+```
+
+---
+
+## 18. State Management
+🔗 **Full Lesson:** [18_State_Management.md](./18_State_Management.md)
+
+* **Why It Exists**: Prevents state scattering by maintaining a predictable single source of truth across enterprise layouts.
+* **Real-World Analogy**: **Company Ledger**. Only accountants (Reducers) can update accounts using transaction slips (Actions) to prevent database discrepancies.
+
+### Store Architecture:
+* **Actions**: Describe the event (e.g. `[Cart] Add Item`).
+* **Reducers**: Pure functions calculating the new state based on actions.
+* **Selectors**: Queries used to fetch specific fields from the state tree.
+* **Effects**: Asynchronous side-effects (e.g. fetching API data).
+
+---
+
+## 19. Authentication and Authorization
+🔗 **Full Lesson:** [19_Authentication_and_Authorization.md](./19_Authentication_and_Authorization.md)
+
+* **Why It Exists**: Secures client routes and API requests by managing tokens, expiry validation checks, and role mappings.
+* **Real-World Analogy**: **Theme Park Passes**. Wristbands (Tokens) grant access to ride zones; expired passes are automatically renewed at ticket booths (Refresh Tokens).
+
+### Refresh Token Interceptor Strategy:
+```typescript
+// Pseudo-code for handling expired tokens on 401 response
+return next(req).pipe(
+  catchError((error) => {
+    if (error instanceof HttpErrorResponse && error.status === 401) {
+      return this.auth.refreshToken().pipe(
+        switchMap((newToken) => next(req.clone({ setHeaders: { Authorization: `Bearer ${newToken}` } })))
+      );
+    }
+    return throwError(() => error);
+  })
+);
+```
+
+---
+
+## 20. Angular Material
+🔗 **Full Lesson:** [20_Angular_Material.md](./20_Angular_Material.md)
+
+* **Why It Exists**: Standardizes application UIs using ready-made material design components (Data Tables, Dialogs, Inputs).
+* **Real-World Analogy**: **Modular Building Blocks**. Instead of baking custom bricks, you assemble modular panels with built-in accessibility.
+
+### Component Usage Configuration:
+```typescript
+import { MatButtonModule } from '@angular/material/button';
+import { MatTableModule } from '@angular/material/table';
+
+@Component({
+  standalone: true,
+  imports: [MatButtonModule, MatTableModule],
+  template: `<button mat-raised-button color="primary">Submit</button>`
+})
+export class MaterialComponent {}
+```
+
+---
+
+## 21. Performance Optimization
+🔗 **Full Lesson:** [21_Performance_Optimization.md](./21_Performance_Optimization.md)
+
+* **Why It Exists**: Reduces initial page load times and optimizes runtime execution speeds (change detection cycles).
+* **Real-World Analogy**: **Security Checkpoints**. Skip checks on houses unless their gate alarm is tripped (OnPush change detection strategy).
+
+### Optimization Strategy configurations:
+```typescript
+@Component({
+  selector: 'app-perf-item',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush          // Skips checks unless input reference changes
+})
+export class PerfItemComponent {
+  @Input() data!: ItemData;
+}
+```
+```html
+<!-- Defer block to lazy load heavy component when it enters viewport -->
+@defer (on viewport) {
+  <app-heavy-chart></app-heavy-chart>
+} @placeholder {
+  <div>Loading Chart...</div>
+}
+```
+
+---
+
+## 22. Testing (Jasmine & Jest)
+🔗 **Full Lesson:** [22_Testing_Jasmine_Jest.md](./22_Testing_Jasmine_Jest.md)
+
+* **Why It Exists**: Ensures code quality and prevents regression bugs when writing changes or upgrading libraries.
+* **Real-World Analogy**: **Flight Simulator**. Test cockpit responses under different conditions before flying actual passengers.
+
+### Key TestBed Setup:
+```typescript
+describe('UserService Spec', () => {
+  let service: UserService;
+  let httpMock: HttpTestingController;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [UserService, provideHttpClient(), provideHttpClientTesting()]
+    });
+    service = TestBed.inject(UserService);
+    httpMock = TestBed.inject(HttpTestingController);
+  });
+
+  it('should fetch users', () => {
+    service.getUsers().subscribe(users => expect(users.length).toBe(2));
+    const req = httpMock.expectOne('/api/users');
+    req.flush([{ id: 1 }, { id: 2 }]);
+  });
+});
+```
+
+---
+
+## 23. Security Best Practices
+🔗 **Full Lesson:** [23_Security_Best_Practices.md](./23_Security_Best_Practices.md)
+
+* **Why It Exists**: Defends applications from malicious script injections (XSS) and request hijackings (CSRF).
+* **Real-World Analogy**: **Mailroom Sterilizer**. Mail is automatically sanitized before delivery. Bypass options require manager override.
+
+### Sanitizer Implementation:
+```typescript
+export class SecurityComponent {
+  private sanitizer = inject(DomSanitizer);
+  
+  // Safe bypass syntax. Warn: Only use with verified inputs!
+  trustedUrl = this.sanitizer.bypassSecurityTrustResourceUrl('https://trusted-partner.com');
+}
+```
+
+---
+
+## 24. SSR and Advanced Concepts
+🔗 **Full Lesson:** [24_SSR_and_Advanced_Concepts.md](./24_SSR_and_Advanced_Concepts.md)
+
+* **Why It Exists**: Pre-renders templates on Node.js servers to support crawler indices (SEO) and reduce initial render delays.
+* **Real-World Analogy**: **Meal Prepping**. Cook the food in a central kitchen (SSR server) and package it, so clients only need to heat it up (Hydration).
+
+### Platform Check Configs:
+```typescript
+import { isPlatformBrowser } from '@angular/common';
+import { PLATFORM_ID } from '@angular/core';
+
+export class AdvancedComponent {
+  private platformId = inject(PLATFORM_ID);
+
+  ngOnInit() {
+    if (isPlatformBrowser(this.platformId)) {
+      // Safe to call window or document API here
+      console.log(window.location.href);
+    }
+  }
+}
+```
+
+---
+
+## 25. Enterprise Architecture
+🔗 **Full Lesson:** [25_Enterprise_Architecture.md](./25_Enterprise_Architecture.md)
+
+* **Why It Exists**: Divides code bases into feature domains, decoupling infrastructure, services, and smart vs dumb UI boundaries.
+* **Real-World Analogy**: **Military Command Structure**. Command towers decide maneuvers (Smart Components), while front-line squads execute commands (Dumb Components).
+
+### Smart Component (Container) vs Dumb Component (Presentation):
+* **Smart**: Injects services, manages state streams, coordinates network APIs.
+* **Dumb**: Reusable UI blocks, accepts data via `@Input`, emits user events via `@Output`.
+
+---
+
+## 26. Deployment and CI/CD
+🔗 **Full Lesson:** [26_Deployment_and_CI_CD.md](./26_Deployment_and_CI_CD.md)
+
+* **Why It Exists**: Automates build pipelines, formats stylesheets, runs test suites, and pushes compiled files to server environments.
+* **Real-World Analogy**: **Manufacturing Shipping Center**. Quality check, pack boxes, stamp addresses, and load shipping containers automatically.
+
+### Production Nginx Routing Configuration (`nginx.conf`):
+```nginx
+server {
+    listen 80;
+    server_name localhost;
+    root /usr/share/nginx/html;
+    index index.html;
+
+    location / {
+        # Redirect all requests to index.html to support client-side routing
+        try_files $uri $uri/ /index.html;
+    }
+}
+```
+
+---
+
+## 27. Real World E-Commerce Project
+🔗 **Full Lesson:** [27_Real_World_ECommerce_Project.md](./27_Real_World_ECommerce_Project.md)
+
+* **Why It Exists**: Practical integration of lazy-loaded routes, state stores, secure authentication, API interceptors, and checkout paths in a unified project.
+* **Real-World Analogy**: **Online Mall**. Integrates display shelves (catalog feature), user accounts (auth feature), cashiers (payment feature), and shopping carts (state feature).
+
+---
+
+## 28. Beginner Interview Prep
+🔗 **Full Lesson:** [28_Interview_Prep_Beginner.md](./28_Interview_Prep_Beginner.md)
+
+* **Scope**: Evaluates knowledge of basic directive syntax, TypeScript bindings, and setup workflows.
+* **Example Question**: *What is the difference between `@Input` and `@Output`?*
+  * **Answer**: `@Input` passes data down from parent components to child components. `@Output` uses `EventEmitter` to bubble up action events from children to parents.
+
+---
+
+## 29. Interview Prep - Intermediate
+🔗 **Full Lesson:** [29_Interview_Prep_Intermediate.md](./29_Interview_Prep_Intermediate.md)
+
+* **Scope**: Evaluates knowledge of reactive form schemas, custom validation, pipes, directives, and lifecycle hooks.
+* **Example Question**: *What is the difference between Reactive Forms and Template-Driven Forms?*
+  * **Answer**: Template-driven forms use declarative directives (like `ngModel`) in the HTML template (easier, relies on two-way bindings). Reactive forms are declared programmatically in the TypeScript class (type-safe, scalable, testable, runs via RxJS streams).
+
+---
+
+## 30. Interview Prep - Advanced
+🔗 **Full Lesson:** [30_Interview_Prep_Advanced.md](./30_Interview_Prep_Advanced.md)
+
+* **Scope**: Evaluates custom DI providers, performance, change detection, complex RxJS operators, and token refresh interceptors.
+* **Example Question**: *Explain how OnPush change detection improves performance.*
+  * **Answer**: By default, change detection traverses the entire component tree. `OnPush` tells Angular to skip checking a component and its children unless its `@Input` property references update, a component event fires, or change detection is triggered manually.
+
+---
+
+## 31. Scenario and System Design
+🔗 **Full Lesson:** [31_Interview_Prep_Scenario_and_System_Design.md](./31_Interview_Prep_Scenario_and_System_Design.md)
+
+* **Scope**: Enterprise systems architecture, monorepos, state management boundaries, caching interceptors, and SSR hydration.
+* **Example Question**: *How do you build a caching HTTP interceptor in Angular?*
+  * **Answer**: Use a Map cache. The interceptor intercepts outgoing `GET` requests, checks if the URL exists in the map cache, and if so, returns a cached `HttpResponse` observable. If it does not exist, it executes the network call, saves the response in the map cache, and sets an expiration timer.
+
+---
+Previous : [00_index.md](./00_index.md) | Index : [00_index.md](./00_index.md) | Next : [01_Introduction_to_Angular.md](./01_Introduction_to_Angular.md)

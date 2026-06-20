@@ -764,4 +764,4 @@ Pass parameters in the `navigate` function: `navigation.navigate('Details', { it
 
 | ⬅️ Previous | 🏠 Index | ➡️ Next |
 | :--- | :---: | ---: |
-| [⬅️ Next.js](./04_Nextjs.md) | [Home](./00_Index.md) | `🚫 *None*` |
+| [⬅️ Next.js](./04_Nextjs.md) | [Home](./00_Index.md) | [➡️ Angular](./06_Angular.md) |

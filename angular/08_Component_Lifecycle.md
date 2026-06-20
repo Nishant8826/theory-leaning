@@ -14,18 +14,22 @@ Constructor ──> ngOnChanges ──> ngOnInit ──> ngDoCheck
 ```
 
 ## How does it work?
-Angular manages the lifecycle internally. As it traverses the component tree, it executes specific hook methods if they are implemented on the component class:
-1. **`constructor()`**: Native ES6 initialization. Dependency Injection resolution occurs here. No DOM updates or input properties are available yet.
-2. **`ngOnChanges()`**: Triggered when any input bindings (`@Input` / `input()`) change.
-3. **`ngOnInit()`**: Runs once after inputs are bound. Recommended place to fetch data.
-4. **`ngAfterViewInit()`**: Executes after the component's view and child views are rendered.
-5. **`ngOnDestroy()`**: Runs right before the component is destroyed. Essential for cleanup.
+Angular manages the lifecycle internally. As it traverses the component tree, it executes specific hook methods sequentially if they are implemented on the component class:
+
+1. **`constructor()`**: Native ES6 class initialization. Dependency Injection resolution occurs here. No DOM elements or input properties are ready yet.
+2. **`ngOnChanges()`**: Triggered when any input bindings (`@Input` or signal inputs) change references.
+3. **`ngOnInit()`**: Runs once after inputs are bound. This is the recommended place to perform initial data fetching.
+4. **`ngDoCheck()`**: Runs immediately after `ngOnChanges` and `ngOnInit` on every change detection cycle. Used to detect changes that Angular's default change detection mechanism misses.
+5. **`ngAfterContentInit()`**: Runs once after Angular projects external content (via `<ng-content>`) into the component's template.
+6. **`ngAfterContentChecked()`**: Runs after every check of the projected content during change detection cycles.
+7. **`ngAfterViewInit()`**: Executes once after the component's template views and all nested child components are fully rendered in the DOM.
+8. **`ngAfterViewChecked()`**: Runs after every check of the component's view and child views during change detection cycles.
+9. **`ngOnDestroy()`**: Runs right before the component is destroyed. Essential for cleaning up resources, unsubscribing from streams, and clearing timers to prevent memory leaks.
 
 ## Impact
 * **Application Architecture**: Directs where data loading, DOM queries, and resource cleanups take place.
 * **Performance**: Proper use of hooks prevents memory leaks, slow loading, and layout shifts.
 * **Maintainability**: Keeps initialization logic isolated from teardown and event logic.
-
 ## Real World Example
 In a stock trading widget, `ngOnInit` starts a WebSocket connection to fetch stock prices, `ngOnChanges` updates the chart when a new stock symbol is selected, and `ngOnDestroy` closes the WebSocket connection when the user leaves the page.
 
@@ -47,7 +51,7 @@ export class MyComponent implements OnInit, OnDestroy {
 ```
 
 ## Code Examples
-A comprehensive component demonstrating the execution sequence of lifecycle hooks:
+A comprehensive component demonstrating the execution sequence of all lifecycle hooks (including content and view initialization):
 
 ```typescript
 import { 
@@ -56,7 +60,10 @@ import {
   OnInit, 
   OnChanges, 
   DoCheck, 
+  AfterContentInit,
+  AfterContentChecked,
   AfterViewInit, 
+  AfterViewChecked,
   OnDestroy, 
   SimpleChanges 
 } from '@angular/core';
@@ -68,13 +75,24 @@ import {
     <div class="log-card">
       <h4>Lifecycle Monitor</h4>
       <p>Active User: {{ user }}</p>
+      <!-- Projected content from parent will render here -->
+      <ng-content></ng-content>
     </div>
   `,
   styles: [`
     .log-card { border: 1px solid #6366f1; padding: 12px; border-radius: 6px; }
   `]
 })
-export class LifecycleLoggerComponent implements OnInit, OnChanges, DoCheck, AfterViewInit, OnDestroy {
+export class LifecycleLoggerComponent implements 
+  OnChanges, 
+  OnInit, 
+  DoCheck, 
+  AfterContentInit, 
+  AfterContentChecked, 
+  AfterViewInit, 
+  AfterViewChecked, 
+  OnDestroy 
+{
   @Input() user: string = '';
 
   constructor() {
@@ -90,15 +108,27 @@ export class LifecycleLoggerComponent implements OnInit, OnChanges, DoCheck, Aft
   }
 
   ngDoCheck(): void {
-    console.log('4. ngDoCheck - Change detection cycle triggered');
+    console.log('4. ngDoCheck - Change detection cycle triggered for custom checks');
+  }
+
+  ngAfterContentInit(): void {
+    console.log('5. ngAfterContentInit - External content (ng-content) projected into component');
+  }
+
+  ngAfterContentChecked(): void {
+    console.log('6. ngAfterContentChecked - Projected content checked by Change Detector');
   }
 
   ngAfterViewInit(): void {
-    console.log('5. ngAfterViewInit - DOM rendered, view templates accessible');
+    console.log('7. ngAfterViewInit - DOM rendered, view templates and children accessible');
+  }
+
+  ngAfterViewChecked(): void {
+    console.log('8. ngAfterViewChecked - Component template and child views checked');
   }
 
   ngOnDestroy(): void {
-    console.log('6. ngOnDestroy - Cleaning up references and timers');
+    console.log('9. ngOnDestroy - Cleaning up references, subscriptions, and timers');
   }
 }
 ```

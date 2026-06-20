@@ -1556,3 +1556,12 @@ All answers are wrapped in `<details>` tags to enable active recall. Try to answ
     ```
 
 </details>
+
+---
+
+### 🧭 Navigation
+
+| ⬅️ Previous | 🏠 Index | ➡️ Next |
+| :--- | :---: | ---: |
+| [⬅️ Angular](./06_Angular.md) | [Home](./00_Index.md) | 🚫 *None* |
+
