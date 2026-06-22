@@ -48,6 +48,21 @@ An e-commerce catalog page renders hundreds of product cards. By using `ChangeDe
 }
 ```
 
+## Hinglish Explanation
+
+Performance optimization ke teen core techniques hain:
+
+### 1. OnPush Change Detection (Smart checking)
+* **Default:** Angular me jab bhi koi mouse click ya event hota hai, toh wo pure components tree me check karta hai ki data badla ya nahi (Dirty Checking).
+* **OnPush:** `@Component` me `changeDetection: ChangeDetectionStrategy.OnPush` lagane se Angular faaltu checking rok deta hai. Yeh component ko sirf tabhi scan karega jab input parameters ka reference badlega ya component me koi click event hoga.
+
+### 2. track check validation (Lists updating)
+* `@for (user of users; track user.id)` me `track` specify karna mandatory hai. Isse list me naya item add hone par Angular poori HTML list re-render nahi karta, balki sirf badle hue element ko hi target karke modify karta hai.
+
+### 3. `@defer` blocks (Lazy Loading for elements)
+* `@defer` modern Angular (v17+) ka automatic lazy loading block hai.
+* Hum heavy charts, feedback dialogs ya map widgets ko `@defer (on viewport)` block me wrap kar dete hain. Isse page ke initial loading bundles lightweight rehte hain aur jab widget screen par scroll hone par scroll-range me aata hai, tabhi browser bundle load aur compile karta hai.
+
 ## Code Examples
 Below is an implementation demonstrating the modern `@defer` control block, list tracking, and the `OnPush` change detection strategy.
 
@@ -122,9 +137,11 @@ export class PerfDemoComponent {
 ## Interview Questions & Answers
 ### Q: How does `ChangeDetectionStrategy.OnPush` improve application performance?
 **A**: By default, Angular checks the entire component tree for changes whenever an asynchronous event occurs. Setting `changeDetection` to `OnPush` instructs Angular to skip checking the component and its children unless it receives updated input references, event handlers trigger within the component, or you request a check manually using `ChangeDetectorRef`.
+* **Hinglish Explanation**: Default change detection me Angular har asynchronous event (jaise mouse click ya timer) par pure component tree ko upar se niche tak scan karta hai. Jabki `OnPush` strategy use karne par Angular us component aur uske child elements ko change detection scan se skip kar deta hai. Yeh sirf tabhi check karta hai jab: (1) Component ko parent se bilkul naya `@Input()` reference mile, (2) Component ke template ke andar se koi event trigger ho, ya (3) Hum manually `ChangeDetectorRef` ke zariye check request karne ke liye command chalayein.
 
 ### Q: What is the purpose of the `@defer` block in modern Angular?
 **A**: The `@defer` block enables deferred loading for components, directives, and pipes. It compiles these dependencies into separate JavaScript chunks, loading them only when specific conditions are met (such as entering the viewport or on user interaction), which helps keep the initial page load fast.
+* **Hinglish Explanation**: `@defer` block (v17+) components, directives, aur pipes ki lazy loading ko control karne ka ek modern declarative feature hai. Yeh block un parts ko automatically alag JavaScript bundles me compile kar deta hai aur tabhi load karta hai jab unki actual requirements puri hon (jaise jab element scroll hokar viewport me aaye, ya user kisi element par click ya hover kare). Isse page ka initial bundle size bohot control me rehta hai.
 
 ## Summary
 Optimizing Angular performance involves managing change detection and code bundles. Using `OnPush` strategies, tracking list items, and deferred loading (`@defer`) helps keep application interfaces responsive and load times fast.

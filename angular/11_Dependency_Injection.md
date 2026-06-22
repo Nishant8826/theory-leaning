@@ -45,6 +45,32 @@ private api = inject(ApiService);
 export const API_URL = new InjectionToken<string>('ApiUrl');
 ```
 
+## Hinglish Explanation
+
+Dependency Injection (DI) ko simple terms me **"Catering Service"** ki tarah samajhein.
+Agar aap ek class likh rahe hain, toh use chalne ke liye dusri classes (jaise API call helper, logging helper) ki zaroorat hoti hai. In dependencies ko class ke andar manually create karne ke bajaye (`const logger = new Logger()`), hum Angular se bolte hain: *"Bhai, mujhe Logger ka object laa kar de do!"* Aur Angular background me use create karke hume supply kar deta hai.
+
+### 1. Dependency Inject Kaise Karte Hain? (Do Tarike)
+* **Old Way (Constructor Injection):**
+  ```typescript
+  constructor(private apiService: ApiService) {}
+  ```
+* **New Way (`inject()` function):**
+  ```typescript
+  private apiService = inject(ApiService);
+  ```
+  Modern Angular me `inject()` function prefer kiya jata hai kyunki isse code simple aur readability behtar ho jati hai.
+
+### 2. Injector Tree (Hierarchical Injector)
+Angular me services ka ek hierarchy system hota hai:
+* **Root Level (`providedIn: 'root'`):** Service poori application me singleton (poore app me sirf ek hi single copy) ban jati hai. Aur agar app me iska use kahi nahi ho raha, toh build time par yeh final bundle se remove (tree-shake) ho sakti hai.
+* **Component Level (`providers: [MyService]`):** Agar kisi component ke `@Component` metadata ke `providers` array me service daal di, toh us component aur uske children ke liye ek bilkul naya, isolated instance banega.
+
+### 3. Custom Providers (useClass, useValue, useFactory)
+* **`useClass`:** Kisi class ke badle doosri replacement class use karna (jaise normal service ki jagah testing me MockService pass karna).
+* **`useValue`:** Direct configuration static values ya configs inject karna.
+* **`useFactory`:** Jab service object create karne ke liye hume dynamic checks ya complex factory code likhna pede.
+
 ## Code Examples
 A comprehensive example showing Injection Tokens, Factory Providers, Multi Providers, and the `inject()` pattern:
 
@@ -125,9 +151,11 @@ export class DiDemoComponent {
 ## Interview Questions & Answers
 ### Q: What is the difference between injecting a service via `providedIn: 'root'` and registering it in a component's `providers` array?
 **A**: Declaring `providedIn: 'root'` registers the service as a global singleton. It is instantiated lazily on demand and can be tree-shaken if unused. Registering it in a component's `providers` array instantiates a new instance of the service dedicated to that component and its children, preventing it from being tree-shaken.
+* **Hinglish Explanation**: `@Injectable({ providedIn: 'root' })` likhne se Angular us service ko ek global singleton (poori application me ek hi copy) bana deta hai, jo tabhi banti hai jab uski zaroorat ho aur tree-shaking support karti hai (agar service use nahi ho rahi toh final bundle se hat jati hai). Component ke `providers` array me register karne se us component aur uske bachon ke liye ek naya alag instance (copy) banta hai aur wo tree-shaken nahi ho pata.
 
 ### Q: What are multi-providers and what is a common use case for them?
 **A**: Multi-providers allow you to register multiple dependencies under a single injection token by setting `multi: true`. A common use case is adding custom HTTP interceptors to Angular's built-in `HTTP_INTERCEPTORS` token.
+* **Hinglish Explanation**: Multi-providers ka use ek single token ke under multiple dependencies ko register karne ke liye hota hai (`multi: true` set karke). Iska sabse common use-case `HTTP_INTERCEPTORS` me hota hai jahan hum ek hi HTTP token ke under multiple custom interceptors lines me add kar sakte hain.
 
 ## Summary
 Dependency Injection decouples classes from their dependencies. Angular's hierarchical injector tree resolves dependencies at different levels, while custom providers (useClass, useValue, useFactory) and Injection Tokens customize how instances are created.

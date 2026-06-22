@@ -27,6 +27,21 @@ Every React component goes through a **lifecycle** — it gets created, shows on
 
 ---
 
+## Hinglish Explanation
+
+Component Lifecycle ka matlab hai un phases ki sequence jinse ek React component guzarta hai: screen par load (Mount) hone se lekar screen se remove (Unmount) hone tak.
+
+* **Three Core Phases:**
+  1. **Mounting (🌱 Seed):** Jab component pehli baar build hokar browser window DOM me insert hota hai. API calls ko humesha isi stage me trigger kiya jata hai.
+  2. **Updating (🌿 Growth):** Jab component ke state variables ya custom props modify hote hain, toh view updates apply karne ke liye component dobara run (re-render) hota hai.
+  3. **Unmounting (🍂 Death):** Jab conditional rendering ki wajah se component screen/DOM tree se remove ho jata hai.
+* **Functional Lifecycle (useEffect):**
+  - **Mount:** `useEffect(() => { ... }, [])` — dependency array empty hone par yeh sirf mount par chalta hai.
+  - **Update:** `useEffect(() => { ... }, [value])` — jab bhi dependency list ka variable badlega, tab chalta hai.
+  - **Unmount:** `return () => { ... }` — cleanup callback function compile hone par unmount event capture karta hai.
+
+---
+
 ## 🏗️ Lifecycle in Functional Components (with useEffect)
 
 In modern React, you handle lifecycle with `useEffect`:

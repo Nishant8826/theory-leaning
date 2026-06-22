@@ -18,6 +18,16 @@ A good folder structure makes your codebase:
 
 ---
 
+## Hinglish Explanation
+
+Folder structure basically project files ko organize karne ka system hai. Sahi directory and file layout se dynamic codebases scalable bante hain aur team collaboration smooth rehti hai.
+
+* **Small App Structure:** Chote projects ke liye simple segregation direct structure (components folder and pages folder) ke design me update hota hai.
+* **Medium App Structure (Standard):** Modular development ke liye utility base groups compile kiye jate hain. Jaise logic hooks ke liye `hooks/`, state values ke liye `context/`, backend interactions ke liye `services/` aur general helpers ke liye `utils/` files partition.
+* **Large App (Feature-Based) Structure:** Enterprise level applications ko specific functional domain (auth, product, cart etc.) ke components, states and controllers modules me organize kiya jata hai. Isse features dynamic boundary zones create karte hain.
+
+---
+
 ## 🗂️ Small App Structure (< 20 components)
 
 ```

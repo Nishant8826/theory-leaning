@@ -98,6 +98,16 @@ my-app/
 
 ---
 
+## Hinglish Explanation
+
+React setup ke liye Node.js aur npm local system par install hona chahiye.
+
+* **Vite vs CRA:** Create React App (CRA) legacy Webpack-based build toolchain use karta hai jo startup aur updates me slow hota hai. Vite modern ESBuild module compiler use karta hai jo server startup aur hot module replacement ko instant banata hai.
+* **Project Setup:** Project initialize karne ke liye `npm create vite@latest` run kiya jata hai. Iske baad dependencies install karne ke liye `npm install` aur dev server check compile ke liye `npm run dev` command execute hoti hai.
+* **main.jsx:** Yeh application ka entry point hai. Yeh `ReactDOM.createRoot` ke zariye virtual elements configuration setup karta hai aur page render ke liye index.html me present `id="root"` wale element me entire React tree inject karta hai.
+
+---
+
 ## 🔍 What is `main.jsx` / `index.js`?
 
 This is the **starting point** of your React app. It tells React: *"Hey, put the whole app inside this HTML div!"*

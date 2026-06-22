@@ -35,6 +35,20 @@ import { environment } from '../environments/environment';
 console.log(environment.apiUrl);
 ```
 
+## Hinglish Explanation
+
+CI/CD aur Deployment ka matlab hai **"Apne local code ko automatic test aur compile karke cloud web servers par launch karna"**. CI/CD aur Deployment ke teen core concepts hain:
+
+### 1. Production Build (`ng build`)
+* Local system me running code lightweight files format me nahi hota. Build commands (jaise `npm run build -- --configuration=production`) chalanse se Angular code ko compress, optimize aur AOT (Ahead-of-Time) compile karke static files me generate karta hai.
+
+### 2. Nginx Server configuration (Routing redirection)
+* Single Page Application me saari logic single `index.html` file ke zariye chalti hai. Router link switch (jaise `/dashboard`, `/settings`) server par directly register nahi hote.
+* Nginx web server par is framework ko serve karne ke liye configuration settings me rewrite rules `try_files $uri /index.html` likhna mandatory hai, warna direct URL access karne par users ko screen par 404 file error show hogi.
+
+### 3. Automated Pipelines (CI/CD)
+* Code updates ko cloud servers (jaise AWS, Firebase, netlify) par publish karne se pehle GitHub Actions pipelines automatic execute hoti hain jo static build compilation checks aur Unit test verification automate karti hain.
+
 ## Code Examples
 Below is an implementation of a **Docker multi-stage configuration**, an **Nginx routing rule**, and a **GitHub Actions CI/CD pipeline**.
 
@@ -117,7 +131,6 @@ jobs:
 
       # Optional deploy steps can follow (e.g. deploying to AWS S3, Firebase, etc.)
 ```
-
 ## Best Practices
 1. **Never Hardcode API URLs**: Use environment files to store API configurations, and read them dynamically in your services.
 2. **Use Multi-Stage Docker Builds**: Use multi-stage Docker builds to compile assets in a build image and copy them to a clean Nginx image, keeping production image sizes small.
@@ -130,9 +143,11 @@ jobs:
 ## Interview Questions & Answers
 ### Q: Why do we need custom web server configurations (like Nginx's try_files) when deploying Single Page Applications?
 **A**: We need them because SPAs use client-side routing. Since paths (like `/products/12`) only exist in the client-side JavaScript bundle and not on the server, refreshing the page will cause the server to return a `404 Not Found` error. Configuring a fallback rule (like `try_files $uri /index.html`) instructs the server to serve `index.html` for all unmatched paths, allowing the client-side router to handle the route.
+* **Hinglish Explanation**: Single Page Applications (SPAs) me client-side routing use hoti hai (matlab urls browser javascript me switch hoti hain, actual server par wo files physical exist nahi kartin). Jab user `/products/12` URL par page refresh karta hai, toh web server (jaise Nginx) us file ko dhundhta hai aur na milne par `404 Not Found` error de deta hai. Isliye server par `try_files $uri /index.html` configure karna zaroori hai, jo server ko kehta hai ki unmatched links par bhi `/index.html` file load kare, taaki Angular Router us path ko interpret kar sake.
 
 ### Q: What is the benefit of using multi-stage Docker builds?
 **A**: Multi-stage builds compile applications inside a build image and copy the static assets to a clean web server image, keeping the production image thin. This keeps image sizes small, accelerates deployments, and avoids exposing source files in production.
+* **Hinglish Explanation**: Multi-stage Docker builds se production image size bohot chota aur clean rehta hai. Pehli stage (build stage) me hum heavy Node.js tools aur dependencies load karke application compile karte hain, aur doosri stage (production stage) me sirf final compiled static files (dist folder) ko lightweight Nginx container me copy kar dete hain. Isse main source files compile history secure rehti hai aur server launch fast hota hai.
 
 ## Summary
 Deployment builds and packages static assets for web servers, while CI/CD pipelines automate testing and releases. Configuring web servers (like Nginx) to support client-side routing ensures smooth deployments to cloud hosts.

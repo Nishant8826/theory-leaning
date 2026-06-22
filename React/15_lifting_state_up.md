@@ -14,6 +14,18 @@ When two or more components need to **share the same state**, you move that stat
 
 ---
 
+## Hinglish Explanation
+
+Lifting State Up ka matlab hai state ko dynamic children components se nikalkar unke nearest common parent component me shift (lift) karna.
+
+* **Sibling Problem:** React me data flow hamesha top-to-bottom (Parent to Child) chalta hai. Ek hi level par present do sibling components aapas me direct communication ya data sharing nahi kar sakte.
+* **The Solution Pattern:**
+  1. Shared data (state) ko dono siblings ke common Parent component me define kiya jata hai.
+  2. Parent us state ki value ko dynamic variables (props) ke roop me dono children ko share karta hai.
+  3. Parent ek update handler callback function bhi prop ke roop me un children ko pass karta hai, jise call karke child component parent ki state ko update kar sake.
+
+---
+
 ## 🧩 The Problem: Sibling Components Need Shared State
 
 ```jsx

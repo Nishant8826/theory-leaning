@@ -43,6 +43,23 @@ profileForm = new FormGroup({
 </form>
 ```
 
+## Hinglish Explanation
+
+Reactive Forms ko **"TypeScript-Driven Forms"** kehte hain. Is approach me form ka saara structure, configuration aur validation logic component class (TypeScript) me programmatically define kiya jata hai. HTML template me hum bas use bind karte hain.
+
+### 1. Reactive Forms ke 3 pillars:
+* **`FormControl`:** Yeh kisi single, individual input element (jaise email field) ka state aur value track karta hai.
+* **`FormGroup`:** Yeh dynamic ya static structure me controls ko ek object shape (key-value pair) me bind karta hai.
+* **`FormArray`:** Yeh dynamic inputs ke liye use hota hai jahan hum dynamic index check ke through list of fields ko programmatically add, insert ya delete kar sakte hain.
+
+### 2. FormBuilder (Code helper)
+Manual validation array aur FormControl syntax ko clean aur short likhne ke liye hum constructor me `FormBuilder` inject karte hain:
+* `this.fb.group({ email: ['', Validators.required] })`
+
+### 3. Reactive Forms ke Fayde:
+* **Testing:** Validation logic TS me hota hai, isliye direct test cases likhna easy hota hai.
+* **Dynamic validators:** Kisi field ki value ke status ke basis par hum programmatically validators change ya remove kar sakte hain (e.g. conditional fields).
+
 ## Code Examples
 Below is an implementation of a dynamic reactive form containing custom synchronous and asynchronous validators, and a `FormArray`.
 
@@ -175,9 +192,11 @@ export class ReactiveRegistrationComponent implements OnInit {
 ## Interview Questions & Answers
 ### Q: What is the difference between a FormArray and a FormGroup?
 **A**: A `FormGroup` manages form controls as named key-value pairs (an object), which is ideal for fixed schemas. A `FormArray` manages form controls as an ordered list (an array), which is ideal for dynamic forms where inputs can be added or removed programmatically.
+* **Hinglish Explanation**: `FormGroup` key-value pairs ke roop me form controls ko group (manage) karta hai (jaise ek JavaScript object jiska fixed schema ho, e.g. `{ name, email }`). `FormArray` form controls ko ek ordered list (index-based array) me manage karta hai. Yeh tab use hota hai jab dynamic forms banane hon jisme user buttons click karke fields add ya remove kar sake (jaise dynamic address fields ya dynamic list of hobbies).
 
 ### Q: How do you configure a validator to only run on blur?
 **A**: Pass an options object as the second argument when instantiating a `FormControl`, and set `updateOn: 'blur'`. For example: `new FormControl('', { validators: [...], updateOn: 'blur' })`.
+* **Hinglish Explanation**: Validator ko sirf focus change hone par (`blur` event) chalane ke liye hum `FormControl` create karte waqt config object me `updateOn: 'blur'` set karte hain. Jaise: `new FormControl('', { validators: [Validators.required], updateOn: 'blur' })`. Isse validation har keypress (keystroke) par chalne ke bajaye tabhi chalti hai jab user us field se cursor bahar le jata hai.
 
 ## Summary
 Reactive forms use programmatic validation and configuration models to manage form state. They utilize groups (`FormGroup`), controls (`FormControl`), and arrays (`FormArray`) to build dynamic, scalable, and testable form architectures.

@@ -27,6 +27,18 @@ API calls let your React app **communicate with a backend server** to get or sen
 
 ---
 
+## Hinglish Explanation
+
+API Calls ke zariye React app server se data load (GET) karta hai ya server ko user data send (POST, PUT, DELETE) karta hai.
+
+* **API Call Options:**
+  1. **`fetch`:** Browser me built-in function hota hai. Isme raw text response ko `.json()` call karke manually parse karna padta hai aur manual error check configurations likhni hoti hain.
+  2. **`axios`:** Ek external library hai. Yeh response data ko automatic parse karta hai aur server error codes (jaise 404 ya 500) par direct catch block execute karta hai.
+* **Component Integration:** Network request ko humesha `useEffect(() => { ... }, [])` hook ke andar wrapper function me load kiya jata hai taaki click events ke bina loading components trigger ho skein. Iske sath teen key states setup ki jati hain: `loading`, `data`, aur `error`.
+* **Axios Instances (Interceptor):** Enterprise applications me hum dynamic base URL aur options config central store karne ke liye `axios.create()` use karte hain. Request interceptors ke zariye `Authorization: Bearer <token>` token automatic headers me inject ho jata hai.
+
+---
+
 ## 📡 Method 1: `fetch` API
 
 ### GET Request

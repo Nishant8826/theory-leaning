@@ -21,6 +21,19 @@
 
 ---
 
+## Hinglish Explanation
+
+`useEffect` hook ka use component render hone ke baad **side effects** (jaise: API data fetch karna, timers setup karna, browser event listeners add karna) ko manage karne ke liye kiya jata hai.
+
+* **Dependency Array (Execution Control):**
+  1. **Not Provided:** Agar array na likhein, toh effect har single render ke baad dobara execute hoga (is se performance lag ho sakta hai).
+  2. **Empty Array (`[]`):** Effect sirf ek baar chalega jab component screen par load (mount) hoga.
+  3. **With Dependencies (`[value]`):** Effect component load hone par chalega aur jab bhi array me pass kiye gaye variable ki value change hogi, tab chalega.
+* **Cleanup Function:** Timers, intervals, ya subscriptions memory leaks create kar sakte hain. Inhe stop karne ke liye hum hook ke andar hi ek cleanup function return karte hain (jaise `clearInterval(interval)` ya `removeEventListener()`).
+* **Async Operations:** `useEffect` ka direct callback function `async` nahi ho sakta. Iske andar hume ek inner async function declare karke use execute karna hota hai.
+
+---
+
 ## 🔧 Basic Syntax
 
 ```jsx

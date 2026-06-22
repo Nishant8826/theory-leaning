@@ -14,6 +14,16 @@ In React, every time a component re-renders, **every function is re-created** an
 
 ---
 
+## Hinglish Explanation
+
+`useMemo` aur `useCallback` hooks ka use performance optimize karne ke liye values aur function references ko memory me cache karne ke liye kiya jata hai.
+
+* **useMemo (Value caching):** Yeh kisi heavy calculation ke **final result** ko cache (save) kar leta hai. Jab tak iski dependencies change nahi hotin, tab tak yeh dobara calculation run nahi karta aur direct memory se saved value return kar deta hai (jaise massive list filtering).
+* **useCallback (Function reference caching):** React me component re-render hone par uske andar ke functions naye memory address par dobara bante hain. `useCallback` us **function block** ko cache kar leta hai taaki uska memory address (reference) change na ho. Yeh tab zaroori hota hai jab hum functions ko components ke dynamic parameters me pass karte hain aur child components ko unnecessary re-renders se bachana chahte hain (using `React.memo`).
+* **Over-optimization caution:** Don't use them everywhere. Har jagah iska use karne se optimization overhead badhta hai jo components ko slow kar deta hai. Profile verify karne ke baad hi inka use karein.
+
+---
+
 ## 🧮 useMemo — Cache a Computed Value
 
 `useMemo` stores (memoizes) the **result of a calculation** and only re-calculates it when the specified dependencies change.

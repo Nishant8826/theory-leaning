@@ -28,6 +28,19 @@ Without Context, you'd have to pass `user` as a prop through **every** level, ev
 
 ---
 
+## Hinglish Explanation
+
+Context API ka use application me dynamic states ko globally share karne ke liye kiya jata hai. Iski madad se props ko har nested level par manually pass karne ki zaroorat khatam ho jati hai.
+
+* **Prop Drilling Problem:** Jab kisi deep child component ko parent ka data chahiye ho, toh normal props workflow me hume use beech ke saare components se pass karna padta hai jo unhe use bhi nahi karte. Ise "Prop Drilling" kehte hain.
+* **Core Steps:**
+  1. **Create Context (`createContext`):** Ek global dynamic state container/bucket banaya jata hai.
+  2. **Provide Context (`Provider`):** Parent elements ko `<Context.Provider value={value}>` ke under wrap kiya jata hai taaki wrapper ke andr ke saare elements is data ko directly read kar sakein.
+  3. **Consume Context (`useContext`):** Deep nested child components bina kisi intermediate props drilling ke, direct `useContext(Context)` call karke data read kar lete hain.
+* **Best Practice:** Context logic aur state management ko clean rakhne ke liye humesha custom Provider wrapper aur custom hooks (jaise `useTheme()`, `useAuth()`) design karne chahiye.
+
+---
+
 ## 🧰 Context API: 3 Steps
 
 ### Step 1: Create the Context

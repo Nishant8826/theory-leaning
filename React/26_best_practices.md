@@ -20,6 +20,16 @@ Clean code is like a **well-organized kitchen** — everything is in its place, 
 
 ---
 
+## Hinglish Explanation
+
+Best practices aur clean code industry-standard patterns hain jo codebase ko readable, maintainable aur bug-free rakhne me help karte hain.
+
+* **Component Design:** Components ko chota aur single responsibility focused hona chahiye. Agar component configuration ~150-200 lines se badi ho rahi hai, toh logical boundaries standard follow karte hue sub-components package create karna sahi option hai.
+* **Derived State Optimization:** Dynamic values calculation details compute karne ke liye unnecessary state hook sets reduce karne chahiye. Jaise state inputs combination data dependencies check karke raw variable assignment ke through dynamic return perform kiya jata hai.
+* **Early Returns:** Deep condition rendering logic layers skip karne ke liye error state handles start checks blocks me dynamic returns bypass kar dene chahiye. Isse visual templates validation read flow linear aur direct clean maintain rehta hai.
+
+---
+
 ## ✅ Component Best Practices
 
 ### 1. Keep Components Small and Focused

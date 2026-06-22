@@ -32,6 +32,18 @@ const element = <h1>Hello, World!</h1>;
 
 ---
 
+## Hinglish Explanation
+
+JSX (JavaScript XML) ka matlab hai JavaScript ke andar HTML-like code likhna.
+
+* **Compilation:** Browser JSX ko direct read nahi kar sakte. Vite ya Babel compile-time par har JSX line ko standard `React.createElement()` call me transform kar dega.
+* **Rules:**
+  1. Single Parent element return karna zaroori hai. Multiple sibling elements return karne ke liye unhe ek parent wrapper division ya React Fragment `<></>` me wrap karna padta hai.
+  2. HTML names vs JSX names: HTML `class` ke badle JSX me `className` aur `for` ke badle `htmlFor` use hota hai.
+  3. Expression embedding: Curly braces `{}` ka use karke dynamic variables, function calls aur calculations ko direct HTML elements ke beech show kiya jata hai.
+
+---
+
 ## 🔧 JSX Rules You MUST Know
 
 ### Rule 1: Every JSX must return ONE parent element
@@ -226,19 +238,23 @@ As you can see, nesting elements without JSX quickly becomes a nesting nightmare
 
 > ### ❓ Q1: What is JSX and why do we use it in React?
 >
-> **Answer:** JSX is a syntax extension for JavaScript that allows you to write HTML-like structures directly inside JS code. We use it because it makes writing React components highly readable and intuitive compared to writing raw `React.createElement()` functions.
+> **Answer:** JSX is a syntax extension for JavaScript that allows you to write HTML-like structures directly inside JS code. We use it because it makes writing React components highly readable and intuitive compared to writing raw `React.createElement` functions.
+> * **Hinglish Explanation**: JSX JavaScript ka ek dynamic formatting option hai jo HTML aur JS code ko mix likhne ki permission deta hai. Yeh component layout structure ko clean aur maintainable banata hai.
 
 > ### ❓ Q2: Can web browsers read JSX directly?
 >
 > **Answer:** No. Browsers can only read standard JavaScript. JSX must be compiled down to standard JavaScript (specifically `React.createElement` calls) using a tool like Babel or Vite before the browser executes it.
+> * **Hinglish Explanation**: Nahi, browsers JSX ko direct interpret nahi kar sakte. Transpilers (Babel ya Vite ESBuild) compile status par code ko transform karke `React.createElement` functions me convert karte hain, jise browsers easily execute kar sakte hain.
 
 > ### ❓ Q3: Why must JSX return a single parent element?
 >
 > **Answer:** Because JSX is translated into functional calls under the hood (`React.createElement()`), a function can only return one single object value at a time. A wrapper `<div />` or a React Fragment `<></>` helps bundle multiple elements into one return value.
+> * **Hinglish Explanation**: Under the hood, JSX compiles hokar dynamic function `React.createElement()` call me transform hota hai. Ek time par koi function sirf ek hi single object value return kar sakta hai, isliye hum saare tags ko ek parent block me wrap karte hain.
 
 > ### ❓ Q4: How do you add CSS inline styles in JSX?
 >
 > **Answer:** You must pass a JavaScript object containing camelCased CSS properties. This requires double curly braces: the first pair tells JSX to evaluate a JavaScript expression, and the second pair represents the actual JavaScript object (e.g. `style={{ color: 'red' }}`).
+> * **Hinglish Explanation**: Inline styles ke liye double curly braces `style={{ color: "red" }}` use hote hain. Pehla brace expression evaluation ke liye hota hai aur doosra brace key-value pairs wala style object represent karta hai.
 
 ---
 

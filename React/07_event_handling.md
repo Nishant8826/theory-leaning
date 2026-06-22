@@ -27,6 +27,19 @@ When a user **clicks a button**, **types in an input**, **submits a form**, or *
 
 ---
 
+## Hinglish Explanation
+
+Event Handling ka matlab hai user actions (jaise button clicks, text input changes, form submissions) ko capture karna aur un par actions perform karna.
+
+* **camelCase Naming:** HTML ke aam events ke mukable React me events camelCase syntax follow karte hain (jaise HTML me `onclick` aur React me `onClick`).
+* **Function Reference:** Click bindings setup karte waqt humesha function ka name/reference (`onClick={handleClick}`) pass kiya jata hai, parentheses ke sath direct call (`onClick={handleClick()}`) nahi. Parentheses lagane se function page render hote hi immediately bina click ke execute ho jayega.
+* **Event Object (e):** React automatically event details object pass karta hai. Input tag se values read karne ke liye `e.target.value` use hota hai.
+* **Important Actions:**
+  1. `e.preventDefault()`: Form submit hone par page ko reload hone se rokta hai taaki client-side logic safely perform ho sake.
+  2. `e.stopPropagation()`: Event Bubbling ko rokta hai (child element ka click event parent element ke event handler tak bubble up hone se block karta hai).
+
+---
+
 ## 🖱️ Common Events in React
 
 ```jsx

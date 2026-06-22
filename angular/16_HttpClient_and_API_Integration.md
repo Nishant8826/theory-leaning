@@ -38,6 +38,22 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 };
 ```
 
+## Hinglish Explanation
+
+Angular me back-end API server se data read aur write karne ke liye built-in utility **`HttpClient`** ka use kiya jata hai. Yeh by default RxJS Observables return karta hai.
+
+### 1. HTTP API Operations (CRUD)
+* **GET:** Server se data fetch/read karne ke liye: `http.get<Product[]>(url)`.
+* **POST:** Server par new record insert/create karne ke liye: `http.post(url, data)`.
+* **DELETE:** Server se content remove karne ke liye: `http.delete(url)`.
+
+### 2. Cold Observables Concept (No Subscribe, No Request)
+* Angular ke HTTP calls **"Cold Observables"** return karte hain. Matlab, jab tak aap dynamic subscription `.subscribe()` start nahi karenge, tab tak actual background me API request trigger nahi hogi.
+
+### 3. Interceptors (Traffic Police)
+* Interceptors ka kaam hota hai application se jane wali har dynamic request aur waha se aane wale response ko bich me intercept (catch) karna.
+* **Udaharan:** Sabhi outgoing API requests ke headers me JSON Web Token (Authorization JWT) add karna ya globally exceptions handle karna. Modern Angular me functional interceptors use hote hain jo ki fast aur clean code structure follow karte hain.
+
 ## Code Examples
 Below is a complete implementation of an API service with functional interceptors, error handling, retry strategies, and CRUD operations.
 
@@ -160,9 +176,11 @@ export class ProductService {
 ## Interview Questions & Answers
 ### Q: Why do `HttpClient` methods return cold RxJS Observables?
 **A**: They return cold observables because HTTP requests are transactional. The request is not sent until a subscriber calls `.subscribe()`. This allows you to chain operators (like `retry`, `catchError`, or `map`) to the request before it executes.
+* **Hinglish Explanation**: `HttpClient` methods cold observables return karte hain kyunki HTTP requests transactional hoti hain. Jab tak aap code me `.subscribe()` (ya template me `async` pipe) call nahi karte, tab tak actual network request browser se send hi nahi hoti. Isse fayda yeh hota hai ki request trigger hone se pehle hum is par dynamic operations (jaise automatic retry lagana, headers add karna, ya errors catch karna) set kar sakte hain.
 
 ### Q: What is the difference between functional interceptors and class-based interceptors?
 **A**: Functional interceptors (introduced in modern Angular) are lightweight functions registered directly in `provideHttpClient(withInterceptors([...]))`. Class-based interceptors require creating a service that implements the `HttpInterceptor` interface and registering it as a multi-provider in the legacy DI system.
+* **Hinglish Explanation**: Functional interceptors (modern Angular approach) simple functions hote hain jinhe direct `provideHttpClient(withInterceptors([...]))` configuration me add kiya jata hai, jo lightweight aur tree-shakeable hote hain. Jabki class-based interceptors me ek alag class banani padti hai jo `HttpInterceptor` interface implement kare, aur use dependency injection system me multi-provider ke roop me configure karna padta hai, jo zyada heavy aur complex hota hai.
 
 ## Summary
 `HttpClient` manages REST API requests in Angular. Using functional interceptors, retry policies, and type-safe interfaces simplifies network requests, global error handling, and authorization flows.

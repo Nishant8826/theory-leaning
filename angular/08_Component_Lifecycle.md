@@ -50,6 +50,23 @@ export class MyComponent implements OnInit, OnDestroy {
 }
 ```
 
+## Hinglish Explanation
+
+Lifecycle hooks bilkul **"Ek insaan ke janam se lekar marne tak ke stages (infancy, childhood, adulthood, old age)"** ki tarah hain. Angular me jab component banta hai, screen par dikhta hai, aur destroy hota hai, toh in stages par hum custom code execute kar sakte hain:
+
+### 1. Janam (Creation & Input Setup)
+* **Constructor:** Class bante hi sabse pehle chalta hai. Iska use sirf Dependency Injection (DI) ke liye hona chahiye, na ki API calls ke liye.
+* **ngOnChanges:** Jab bhi koi input property (`@Input()`) parent se child me aati hai ya badalti hai, toh yeh hook chalta hai. Isme hum `previousValue` aur `currentValue` track kar sakte hain.
+* **ngOnInit:** Component fully ready hone par chalta hai. Saari data fetching/API calls aur initializations yahan karni chahiye.
+
+### 2. Barhawat (Rendering & Verification)
+* **ngDoCheck:** Har change detection cycle par chalta hai. Agar dynamic change track karna ho jo Angular nahi pakad pa raha, toh yahan custom logic likh sakte hain (par ise lightweight rakhna chahiye).
+* **ngAfterContentInit / Checked:** Jab component ke andar external content (`ng-content` projection) load aur verify ho jata.
+* **ngAfterViewInit / Checked:** Jab component ka khud ka HTML template (view) aur uske saare child elements fully load ho jate hain. Iske baad hi `@ViewChild` references access kiye ja sakte hain.
+
+### 3. Maut (Cleanup)
+* **ngOnDestroy:** Jab component screen se gayab (destroy) hone wala hota hai. Yahan hum resources ko free karte hain (jaise event listeners hatana, active timers stop karna, aur RxJS subscriptions close/unsubscribe karna) taaki memory leak na ho.
+
 ## Code Examples
 A comprehensive component demonstrating the execution sequence of all lifecycle hooks (including content and view initialization):
 
@@ -145,9 +162,11 @@ export class LifecycleLoggerComponent implements
 ## Interview Questions & Answers
 ### Q: What is the purpose of `ngOnChanges` and when is it called?
 **A**: `ngOnChanges` is executed before `ngOnInit` and whenever Angular detects a change to any component input binding (`@Input`). It receives a `SimpleChanges` object mapping input property names to their current and previous values, which is useful for responding to dynamic value changes.
+* **Hinglish Explanation**: `ngOnChanges` hook sabse pehle (constructor ke baad aur `ngOnInit` se pehle) chalta hai, aur tab-tab execute hota hai jab bhi koi `@Input` binding value badalti hai. Isme hume `SimpleChanges` object milta hai, jisse hum check kar sakte hain ki input variable ki `currentValue` aur `previousValue` kya thi.
 
 ### Q: Why shouldn't you write data fetching logic inside the component constructor?
 **A**: The constructor is a feature of the ES6 class itself, not Angular. When the constructor runs, Angular hasn't initialized the component's input properties or bound data, meaning any inputs needed for the fetch will be `undefined`. `ngOnInit` is the correct hook because it runs after input bindings are ready.
+* **Hinglish Explanation**: Constructor ek basic JavaScript/TypeScript class ka feature hai, Angular ka nahi. Jab constructor chalta hai, tab tak Angular component ke input variables (`@Input`) ko initialize nahi kar pata. Agar aap data fetch karne ke liye inputs ka use kar rahe hain, toh wo constructor ke andar `undefined` milenge. `ngOnInit` par inputs fully initialized hote hain, isliye API calls wahan karna standard hai.
 
 ## Summary
 Lifecycle hooks intercept various stages of component execution. Use `ngOnChanges` to react to input updates, `ngOnInit` for data initialization, `ngAfterViewInit` for template DOM operations, and `ngOnDestroy` to clean up resources.

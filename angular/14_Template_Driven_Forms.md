@@ -32,6 +32,24 @@ A newsletter signup box contains a single email input and a submit button. The e
 * **Form reference**: `<form #signupForm="ngForm" (ngSubmit)="onSubmit(signupForm)">`
 * **Validation reference**: `<input #emailRef="ngModel" name="email" required email />`
 
+## Hinglish Explanation
+
+Template-Driven Forms ka simple matlab hai **"Validation aur Form structure ka saara control HTML template me hi rakhna"**. Is approach me component class (TypeScript) me minimal code likhna padta hai, aur logic attributes HTML tags me hi set hote hain (jaise `required`, `email`, `minlength`).
+
+### 1. ngModel (Do-tarfa Connection)
+* Jab input tag me `[(ngModel)]="user.username"` lagate hain, toh input ki value aur component variable aapas me dynamically sync ho jate hain.
+* **Maha-mantra (Rule):** `ngModel` use karne par input tag me `name="username"` attribute hona mandatory hai. Agar `name` miss kiya, toh compiler page ko crash kar dega.
+
+### 2. ngForm (Form ka Remote Control)
+* Pure form tag ko control karne ke liye hum ek template variable banate hain: `#regForm="ngForm"`.
+* Is remote control se hum pure form ki validation status check kar sakte hain, jaise submit button tabhi active ho jab form valid ho: `[disabled]="regForm.invalid"`.
+
+### 3. Validation States (CSS classes)
+Angular automatically input element par CSS classes apply karta hai jo design styling me bohot kaam aate hain:
+* `.ng-untouched` / `.ng-touched` (User ne field ko select kiya ya nahi)
+* `.ng-pristine` / `.ng-dirty` (User ne type karna shuru kiya ya nahi)
+* `.ng-valid` / `.ng-invalid` (Field rules correct hain ya galat)
+
 ## Code Examples
 Below is a complete implementation of a template-driven signup form with validation.
 
@@ -128,9 +146,11 @@ export class SignupFormComponent {
 ## Interview Questions & Answers
 ### Q: What is the purpose of `ngModel` in template-driven forms?
 **A**: `ngModel` is a directive that enables two-way data binding between input values and class properties. It also creates a `FormControl` instance behind the scenes to track the input's value, validity, and dirty/touched state.
+* **Hinglish Explanation**: `ngModel` ek directive hai jo inputs aur component class variables ke beech double-way connection (two-way data binding) banata hai. Iske sath hi, yeh internal-level par ek `FormControl` instance bhi create karta hai jo field ki value, invalidity (sahi/galat status), aur touched/dirty state (user ne field me click kiya ya nahi) ko tracking ke liye manage karta hai.
 
 ### Q: How do you reset a template-driven form?
 **A**: Query the template-driven form using a template reference variable (e.g. `#regForm="ngForm"`), pass it to your component class or submit method, and call `.resetForm()`. This resets the form value and clears dirty/touched styles.
+* **Hinglish Explanation**: Form ko reset karne ke liye hum template me form ka handle le kar (jaise `#regForm="ngForm"`) submit method me use pass karte hain. Phir, component class ke submit function ke andar `.resetForm()` call karte hain. Yeh function form variables ki values ko reset toh karta hi hai, sath hi validation states (touched/dirty status aur unke red borders) ko bhi default par clear kar deta hai.
 
 ## Summary
 Template-driven forms rely on HTML directive attributes (like `ngModel` and `required`) to handle simple input models. This approach reduces component class boilerplate, making it ideal for simple forms.

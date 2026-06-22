@@ -22,6 +22,19 @@ A component is a **reusable piece of UI**. Think of it like a LEGO block — you
 
 ---
 
+## Hinglish Explanation
+
+Components React application ke self-contained UI building blocks hain. LEGO blocks ki tarah alag components (jaise Button, Navbar, Footer) ko combine karke dynamic pages design kiye jate hain.
+
+* **Component Categories:**
+  1. **Functional Components:** Modern React me simple functions use hote hain jo return value ke roop me JSX output dete hain. Inme class boilerplate ya `this` keyword ki requirement nahi hoti. State aur lifecycle features ko hook APIs (jaise `useState`, `useEffect`) manage karte hain.
+  2. **Class Components:** Legacy structures hain jo ES6 classes aur `render()` method use karte hain. Yeh likhne me lambe aur run karne me heavy hote hain, isliye modern developments me inhen avoid kiya jata hai.
+* **Important Rules:**
+  1. **Capital Letter:** Component name humesha capital letter se start hona chahiye taaki React compile-time par standard HTML tags (jaise `<button>`) aur custom components (jaise `<Button />`) ke beech differentiate kar sake.
+  2. **Single Responsibility:** Standard practices ke mutabik ek file me ek hi component design hona chahiye taaki maintainability aasan rahe.
+
+---
+
 ## 🏗️ Two Types of Components
 
 ### 1. Functional Components (✅ Modern — Use This!)

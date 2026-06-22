@@ -39,6 +39,23 @@ export const roleGuard: CanActivateFn = (route) => {
 };
 ```
 
+## Hinglish Explanation
+
+Authentication aur Authorization ka matlab hai **"Pehchan verify karna aur Permissions check karna"**.
+* **Authentication (Pehchan):** User check karna (jaise login screen validation).
+* **Authorization (Adhikar):** logged-in user ko kin modules ko access karne ki permission hai (e.g. Admin view dashboard vs basic user list).
+
+### 1. Functional Route Guards (Suraksha Guard)
+* Angular routes ko secure karne ke liye guards use hote hain:
+* `canActivate`: Target component open hone dena hai ya login page par redirect karna hai.
+* `canMatch`: User permissions check karke lazy load route assets load hone dena hai ya nahi.
+
+### 2. JWT Interceptor (Pass Card Attacher)
+* Token validation standard follow karne ke liye hum HTTP interceptor use karte hain jo automatic outgoing HTTP API calls ke request parameters clone karke usme `Authorization: Bearer <token>` token attach kar deta hai.
+
+### 3. Silent Refresh Flow (Background Token Update)
+* Access token expire hone par server 401 error return karega, toh interceptor background me dynamic token renew (refresh token API use karke) request bhejta hai aur current requests refresh response validation ke baad new token ke sath automatically send kar deta hai.
+
 ## Code Examples
 Below is a complete implementation demonstrating token refresh handling inside an HTTP Interceptor, along with functional route guards.
 
@@ -137,7 +154,6 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
   );
 };
 ```
-
 ## Best Practices
 1. **Store Tokens Securely**: Avoid storing sensitive user information in access tokens. Use HTTP-only cookies for refresh tokens where possible to prevent XSS attacks.
 2. **Use `CanMatch` over `CanActivate`**: Use `CanMatch` to prevent lazy-loaded modules from downloading if the user doesn't have permissions.
@@ -150,9 +166,11 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
 ## Interview Questions & Answers
 ### Q: What is the difference between `CanActivate` and `CanMatch` route guards?
 **A**: `CanActivate` runs after the code bundle for a route has been downloaded. It determines whether a component can be rendered, but still downloads the code. `CanMatch` runs before the route bundle is downloaded, preventing unauthorized users from downloading the code.
+* **Hinglish Explanation**: `CanActivate` tab chalta hai jab routing path match hone ke baad us page ka code download ho chuka ho, aur yeh check karta hai ki user usey dekh sakta hai ya nahi. `CanMatch` routing selection se pehle hi chalta hai. Agar user authenticated nahi hai, toh yeh usey code bundle download karne hi nahi deta, jisse core enterprise code/secrets secure rehte hain.
 
 ### Q: How does a silent JWT refresh flow work in an HTTP interceptor?
 **A**: When an API request fails with a `401 Unauthorized` status (indicating an expired token), the interceptor intercepts the error, calls a service to request a new access token using a refresh token, updates storage, and retries the original request with the new token.
+* **Hinglish Explanation**: Silent JWT refresh flow me jab bhi koi API request server se `401 Unauthorized` error (token expire hone ki wajah se) ke sath return hoti hai, toh HTTP Interceptor us request ko catch (pause) kar leta hai. Phir background me ek `refreshToken()` call chalti hai naya token laane ke liye. Naya token milte hi, interceptor purani request ko clone karke usme naya token set karta hai aur use dobara trigger kar deta hai, jisse user ko page refresh nahi karna padta aur fluid user experience milta hai.
 
 ## Summary
 Authentication and authorization manage user identity and access permissions in Angular. Functional route guards (`CanMatch`) secure routes, while HTTP interceptors append access tokens and manage silent token refreshes automatically.

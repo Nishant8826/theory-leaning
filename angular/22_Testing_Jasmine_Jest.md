@@ -39,6 +39,18 @@ beforeEach(() => {
 ```
 * **Jasmine Assertion**: `expect(component.title).toEqual('New App');`
 
+## Hinglish Explanation
+
+Testing ka simple matlab hai **"Code deploy hone se pehle check karna ki saare features sahi se kaam kar rahe hain"**. Angular me two types of testing key roles play karti hain:
+
+### 1. Unit Testing (Individual files check)
+* Ek akele component class, service ya pipe ke function ko isolated check karna.
+* **`TestBed`:** Yeh ek temporary, virtual testing framework module setup karta hai jisme hum dynamic dependencies aur mock inject kar sakte hain.
+* **`detectChanges()`:** JUnit test run hone par browser dynamic compile process control me nahi rehta, isliye test case variables change hone par component view compile check run karne ke liye hum manually `fixture.detectChanges()` execute karte hain.
+
+### 2. HTTP Request Mocking (Fake network request)
+* Unit tests me real server API requests block ki jati hain. Uske badle `HttpTestingController` use karke hum dynamic network response `.flush(mockData)` return karte hain taaki API validation flows local verification pipeline me check ho sakein.
+
 ## Code Examples
 Below are implementation examples for a **Service Unit Test** (using `HttpTestingController`) and a **Component Test**.
 
@@ -140,7 +152,6 @@ describe('CounterComponent DOM tests', () => {
   });
 });
 ```
-
 ## Best Practices
 1. **Always Isolate Unit Tests**: Mock external dependencies (like HTTP services) using spy utilities to verify class logic in isolation.
 2. **Call `fixture.detectChanges()`**: Always call `detectChanges()` after modifying properties or triggering events in component tests to render updates in the DOM.
@@ -153,9 +164,11 @@ describe('CounterComponent DOM tests', () => {
 ## Interview Questions & Answers
 ### Q: What is the purpose of `TestBed` in Angular testing?
 **A**: `TestBed` is an API provided by the Angular testing utility. It configures and initializes environments for testing components, services, and directives, creating dynamic test modules that let you inject mocks and compile templates.
+* **Hinglish Explanation**: `TestBed` Angular ka primary testing tool hai jo test hone wale components/services ke liye ek "Fake Angular Module" (virtual environment) configure aur initialize karta hai. Iski madad se hum dependency injection set kar sakte hain, components/templates ko compile kar sakte hain, aur unke instances create karke testing kar sakte hain.
 
 ### Q: Why do we use `HttpTestingController` in unit tests?
 **A**: We use `HttpTestingController` to mock backend network requests. It intercepts HTTP calls made by services, checks request details (like URLs and HTTP methods), and returns mock data using `.flush()` to test success and error flows without making real network requests.
+* **Hinglish Explanation**: Unit testing me actual network request nahi chalani chahiye. `HttpTestingController` ka use API calls ko mock (fake) karne ke liye kiya jata hai. Yeh component ya service dwara hone wali HTTP calls ko intercept (rok) leta hai, aur hum `.flush(mockData)` function ka use karke custom data supply karte hain taaki different scenarios (success ya errors) ko local network ke bina test kiya ja sake.
 
 ## Summary
 Testing validates the behavior of components and services. Unit tests use `TestBed` and Jasmine/Jest to check logic, while E2E tools like Playwright and Cypress verify user flows in real browser environments.

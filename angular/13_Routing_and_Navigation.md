@@ -42,14 +42,32 @@ In an online shopping application, navigating to `/admin` checks if the user has
 this.router.navigate(['/products', 12], { queryParams: { ref: 'email' } });
 ```
 
+## Hinglish Explanation
+
+Angular Routing ka simple matlab hai **"URL ke basis par component badalna"**. Browser ki URL bar ke input change hone par screen par kaunsa component load hoga, yeh Router decide karta hai.
+
+### 1. Routes configuration (Roadmap)
+Hamare routes configuration array me hum link aur component ka connection map banate hain:
+* `path: 'dashboard'` par dashboard component render hoga.
+* `path: '**'` (Wildcard Route) ka use tab hota hai jab user aisi URL likhe jo match nahi ho rahi (jaise 404 Page Not Found). Ise hamesha configuration array ke sabse end me rakha jata hai.
+
+### 2. Router Outlet (Screen Frame)
+Component template HTML me `<router-outlet></router-outlet>` tag likhna mandatory hai. Yeh wo frame hai jiske andar matching dynamic components load hokar screen par appear hote hain.
+
+### 3. Navigation Links (Azaad links)
+HTML me normal `<a href="...">` ka use nahi kiya jata kyunki isse browser page reload kar deta hai jo SPA features ko break karta hai. Uske badle hum `routerLink` use karte hain:
+`<a routerLink="/dashboard">Dashboard</a>`
+
+### 4. Route Guards (Dwarpaal / Gatekeeper)
+Guards check karte hain ki user ke paas us path ko open karne ki permissions hai ya nahi. Modern Angular me functional guards (jaise `CanActivateFn`) use kiye jate hain jo simple and tree-shakeable hote hain.
+
 ## Code Examples
 Below is a complete implementation demonstrating child routes, lazy loading, parameters, and modern functional guards.
 
 ### `app.routes.ts`
 ```typescript
-import { Routes, CanActivateFn } from '@angular/router';
+import { Routes, Router, CanActivateFn } from '@angular/router';
 import { inject } from '@angular/core';
-import { Router } from '@angular/router';
 
 // 1. Define a Functional Auth Guard
 export const authGuard: CanActivateFn = () => {
@@ -134,9 +152,73 @@ export class AdminPanelComponent {
 ## Interview Questions & Answers
 ### Q: What is lazy loading in routing and how is it implemented?
 **A**: Lazy loading is an optimization technique that splits route components into separate javascript chunks and loads them only when the user navigates to those paths. It is implemented using `loadComponent` (or `loadChildren` for modules) with dynamic imports: `loadComponent: () => import('./path').then(m => m.Comp)`.
+* **Hinglish Explanation**: Lazy loading ek performance optimization technique hai, jo project ko multiple chote bundles (javascript files) me divide karti hai. Iska matlab yeh hai ki pure app ka code ek sath user ke browser me load nahi hota; jab user kisi specific link ya path par navigate karta hai, tabhi us page ka code background me download hota hai. Ise implement karne ke liye hum routing metadata me `loadComponent: () => import('./my-component').then(m => m.MyComponent)` dynamic import likhte hain.
 
 ### Q: How do you read route parameters and query parameters in a component?
 **A**: Inject `ActivatedRoute` and subscribe to `paramMap` or `queryParamMap` observables (or read inputs directly if `withComponentInputBinding()` is configured in the router bootstrap).
+* **Hinglish Explanation**: Route parameters (jaise user id `/user/:id`) ya query parameters (jaise search filter `/products?search=shoes`) read karne ke do tarike hain. Pehla, component me `ActivatedRoute` class inject karke uski `paramMap` ya `queryParamMap` streams ko subscribe karna. Dusra (Modern Angular v16+), router configuration me `withComponentInputBinding()` function enable karke params ko directly `@Input()` ke roop me read karna.
+
+**Code Examples:**
+
+**Method 1: Using `ActivatedRoute` (Traditional)**
+```typescript
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+
+@Component({
+  selector: 'app-user-detail',
+  template: `<p>User ID: {{ userId }} | Search: {{ searchVal }}</p>`
+})
+export class UserDetailComponent implements OnInit {
+  userId: string | null = null;
+  searchVal: string | null = null;
+
+  constructor(private route: ActivatedRoute) {}
+
+  ngOnInit() {
+    // Reading route parameter (:id)
+    this.route.paramMap.subscribe(params => {
+      this.userId = params.get('id');
+    });
+
+    // Reading query parameter (?search=...)
+    this.route.queryParamMap.subscribe(params => {
+      this.searchVal = params.get('search');
+    });
+  }
+}
+```
+
+**Method 2: Using Component Input Binding (Angular 16+)**
+
+1. Enable `withComponentInputBinding()` in `app.config.ts`:
+```typescript
+import { provideRouter, withComponentInputBinding } from '@angular/router';
+import { routes } from './app.routes';
+
+export const appConfig = {
+  providers: [
+    provideRouter(routes, withComponentInputBinding())
+  ]
+};
+```
+
+2. Read parameters directly as inputs in the component:
+```typescript
+import { Component, Input } from '@angular/core';
+
+@Component({
+  selector: 'app-user-detail',
+  template: `<p>User ID: {{ id }} | Search: {{ search }}</p>`
+})
+export class UserDetailComponent {
+  // Matches route parameter ':id'
+  @Input() id!: string;
+
+  // Matches query parameter '?search=...'
+  @Input() search?: string;
+}
+```
 
 ## Summary
 The Angular Router maps browser paths to dynamic component templates. Using lazy loading (`loadComponent`), functional guards (`CanActivateFn`), and query parameters helps build secure, fast, and structured Single Page Applications.

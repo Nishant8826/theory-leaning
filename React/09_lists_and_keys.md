@@ -14,6 +14,16 @@ A "list" in React means **displaying an array of data** as multiple UI elements.
 
 ---
 
+## Hinglish Explanation
+
+React me data list (array) ko HTML components group me convert karne ke liye `.map()` array method ka use kiya jata hai.
+
+* **key Prop (Unique Roll Number):** Har map item ke root tag par ek unique `key` parameter (jaise `product.id` ya database ID) pass karna mandatory hai. Isse React ke Virtual DOM ko pata chalta hai ki kaun sa element add, change, ya remove hua hai.
+* **Why not use Index?** `key={index}` ka use tabhi karna chahiye jab list bilkul static ho (koi additions, deletions, ya order swapping na ho). Dynamic list me index ko key ki tarah use karne se re-rendering bugs aur performance issues aate hain.
+* **Outer Element Binding:** Humesha `key` prop ko map loop se return hone wale sabse outer element (div, li, custom tag) par lagaya jata hai.
+
+---
+
 ## 🔄 Rendering Lists with `.map()`
 
 The most common way to render a list in React is using the `.map()` array method:

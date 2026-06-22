@@ -30,6 +30,16 @@ const API_KEY = import.meta.env.VITE_API_KEY;
 
 ---
 
+## Hinglish Explanation
+
+Environment variables configuration variables hain jo setup details and configurations ko source code se pipeline layer par separate aur secure rakhne me help karte hain.
+
+* **Security & Flexibility:** API urls ya maps key values ko app components code me hardcode karne ke bajaye environmental scope parameters me parse kiya jata hai. Isse production build publish hone par sensitive server variables dynamically update ho sakte hain aur source code leak hone par key leak hone ka khatra nahi rehta.
+* **Environment Prefix:** Bundlers settings requirements define karte hain. Vite frameworks me custom properties keys ke aage `VITE_` prefix add karna zaroori hai aur iski settings load calls `import.meta.env.VITE_` format me work karti hain. Create React App (CRA) legacy projects me `REACT_APP_` prefix define karte hain, jise runtime controllers `process.env` object structure context space me use karte hain.
+* **Build Embed Warning:** Ye clear hona chahiye ki frontend client configuration dynamic variables client side files me static text form me built hote hain. Isliye database keys ya internal critical client endpoints parameters ko in components me expose na karein, in features ko secure runtime middlewares (backends) par resolve hona chahiye.
+
+---
+
 ## 📄 `.env` File Setup
 
 Create a `.env` file in the **root** of your project (next to `package.json`):

@@ -18,6 +18,17 @@ Parent sends data → via Props → Child receives and displays it
 
 ---
 
+## Hinglish Explanation
+
+Props (Properties) ka use parent component se child component me data pass karne ke liye kiya jata hai.
+
+* **Unidirectional Flow:** Data ka flow hamesha unidirectional (ek hi direction me: Parent → Child) hota hai.
+* **Read-Only (Immutable):** Props immutable hote hain. Jis child component ko props milte hain, wo unhe modify (edit) nahi kar sakta. Agar changes karne hon, toh State use ki jati hai.
+* **Syntax and Data Types:** String data pass karte waqt double quotes `name="Nishant"` use kiya jata hai. Numbers, booleans, arrays, ya objects pass karne ke liye curly braces `{}` ke andar values likhna zaroori hai (jaise `age={25}`).
+* **children Prop:** Yeh ek special prop hai. Jab hum kisi component tag ke andar extra content/JSX wrap karte hain (jaise `<Card><p>Hello</p></Card>`), toh woh content child component me automatically `{children}` prop ban kar deliver ho jata hai.
+
+---
+
 ## 🌍 Real-World Example
 
 Imagine you have a `UserCard` component. Instead of hardcoding data, you pass it via props:

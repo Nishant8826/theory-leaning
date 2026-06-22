@@ -36,6 +36,50 @@ In a shopping cart checkout form, signals track quantity, price, discount codes,
 * **Declare Computed Signal**: `const double = computed(() => count() * 2);`
 * **Signal Input**: `name = input<string>('guest');`
 
+## Hinglish Explanation
+
+Agar aap Angular me state management aur Change Detection ko simple aur super-fast banana chahte hain, toh **Signals** ko samajhna zaroori hai.
+
+### 1. Signals Kya Hain? (Signal is a Container)
+Normal JavaScript variables me value change hoti hai, toh Angular ko khud se nahi pata chalta ki use page (UI) par kahan update karna hai.
+**Signal** ek reactive container (wrapper) hai jo kisi value ko hold karta hai. Jab bhi iski value change hoti hai, toh yeh Angular ko notify karta hai: 
+*"Bhai! Meri value change ho gayi hai, jahan-jahan main use ho raha hoon, wahan screen ko update kar do!"*
+
+### 2. Zone.js vs Signals (Purana vs Naya tareeka)
+* **Zone.js (Dirty Checking - Old Way):** Pehle jab bhi koi event (jaise click, timer, ya API response) hota tha, toh Zone.js pure component tree ko upar se neeche tak check karta tha ki kahin kuch change toh nahi hua. Yeh bilkul waisa hai jaise pure building me check karna ki kis room ka fan band hai.
+* **Signals (Fine-grained - New Way):** Signals ke aane se Angular ko exact pata hota hai ki kaunsi value kis component me kis HTML tag par use ho rahi hai. Value change hone par Angular **sirf usi specific HTML element ko update** karta hai. Baaki components ko chhua tak nahi jata! Isse performance bohot badh jati hai.
+
+### 3. Signals Ke Teen Main Pillars (Core Features)
+
+#### A. Writable Signals (`signal()`)
+Yeh ek simple box ki tarah hai jisme value store hoti hai aur hum jab chahein use change kar sakte hain.
+* **Read Kaise Karein?** Signal ko padhne ke liye function ki tarah execute karna padta hai: `mySignal()`.
+* **Value Update Kaise Karein?**
+  * Direct change karne ke liye: `count.set(5)`
+  * Purani value par depend karke change karne ke liye: `count.update(val => val + 1)`
+
+#### B. Computed Signals (`computed()`)
+Yeh read-only signals hote hain jo kisi dusre signal ke badalne par **automatically recalculate** ho jate hain.
+* **Example:** `total = computed(() => qty() * price())`
+* **Fayde:** 
+  1. **Lazy Evaluation:** Yeh tab tak calculate nahi hote jab tak inki value ko kahin read na kiya jaye.
+  2. **Caching:** Agar dependents (`qty` ya `price`) ki value change nahi hui, toh yeh calculation dobara nahi karte, purani cached value hi return kar dete hain.
+
+#### C. Effects (`effect()`)
+Jab bhi koi signal change ho aur aapko koi external kaam (side-effect) karna ho, tab `effect()` ka use hota hai.
+* **Example:** Jab bhi counter badle, local storage me value save karna:
+  ```typescript
+  effect(() => {
+    localStorage.setItem('counter', this.count().toString());
+  });
+  ```
+* **Note:** Iska use main UI business logic ke liye nahi, balki logging, analytics, local storage update, ya custom DOM integration ke liye kiya jata hai.
+
+### 4. Real-World Analogy (Ghar aur Light Bulbs)
+Socho ki aapke ghar me 10 rooms hain.
+* **Old Way (Zone.js):** Ek room ka switch daba, toh poore ghar ke har ek room ke bulb ko check kiya gaya ki wo sahi chal raha hai ya nahi. (Slow & unnecessary).
+* **New Way (Signals):** Har bulb ko pata hai ki uska switch kaunsa hai. Jaise hi switch (Signal) daba, sirf wahi specific bulb (DOM Element) notify hua aur turn on/off ho gaya. (Super Fast & Clean).
+
 ## Code Examples
 Below is a complete implementation demonstrating Writable Signals, Computed Signals, Effects, and Signal Inputs.
 
@@ -118,9 +162,11 @@ export class CartCalculatorComponent {
 ## Interview Questions & Answers
 ### Q: What are the main differences between Signals and RxJS Observables?
 **A**: Signals are designed for state management; they always hold an active value, are read synchronously, and are optimized for UI data-binding. Observables are designed for event streams; they deliver values asynchronously over time, support complex transformations (filtering, debouncing), and do not need to hold a default starting value.
+* **Hinglish Explanation**: Signals ko primary UI state track karne ke liye design kiya gaya hai; inme hamesha ek core active value rehti hai jo synchronously bina kisi subscription ke read ki ja sakti hai. Dusri taraf, RxJS Observables event streams aur data pipelines ke liye hain; yeh asynchronously multiple events deliver kar sakte hain, inme custom operations (debounce, mapping) support hote hain, aur inme default value hona compulsory nahi hai.
 
 ### Q: Why are computed signals performant?
 **A**: Computed signals are lazily evaluated and cache their values. They only run their calculations when read, and only recalculate if one of the signals they depend on emits a new value, preventing unnecessary work during change detection.
+* **Hinglish Explanation**: Computed signals performance ke mamle me bohot smart hote hain kyunki yeh lazy evaluation aur caching concept par kaam karte hain. Jab tak inki value ko HTML ya code me call na kiya jaye, yeh calculation nahi karte. Aur agar dependent signals ki value nahi badli hai, toh yeh purani cached value hi return karte hain bina calculations ko repeat kiye.
 
 ## Summary
 Signals introduce fine-grained reactivity to Angular. Writable signals hold state, computed signals derive cached values, and effects run side effects. Using signals simplifies local state tracking and enables Zoneless change detection.

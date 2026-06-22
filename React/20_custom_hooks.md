@@ -23,6 +23,18 @@ A **custom hook** is a function that you create yourself that uses built-in Reac
 
 ---
 
+## Hinglish Explanation
+
+Custom Hook ka matlab hai ek customized reusable JavaScript function, jiske andar standard React hooks (jaise `useState`, `useEffect`) ko encapsulate (wrap) kiya jata hai taaki dynamic logical code duplicate na ho.
+
+* **Important Rules:**
+  1. **Name Prefix:** Custom hook ka name humesha `use` se start hona mandatory hai (jaise `useFetch`, `useAuth`). Isse React engine rules validation check kar pata hai.
+  2. **Top-Level Calls:** Inke andar bhi React hook execution rules apply hote hain (jaise loops ya conditions ke andar hooks call nahi ho sakte).
+  3. **Return Value:** Yeh normal function ki tarah kuch bhi return kar sakte hain (jaise values, update functions, objects, arrays).
+* **Common Use Cases:** API calls reuse karne ke liye `useFetch`, local storage sync ke liye `useLocalStorage`, input events response delay karne ke liye `useDebounce`, aur window size dimensions track karne ke liye `useWindowSize` hooks likhe jate hain.
+
+---
+
 ## 🔧 Why Create Custom Hooks?
 
 Without custom hooks:

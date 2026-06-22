@@ -40,6 +40,27 @@ On a user settings page, when the user types their new username in a text box, t
 * **Two-Way Binding**: `[(ngModel)]="property"`
 * **Template Reference Variable**: `#varName`
 
+## Hinglish Explanation
+
+Components and Templates Angular ke building blocks hain jo user interface banane ke kaam aate hain. Component me data (TypeScript) hota hai aur Template (HTML) me show hota hai. In dono ko connect karne ke liye hum 4 tarah ke Data Bindings use karte hain:
+
+### 1. Interpolation (`{{ value }}`) (One-Way: Class to Template)
+* Jab aapko component.ts se koi normal variable ya text template me directly print karana ho, toh double curly braces `{{ username }}` use hote hain. Yeh har cheez ko string me convert karke dikhata hai.
+
+### 2. Property Binding (`[property]="value"`) (One-Way: Class to Template DOM)
+* Jab aapko kisi HTML element ki property (jaise image ka `src`, button ka `disabled` status, ya child component ka data) set karna ho, toh square brackets `[]` use hote hain. Isme aap dynamic objects/boolean values bhi pass kar sakte ho.
+* **Example:** `<button [disabled]="isProcessing">Submit</button>`
+
+### 3. Event Binding (`(event)="handler()"`) (One-Way: Template to Class)
+* Jab user browser me koi action karta hai (jaise click karna, keypress karna) aur aapko component me logic chalana ho, toh parentheses `()` use hote hain.
+* **Example:** `<button (click)="saveData()">Save</button>`
+
+### 4. Two-Way Data Binding (`[(ngModel)]="property"`) (Double-way connection)
+* Jab aap chahte hain ki input field me change karne par component ka variable change ho, aur component ka variable change karne par input field me badlaav dikhe, toh banana-in-a-box `[()]` syntax use kiya jata hai. Yeh form validation me bohot use hota hai.
+
+### 5. Template Reference Variable (`#variableName`)
+* Yeh kisi HTML tag ko ek custom id ya handle dene jaisa hai. Jaise `<input #myInput>`, ab aap pure HTML template me kahin bhi `myInput.value` likh kar iski value access kar sakte ho bina TS file me code likhe.
+
 ## Code Examples
 Below is a complete standalone component demonstrating all template binding mechanisms.
 
@@ -112,9 +133,11 @@ export class UserProfileComponent {
 ## Interview Questions & Answers
 ### Q: What is the difference between Property Binding and Interpolation?
 **A**: Interpolation is a specialized syntax that converts its contents to a string and inserts them into HTML text. Property binding is more general; it binds a value directly to a DOM element property, allowing you to pass complex types (objects, arrays, booleans) directly to native elements or custom component input fields.
+* **Hinglish Explanation**: Interpolation (`{{ }}`) ek shortcut syntax hai jo final value ko string (text) me badal kar HTML page par print karta hai. Property binding (`[property]="value"`) isse zyada powerful hai kyunki yeh browser DOM property ko directly target karta hai, jisse aap primitive datatypes ke alawa complex types (jaise object, array, ya boolean) ko kisi component ya element me pass kar sakte hain.
 
 ### Q: What is a Template Reference Variable and how do you use it?
 **A**: A template reference variable (declared using `#varName`) is a reference to a DOM element, directive, or component within a template. It allows you to access its properties (like value, classes, and native methods) in another part of the same template without writing event handlers or TypeScript logic.
+* **Hinglish Explanation**: Template reference variable (jo `#varName` syntax se banta hai) HTML template ke kisi element ka ek handle ya address hota hai. Iski madad se aap us element ki properties (jaise `<input #myInput>` me se `myInput.value`) ko HTML me hi kisi doosri jagah direct access kar sakte hain, bina TypeScript file me extra handler likhe.
 
 ## Summary
 Components combine TypeScript logic with HTML templates and styles. Template bindings (interpolation, property, event, two-way, and reference variables) form the reactive connection that links class state to visual markup.

@@ -35,6 +35,19 @@ import { MatButtonModule } from '@angular/material/button';
 ```
 * **Declaring Button**: `<button mat-raised-button color="primary">Click Me</button>`
 
+## Hinglish Explanation
+
+Angular Material Google ki **Material Design** specifications par bani ek popular component library hai. Iska use karke hume tables, sidebars, buttons ya input forms scratch se khud develop aur style nahi karne padte, balki ready-made components use karne ko milte hain.
+
+### 1. Modularity (Har tool alag hai)
+* Angular Material me har component (e.g. Table, Button, Dialog) ke module alag hote hain. Aapko poori library ek sath compile karne ke bajaye sirf unhi modules ko import karna chahiye jinhe component me actual use karna ho (jaise `MatTableModule`).
+
+### 2. CDK (Component Dev Kit - Dimaag bina Body ke)
+* CDK Angular Material ki foundation hai. Yeh components ke behaviors ko control karti hai (accessibility keyboard shortcuts, focus trapping, overlays) par isme koi default styling/colors nahi hote. Material isi CDK foundation ke upar theme aur Google Material UI add karta hai.
+
+### 3. Theming (Colors setup)
+* Material me dynamic color configurations ke liye custom SCSS Mixins use hoti hain. Custom classes me `!important` likh kar styles overwrite karna bad practice hai, hume material ke default themes configuration maps ko dynamic SCSS compile variables se custom theme design karni chahiye.
+
 ## Code Examples
 Below is an implementation of an Angular Material Dialog modal and a styled Table.
 
@@ -136,7 +149,6 @@ export class MaterialDemoComponent {
   }
 }
 ```
-
 ## Best Practices
 1. **Avoid Storing Dialog States Globally**: Keep modal dialog lifecycle configurations isolated. Do not expose `MatDialogRef` logic to global state stores.
 2. **Leverage the Angular CDK**: If you need a custom UI layout that doesn't follow Material Design guidelines, use the Angular CDK directly. This allows you to build accessible custom components with less styling override overhead.
@@ -149,9 +161,11 @@ export class MaterialDemoComponent {
 ## Interview Questions & Answers
 ### Q: What is the Angular CDK and how does it relate to Angular Material?
 **A**: The Angular CDK (Component Dev Kit) is a library that provides tools to build custom UI components (such as overlay services, accessibility utilities, drag-and-drop tools, and virtual scrolling) without imposing Material Design styling choices. Angular Material is built on top of the CDK.
+* **Hinglish Explanation**: Angular CDK (Component Dev Kit) ek core logic library hai jo custom components banane ke liye basic behaviours aur functionalities (jaise accessibility, overlay windows, drag-and-drop, virtual scrolling) provide karti hai bina kisi design style (like colors/themes) ko force kiye. Angular Material is CDK par hi build kiya gaya hai, jo is basic logic ko Google ke Material Design specification ke theme aur elements (styling) me transform karta hai.
 
 ### Q: How do you pass data into an Angular Material Dialog?
 **A**: Pass data in the configuration object when opening the dialog using the `data` property. For example: `this.dialog.open(MyDialog, { data: { id: 1 } })`. You can then inject this data in the dialog component constructor using the `MAT_DIALOG_DATA` token.
+* **Hinglish Explanation**: Dialog kholte waqt configuration object ke under `data` property ka use karke data pass kiya jata hai: `dialog.open(MyDialogComponent, { data: { id: 10 } })`. Phir child dialog component ke constructor me `MAT_DIALOG_DATA` injection token ka use karke use read kiya jata hai: `constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}`.
 
 ## Summary
 Angular Material implements Google's Material Design specification for Angular. Importing components directly into standalone structures simplifies building accessible, themeable web interfaces.

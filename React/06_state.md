@@ -24,6 +24,18 @@
 
 ---
 
+## Hinglish Explanation
+
+State ka matlab hai component ki apni **private local memory** jo aisi values ko store karti hai jo user actions ya events ke basis par badal sakti hain (jaise: toggle status, counter value, input details).
+
+* **Re-rendering:** Normal JS variables ko modify karne par React page ko update nahi karta. Jabki State variable ko modify karne par React component ko automatic update (re-render) kar deta hai taaki screen par naya data dikhe.
+* **useState Hook:** Functional components me state define karne ke liye `useState` hook call kiya jata hai. Yeh ek array return karta hai: `const [value, setValue] = useState(initialValue)`. Yahan `value` current data hold karta hai aur `setValue` function us data ko update karta hai.
+* **Important Rules:**
+  1. **Direct Mutation Avoidance:** State variable ko directly update (`count = count + 1`) nahi karna chahiye. Humesha updater function (`setCount(count + 1)`) ka hi use karna zaroori hai.
+  2. **Array/Object Spreading:** Object ya Array update karte waqt humesha spread operator `...` ka use karke purane values copy karni chahiye (jaise `setUser({ ...user, name: "new" })`), warna state objects overwrite hone par data loss ho jayega.
+
+---
+
 ## 🧰 useState Hook
 
 To use state in a functional component, use the `useState` hook:

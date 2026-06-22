@@ -28,6 +28,16 @@
 
 ---
 
+## Hinglish Explanation
+
+Build aur deployment source code compilation and cloud deployment phases hain. Isme frontend files (JSX, assets, styling) ko clean, optimized static bundles me change karke host servers par render kiya jata hai.
+
+* **Development vs Production:** Development build (`npm run dev`) readability and fast updates (HMR) handle karta hai. Production build (`npm run build`) variable values compress karke files sizes decrease karta hai aur browsers requirements ke suitable plain HTML, JS aur CSS bundles output generate karta hai.
+* **React Routing & Deployment Fix:** Netlify/Vercel standard servers requests redirect setup par process hote hain. React router custom hooks and routes support ke liye server configuration redirect policies support parameters configure karne hote hain (jaise Netlify config database endpoints maps mapping instructions ke liye `_redirects` settings map parameters file set hoti hai jo raw path updates dynamically bypass kar deti hai).
+* **CI/CD Automation:** Manually build and upload flow automation bypass karne ke liye continuous integration workflow (jaise GitHub Actions) create kar sakte hain. Ye direct pushes/releases parameters track karke automatic code checkout run kar deta hai.
+
+---
+
 ## 🏗️ Step 1: Build Your App
 
 ```bash

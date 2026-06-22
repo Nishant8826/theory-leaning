@@ -25,6 +25,19 @@ Things go wrong — APIs fail, users type invalid inputs, code has bugs. Good er
 
 ---
 
+## Hinglish Explanation
+
+Error Handling ka matlab hai dynamic failures (jaise API server down hona, variable rendering errors, ya undefined variables access crash) ko proactively catch karna taaki user ko blank white screen ki jagah clean fallback message show ho sake.
+
+* **Error Boundaries (Safety Net):**
+  - Yeh React ke custom class components hote hain jo unke andr wrap kiye gaye components tree ke rendering errors ko capture karte hain.
+  - **`getDerivedStateFromError`:** Error state return karke fallback screen load karta hai.
+  - **`componentDidCatch`:** Error details ko console log ya third-party monitoring services (Sentry) me publish karta hai.
+  - **Limitation:** Error boundaries event handlers, asynchronous background calls (jaise API request failures), ya server-side rendering processes ke errors ko catch nahi kar sakte.
+* **API Error Handling:** API failures ke liye hum `try / catch / finally` logic use karte hain aur dynamic `error` state variable update karte hain taaki browser UI me proper warning show ki ja sake.
+
+---
+
 ## 🧱 Error Boundaries (React's Built-in Safety Net)
 
 An **Error Boundary** is a component that **catches JavaScript errors** in the component tree and shows a fallback UI instead of crashing the whole app.

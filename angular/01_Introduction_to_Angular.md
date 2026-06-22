@@ -56,6 +56,20 @@ export class HomeComponent {
 }
 ```
 
+## Hinglish Explanation
+
+Angular ek **framework** hai na ki ek simple library.
+
+### 1. Framework vs Library (Angular vs React)
+* **Library (React):** Yeh ek dukan ki tarah hai jahan se aap sirf ek component (jaise door ya window) lete ho, aur poora ghar (application) banane ke liye baaki tools (routing, forms validation) alag se doosri dukano se kharidte ho.
+* **Framework (Angular):** Yeh ek ready-made, functional flat/house ki tarah hai. Isme kitchen (forms), corridors (routing), aur water supply (HttpClient) pehle se hi built-in installed milte hain. Aapko alag se kisi external library ki zaroorat nahi padti.
+
+### 2. Standalone Components (Modern Angular)
+Pehle Angular me `@NgModule` banana padta tha jisme har component ko register karna mandatory tha. Lekin ab modern Angular me **Standalone Components** default hain. Har component apne aap me azaad (independent) hai aur use kisi module ke registration ki zaroorat nahi hoti. Use jo bhi components ya directives use karne hote hain, wo direct metadata ke `imports` block me define kar deta hai.
+
+### 3. SPA (Single Page Application)
+Jab aap kisi web app par click karte hain aur bina page reload/refresh hue data change ho jata hai, toh use SPA bolte hain. Angular isme expert hai kyunki yeh page ka structure browser me load kar leta hai aur sirf zaroorat ka data dynamically server se laakar screen par update karta hai.
+
 ## Code Examples
 Below is a full example of a standalone application's entry point using modern bootstrapping:
 
@@ -95,9 +109,11 @@ bootstrapApplication(AppComponent)
 ## Interview Questions & Answers
 ### Q: What is the main difference between Angular and React?
 **A**: Angular is a full-featured framework providing routing, HTTP client, and form validators out of the box. React is a UI library that requires third-party packages (React Router, Axios, Formik) to build a complete application. Angular enforces structure (opinionated), while React leaves architectural decisions to the developer.
+* **Hinglish Explanation**: Angular ek complete framework hai jisme routing, HTTP request handle karne ke liye `HttpClient`, aur form validation features directly built-in milte hain. Dusri taraf, React sirf ek UI library hai, jisme routing ya API calls ke liye third-party packages (jaise React Router, Axios) install karne padte hain. Angular structured hai aur rules enforce karta hai (opinionated), jabki React developer ko poori aazadi deta hai ki wo apna structure khud select karein.
 
 ### Q: What is a Single Page Application (SPA)?
 **A**: An SPA is a web application that loads a single document, then updates its body content dynamically using JavaScript API calls instead of requesting new pages from the server on every link click.
+* **Hinglish Explanation**: SPA (Single Page Application) ek aisi web app hoti hai jo page load hone par sirf ek hi HTML document load karti hai. Iske baad, user jab bhi kisi link par click karta hai, toh naya page load hone ke bajaye JavaScript background me data fetch karke screen ke specific part ko dynamically update kar deti hai. Isse page refresh nahi hota aur user experience super smooth ho jata hai.
 
 ## Summary
 Angular is a powerful framework that offers a complete set of features for front-end engineers. It features Standalone components by default, relies on TypeScript for type safety, and is designed to build enterprise-grade apps.

@@ -22,6 +22,21 @@ npm install react-router-dom
 
 ---
 
+## Hinglish Explanation
+
+React Router Single Page Applications (SPAs) me routing enable karne ki standard library hai. Yeh browser URL ke matching path ke basis par page component ko bina reload kiye dynamically swap (change) karti hai.
+
+* **Core Components:**
+  1. **`<BrowserRouter>`:** Poore application me routing context aur history APIs ko activate karne ke liye root tree par wrap kiya jata hai.
+  2. **`<Routes>` aur `<Route>`:** URLs path mapping configurations define karte hain. Target URL match hone par element render hota hai.
+  3. **`<Link>` vs `<NavLink>` vs `<a>`:** Simple HTML `<a>` tag use karne se page full reload ho jata hai, jo SPA rules ke khilaf hai. Iske badle `<Link>` routing support ke sath navigation handle karta hai. `<NavLink>` current active route link par automatic styling parameters detect karne me help karta hai.
+* **Routing Hooks:**
+  1. **`useParams()`:** Dynamic URLs se values read karta hai (jaise `/products/:id` se `:id`).
+  2. **`useSearchParams()`:** URL queries filter parameters read aur change karta hai (jaise `?category=books`).
+  3. **`useNavigate()`:** Button clicks ya calculations complete hone par JavaScript logic se directly navigation routes trigger karne ke kaam aata hai (jaise redirection on login success).
+
+---
+
 ## 🔧 Basic Setup (React Router v6)
 
 ```jsx

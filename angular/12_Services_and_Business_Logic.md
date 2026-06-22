@@ -45,6 +45,27 @@ export class ProductService {
 }
 ```
 
+## Hinglish Explanation
+
+Angular me Components ko **"Waiter"** aur Services ko **"Kitchen/Chef"** ki tarah samajhein.
+* **Component (Waiter):** Yeh customer (user) se order leta hai aur screen par display dikhata hai (presentation logic). Isko actual computations (business logic ya API calls) nahi karni chahiye.
+* **Service (Chef/Kitchen):** Yeh kitchen me back-end operations karta hai (data fetch karna, calculations karna, database transactions). Waiter sirf Chef se raw material ya prepared data lekar UI par render kar deta hai.
+
+### 1. Services Kyun Zaroori Hain?
+* **Code Reusability:** Agar product list fetch karne ka logic do alag-alag pages (dashboard aur search) me chahiye, toh hum use components ke andar duplicate karne ke bajaye ek common Service me likhte hain aur dono components me inject kar lete hain.
+* **Clean Code:** Service use karne se component file choti aur simple rehti hai, jisse code readable aur maintainable banta hai.
+
+### 2. Service Kaise Banate Hain?
+Service banane ke liye `@Injectable()` decorator ka use hota hai:
+```typescript
+@Injectable({
+  providedIn: 'root' // Matlab poore app me ek hi copy share hogi (Singleton)
+})
+export class ProductService {
+  // Business logic & HTTP calls yahan hote hain
+}
+```
+
 ## Code Examples
 Below is a complete implementation of a shared state service managing a shopping cart.
 
@@ -136,9 +157,11 @@ export class ProductCatalogComponent {
 ## Interview Questions & Answers
 ### Q: How do you implement a singleton service in Angular?
 **A**: Decorate the service class with `@Injectable({ providedIn: 'root' })`. This registers the service with the root injector, making a single, shared instance available application-wide.
+* **Hinglish Explanation**: Singleton service banane ke liye, service class ke upar `@Injectable({ providedIn: 'root' })` decorator lagaya jata hai. Isse yeh service globally root level par register ho jati hai aur pure application me iski sirf ek hi single shared copy (instance) use hoti hai.
 
 ### Q: Why is it bad practice to write calculations or HTTP operations inside components?
 **A**: Writing calculations or HTTP operations inside components violates the Single Responsibility Principle, makes testing difficult, and leads to duplicate code. Delegating these tasks to services keeps components focused on presentation.
+* **Hinglish Explanation**: Components ka kaam hota hai sirf screen par layout dikhana aur events capture karna. Agar aap business logic ya HTTP operations components me likhoge, toh code ganda (complex) ho jayega aur usey reuse ya test karna bohot mushkil ho jayega. Services me data calculations rakhne se components clean rehte hain aur hum ek hi service logic ko different components me easily reuse kar sakte hain.
 
 ## Summary
 Services contain your application's business and data logic. Global singletons are declared using `@Injectable({ providedIn: 'root' })`, separating data management from presentation component files.

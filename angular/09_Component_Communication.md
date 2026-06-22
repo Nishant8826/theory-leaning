@@ -42,6 +42,27 @@ In a video streaming interface, a parent dashboard component passes the active v
 * **ViewChild Query**: `@ViewChild('childRef') childElement!: ElementRef;`
 * **Content Projection**: `<ng-content select=".card-header"></ng-content>`
 
+## Hinglish Explanation
+
+Angular me components azaad hote hain, isliye unke beech data share (communication) karne ke kuch fixed tarike hain:
+
+### 1. Parent to Child (`@Input()` ya `input()`)
+* **Udaharan (Inputs):** Socho parent ek dukan hai aur child ek helper. Dukan ne helper ko bataya ki kaunsa product deliver karna hai.
+* TypeScript me `@Input() item: string = '';` ya new Signal input `item = input<string>();` use karte hain. Parent element HTML me `[item]="parentValue"` pass karta hai.
+
+### 2. Child to Parent (`@Output()` ya `output()`)
+* **Udaharan (Outputs):** Jab customer ne delivery receive kar li, toh helper ne parent dukan ko "Success" status ka notification/event bheja.
+* Yeh `EventEmitter` ka use karta hai. TypeScript me `@Output() notify = new EventEmitter<string>();` ya new Signal output `notify = output<string>();` use karte hain, aur child se `this.notify.emit('value')` run karte hain. Parent component ise `(notify)="handleEvent($event)"` se listen karta hai.
+
+### 3. Template Queries (`@ViewChild`)
+* Agar parent component ko child component ke kisi method (jaise `clearForm()`) ko programmatically trigger karna ho, toh parent class me `@ViewChild(ChildComponent) childComponent!: ChildComponent;` query use hoti hai.
+
+### 4. Shared Service (Common Dost)
+* Agar do sibling components (jo aapas me directly connected nahi hain) ko aapas me data share karna ho, toh wo ek shared Injectable Service ke zariye communicate karte hain.
+
+### 5. Content Projection (`ng-content` - Photo Frame)
+* Yeh bilkul photo frame ki tarah hai. Frame child hai aur photo parent decide karta hai. Template me `<ng-content></ng-content>` lagate hain aur parent component is tag ke andar apna custom layout inject kar deta hai.
+
 ## Code Examples
 Below is a complete implementation demonstrating Parent-Child communication, content projection, and view queries.
 
@@ -216,9 +237,11 @@ export class ComponentB {
 ## Interview Questions & Answers
 ### Q: What is the difference between `@ViewChild` and `@ContentChild`?
 **A**: `@ViewChild` queries elements that are declared directly inside the component's *own* HTML template. `@ContentChild` queries elements that are projected into the component via content projection (`<ng-content>`) from a parent template.
+* **Hinglish Explanation**: `@ViewChild` ka use tab hota hai jab aapko component ke *apne* template me likhe kisi HTML tag, child component ya directive ko select karna ho. `@ContentChild` ka use tab hota hai jab aapko kisi parent template se `<ng-content>` ke zariye project (pass) kiye gaye elements ya component references ko child me access karna ho.
 
 ### Q: What is content projection and how do you achieve multi-slot projection?
 **A**: Content projection allows you to inject custom HTML content from a parent component into a child component's template. Multi-slot projection is achieved by using the `select` attribute on the `<ng-content>` tag (e.g., `<ng-content select="[card-header]">`), which targets elements matching specific selectors.
+* **Hinglish Explanation**: Content projection ka matlab hota hai parent component se child component ke template ke andar custom HTML content inject karna (using `<ng-content>`). Multi-slot projection tab use karte hain jab alag-alag content ko specific alag-alag places par project karna ho. Iske liye `<ng-content select="selector-name">` attribute lagate hain (jaise header aur footer ke liye select query use karna).
 
 ## Summary
 Component communication links isolated components together. Inputs send data down, outputs emit events up, and template queries allow components to interact programmatically. Content projection allows parents to inject custom layouts directly into child components.
