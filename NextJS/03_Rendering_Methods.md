@@ -388,4 +388,4 @@ Here's how a real e-commerce site like Amazon might use ALL four rendering metho
 
 ---
 
-← Previous: [02_Routing.md](02_Routing.md) | Next: [04_Data_Fetching.md](04_Data_Fetching.md) →
+← Previous: [02_Routing.md](02_Routing.md) | Index: [00_index.md](00_index.md) | Next: [04_Data_Fetching.md](04_Data_Fetching.md) →

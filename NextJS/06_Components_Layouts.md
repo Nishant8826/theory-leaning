@@ -376,4 +376,4 @@ app/
 
 ---
 
-← Previous: [05_API_Routes.md](05_API_Routes.md) | Next: [07_Authentication.md](07_Authentication.md) →
+← Previous: [05_API_Routes.md](05_API_Routes.md) | Index: [00_index.md](00_index.md) | Next: [07_Authentication.md](07_Authentication.md) →

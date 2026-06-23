@@ -331,4 +331,4 @@ export const metadata = {
 
 ---
 
-← Previous: [08_Performance_Optimization.md](08_Performance_Optimization.md) | Next: [10_Deployment.md](10_Deployment.md) →
+← Previous: [08_Performance_Optimization.md](08_Performance_Optimization.md) | Index: [00_index.md](00_index.md) | Next: [10_Deployment.md](10_Deployment.md) →

@@ -285,4 +285,4 @@ This opens a visual treemap showing which libraries take the most space. Common 
 
 ---
 
-← Previous: [07_Authentication.md](07_Authentication.md) | Next: [09_SEO.md](09_SEO.md) →
+← Previous: [07_Authentication.md](07_Authentication.md) | Index: [00_index.md](00_index.md) | Next: [09_SEO.md](09_SEO.md) →

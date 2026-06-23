@@ -249,4 +249,4 @@ export default function LikeButton() {
 
 ---
 
-← Previous: []() | Next: [02_Routing.md](02_Routing.md) →
+← Previous: []() | Index: [00_index.md](00_index.md) | Next: [02_Routing.md](02_Routing.md) →

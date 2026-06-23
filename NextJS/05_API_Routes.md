@@ -344,4 +344,4 @@ export default function handler(req, res) {
 
 ---
 
-← Previous: [04_Data_Fetching.md](04_Data_Fetching.md) | Next: [06_Components_Layouts.md](06_Components_Layouts.md) →
+← Previous: [04_Data_Fetching.md](04_Data_Fetching.md) | Index: [00_index.md](00_index.md) | Next: [06_Components_Layouts.md](06_Components_Layouts.md) →

@@ -313,4 +313,4 @@ Always use `<Link>` for internal navigation in Next.js.
 
 ---
 
-← Previous: [01_Introduction.md](01_Introduction.md) | Next: [03_Rendering_Methods.md](03_Rendering_Methods.md) →
+← Previous: [01_Introduction.md](01_Introduction.md) | Index: [00_index.md](00_index.md) | Next: [03_Rendering_Methods.md](03_Rendering_Methods.md) →

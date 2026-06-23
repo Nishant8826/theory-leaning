@@ -282,4 +282,4 @@ export const config = {
 
 ---
 
-← Previous: [11_App_Router.md](11_App_Router.md) | Next: [13_Server_Actions.md](13_Server_Actions.md) →
+← Previous: [11_App_Router.md](11_App_Router.md) | Index: [00_index.md](00_index.md) | Next: [13_Server_Actions.md](13_Server_Actions.md) →

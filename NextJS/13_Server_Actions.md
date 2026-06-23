@@ -383,4 +383,4 @@ export async function deletePost(formData) {
 
 ---
 
-← Previous: [12_Middleware.md](12_Middleware.md) | Next: [14_Caching.md](14_Caching.md) →
+← Previous: [12_Middleware.md](12_Middleware.md) | Index: [00_index.md](00_index.md) | Next: [14_Caching.md](14_Caching.md) →

@@ -289,4 +289,4 @@ feature-branch  → https://myapp-git-feature-branch.vercel.app (Preview)
 
 ---
 
-← Previous: [09_SEO.md](09_SEO.md) | Next: [11_App_Router.md](11_App_Router.md) →
+← Previous: [09_SEO.md](09_SEO.md) | Index: [00_index.md](00_index.md) | Next: [11_App_Router.md](11_App_Router.md) →

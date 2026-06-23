@@ -86,15 +86,55 @@ Hoisting is the behavior where variable and function declarations are moved to t
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-- **`undefined`**: A variable has been declared but has not yet been assigned a value.
-- **`null`**: An assignment value that represents the intentional absence of any object value.
+While both represent the absence of a value, they are used in different contexts and have distinct behaviors.
 
+#### 1. The Core Analogy
+Think of a variable as a gift box:
+*   **`undefined`**: The box hasn't been opened yet, or it is a placeholder. You haven't decided what goes in it, or you haven't put anything in it yet. It is the default state of a declared variable.
+*   **`null`**: You actively opened the box, took everything out, and closed it. It is **intentionally empty**. You have explicitly set its value to "nothing".
+
+#### 2. Key Differences
+
+| Feature | `undefined` | `null` |
+| :--- | :--- | :--- |
+| **Meaning** | Value is not defined / missing. | Value is defined as "nothing" (empty). |
+| **Type (`typeof`)**| `"undefined"` | `"object"` (historical JS bug). |
+| **Assigned by** | JavaScript engine (automatically). | Developer (explicitly). |
+| **Falsy?** | Yes | Yes |
+| **Arithmetic** | Coerces to `NaN` (e.g., `5 + undefined`). | Coerces to `0` (e.g., `5 + null` is `5`). |
+| **JSON** | Omitted from `JSON.stringify()`. | Preserved in `JSON.stringify()`. |
+
+#### 3. Code Comparison
+
+**A. How they are assigned:**
 ```javascript
-typeof undefined // "undefined"
-typeof null      // "object"
-null == undefined  // true (equality)
-null === undefined // false (identity)
+let a; 
+console.log(a); // undefined (JS set it automatically)
+
+let b = null; 
+console.log(b); // null (We set it intentionally)
 ```
+
+**B. Arithmetic Behavior:**
+```javascript
+console.log(5 + undefined); // NaN (Not-a-Number)
+console.log(5 + null);      // 5 (null behaves like 0)
+```
+
+**C. JSON Serialization:**
+```javascript
+const obj = { x: undefined, y: null };
+console.log(JSON.stringify(obj)); // '{"y":null}' (x is stripped out!)
+```
+
+#### 4. Equality Check
+*   `null == undefined` is `true` because they both represent "no value" (loose equality).
+*   `null === undefined` is `false` because they have different types (strict equality).
+
+> 💡 **Interviewer Focus:**
+> - Point out `typeof null === "object"` as a famous JS quirk/bug.
+> - Explain that you should use `null` when you want to reset or empty a variable, and let JS use `undefined` for uninitialized states.
+> - **Pro Tip:** In modern JavaScript (like TypeScript), `null` is often preferred to explicitly denote "no result found" (e.g., in a database lookup or API response).
 
 </details>
 
@@ -594,6 +634,68 @@ A deep copy creates a completely independent clone of the object and all its nes
 > - **Performance:** Deep cloning is expensive; only do it when necessary.
 
 </details>
+
+<hr/>
+
+### ❓ Q25a. **What is a callback function in JavaScript?**
+
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+A **callback function** is a function passed into another function as an argument, which is then executed (called back) inside the outer function to complete a routine or action.
+
+In JavaScript, functions are objects, so they can be passed as arguments just like strings, numbers, or arrays.
+
+---
+
+#### 1. Synchronous Callbacks
+Executed immediately during the execution of the higher-order function. The program waits for it to finish.
+
+```javascript
+// The outer function (Higher-Order Function)
+function processGreeting(name, callback) {
+  const formattedName = name.toUpperCase();
+  callback(formattedName); // Executed synchronously
+}
+
+// Consuming the function with a callback
+processGreeting("Nishant", (userName) => {
+  console.log(`Hello, ${userName}!`); 
+});
+// Output: "Hello, NISHANT!"
+```
+*   **Examples:** Array helper methods (`map()`, `filter()`, `forEach()`, `reduce()`, etc.).
+
+---
+
+#### 2. Asynchronous Callbacks
+Executed at a later time after an asynchronous operation (like network requests, timers, or file reads) has finished. The program continues executing other code in the meantime.
+
+```javascript
+console.log("Start");
+
+// setTimeout takes a callback function to run after 2 seconds
+setTimeout(() => {
+  console.log("Inside Asynchronous Callback");
+}, 2000);
+
+console.log("End");
+
+// Output Order:
+// "Start"
+// "End"
+// (2-second pause)
+// "Inside Asynchronous Callback"
+```
+*   **Examples:** Event listeners (`click`, `submit`), network requests (`fetch().then(callback)`), and timers (`setTimeout`).
+
+---
+
+#### 3. Why do we need Callbacks?
+- **Handling Asynchronous Events:** Since JS is single-threaded, callbacks prevent the main thread from blocking while waiting for long operations (like APIs or disk reads).
+- **Code Decoupling:** You can write a generic function that handles the workflow, and pass custom logic via different callback functions.
+
+</details>
 <br>
 
 ## 🟡 Intermediate Level
@@ -632,19 +734,163 @@ inc(); // 2
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-`this` depends on **how** a function is called, not where it's defined:
+In JavaScript, the `this` keyword refers to the **object that is currently executing the code**. 
 
-| Context | `this` refers to |
-|---------|-----------------|
-| Global (non-strict) | `window` / `globalThis` |
-| Global (strict) | `undefined` |
-| Object method | The object |
-| `new` Constructor | The new instance |
-| `call/apply/bind` | Explicitly set |
-| Arrow function | Lexical (enclosing scope) |
-| Event handler | The DOM element |
+The value of `this` is **not static**; it is determined dynamically by **how a function is invoked (called)**, not where it is declared (except for arrow functions).
 
-> 💡 **Interviewer Focus:** Give a code snippet and ask what `this` is. Test arrow functions inside objects.
+To determine what `this` is, you can follow these **5 Binding Rules** in order of precedence (lowest to highest):
+
+---
+
+#### 1. Default Binding (Standalone Function Call)
+When a function is called as a standalone function (without any prefix or object reference), `this` defaults to:
+- **Non-Strict Mode:** The global object (`window` in browsers, `global` in Node.js).
+- **Strict Mode:** `undefined`.
+
+```javascript
+function show() {
+  console.log(this);
+}
+
+show(); // Window (non-strict) OR undefined (strict mode)
+```
+
+---
+
+#### 2. Implicit Binding (Object Method Call)
+When a function is called as a method of an object (e.g., `obj.method()`), `this` refers to the **object before the dot**.
+
+```javascript
+const user = {
+  name: "Nishant",
+  greet() {
+    console.log(this.name);
+  }
+};
+
+user.greet(); // "Nishant" (because 'user' is before the dot)
+```
+
+---
+
+#### 3. Explicit Binding (`call`, `apply`, `bind`)
+If you want to force a function to use a specific object as `this`, you can use `call`, `apply`, or `bind`.
+- `call` and `apply` invoke the function immediately with the specified `this`.
+- `bind` returns a new function with `this` permanently bound.
+
+```javascript
+function greet() {
+  console.log(this.name);
+}
+
+const admin = { name: "Alex" };
+
+greet.call(admin); // "Alex"
+```
+
+---
+
+#### 4. `new` Binding (Constructor Functions)
+When a function is called with the `new` keyword, the JavaScript engine does the following:
+1. Creates a brand new empty object `{}`.
+2. Binds `this` to that new empty object inside the constructor function.
+3. Points the new object's prototype to the constructor's prototype.
+4. Returns the new object (unless the function returns another object).
+
+```javascript
+function Person(name) {
+  this.name = name; // 'this' points to the newly created instance
+}
+
+const nishant = new Person("Nishant");
+console.log(nishant.name); // "Nishant"
+```
+
+---
+
+#### 5. Lexical Binding (Arrow Functions)
+Arrow functions (`() => {}`) **do not have their own `this` context**. Instead, they inherit `this` from their **parent enclosing lexical scope** (the scope where the arrow function was defined).
+*   Their `this` cannot be changed with `call`, `apply`, or `bind` (it is ignored).
+
+```javascript
+const user = {
+  name: "Nishant",
+  // Regular function method
+  regularGreet() {
+    console.log("Regular:", this.name); 
+  },
+  // Arrow function method
+  arrowGreet: () => {
+    console.log("Arrow:", this.name); 
+  }
+};
+
+user.regularGreet(); // "Regular: Nishant"
+user.arrowGreet();   // "Arrow: undefined" (or empty string, because 'this' points to the Window object)
+```
+
+---
+
+### ⚠️ Common Pitfalls & Interview Triggers
+
+#### A. Losing the Receiver (Implicit Loss)
+A common bug occurs when you copy an object's method to a variable or pass it as a callback (like in `setTimeout`). The connection to the object is lost, and it falls back to **Default Binding**.
+
+```javascript
+const user = {
+  name: "Nishant",
+  greet() {
+    console.log(this.name);
+  }
+};
+
+const looseGreet = user.greet;
+looseGreet(); // ❌ undefined (Invoked as a plain function!)
+
+// Fix with bind:
+const fixedGreet = user.greet.bind(user);
+fixedGreet(); // Output: "Nishant"
+```
+
+#### B. `this` inside Callbacks / Nested Functions
+If you use a regular function inside an array method (like `forEach`) or asynchronous callback, it gets its own `this` which defaults to the global object/undefined.
+
+```javascript
+const group = {
+  title: "Devs",
+  members: ["Alice", "Bob"],
+  showMembers() {
+    this.members.forEach(function(member) {
+      // ❌ 'this' is undefined or window inside this regular callback function
+      console.log(`${this.title}: ${member}`); 
+    });
+  }
+};
+
+// Fix by using an Arrow Function (inherits 'this' from showMembers):
+const groupFixed = {
+  title: "Devs",
+  members: ["Alice", "Bob"],
+  showMembers() {
+    this.members.forEach((member) => {
+      console.log(`${this.title}: ${member}`); // Output: "Devs: Alice", "Devs: Bob"
+    });
+  }
+};
+```
+
+---
+
+### 📊 Summary of Precedence
+
+If multiple rules apply, here is the hierarchy from **highest priority** to **lowest**:
+
+1. **`new` Binding** (`new Person()`)
+2. **Explicit Binding** (`func.call(obj)`)
+3. **Implicit Binding** (`obj.func()`)
+4. **Default Binding** (`func()`)
+
+*(Note: Arrow functions bypass this precedence entirely and always use Lexical Binding.)*
 
 </details>
 
@@ -877,6 +1123,21 @@ JavaScript mein multiple promises ko parallelly resolve ya reject (handle) karne
 
 ### 💡 Code Example:
 ```javascript
+// Creating a Promise using new Promise() and consuming it:
+const myPromise = new Promise((resolve, reject) => {
+  const success = true;
+  if (success) {
+    resolve("Success data");
+  } else {
+    reject("Error message");
+  }
+});
+
+myPromise
+  .then((data) => console.log(data))   // Output: "Success data"
+  .catch((error) => console.log(error));
+
+// Shorthand promises:
 const p1 = Promise.resolve("A");
 const p2 = Promise.reject("B");
 const p3 = Promise.resolve("C");
@@ -1020,46 +1281,163 @@ function throttle(fn, limit) {
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-A function that either:
-1. Takes one or more functions as arguments.
-2. Returns a function as its result.
+A **Higher-Order Function (HOF)** is a function that does at least one of the following:
+1. **Takes one or more functions as arguments** (callbacks).
+2. **Returns a function as its result**.
 
-Examples: `map`, `filter`, `reduce`, `setTimeout`.
+This is possible in JavaScript because functions are **First-Class Citizens**. This means functions can be treated like any other value: they can be assigned to variables, stored in objects/arrays, passed as arguments, and returned from other functions.
+
+---
+
+#### 1. Case 1: Passing a Function as an Argument
+These are extremely common. The function passed in is called a **callback**.
+
+```javascript
+// A higher-order function that takes a callback
+function repeat(n, action) {
+  for (let i = 0; i < n; i++) {
+    action(i); // Calling the callback function
+  }
+}
+
+// Consuming the HOF by passing a function
+repeat(3, (index) => {
+  console.log(`Iteration number: ${index}`);
+});
+```
+*   **Built-in examples:** Array methods (`map`, `filter`, `reduce`, `forEach`, `sort`), asynchronous helpers (`setTimeout`, `setInterval`), and DOM event listeners (`addEventListener`).
+
+---
+
+#### 2. Case 2: Returning a Function
+A higher-order function can also create and return a new function (often creating a **closure**).
+
+```javascript
+// A higher-order function that returns a new function
+function createMultiplier(multiplier) {
+  return function(num) {
+    return num * multiplier; // Retains access to 'multiplier'
+  };
+}
+
+const double = createMultiplier(2);
+const triple = createMultiplier(3);
+
+console.log(double(5)); // 10
+console.log(triple(5)); // 15
+```
+
+---
+
+#### 3. Why use Higher-Order Functions?
+*   **Abstraction:** They hide the details of *how* to do something (like looping through an array) and let you focus on *what* you want to achieve.
+*   **Reusability & Modularity:** You can write generic functions and specialize their behavior by passing different callbacks.
+*   **Declarative Code:** They make code shorter, cleaner, and easier to read.
 
 </details>
 
 <hr/>
 
-### ❓ Q38. **What is currying in JavaScript?**
+### ❓ Q38. **What is currying in JavaScript? Why do we use it when normal functions work?**
 
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-Currying transforms a function with multiple arguments into a sequence of functions, each taking a single argument.
+**Currying** is a functional programming technique where a function with multiple arguments is transformed into a sequence of nested functions, each taking a single argument at a time.
 
-```js
-// Normal
+```javascript
+// Normal function
 function add(a, b) { return a + b; }
+add(2, 3); // 5
 
-// Curried
+// Curried function
 function add(a) {
   return function(b) {
     return a + b;
   };
 }
 add(2)(3); // 5
+```
 
-// Generic curry utility
+---
+
+#### ❓ **Why do we need Currying if normal functions work?**
+
+While normal functions work perfectly for single invocations, currying provides powerful benefits when building complex applications:
+
+##### 1. Parameter Reuse & Pre-configuration (Partial Application)
+If you need to call a function multiple times where one of the arguments remains the same, currying allows you to "lock in" that argument once and get a specialized helper function in return.
+
+**Example: A logger utility**
+```javascript
+// Normal function (You have to repeat 'date' and 'importance' every single time)
+function log(date, importance, message) {
+  console.log(`[${date.toLocaleTimeString()}] [${importance}] ${message}`);
+}
+log(new Date(), "DEBUG", "Testing user input");
+log(new Date(), "DEBUG", "Checking database connection");
+
+// Curried version
+const curriedLog = (date) => (importance) => (message) => {
+  console.log(`[${date.toLocaleTimeString()}] [${importance}] ${message}`);
+};
+
+// Create a specialized logger for "today"
+const logToday = curriedLog(new Date());
+
+// Create a highly specific logger for "today's debug messages"
+const logDebugToday = logToday("DEBUG");
+
+// Now you only need to pass the actual message!
+logDebugToday("Testing user input");       // [23:30:15] [DEBUG] Testing user input
+logDebugToday("Checking database connection"); // [23:30:15] [DEBUG] Checking database connection
+```
+
+##### 2. Custom Function Templates
+You can create templates of functions. For instance, in an API service, you can fix the base URL or API key:
+
+```javascript
+const makeRequest = (baseUrl) => (endpoint) => (params) => {
+  return fetch(`${baseUrl}/${endpoint}?${new URLSearchParams(params)}`);
+};
+
+// Lock in the base URL once
+const myApi = makeRequest("https://api.github.com");
+
+// Use the pre-configured instance for different endpoints
+const getProfile = myApi("users");
+const getRepos = myApi("repos");
+
+getProfile({ username: "Nishant" });
+```
+
+##### 3. Better Function Composition
+In functional programming, you chain functions together so the output of one becomes the input of another. Currying ensures functions take **exactly one argument** (unary functions) which makes composing them straightforward and elegant.
+
+---
+
+#### 🛠️ Generic Curry Utility
+Here is how you can write a utility function to automatically convert any normal function into a curried one:
+
+```javascript
 const curry = (fn) => {
-  const arity = fn.length;
+  const arity = fn.length; // Number of arguments the original function expects
   return function curried(...args) {
-    if (args.length >= arity) return fn(...args);
+    // If we have enough arguments, execute the original function
+    if (args.length >= arity) {
+      return fn(...args);
+    }
+    // Otherwise, return a function to collect more arguments
     return (...next) => curried(...args, ...next);
   };
 };
-```
 
-> 🎯 **Use cases:** Partial application, function composition, configuration.
+// Usage:
+const sum = (a, b, c) => a + b + c;
+const curriedSum = curry(sum);
+console.log(curriedSum(1)(2)(3)); // 6
+console.log(curriedSum(1, 2)(3)); // 6
+```
 
 </details>
 

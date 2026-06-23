@@ -409,4 +409,4 @@ Server-side protection is recommended because it prevents any UI flash.
 
 ---
 
-← Previous: [06_Components_Layouts.md](06_Components_Layouts.md) | Next: [08_Performance_Optimization.md](08_Performance_Optimization.md) →
+← Previous: [06_Components_Layouts.md](06_Components_Layouts.md) | Index: [00_index.md](00_index.md) | Next: [08_Performance_Optimization.md](08_Performance_Optimization.md) →

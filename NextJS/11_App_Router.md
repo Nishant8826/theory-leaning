@@ -306,4 +306,4 @@ export default function Layout({ children, team, analytics }) {
 
 ---
 
-← Previous: [10_Deployment.md](10_Deployment.md) | Next: [12_Middleware.md](12_Middleware.md) →
+← Previous: [10_Deployment.md](10_Deployment.md) | Index: [00_index.md](00_index.md) | Next: [12_Middleware.md](12_Middleware.md) →

@@ -333,4 +333,4 @@ export async function getStaticPaths() {
 
 ---
 
-← Previous: [03_Rendering_Methods.md](03_Rendering_Methods.md) | Next: [05_API_Routes.md](05_API_Routes.md) →
+← Previous: [03_Rendering_Methods.md](03_Rendering_Methods.md) | Index: [00_index.md](00_index.md) | Next: [05_API_Routes.md](05_API_Routes.md) →

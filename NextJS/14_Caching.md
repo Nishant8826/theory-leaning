@@ -296,4 +296,4 @@ export async function POST(request) {
 
 ---
 
-← Previous: [13_Server_Actions.md](13_Server_Actions.md) | Next: [99_Revision_CheatSheet.md](99_Revision_CheatSheet.md) →
+← Previous: [13_Server_Actions.md](13_Server_Actions.md) | Index: [00_index.md](00_index.md) | Next: [99_Revision_CheatSheet.md](99_Revision_CheatSheet.md) →
