@@ -1,6 +1,6 @@
 # 🅰️ Angular – Complete Revision Guide
 
-Welcome to the Angular master module revision sheet. This document aggregates all key architectural concepts, configuration commands, typescript syntax, design analogies, production best practices, and interview-prep notes from every topic in this directory, allowing you to perform a complete revision of Angular from a single index file.
+Welcome to the Angular master module revision sheet. Is document me saare key architectural concepts, configuration commands, typescript syntax, design analogies, production best practices, aur interview-prep notes ko is directory ke har topic se aggregate kiya gaya hai, taaki aap ek single index file se Angular ka complete revision kar sakein.
 
 ---
 
@@ -42,11 +42,11 @@ Welcome to the Angular master module revision sheet. This document aggregates al
 ## 01. Introduction to Angular
 🔗 **Full Lesson:** [01_Introduction_to_Angular.md](./01_Introduction_to_Angular.md)
 
-* **Why It Exists**: Enforces structural standardizations across enterprise codebases. Bypasses the need to cobble together router, state, and compiler libraries manually.
-* **Real-World Analogy**: A pre-furnished **Custom Smart Home**. It comes with structural plumbing (DI), wiring (Router), and thermostat controls (HttpClient) already integrated. You only add decorations (Components).
-* **Architecture Difference (vs. React/Vue)**:
-  * **React**: A library focusing on UI rendering; leaves architecture decisions (routing, forms, state) to external packages.
-  * **Angular**: A fully-integrated enterprise framework providing all parts (DI, forms, routing, testing, HTTP client) out-of-the-box. Enforces TypeScript.
+* **Why It Exists (Yeh kyun exist karta hai)**: Enterprise codebases me structural standardizations ko enforce karta hai. Router, state, aur compiler libraries ko manually aapas me jodne (cobble together) ki zaroorat ko khatam karta hai.
+* **Real-World Analogy (Real-world Udaharan)**: Ek pre-furnished **Custom Smart Home**. Yeh structural plumbing (DI), wiring (Router), aur thermostat controls (HttpClient) ke sath pehle se hi integrated aata hai. Aapko sirf isme decorations (Components) add karne hote hain.
+* **Architecture Difference (vs. React/Vue) (Architecture me Difference)**:
+  * **React**: Ek library hai jo UI rendering par focus karti hai; architectural decisions (routing, forms, state) ko external packages par chodh deti hai.
+  * **Angular**: Ek fully-integrated enterprise framework hai jo saare parts (DI, forms, routing, testing, HTTP client) out-of-the-box provide karta hai. Yeh TypeScript ko enforce karta hai.
 
 ### Conceptual Comparison:
 ```
@@ -59,8 +59,8 @@ Angular Flow: Change Detection ──> Zone.js (or Zoneless Signals) ──> Dir
 ## 02. Setup and Environment
 🔗 **Full Lesson:** [02_Setup_and_Environment.md](./02_Setup_and_Environment.md)
 
-* **Why It Exists**: Automates code scaffolding, testing environments, and optimized build compilations (tree-shaking and minification) locally and in CI/CD.
-* **Real-World Analogy**: An **Automated Factory Assembly Line**. Instead of hand-carving gears (creating files manually), you run a control panel (CLI) to output pre-tested gears directly into the chassis.
+* **Why It Exists (Yeh kyun exist karta hai)**: Local aur CI/CD me code scaffolding, testing environments, aur optimized build compilations (tree-shaking aur minification) ko automate karta hai.
+* **Real-World Analogy (Real-world Udaharan)**: Ek **Automated Factory Assembly Line**. Manually gears generate karne (files manually create karne) ke bajaye, aap ek control panel (CLI) run karte hain taaki pre-tested gears directly chassis me output ho sakein.
 
 ### Key CLI Commands:
 ```bash
@@ -77,8 +77,8 @@ ng build --configuration production                      # Compile optimized pro
 ## 03. TypeScript Fundamentals
 🔗 **Full Lesson:** [03_Typescript_Fundamentals.md](./03_Typescript_Fundamentals.md)
 
-* **Why It Exists**: Captures data mismatches, null values, and contract breaking at compile-time before code gets deployed to users.
-* **Real-World Analogy**: **Construction Blueprints**. Checking blueprint specifications before pouring concrete avoids realizing later that the support pillars are misaligned.
+* **Why It Exists (Yeh kyun exist karta hai)**: Code ko users ke paas deploy karne se pehle compile-time par data mismatches, null values, aur contract breaking ko catch karta hai.
+* **Real-World Analogy (Real-world Udaharan)**: **Construction Blueprints**. Concrete daalne se pehle blueprint specifications ko check karne se aap is baat se bach jaate hain ki baad me pata chale ki support pillars misaligned hain.
 
 ### Key Syntax Configurations:
 ```typescript
@@ -92,15 +92,15 @@ function getUserData<T>(userId: string): Promise<Response<T>> {
 ```
 
 > [!IMPORTANT]
-> **Interface vs Type**: Use `interface` for declaring public API structures and classes (due to declaration merging and OOP extensibility). Use `type` for complex unions, tuples, or utility types.
+> **Interface vs Type (Interface vs Type)**: Public API structures aur classes ko declare karne ke liye `interface` ka use karein (declaration merging aur OOP extensibility ke karan). Complex unions, tuples, ya utility types ke liye `type` ka use karein.
 
 ---
 
 ## 04. Angular Architecture
 🔗 **Full Lesson:** [04_Angular_Architecture.md](./04_Angular_Architecture.md)
 
-* **Why It Exists**: Replaces modular code bundling (`NgModule`) with standalone component structures to reduce boilerplate and improve tree-shaking performance.
-* **Real-World Analogy**: A **Self-Sufficient Smart Village**. Instead of a central electricity station distributing utility configurations (NgModule), each house has its own solar panels and battery backup systems (Standalone components declaring imports).
+* **Why It Exists (Yeh kyun exist karta hai)**: Boilerplate code ko kam karne aur tree-shaking performance ko behtar banane ke liye modular code bundling (`NgModule`) ko standalone component structures se replace karta hai.
+* **Real-World Analogy (Real-world Udaharan)**: Ek **Self-Sufficient Smart Village**. Ek central electricity station jo utility configurations distribute karta hai (`NgModule`), uski jagah har ghar ke paas apne solar panels aur battery backup systems hain (Standalone components declaring imports).
 
 ### Bootstrapping Flow:
 ```typescript
@@ -118,8 +118,8 @@ bootstrapApplication(AppComponent, appConfig)
 ## 05. Components and Templates
 🔗 **Full Lesson:** [05_Components_and_Templates.md](./05_Components_and_Templates.md)
 
-* **Why It Exists**: Unifies presentation markup (HTML) and UI logic (TS class) into reusable, self-contained view modules.
-* **Real-World Analogy**: **Vehicle Instrument Panel**. The engine controller (TS class) updates speed displays (Property Binding) and registers driver dial adjustment events (Event Binding) synchronously.
+* **Why It Exists (Yeh kyun exist karta hai)**: Presentation markup (HTML) aur UI logic (TS class) ko reusable, self-contained view modules me unify karta hai.
+* **Real-World Analogy (Real-world Udaharan)**: **Vehicle Instrument Panel**. Engine controller (TS class) speed displays (Property Binding) ko update karta hai aur driver dial adjustment events (Event Binding) ko synchronously register karta hai.
 
 ### Binding Syntax:
 ```html
@@ -135,12 +135,12 @@ bootstrapApplication(AppComponent, appConfig)
 ## 06. Pipes
 🔗 **Full Lesson:** [06_Pipes.md](./06_Pipes.md)
 
-* **Why It Exists**: Formats raw variables in templates on-the-fly without polluting component controllers with formatting logic.
-* **Real-World Analogy**: **Water Filtration Nozzles**. Raw water enters the hose; different nozzles output mist, stream, or spray options without changing the source water supply.
+* **Why It Exists (Yeh kyun exist karta hai)**: Component controllers ko formatting logic se pollute kiye bina HTML templates me dynamic variables ko format karta hai.
+* **Real-World Analogy (Real-world Udaharan)**: **Water Filtration Nozzles**. Raw water pipe me enter karta hai; different nozzles output me mist, stream, ya spray options dete hain bina source water supply ko change kiye.
 
 ### Pure vs Impure Pipes:
-* **Pure Pipe (Default)**: Executes only when reference checks change (highly performant, uses cached calculations).
-* **Impure Pipe**: Executes on every change detection cycle (can create performance issues if doing heavy tasks).
+* **Pure Pipe (Default)**: Sirf tabhi execute hota hai jab reference checks change hote hain (highly performant, cached calculations ka use karta hai).
+* **Impure Pipe**: Har change detection cycle par execute hota hai (agar heavy tasks perform kar rahe hain toh performance issues create kar sakta hai).
 
 ### Key Pipes Syntax:
 ```html
@@ -154,8 +154,8 @@ bootstrapApplication(AppComponent, appConfig)
 ## 07. Directives
 🔗 **Full Lesson:** [07_Directives.md](./07_Directives.md)
 
-* **Why It Exists**: Attaches custom interactive behaviors (Attribute) or conditionally restructures the DOM layout (Structural) directly in elements.
-* **Real-World Analogy**: **Wearable Sensor Badges**. Pinning a badge to a worker triggers notifications when they enter unauthorized zones without modifying the worker's attributes.
+* **Why It Exists (Yeh kyun exist karta hai)**: Elements me directly custom interactive behaviors (Attribute) attach karta hai ya conditionally DOM layout (Structural) ko restructure karta hai.
+* **Real-World Analogy (Real-world Udaharan)**: **Wearable Sensor Badges**. Worker par ek badge pin karne se notifications trigger hoti hain jab wo unauthorized zones me enter karte hain, bina worker ke features ko modify kiye.
 
 ### Attribute Directives and Host Decorators:
 ```typescript
@@ -172,24 +172,24 @@ export class HoverHighlightDirective {
 ## 08. Component Lifecycle
 🔗 **Full Lesson:** [08_Component_Lifecycle.md](./08_Component_Lifecycle.md)
 
-* **Why It Exists**: Hooks developers into key runtime moments (initialization, change updates, and destruction) to execute async calls and cleanup tasks.
-* **Real-World Analogy**: **Theatrical Play Stages**. Setup lighting (ngOnInit), adjust scripts when actors speak (ngOnChanges), check positions (ngAfterViewInit), and strike the set at the end of the show (ngOnDestroy).
+* **Why It Exists (Yeh kyun exist karta hai)**: Developers ko key runtime moments (initialization, change updates, aur destruction) se hook karta hai taaki async calls aur cleanup tasks execute kiye ja sakein.
+* **Real-World Analogy (Real-world Udaharan)**: **Theatrical Play Stages**. Lighting set up karna (ngOnInit), actors ke bolne par scripts adjust karna (ngOnChanges), positions check karna (ngAfterViewInit), aur show ke end me set ko strike karna (ngOnDestroy).
 
 ### Lifecycle Order:
-1. `Constructor`: Class instantiated (never place API calls here).
-2. `ngOnChanges`: Triggered when `@Input` variables change references.
-3. `ngOnInit`: Component initialization (fetch data here).
+1. `Constructor`: Class instantiate hoti hai (yahan kabhi API calls nahi rakhni chahiye).
+2. `ngOnChanges`: Tab trigger hota hai jab `@Input` variables ke references change hote hain.
+3. `ngOnInit`: Component initialization (yahan data fetch karein).
 4. `ngDoCheck`: Custom check handler.
-5. `ngAfterViewInit`: HTML child template DOM queries fully initialized.
-6. `ngOnDestroy`: Cleanup phase (unsubscribe from streams, destroy timers).
+5. `ngAfterViewInit`: HTML child template DOM queries fully initialized ho chuki hain.
+6. `ngOnDestroy`: Cleanup phase (streams se unsubscribe karein, timers ko destroy karein).
 
 ---
 
 ## 09. Component Communication
 🔗 **Full Lesson:** [09_Component_Communication.md](./09_Component_Communication.md)
 
-* **Why It Exists**: Coordinates data sharing, UI events, and structural templating across nested parent-child component boundaries.
-* **Real-World Analogy**: **Office Walkie-Talkies**. Parent managers broadcast tasks down (Inputs), and worker components report back via alert pings (Outputs).
+* **Why It Exists (Yeh kyun exist karta hai)**: Nested parent-child component boundaries ke beech data sharing, UI events, aur structural templating ko coordinate karta hai.
+* **Real-World Analogy (Real-world Udaharan)**: **Office Walkie-Talkies**. Parent managers tasks ko niche broadcast karte hain (Inputs), aur worker components alert pings ke zariye report back karte hain (Outputs).
 
 ### Communication Syntax:
 ```typescript
@@ -211,14 +211,14 @@ export class ChildComponent {
 ## 10. Signals
 🔗 **Full Lesson:** [10_Signals.md](./10_Signals.md)
 
-* **Why It Exists**: Introduces fine-grained reactivity to track status reads. Only updates DOM elements affected by change, bypassing Zone.js dirty-checking overhead.
-* **Real-World Analogy**: **Spreadsheet Cells**. Changing value in cell `A1` immediately updates cell `C1` via formula without checking every other cell in the file.
+* **Why It Exists (Yeh kyun exist karta hai)**: Status reads ko track karne ke liye fine-grained reactivity introduce karta hai. Yeh sirf change se affected DOM elements ko update karta hai, jisse Zone.js dirty-checking overhead bypass ho jata hai.
+* **Real-World Analogy (Real-world Udaharan)**: **Spreadsheet Cells**. Cell `A1` me value change karne se formula ke zariye cell `C1` immediately update ho jata hai bina spreadsheet ke baaki cells ko check kiye.
 
 ### Signals Syntax:
 ```typescript
 const count = signal(0);                                  // Writable Signal
 const doubleCount = computed(() => count() * 2);          // Computed Signal (Cached)
-effect(() => console.log(`Count changed to: ${count()}`)); // Effect (runs on changes)
+const effectRef = effect(() => console.log(`Count changed to: ${count()}`)); // Effect (runs on changes)
 
 count.set(5);                                             // Direct value write
 count.update(val => val + 1);                             // Calculate new state
@@ -229,8 +229,8 @@ count.update(val => val + 1);                             // Calculate new state
 ## 11. Dependency Injection
 🔗 **Full Lesson:** [11_Dependency_Injection.md](./11_Dependency_Injection.md)
 
-* **Why It Exists**: Decouples component logic from instance creations, enabling test mocking and centralizing service instances.
-* **Real-World Analogy**: A **Central Supply Closet**. Instead of every builder manufacturing their own drill (instantiating new services), they ask the supplier (DI Injector) to supply one.
+* **Why It Exists (Yeh kyun exist karta hai)**: Component logic ko instance creations se decouple karta hai, jisse test mocking enable hoti hai aur service instances centralize hote hain.
+* **Real-World Analogy (Real-world Udaharan)**: Ek **Central Supply Closet**. Har builder dwara apni drill manufacture karne (naye services instantiate karne) ke bajaye, wo supplier (DI Injector) se ek drill provide karne ko kehte hain.
 
 ### DI Providers Configuration:
 ```typescript
@@ -249,8 +249,8 @@ export class Component {
 ## 12. Services and Business Logic
 🔗 **Full Lesson:** [12_Services_and_Business_Logic.md](./12_Services_and_Business_Logic.md)
 
-* **Why It Exists**: Prevents UI components from bloating by separating computational state, data mapping, and API networking logic.
-* **Real-World Analogy**: **Restaurant Waiter & Kitchen**. The waiter (Component) only takes orders and serves plates; the kitchen (Service) handles sourcing ingredients, cooking, and plating.
+* **Why It Exists (Yeh kyun exist karta hai)**: Computational state, data mapping, aur API networking logic ko separate karke UI components ko bloat hone se rokta hai.
+* **Real-World Analogy (Real-world Udaharan)**: **Restaurant Waiter & Kitchen**. Waiter (Component) sirf orders leta hai aur plates serve karta hai; kitchen (Service) ingredients source karna, cooking karna, aur plating manage karta hai.
 
 ### Code Pattern:
 ```typescript
@@ -270,8 +270,8 @@ export class CartService {
 ## 13. Routing and Navigation
 🔗 **Full Lesson:** [13_Routing_and_Navigation.md](./13_Routing_and_Navigation.md)
 
-* **Why It Exists**: Dynamically switches page views in client code based on browser URL configurations, preventing full page reloads.
-* **Real-World Analogy**: **Airport Terminals**. The central runway stays fixed; paths route passengers to different gates (components) depending on their boarding tickets.
+* **Why It Exists (Yeh kyun exist karta hai)**: Browser URL configurations ke basis par client code me page views ko dynamically switch karta hai, jisse full page reloads nahi hote.
+* **Real-World Analogy (Real-world Udaharan)**: **Airport Terminals**. Central runway fixed rehta hai; boarding tickets ke dynamic route parameters ke basis par passengers ko alag gates (components) par route kiya jata hai.
 
 ### Route Configs & Functional Guards:
 ```typescript
@@ -291,8 +291,8 @@ export const authGuard: CanActivateFn = (route, state) => {
 ## 14. Template-Driven Forms
 🔗 **Full Lesson:** [14_Template_Driven_Forms.md](./14_Template_Driven_Forms.md)
 
-* **Why It Exists**: Quick, declarative form creation using directive bindings in HTML templates.
-* **Real-World Analogy**: **Paper Questionnaires**. Fill in inputs directly on the sheet; the formatting and fields are predefined on paper.
+* **Why It Exists (Yeh kyun exist karta hai)**: HTML templates me directive bindings ka use karke quick, declarative forms create karta hai.
+* **Real-World Analogy (Real-world Udaharan)**: **Paper Questionnaires**. Sheet par directly inputs ko fill karein; iska formatting aur fields paper par hi predefined hote hain.
 
 ### Form Bindings Template:
 ```html
@@ -308,8 +308,8 @@ export const authGuard: CanActivateFn = (route, state) => {
 ## 15. Reactive Forms
 🔗 **Full Lesson:** [15_Reactive_Forms.md](./15_Reactive_Forms.md)
 
-* **Why It Exists**: Provides a programmatic, type-safe API to build, validate, dynamic-track, and test complex form fields inside class files.
-* **Real-World Analogy**: **Programmatic Spreadsheets**. Creating validation constraints cell-by-cell in code, checking input values, and calculating rules in real-time.
+* **Why It Exists (Yeh kyun exist karta hai)**: Class files ke andar complex form fields ko build, validate, dynamically-track, aur test karne ke liye ek programmatic, type-safe API provide karta hai.
+* **Real-World Analogy (Real-world Udaharan)**: **Programmatic Spreadsheets**. Code me cell-by-cell validation constraints create karna, input values check karna, aur real-time me rules calculate karna.
 
 ### Forms Control Configurations:
 ```typescript
@@ -331,8 +331,8 @@ export class FormComponent {
 ## 16. HttpClient and API Integration
 🔗 **Full Lesson:** [16_HttpClient_and_API_Integration.md](./16_HttpClient_and_API_Integration.md)
 
-* **Why It Exists**: Handles backend networking requests, automatically parses JSON payloads, and handles headers/tokens globally.
-* **Real-World Analogy**: **Registered Shipping Clerk**. Attaches custom delivery stamps (Auth headers) and signs off confirmations before letters leave the building.
+* **Why It Exists (Yeh kyun exist karta hai)**: Backend networking requests ko handle karta hai, JSON payloads ko automatically parse karta hai, aur headers/tokens ko globally handle karta hai.
+* **Real-World Analogy (Real-world Udaharan)**: **Registered Shipping Clerk**. Letters ko building se bahar bhejne se pehle unpar custom delivery stamps (Auth headers) lagana aur signatures verification handle karna.
 
 ### Functional Interceptor and Request Call:
 ```typescript
@@ -349,8 +349,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 ## 17. RxJS Reactive Programming
 🔗 **Full Lesson:** [17_RxJS_Reactive_Programming.md](./17_RxJS_Reactive_Programming.md)
 
-* **Why It Exists**: Manages complex asynchronous event streams, timeouts, and API dependencies using a functional programming paradigm.
-* **Real-World Analogy**: **Assembly Conveyor Belt**. Diverts, aggregates, and transforms items along the belt (using operators) before boxing them.
+* **Why It Exists (Yeh kyun exist karta hai)**: Functional programming paradigm ka use karke complex asynchronous event streams, timeouts, aur API dependencies ko manage karta hai.
+* **Real-World Analogy (Real-world Udaharan)**: **Assembly Conveyor Belt**. Box me pack karne se pehle belt par items ko divert, aggregate, aur transform karna (operators ka use karke).
 
 ### Key Operators Example:
 ```typescript
@@ -368,22 +368,22 @@ searchTerms$.pipe(
 ## 18. State Management
 🔗 **Full Lesson:** [18_State_Management.md](./18_State_Management.md)
 
-* **Why It Exists**: Prevents state scattering by maintaining a predictable single source of truth across enterprise layouts.
-* **Real-World Analogy**: **Company Ledger**. Only accountants (Reducers) can update accounts using transaction slips (Actions) to prevent database discrepancies.
+* **Why It Exists (Yeh kyun exist karta hai)**: Enterprise layouts me single source of truth ko maintain karke state scattering ko rokta hai.
+* **Real-World Analogy (Real-world Udaharan)**: **Company Ledger**. Database discrepancies ko rokne ke liye sirf accounts desk (Reducers) hi transaction slips (Actions) ke zariye accounts ko update kar sakti hai.
 
 ### Store Architecture:
-* **Actions**: Describe the event (e.g. `[Cart] Add Item`).
-* **Reducers**: Pure functions calculating the new state based on actions.
-* **Selectors**: Queries used to fetch specific fields from the state tree.
-* **Effects**: Asynchronous side-effects (e.g. fetching API data).
+* **Actions**: Event ko describe karte hain (e.g. `[Cart] Add Item`).
+* **Reducers**: Actions ke basis par new state calculate karne wale pure functions.
+* **Selectors**: State tree se specific fields ko fetch karne ke liye queries.
+* **Effects**: Asynchronous side-effects (e.g. API data fetch karna).
 
 ---
 
 ## 19. Authentication and Authorization
 🔗 **Full Lesson:** [19_Authentication_and_Authorization.md](./19_Authentication_and_Authorization.md)
 
-* **Why It Exists**: Secures client routes and API requests by managing tokens, expiry validation checks, and role mappings.
-* **Real-World Analogy**: **Theme Park Passes**. Wristbands (Tokens) grant access to ride zones; expired passes are automatically renewed at ticket booths (Refresh Tokens).
+* **Why It Exists (Yeh kyun exist karta hai)**: Tokens, expiry validation checks, aur role mappings ko manage karke client routes aur API requests ko secure karta hai.
+* **Real-World Analogy (Real-world Udaharan)**: **Theme Park Passes**. Wristbands (Tokens) ride zones me entry grant karte hain; expired passes ticket booths (Refresh Tokens) par automatically renew ho jate hain.
 
 ### Refresh Token Interceptor Strategy:
 ```typescript
@@ -405,8 +405,8 @@ return next(req).pipe(
 ## 20. Angular Material
 🔗 **Full Lesson:** [20_Angular_Material.md](./20_Angular_Material.md)
 
-* **Why It Exists**: Standardizes application UIs using ready-made material design components (Data Tables, Dialogs, Inputs).
-* **Real-World Analogy**: **Modular Building Blocks**. Instead of baking custom bricks, you assemble modular panels with built-in accessibility.
+* **Why It Exists (Yeh kyun exist karta hai)**: Ready-made material design components (Data Tables, Dialogs, Inputs) ka use karke application UIs ko standardize karta hai.
+* **Real-World Analogy (Real-world Udaharan)**: **Modular Building Blocks**. Custom bricks ko bake karne ke bajaye, aap built-in accessibility wale modular panels ko assemble karte hain.
 
 ### Component Usage Configuration:
 ```typescript
@@ -426,8 +426,8 @@ export class MaterialComponent {}
 ## 21. Performance Optimization
 🔗 **Full Lesson:** [21_Performance_Optimization.md](./21_Performance_Optimization.md)
 
-* **Why It Exists**: Reduces initial page load times and optimizes runtime execution speeds (change detection cycles).
-* **Real-World Analogy**: **Security Checkpoints**. Skip checks on houses unless their gate alarm is tripped (OnPush change detection strategy).
+* **Why It Exists (Yeh kyun exist karta hai)**: Initial page load times ko reduce karta hai aur runtime execution speeds (change detection cycles) ko optimize karta hai.
+* **Real-World Analogy (Real-world Udaharan)**: **Security Checkpoints**. Gharon par checks skip karna jab tak unki gate alarm trigger na ho (`OnPush` change detection strategy).
 
 ### Optimization Strategy configurations:
 ```typescript
@@ -454,8 +454,8 @@ export class PerfItemComponent {
 ## 22. Testing (Jasmine & Jest)
 🔗 **Full Lesson:** [22_Testing_Jasmine_Jest.md](./22_Testing_Jasmine_Jest.md)
 
-* **Why It Exists**: Ensures code quality and prevents regression bugs when writing changes or upgrading libraries.
-* **Real-World Analogy**: **Flight Simulator**. Test cockpit responses under different conditions before flying actual passengers.
+* **Why It Exists (Yeh kyun exist karta hai)**: Code quality ko ensure karta hai aur changes likhte ya libraries upgrade karte waqt regression bugs ko rokta hai.
+* **Real-World Analogy (Real-world Udaharan)**: **Flight Simulator**. Actual passengers ko fly karne se pehle cockpit responses ko different conditions me test karna.
 
 ### Key TestBed Setup:
 ```typescript
@@ -484,8 +484,8 @@ describe('UserService Spec', () => {
 ## 23. Security Best Practices
 🔗 **Full Lesson:** [23_Security_Best_Practices.md](./23_Security_Best_Practices.md)
 
-* **Why It Exists**: Defends applications from malicious script injections (XSS) and request hijackings (CSRF).
-* **Real-World Analogy**: **Mailroom Sterilizer**. Mail is automatically sanitized before delivery. Bypass options require manager override.
+* **Why It Exists (Yeh kyun exist karta hai)**: Applications ko malicious script injections (XSS) aur request hijackings (CSRF) se defend karta hai.
+* **Real-World Analogy (Real-world Udaharan)**: **Mailroom Sterilizer**. Delivery se pehle mail automatically sanitize hota hai. Bypass karne ke liye managers override checks lagana mandatory hai.
 
 ### Sanitizer Implementation:
 ```typescript
@@ -502,8 +502,8 @@ export class SecurityComponent {
 ## 24. SSR and Advanced Concepts
 🔗 **Full Lesson:** [24_SSR_and_Advanced_Concepts.md](./24_SSR_and_Advanced_Concepts.md)
 
-* **Why It Exists**: Pre-renders templates on Node.js servers to support crawler indices (SEO) and reduce initial render delays.
-* **Real-World Analogy**: **Meal Prepping**. Cook the food in a central kitchen (SSR server) and package it, so clients only need to heat it up (Hydration).
+* **Why It Exists (Yeh kyun exist karta hai)**: Node.js servers par templates ko pre-render karta hai taaki crawler indices (SEO) support ho sakein aur initial render delays reduce hon.
+* **Real-World Analogy (Real-world Udaharan)**: **Meal Prepping**. Central kitchen (SSR server) me food cook karke package karna, taaki clients ko use sirf heat karna pade (Hydration).
 
 ### Platform Check Configs:
 ```typescript
@@ -527,20 +527,20 @@ export class AdvancedComponent {
 ## 25. Enterprise Architecture
 🔗 **Full Lesson:** [25_Enterprise_Architecture.md](./25_Enterprise_Architecture.md)
 
-* **Why It Exists**: Divides code bases into feature domains, decoupling infrastructure, services, and smart vs dumb UI boundaries.
-* **Real-World Analogy**: **Military Command Structure**. Command towers decide maneuvers (Smart Components), while front-line squads execute commands (Dumb Components).
+* **Why It Exists (Yeh kyun exist karta hai)**: Code bases ko feature domains me divide karta hai, jisse infrastructure, services, aur smart vs dumb UI boundaries decouple hote hain.
+* **Real-World Analogy (Real-world Udaharan)**: **Military Command Structure**. Command towers maneuvers decide karte hain (Smart Components), jabki front-line squads commands execute karte hain (Dumb Components).
 
 ### Smart Component (Container) vs Dumb Component (Presentation):
-* **Smart**: Injects services, manages state streams, coordinates network APIs.
-* **Dumb**: Reusable UI blocks, accepts data via `@Input`, emits user events via `@Output`.
+* **Smart**: Services inject karta hai, state streams manage karta hai, network APIs coordinate karta hai.
+* **Dumb**: Reusable UI blocks, `@Input` ke zariye data accept karte hain, `@Output` ke zariye user events emit karte hain.
 
 ---
 
 ## 26. Deployment and CI/CD
 🔗 **Full Lesson:** [26_Deployment_and_CI_CD.md](./26_Deployment_and_CI_CD.md)
 
-* **Why It Exists**: Automates build pipelines, formats stylesheets, runs test suites, and pushes compiled files to server environments.
-* **Real-World Analogy**: **Manufacturing Shipping Center**. Quality check, pack boxes, stamp addresses, and load shipping containers automatically.
+* **Why It Exists (Yeh kyun exist karta hai)**: Build pipelines ko automate karta hai, stylesheets format karta hai, test suites run karta hai, aur server environments me compiled files ko push karta hai.
+* **Real-World Analogy (Real-world Udaharan)**: **Manufacturing Shipping Center**. Quality check, pack boxes, stamp addresses, aur shipping containers ko automatically load karna.
 
 ### Production Nginx Routing Configuration (`nginx.conf`):
 ```nginx
@@ -562,44 +562,44 @@ server {
 ## 27. Real World E-Commerce Project
 🔗 **Full Lesson:** [27_Real_World_ECommerce_Project.md](./27_Real_World_ECommerce_Project.md)
 
-* **Why It Exists**: Practical integration of lazy-loaded routes, state stores, secure authentication, API interceptors, and checkout paths in a unified project.
-* **Real-World Analogy**: **Online Mall**. Integrates display shelves (catalog feature), user accounts (auth feature), cashiers (payment feature), and shopping carts (state feature).
+* **Why It Exists (Yeh kyun exist karta hai)**: Lazy-loaded routes, state stores, secure authentication, API interceptors, aur checkout paths ka ek unified project me practical integration.
+* **Real-World Analogy (Real-world Udaharan)**: **Online Mall**. Display shelves (catalog feature), user accounts (auth feature), cashiers (payment feature), aur shopping carts (state feature) ko integrate karta hai.
 
 ---
 
 ## 28. Beginner Interview Prep
 🔗 **Full Lesson:** [28_Interview_Prep_Beginner.md](./28_Interview_Prep_Beginner.md)
 
-* **Scope**: Evaluates knowledge of basic directive syntax, TypeScript bindings, and setup workflows.
-* **Example Question**: *What is the difference between `@Input` and `@Output`?*
-  * **Answer**: `@Input` passes data down from parent components to child components. `@Output` uses `EventEmitter` to bubble up action events from children to parents.
+* **Scope (Scope)**: Basic directive syntax, TypeScript bindings, aur setup workflows ke knowledge ko evaluate karta hai.
+* **Example Question (Example Question)**: *What is the difference between `@Input` and `@Output`?*
+  * **Answer**: `@Input` parent component se child component me data pass karta hai. `@Output` child se parent components me action events bubble karne ke liye `EventEmitter` ka use karta hai.
 
 ---
 
 ## 29. Interview Prep - Intermediate
 🔗 **Full Lesson:** [29_Interview_Prep_Intermediate.md](./29_Interview_Prep_Intermediate.md)
 
-* **Scope**: Evaluates knowledge of reactive form schemas, custom validation, pipes, directives, and lifecycle hooks.
-* **Example Question**: *What is the difference between Reactive Forms and Template-Driven Forms?*
-  * **Answer**: Template-driven forms use declarative directives (like `ngModel`) in the HTML template (easier, relies on two-way bindings). Reactive forms are declared programmatically in the TypeScript class (type-safe, scalable, testable, runs via RxJS streams).
+* **Scope (Scope)**: Reactive form schemas, custom validation, pipes, directives, aur lifecycle hooks ke knowledge ko evaluate karta hai.
+* **Example Question (Example Question)**: *What is the difference between Reactive Forms and Template-Driven Forms?*
+  * **Answer**: Template-driven forms HTML template me declarative directives (jaise `ngModel`) ka use karte hain (simple, relies on two-way bindings). Reactive forms TypeScript class me programmatically declare hote hain (type-safe, scalable, testable, runs via RxJS streams).
 
 ---
 
 ## 30. Interview Prep - Advanced
 🔗 **Full Lesson:** [30_Interview_Prep_Advanced.md](./30_Interview_Prep_Advanced.md)
 
-* **Scope**: Evaluates custom DI providers, performance, change detection, complex RxJS operators, and token refresh interceptors.
-* **Example Question**: *Explain how OnPush change detection improves performance.*
-  * **Answer**: By default, change detection traverses the entire component tree. `OnPush` tells Angular to skip checking a component and its children unless its `@Input` property references update, a component event fires, or change detection is triggered manually.
+* **Scope (Scope)**: Custom DI providers, performance, change detection, complex RxJS operators, aur token refresh interceptors ko evaluate karta hai.
+* **Example Question (Example Question)**: *Explain how OnPush change detection improves performance.*
+  * **Answer**: Default change detection poore component tree ko traverse karta hai. `OnPush` Angular ko component aur uske children ko check karne se skip karne ko kehta hai jab tak uski `@Input` property references update na hon, component event fire na ho, ya manually change detection trigger na kiya jaye.
 
 ---
 
 ## 31. Scenario and System Design
 🔗 **Full Lesson:** [31_Interview_Prep_Scenario_and_System_Design.md](./31_Interview_Prep_Scenario_and_System_Design.md)
 
-* **Scope**: Enterprise systems architecture, monorepos, state management boundaries, caching interceptors, and SSR hydration.
-* **Example Question**: *How do you build a caching HTTP interceptor in Angular?*
-  * **Answer**: Use a Map cache. The interceptor intercepts outgoing `GET` requests, checks if the URL exists in the map cache, and if so, returns a cached `HttpResponse` observable. If it does not exist, it executes the network call, saves the response in the map cache, and sets an expiration timer.
+* **Scope (Scope)**: Enterprise systems architecture, monorepos, state management boundaries, caching interceptors, aur SSR hydration.
+* **Example Question (Example Question)**: *How do you build a caching HTTP interceptor in Angular?*
+  * **Answer**: Ek Map cache use karein. Interceptor outgoing `GET` requests ko intercept karta hai, check karta hai ki URL map cache me hai ya nahi, aur agar hai, toh cached `HttpResponse` observable return karta hai. Agar nahi hai, toh network call execute karta hai, map cache me response save karta hai, aur expiration timer set karta hai.
 
 ---
 Previous : [00_index.md](./00_index.md) | Index : [00_index.md](./00_index.md) | Next : [01_Introduction_to_Angular.md](./01_Introduction_to_Angular.md)

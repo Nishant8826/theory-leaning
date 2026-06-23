@@ -1,10 +1,10 @@
 # Component Lifecycle
 
 ## What is it?
-The Component Lifecycle represents the series of phases a component passes through from its initial instantiation to its final destruction. Angular provides "lifecycle hooks"—interfaces that allow us to intercept these phases and run custom logic during those transitions.
+Component Lifecycle un phases ki series ko represent karta hai jisse ek component apni instantiation (banne) se lekar final destruction (khatam hone) tak guzarta hai. Angular "lifecycle hooks" (kuch interfaces) provide karta, jisse hum in phases ko intercept kar sakte hain aur un transitions ke dauran custom logic run kar sakte hain.
 
 ## Why do we need it?
-A component needs to perform setup tasks (like fetching API data) and cleanup tasks (like cancelling timers or unsubscribing from active event streams). Without lifecycle hooks, developers wouldn't know when a component's inputs are ready, when its children are rendered, or when it is about to be removed from the DOM, leading to errors and memory leaks.
+Ek component ko setup tasks (jaise API data fetch karna) aur cleanup tasks (jaise active timers stop karna ya event streams unsubscribe karna) karne ki zaroorat hoti hai. Lifecycle hooks ke bina, developers ko pata nahi chalega ki component ke inputs kab ready hain, uske child elements kab render ho chuke hain, ya kab component ko DOM se remove kiya ja raha hai, jiski wajah se rendering errors aur memory leaks ho sakte hain.
 
 ```
 Lifecycle Hook Execution Order:
@@ -14,31 +14,36 @@ Constructor ──> ngOnChanges ──> ngOnInit ──> ngDoCheck
 ```
 
 ## How does it work?
-Angular manages the lifecycle internally. As it traverses the component tree, it executes specific hook methods sequentially if they are implemented on the component class:
+Angular lifecycle ko internally manage karta hai. Jab yeh component tree ko traverse karta hai, toh serial wise in hook methods ko execute karta hai agar wo component class par implemented hain:
 
-1. **`constructor()`**: Native ES6 class initialization. Dependency Injection resolution occurs here. No DOM elements or input properties are ready yet.
-2. **`ngOnChanges()`**: Triggered when any input bindings (`@Input` or signal inputs) change references.
-3. **`ngOnInit()`**: Runs once after inputs are bound. This is the recommended place to perform initial data fetching.
-4. **`ngDoCheck()`**: Runs immediately after `ngOnChanges` and `ngOnInit` on every change detection cycle. Used to detect changes that Angular's default change detection mechanism misses.
-5. **`ngAfterContentInit()`**: Runs once after Angular projects external content (via `<ng-content>`) into the component's template.
-6. **`ngAfterContentChecked()`**: Runs after every check of the projected content during change detection cycles.
-7. **`ngAfterViewInit()`**: Executes once after the component's template views and all nested child components are fully rendered in the DOM.
-8. **`ngAfterViewChecked()`**: Runs after every check of the component's view and child views during change detection cycles.
-9. **`ngOnDestroy()`**: Runs right before the component is destroyed. Essential for cleaning up resources, unsubscribing from streams, and clearing timers to prevent memory leaks.
+1. **`constructor()`**: Native ES6 class initialization phase. Dependency Injection resolution yahan hoti hai. Is waqt tak DOM elements ya `@Input` properties setup nahi hue hote.
+2. **`ngOnChanges()`**: Jab bhi parent component se aane wali input bindings (`@Input` ya signal inputs) ke values change hote hain, tab yeh trigger hota hai.
+3. **`ngOnInit()`**: Inputs bind hone ke baad ek hi baar run hota hai. API calls ya initialization tasks ke liye yeh sabse sahi jagah hai.
+4. **`ngDoCheck()`**: Har change detection cycle me `ngOnChanges` aur `ngOnInit` ke thik baad chalta hai. Aise changes detect karne ke liye use hota hai jo default Change Detection mechanism se miss ho jate hain.
+5. **`ngAfterContentInit()`**: Component ke template me external content (`<ng-content>`) load hone ke baad ek baar chalta hai.
+6. **`ngAfterContentChecked()`**: Projected content ko check karne ke baad har cycle me execute hota hai.
+7. **`ngAfterViewInit()`**: Component ka template layout aur saare child component structures browser me fully render hone ke baad ek baar run hota hai.
+8. **`ngAfterViewChecked()`**: View check hone ke baad har cycle par execute hota hai.
+9. **`ngOnDestroy()`**: Component destroy hone se thik pehle run hota hai. Resources free karne, active subscriptions close karne, aur memory leaks block karne ke liye yeh critical hai.
 
 ## Impact
-* **Application Architecture**: Directs where data loading, DOM queries, and resource cleanups take place.
-* **Performance**: Proper use of hooks prevents memory leaks, slow loading, and layout shifts.
-* **Maintainability**: Keeps initialization logic isolated from teardown and event logic.
+* **Application Architecture**: Data loading, DOM logic, aur resource cleanup actions ko unki correct stages par align karta hai.
+* **Performance**: Proper hooks use karne se client memory leaks aur extra layout rendering shifts se bacha ja sakta hai.
+* **Maintainability**: Component setup code aur teardown actions ko clean segments me structure karta hai.
+
 ## Real World Example
-In a stock trading widget, `ngOnInit` starts a WebSocket connection to fetch stock prices, `ngOnChanges` updates the chart when a new stock symbol is selected, and `ngOnDestroy` closes the WebSocket connection when the user leaves the page.
+Ek stock trading application me, `ngOnInit` WebSocket connection set up karke prices stream karna shuru karta hai, `ngOnChanges` chart design update karta hai jab stock code badalta hai, aur `ngOnDestroy` network connections close kar deta hai jab user page navigate kar jata hai.
 
 ## Syntax
-To implement a lifecycle hook, import the interface and implement its corresponding method:
+Lifecycle hook use karne ke liye, interfaces import karein aur method declare karein:
 ```typescript
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
-@Component({ ... })
+@Component({
+  selector: 'app-demo',
+  standalone: true,
+  template: `<p>Lifecycle Demo</p>`
+})
 export class MyComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Component initialization logic
@@ -50,25 +55,8 @@ export class MyComponent implements OnInit, OnDestroy {
 }
 ```
 
-## Hinglish Explanation
-
-Lifecycle hooks bilkul **"Ek insaan ke janam se lekar marne tak ke stages (infancy, childhood, adulthood, old age)"** ki tarah hain. Angular me jab component banta hai, screen par dikhta hai, aur destroy hota hai, toh in stages par hum custom code execute kar sakte hain:
-
-### 1. Janam (Creation & Input Setup)
-* **Constructor:** Class bante hi sabse pehle chalta hai. Iska use sirf Dependency Injection (DI) ke liye hona chahiye, na ki API calls ke liye.
-* **ngOnChanges:** Jab bhi koi input property (`@Input()`) parent se child me aati hai ya badalti hai, toh yeh hook chalta hai. Isme hum `previousValue` aur `currentValue` track kar sakte hain.
-* **ngOnInit:** Component fully ready hone par chalta hai. Saari data fetching/API calls aur initializations yahan karni chahiye.
-
-### 2. Barhawat (Rendering & Verification)
-* **ngDoCheck:** Har change detection cycle par chalta hai. Agar dynamic change track karna ho jo Angular nahi pakad pa raha, toh yahan custom logic likh sakte hain (par ise lightweight rakhna chahiye).
-* **ngAfterContentInit / Checked:** Jab component ke andar external content (`ng-content` projection) load aur verify ho jata.
-* **ngAfterViewInit / Checked:** Jab component ka khud ka HTML template (view) aur uske saare child elements fully load ho jate hain. Iske baad hi `@ViewChild` references access kiye ja sakte hain.
-
-### 3. Maut (Cleanup)
-* **ngOnDestroy:** Jab component screen se gayab (destroy) hone wala hota hai. Yahan hum resources ko free karte hain (jaise event listeners hatana, active timers stop karna, aur RxJS subscriptions close/unsubscribe karna) taaki memory leak na ho.
-
 ## Code Examples
-A comprehensive component demonstrating the execution sequence of all lifecycle hooks (including content and view initialization):
+Neeche saare lifecycle hooks ke execution execution flow dikhane wala dynamic logger component implement kiya gaya hai:
 
 ```typescript
 import { 
@@ -92,7 +80,6 @@ import {
     <div class="log-card">
       <h4>Lifecycle Monitor</h4>
       <p>Active User: {{ user }}</p>
-      <!-- Projected content from parent will render here -->
       <ng-content></ng-content>
     </div>
   `,
@@ -151,25 +138,23 @@ export class LifecycleLoggerComponent implements
 ```
 
 ## Best Practices
-1. **Never Make HTTP Requests in the Constructor**: Delegate API fetches to `ngOnInit` to ensure input properties are fully set.
-2. **Always Unsubscribe in `ngOnDestroy`**: Clean up WebSocket streams, RxJS subscriptions (unless using `Async` pipe), timers, and global listeners in `ngOnDestroy`.
-3. **Keep `ngDoCheck` Thin**: `ngDoCheck` runs on every change detection cycle. Putting heavy computations here will slow down the application.
+1. **Never Make HTTP Requests in the Constructor**: Constructor ke andar kabhi API calls na lagayein, hamesha `ngOnInit` use karein taaki input properties fully ready rahein.
+2. **Always Unsubscribe in `ngOnDestroy`**: Memory leaks se bachne ke liye `ngOnDestroy` me RxJS subscriptions (agar template me `Async` pipe nahi use kiya hai) aur background timers ko unsubscribe/clear karein.
+3. **Keep `ngDoCheck` Thin**: `ngDoCheck` har change detection cycle par chalta hai, isliye isme heavy loops likhne se page slow ho jayega.
 
 ## Common Mistakes
-* **Querying children before ViewInit**: Querying element references via `@ViewChild` inside `ngOnInit` will return `undefined`. These elements are only available after `ngAfterViewInit` runs.
-* **Modifying input data inside ngOnChanges**: Mutating incoming input bindings directly in `ngOnChanges`, which can lead to values changing unexpectedly and trigger the `ExpressionChangedAfterItHasBeenCheckedError`.
+* **Querying children before ViewInit**: `ngOnInit` stage par child references query (`@ViewChild`) karna. Is stage par child references `undefined` show honge, kyunki templates render phase `ngAfterViewInit` ke baad setup hota hai.
+* **Modifying input data inside ngOnChanges**: `ngOnChanges` loop me direct input values mutate karna. Isse components variables values alter ho sakti hain aur `ExpressionChangedAfterItHasBeenCheckedError` aa sakta hai.
 
 ## Interview Questions & Answers
 ### Q: What is the purpose of `ngOnChanges` and when is it called?
-**A**: `ngOnChanges` is executed before `ngOnInit` and whenever Angular detects a change to any component input binding (`@Input`). It receives a `SimpleChanges` object mapping input property names to their current and previous values, which is useful for responding to dynamic value changes.
-* **Hinglish Explanation**: `ngOnChanges` hook sabse pehle (constructor ke baad aur `ngOnInit` se pehle) chalta hai, aur tab-tab execute hota hai jab bhi koi `@Input` binding value badalti hai. Isme hume `SimpleChanges` object milta hai, jisse hum check kar sakte hain ki input variable ki `currentValue` aur `previousValue` kya thi.
+**A**: `ngOnChanges` tab call hota hai jab variable inputs reference badalte hain. Yeh SimpleChanges object mapping accept karta hai jahan data variables ki dynamic `currentValue` aur `previousValue` verify ho jati hai.
 
 ### Q: Why shouldn't you write data fetching logic inside the component constructor?
-**A**: The constructor is a feature of the ES6 class itself, not Angular. When the constructor runs, Angular hasn't initialized the component's input properties or bound data, meaning any inputs needed for the fetch will be `undefined`. `ngOnInit` is the correct hook because it runs after input bindings are ready.
-* **Hinglish Explanation**: Constructor ek basic JavaScript/TypeScript class ka feature hai, Angular ka nahi. Jab constructor chalta hai, tab tak Angular component ke input variables (`@Input`) ko initialize nahi kar pata. Agar aap data fetch karne ke liye inputs ka use kar rahe hain, toh wo constructor ke andar `undefined` milenge. `ngOnInit` par inputs fully initialized hote hain, isliye API calls wahan karna standard hai.
+**A**: Constructor native JS engine class execution structure hai. Is phase me variables values aur properties bindings binded status me ready nahi hote. Angular lifecycle hook `ngOnInit` exact location hai API call run karne ke liye.
 
 ## Summary
-Lifecycle hooks intercept various stages of component execution. Use `ngOnChanges` to react to input updates, `ngOnInit` for data initialization, `ngAfterViewInit` for template DOM operations, and `ngOnDestroy` to clean up resources.
+Lifecycle hooks component execution stages ko control karte hain. Input updates react ke liye `ngOnChanges`, variables fetch ke liye `ngOnInit`, template elements access ke liye `ngAfterViewInit`, aur cleanup actions ke liye `ngOnDestroy` use karein.
 
 ---
 

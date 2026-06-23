@@ -1,10 +1,10 @@
 # Authentication and Authorization
 
 ## What is it?
-Authentication is the process of verifying a user's identity (who they are). Authorization is the process of verifying their access permissions (what they are allowed to do). In Angular, this is managed using JSON Web Tokens (JWT), HTTP Interceptors, Route Guards, and role-based checks.
+Authentication user identity verify karne ka process hai (ki user kaun hai). Authorization user access permissions check karne ka process hai (ki user ko kya-kya karne ki permission hai). Angular applications me ise JSON Web Tokens (JWT), HTTP Interceptors, functional Route Guards, aur role-based check logics ke zariye handle kiya jata hai.
 
 ## Why do we need it?
-Without authentication and authorization, users could access restricted parts of an application (like administrative settings or billing dashboards) by entering the URL path directly. Angular applications need to restrict access to routes, add security tokens to API requests, and handle token expiration securely.
+Authentication aur Authorization ke bina koi bhi user secure paths (jaise administrative dashboards ya billing reports pages) ko browser URL address bar me direct link write karke access kar sakega. Angular apps me routes access restricts set karne, client network requests me token headers attach karne, aur token expiration parameters coordinate check handle karne ke liye in frameworks ki zaroorat hoti hai.
 
 ```
 Access Request Flow:
@@ -15,18 +15,18 @@ User navigates to /admin ──> CanMatch/CanActivate Guard checks JWT
 ```
 
 ## How does it work?
-1. **JWT (JSON Web Tokens)**: The server issues an Access Token (short-lived) to authenticate API requests, and a Refresh Token (long-lived) to request new access tokens when they expire.
-2. **Secure Client Storage**: Access tokens are stored in memory or SessionStorage, while refresh tokens can be stored in HTTP-only cookies to prevent cross-site scripting (XSS) attacks.
-3. **Route Guards**: Functional gatekeepers (like `CanActivate` and `CanMatch`) that check if a user is logged in and authorized before loading components.
-4. **HTTP Interceptors**: Automatically append the `Authorization: Bearer <token>` header to outgoing API requests.
+1. **JWT (JSON Web Tokens)**: Authentication verify rakhne ke liye server user validation par Access Token (short-lived) return karta hai, aur session check maintenance ke liye Refresh Token (long-lived) assign karta hai jo access token expire hone par use renew karne me use hota hai.
+2. **Secure Client Storage**: Access tokens elements dynamic memory contexts/SessionStorage options me place kiye jate hain, jabki Refresh tokens cookies security parameters (HTTP-only) options utilize kar store kiye jate hain taaki XSS injections vulnerabilities control rahein.
+3. **Route Guards**: Functional gatekeepers (jaise `CanActivate` aur `CanMatch`) jo component render cycles active hone se pehle check run karte hain ki user logged in hai ya authorized hai.
+4. **HTTP Interceptors**: Outgoing backend API requests me `Authorization: Bearer <token>` authorization headers dynamically auto-append aur inject karte hain.
 
 ## Impact
-* **Application Architecture**: Directs routing layouts, separating public routes from private authenticated sub-sections.
-* **Performance**: `CanMatch` prevents unauthorized bundles from being lazy-loaded, saving bandwidth.
-* **Security**: Centralizes authentication headers and token refreshes, protecting sensitive API endpoints.
+* **Application Architecture**: Routes levels check boundary layout setup separation parameters maintain karta hai.
+* **Performance**: `CanMatch` authorization status check failure par lazy load route code bundles dynamic download stop karta hai, jisse client bandwidth aur data usage control hote hain.
+* **Security**: Client authorization token headers inject and refresh operations parameters centrally automate aur verify rakhta hai.
 
 ## Real World Example
-In a healthcare management portal, doctors can view and edit patient records. If a billing clerk attempts to access the record editing route, the `CanMatch` route guard checks their role permissions, blocks the route, and redirects them to the billing page.
+Medical management dashboard portal me, medical staff entries view aur write actions perform kar sakte hain. Jab security desk checker staff coordinates verify kiye bina editing options settings access karke actions trigger karna chahega, toh `CanMatch` guard status check abort kar use billing index login options block page par redirect kar dega.
 
 ## Syntax
 * **Role Guard checking JWT claim**:
@@ -39,31 +39,14 @@ export const roleGuard: CanActivateFn = (route) => {
 };
 ```
 
-## Hinglish Explanation
-
-Authentication aur Authorization ka matlab hai **"Pehchan verify karna aur Permissions check karna"**.
-* **Authentication (Pehchan):** User check karna (jaise login screen validation).
-* **Authorization (Adhikar):** logged-in user ko kin modules ko access karne ki permission hai (e.g. Admin view dashboard vs basic user list).
-
-### 1. Functional Route Guards (Suraksha Guard)
-* Angular routes ko secure karne ke liye guards use hote hain:
-* `canActivate`: Target component open hone dena hai ya login page par redirect karna hai.
-* `canMatch`: User permissions check karke lazy load route assets load hone dena hai ya nahi.
-
-### 2. JWT Interceptor (Pass Card Attacher)
-* Token validation standard follow karne ke liye hum HTTP interceptor use karte hain jo automatic outgoing HTTP API calls ke request parameters clone karke usme `Authorization: Bearer <token>` token attach kar deta hai.
-
-### 3. Silent Refresh Flow (Background Token Update)
-* Access token expire hone par server 401 error return karega, toh interceptor background me dynamic token renew (refresh token API use karke) request bhejta hai aur current requests refresh response validation ke baad new token ke sath automatically send kar deta hai.
-
 ## Code Examples
-Below is a complete implementation demonstrating token refresh handling inside an HTTP Interceptor, along with functional route guards.
+Neeche HTTP Interceptor ke andar token refresh operations, authentication states check aur functional route guards use karne ka full implementation class parameters configure kiya gaya hai:
 
 ### `auth.service.ts`
 ```typescript
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { tap, catchError, throwError, Observable, of } from 'rxjs';
+import { tap, throwError, Observable } from 'rxjs';
 
 export interface AuthResponse {
   accessToken: string;
@@ -76,9 +59,6 @@ export interface AuthResponse {
 })
 export class AuthService {
   private http = inject(HttpClient);
-  private loginUrl = 'https://api.my-app.com/auth/login';
-
-  // Signals to track authentication state
   currentUser = signal<{ name: string; role: string } | null>(null);
 
   getToken(): string | null {
@@ -90,7 +70,6 @@ export class AuthService {
     return user ? user.role === role : false;
   }
 
-  // Request new access token using refresh token
   refreshToken(): Observable<AuthResponse> {
     const rToken = localStorage.getItem('refresh_token');
     if (!rToken) return throwError(() => new Error('No refresh token available'));
@@ -111,7 +90,7 @@ export class AuthService {
 }
 ```
 
-### `jwt.interceptor.ts` (Interceptor with silent refresh flow)
+### `jwt.interceptor.ts`
 ```typescript
 import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
@@ -122,7 +101,6 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const token = authService.getToken();
 
-  // Clone request to add bearer token
   let authReq = req;
   if (token) {
     authReq = req.clone({
@@ -132,18 +110,15 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(authReq).pipe(
     catchError((error) => {
-      // Catch token expiration errors (401 Unauthorized)
       if (error instanceof HttpErrorResponse && error.status === 401) {
         return authService.refreshToken().pipe(
           switchMap((newTokens) => {
-            // Re-try the original request with the new access token
             const retriedReq = req.clone({
               setHeaders: { Authorization: `Bearer ${newTokens.accessToken}` }
             });
             return next(retriedReq);
           }),
           catchError((refreshErr) => {
-            // Silent refresh failed - force log out the user
             authService.logout();
             return throwError(() => refreshErr);
           })
@@ -154,26 +129,25 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
   );
 };
 ```
+
 ## Best Practices
-1. **Store Tokens Securely**: Avoid storing sensitive user information in access tokens. Use HTTP-only cookies for refresh tokens where possible to prevent XSS attacks.
-2. **Use `CanMatch` over `CanActivate`**: Use `CanMatch` to prevent lazy-loaded modules from downloading if the user doesn't have permissions.
-3. **Parse JWT claims on the Server**: Client-side routing checks are for user experience. Always enforce security checks on the server, as client-side code can be modified.
+1. **Store Tokens Securely**: User session tokens parameters local storage checks variables me write na karein. Refresh token handling parameters systems secure HTTP-only cookies boundaries settings implement check apply karein.
+2. **Use `CanMatch` over `CanActivate`**: Route level bundles logic blocks downloading secure coordinate rules apply settings parameters setup me `CanMatch` route filters use karein.
+3. **Parse JWT claims on the Server**: Client side checks routes guards parameters user experiences transitions dynamic layouts settings ke liye hote hain. Core validation checks checks and locks checks hamesha server side interfaces controls targets levels par enforce karein.
 
 ## Common Mistakes
-* **Leaking Tokens**: Appending authorization headers to outgoing requests made to third-party domains (like external image hosts). Always check the request URL in your interceptors before adding tokens.
-* **Storing Tokens in localStorage Permanently**: Leaving access tokens in `localStorage` indefinitely, making them vulnerable to cross-site scripting (XSS) attacks. Use short expiration times.
+* **Leaking Tokens**: Access tokens JWT header values parameters coordinates external dynamic addresses API calls requests me automatically leak parameters update block check indicators missing rakhna.
+* **Storing Tokens in localStorage Permanently**: Token values ko permanent limits me local parameters browser variables memory me place rakhna, jo client script injections vulnerabilities data leak traps increase kar sakta hai.
 
 ## Interview Questions & Answers
 ### Q: What is the difference between `CanActivate` and `CanMatch` route guards?
-**A**: `CanActivate` runs after the code bundle for a route has been downloaded. It determines whether a component can be rendered, but still downloads the code. `CanMatch` runs before the route bundle is downloaded, preventing unauthorized users from downloading the code.
-* **Hinglish Explanation**: `CanActivate` tab chalta hai jab routing path match hone ke baad us page ka code download ho chuka ho, aur yeh check karta hai ki user usey dekh sakta hai ya nahi. `CanMatch` routing selection se pehle hi chalta hai. Agar user authenticated nahi hai, toh yeh usey code bundle download karne hi nahi deta, jisse core enterprise code/secrets secure rehte hain.
+**A**: `CanActivate` code compile files dynamic download check templates updates evaluate actions run check setup follow karta hai. `CanMatch` layout coordinates selection flow run parameters download checks settings run optimize block implement karta hai.
 
 ### Q: How does a silent JWT refresh flow work in an HTTP interceptor?
-**A**: When an API request fails with a `401 Unauthorized` status (indicating an expired token), the interceptor intercepts the error, calls a service to request a new access token using a refresh token, updates storage, and retries the original request with the new token.
-* **Hinglish Explanation**: Silent JWT refresh flow me jab bhi koi API request server se `401 Unauthorized` error (token expire hone ki wajah se) ke sath return hoti hai, toh HTTP Interceptor us request ko catch (pause) kar leta hai. Phir background me ek `refreshToken()` call chalti hai naya token laane ke liye. Naya token milte hi, interceptor purani request ko clone karke usme naya token set karta hai aur use dobara trigger kar deta hai, jisse user ko page refresh nahi karna padta aur fluid user experience milta hai.
+**A**: Server validation response codes checks me interceptor `401 Unauthorized` checks coordinate updates triggers detect karta hai. Yeh background me tokens refresh network checks calls execute parameters complete kar new dynamic token parameters original request me clone kar dynamic updates redirect run kar leta hai.
 
 ## Summary
-Authentication and authorization manage user identity and access permissions in Angular. Functional route guards (`CanMatch`) secure routes, while HTTP interceptors append access tokens and manage silent token refreshes automatically.
+Authentication aur Authorization Angular applications safety check boundaries manage karte hain. Functional route guards (`CanMatch`) layouts protect coordinate setups, HTTP interceptors automatics bearer token setups updates execute secure client servers validations structures manage karte hain.
 
 ---
 

@@ -1,15 +1,13 @@
 # Directives
 
 ## What is it?
-Directives are classes that add new behaviors, styles, or DOM modifications to elements in your Angular templates. They act as instruction sets for Angular's HTML parser, instructing it to attach event handlers, toggle classes, or manipulate layout structures.
 
 ### Simplified Core Definition:
-* **A Component** is a **custom HTML tag** (like `<app-profile-card>`) that defines an entire section of your UI (it has its own HTML template, CSS styles, and TS logic).
-* **A Directive** is a **custom HTML attribute** (like `appZoom` in `<p appZoom>`) that you attach to **already existing HTML tags** (like `<button>`, `<p>`, or `<div>`) to give them new behaviors or styles without modifying the original tags.
-
+* **Component** ek **custom HTML tag** hota hai (jaise `<app-profile-card>`) jo aapke UI ke ek poore section ko define karta hai (iska apna HTML template, CSS styles, aur TS logic hota hai).
+* **Directive** ek **custom HTML attribute** hota hai (jaise `<p appZoom>` me `appZoom`) jise aap **pehle se maujood HTML tags** (jaise `<button>`, `<p>`, ya `<div>`) par lagate hain taaki unhe naya behavior ya style diya ja sake bina original tags me badlaav kiye.
 
 ## Why do we need it?
-While components represent whole visual view blocks, you often need to attach general, reusable behaviors to existing elements (such as showing a tooltip on hover, restricting character inputs, or lazily revealing an element). Writing these behaviors directly inside every component creates duplicate code. Directives solve this by encapsulating visual behavior in standalone decorators that can be applied to any HTML tag.
+Jab components pure visual view blocks ko represent karte hain, toh kai baar aapko existing HTML elements par aam aur reusable behaviors attach karne ki zaroorat hoti hai (jaise hover karne par tooltip dikhana, character inputs restrict karna, ya lazy rendering apply karna). Aise behaviors ko har component ke andar manually likhna duplicate code create karta hai. Directives is problem ko solve karti hain behavior ko ek single, standalone class me wrap karke jise kisi bhi HTML tag par apply kiya ja sakta hai.
 
 ```
 Element:
@@ -20,49 +18,30 @@ Directive intercepts element ──> Attaches HostListeners (click/hover) ──
 ```
 
 ## How does it work?
-1. **Component Directives**: A component is structurally a directive with an attached HTML template.
-2. **Attribute Directives**: Change the appearance or behavior of an element (e.g. `NgStyle`, `NgClass`, custom highlight behavior).
-3. **Structural Directives**: Shape the DOM layout by adding, removing, or swapping element subtrees. They are recognized by the asterisk prefix `*` (e.g. `*ngIf`, `*ngFor` in legacy syntax, and mapped to `@if` / `@for` compilers internally).
+1. **Component Directives**: Ek component structure ke level par directive hi hota hai jiske sath ek HTML template attached hoti hai.
+2. **Attribute Directives**: Yeh element ke look-and-feel ya behavior ko badalte hain (jaise dynamic classes lagane ke liye `NgClass`, custom style badalne ke liye `NgStyle`, ya custom hover behaviors).
+3. **Structural Directives**: Yeh DOM ke layout structure ko manipulate karte hain elements ko add, remove, ya swap karke. Inki pehchan asterisk `*` prefix se hoti hai (jaise legacy syntax me `*ngIf`, `*ngFor` jo background compilation me `@if` aur `@for` control flow blocks me map ho jate hain).
 4. **Host Decoration**:
-   - `@HostBinding`: Binds a host element property (e.g., class names, style attributes) directly to a directive property.
-   - `@HostListener`: Listens for events on the host element (e.g., clicks, hover, scroll) and executes handler methods.
+   - `@HostBinding`: Directive ki property ko host element (jis tag par directive lagaya hai) ki style/class properties ke sath direct bind karta hai.
+   - `@HostListener`: Host element ke native events (jaise click, hover, scroll) ko capture karta hai aur directive method call karta hai.
 
 ## Impact
-* **Application Architecture**: Decouples DOM behavior from component presentation, creating modular utility classes.
-* **Performance**: Lightweight and compiler-optimized. They compile directly to surgical DOM adjustments.
-* **Scalability**: Custom validation, event listeners, and tracking triggers can be written once and shared across teams.
+* **Application Architecture**: DOM utility behaviors ko component files se alag karke clean aur modular architecture banata hai.
+* **Performance**: Lightweight aur compiler-optimized. Yeh compiler time par direct browser DOM modifications code me transpile ho jate hain.
+* **Scalability**: Custom dynamic form validations, event listeners, aur tracking triggers ko ek baar likhkar poori application me use kiya ja sakta hai.
 
 ## Real World Example
-A directive like `appClickOutside` can be applied to a popup menu to close it automatically when a user clicks anywhere else on the screen.
+Ek Custom directive `appClickOutside` ko drop-down menu par lagaya ja sakta hai taaki jab user drop-down area ke bahar kahin click kare, toh menu auto-close ho jaye.
 
 ## Syntax
 * **Applying an attribute directive**: `<p appHighlight>Content</p>`
 * **Host Binding**: `@HostBinding('style.color') textColor = 'blue';`
 * **Host Listener**: `@HostListener('click', ['$event']) onClick(event: Event) { ... }`
 
-## Hinglish Explanation
-
-Directives ka matlab hota hai **"HTML Elements ko naye instructions ya super-powers dena"**. Angular me HTML elements ke style, class, behavior aur layout ko control karne ke liye directives ka use hota hai. Yeh teen main categories me divided hote hain:
-
-### 1. Component Directives (Templates wale)
-* Har component jo hum banate hain, wo background me ek component directive hi hota hai jiske paas apna ek HTML template aur CSS styling hoti hai.
-
-### 2. Attribute Directives (Style aur Behavior badalne wale)
-* Yeh HTML element ke look-and-feel ko change karte hain par DOM me element ko add/remove nahi karte.
-* **Example:** `ngClass` aur `ngStyle` built-in attribute directives hain jo conditional class/style apply karte hain.
-* Custom attribute directive banane ke liye `@HostBinding` (property value badalne ke liye) aur `@HostListener` (events listen karne ke liye) use hote hain.
-
-### 3. Structural Directives (DOM badalne wale)
-* Yeh DOM me tags ko dynamically insert ya delete karte hain (structural changes). Inhe template me asterisk (`*`) ke sath use kiya jata hai.
-* **Modern Control Flow (`@if`, `@for`):** Angular v17 se structural directives ke badle simple `@if` aur `@for` blocks use hote hain jo ki fast aur readable hain.
-* **Puraane Directives (`*ngIf`, `*ngFor`):** Yeh legacy code me use hote hain aur compile hone par background me `<ng-template>` create karte hain.
-
 ## Code Examples
+Neeche teen tarah ke directives ka custom integration example diya gaya hai:
 
-Here are the complete implementations for the three types of directives in Angular.
-
-### 1. Component Directive (A Directive with a Template)
-Every Angular component is structurally a Directive with a visual HTML view.
+### 1. Component Directive
 ```typescript
 // alert-box.component.ts
 import { Component } from '@angular/core';
@@ -82,8 +61,7 @@ import { Component } from '@angular/core';
 export class AlertBoxComponent {}
 ```
 
-### 2. Attribute Directive (Modifying Appearance & Behavior)
-This custom attribute directive scales elements up on hover and changes the background color using parameters, `@HostBinding`, and `@HostListener`.
+### 2. Attribute Directive
 ```typescript
 // hover-scale.directive.ts
 import { Directive, HostListener, HostBinding, Input } from '@angular/core';
@@ -115,8 +93,7 @@ export class HoverScaleDirective {
 }
 ```
 
-### 3. Structural Directive (Modifying HTML Layout & DOM Structure)
-Custom structural directives require `TemplateRef` (the HTML content inside the element to render) and `ViewContainerRef` (the container location where it should be inserted). The asterisk `*` prefix in HTML tells Angular to translate the tag into a `<ng-template>`.
+### 3. Structural Directive
 ```typescript
 // delay-render.directive.ts
 import { Directive, Input, TemplateRef, ViewContainerRef } from '@angular/core';
@@ -143,8 +120,7 @@ export class DelayRenderDirective {
 }
 ```
 
-### 4. Demo Component (Using All Three Directives)
-Below is the integration component demonstrating how to import and apply all three types of directives in your templates:
+### 4. Demo Component
 ```typescript
 // directive-demo.component.ts
 import { Component } from '@angular/core';
@@ -160,13 +136,11 @@ import { DelayRenderDirective } from './delay-render.directive';
   template: `
     <div class="container">
       <h3>1. Component Directive Example</h3>
-      <!-- AlertBoxComponent acts as a custom HTML tag -->
       <app-alert-box>Your subscription is expiring soon!</app-alert-box>
 
       <hr>
 
       <h3>2. Attribute Directive Example</h3>
-      <!-- appHoverScale modifies visual scale and style on hover -->
       <div class="card" appHoverScale [scaleFactor]="1.05" [hoverColor]="'#f0fdf4'">
         <h4>Hover over this card</h4>
         <p>This box will expand slightly and turn green.</p>
@@ -175,7 +149,6 @@ import { DelayRenderDirective } from './delay-render.directive';
       <hr>
 
       <h3>3. Structural Directive Example</h3>
-      <!-- *appDelayRender delays the rendering of the paragraph in the DOM by 3 seconds -->
       <div *appDelayRender="3000" class="delayed-content">
         <p>🎉 This content was delayed by 3 seconds before rendering in the DOM!</p>
       </div>
@@ -191,25 +164,23 @@ export class DirectiveDemoComponent {}
 ```
 
 ## Best Practices
-1. **Always Use `Renderer2` or Host Decorators**: Do not access `element.style.color = ...` via raw DOM references (`nativeElement.style`), as this breaks server-side rendering (SSR) environments.
-2. **Prefix Selectors**: Always use a camelCase prefix (such as your app name, e.g. `appHighlight`) to prevent collisions with future native HTML elements.
-3. **Clean Up Listeners**: While `@HostListener` cleans up automatically, if you set event listeners manually, ensure you destroy them to prevent memory leaks.
+1. **Always Use `Renderer2` or Host Decorators**: Native browser elements ko direct change karna (`nativeElement.style.color = ...`) avoid karein, kyunki yeh Server-Side Rendering (SSR) environments me crash kar sakta hai. `@HostBinding` ya `Renderer2` ka use karein.
+2. **Prefix Selectors**: Selector names ke sath hamesha custom app prefix (jaise `appHighlight`) use karein taaki future HTML standard elements ke sath naming collision na ho.
+3. **Clean Up Listeners**: `@HostListener` internally events self-cleanup kar deta hai, par agar aapne manually custom event listeners lagaye hain toh memory leaks se bachne ke liye unhe destroy phase me remove karein.
 
 ## Common Mistakes
-* **Using structural syntax on custom attributes**: Attempting to call an attribute directive as `<div *appHighlight>`. If the directive does not use `TemplateRef` and `ViewContainerRef`, it will throw a compile error.
-* **Adding Directives with the Same Name as Native Attributes**: Creating a directive with a generic selector like `[class]`, which can conflict with native class assignments.
+* **Using structural syntax on custom attributes**: Standard attribute directive ko structural format `*appHighlight` me call karna. Agar directive me `TemplateRef` aur `ViewContainerRef` defined nahi hain, toh yeh compiler build error throw karega.
+* **Adding Directives with the Same Name as Native Attributes**: Element native attribute names (jaise `[class]`) se directive selector design karna, jo standard class settings ko break kar sakta hai.
 
 ## Interview Questions & Answers
 ### Q: What is the difference between a Component and a Directive?
-**A**: A component is structurally a directive that has an associated HTML template and style definitions. A directive is a class without a template that attaches styles or behavior to existing DOM elements.
-* **Hinglish Explanation**: Component aur Directive me main difference yeh hai ki Component ke paas apna khud ka ek HTML template aur styling hoti hai (yeh UI screen ka ek hissa represent karta hai). Jabki Directive ke paas apna koi HTML template nahi hota, yeh pehle se bane kisi HTML tag ke behavior ya style ko modify karne ke liye banaya jata hai. Component khud ek specialized directive hai jiske paas template hai.
+**A**: Component ek specialized directive hai jiske paas template visual design hota hai. Directive ke paas apna template nahi hota; yeh existing tags behavior properties change karne ke liye attributes ke roop me apply hota hai.
 
 ### Q: What are `@HostBinding` and `@HostListener` used for?
-**A**: `@HostBinding` binds a directive property to a DOM property of the host element, allowing the directive to update host properties. `@HostListener` binds a host element event to a directive handler method, allowing the directive to respond to user interactions on that element.
-* **Hinglish Explanation**: `@HostBinding` aur `@HostListener` custom directives me host element (jis tag par directive lagaya gaya hai) ke sath communicate karne ke liye use hote hain. `@HostBinding` host element ki kisi DOM property (jaise background color, style, class) ko directive ke dynamic variables se bind karta hai. `@HostListener` host element par ہونے wale user actions (jaise click, hover, keydown) ko sunkar directive ke method ko execute karta hai.
+**A**: `@HostBinding` host element properties (jaise classes ya styles) ko directive property values se sync rakhta hai. `@HostListener` host element events listener events capture karke logic code execute karta hai.
 
 ## Summary
-Directives extend template capabilities by modifying styles, behaviors, and layout structures. Attribute directives change element appearance and behavior, while structural directives modify the DOM tree. Host decorators connect directive logic directly to host element properties and events.
+Directives elements behavior, styling, aur layout modify karte hain. Attribute directives visual appearance dynamically change karte hain, jabki structural directives DOM configuration modify karte hain. Host decorators logic ko seedhe host element properties aur actions se connect rakhte hain.
 
 ---
 

@@ -1,10 +1,10 @@
 # TypeScript Fundamentals
 
 ## What is it?
-TypeScript is an open-source, strongly-typed programming language that builds on JavaScript. It is a superset of JavaScript, meaning all valid JavaScript code is valid TypeScript. It transpiles to plain JavaScript so it can execute on any web browser.
+TypeScript ek open-source, strongly-typed programming language hai jo JavaScript par hi bani hai. Yeh JavaScript ka ek superset hai, jiska matlab hai ki har valid JavaScript code valid TypeScript hai. Yeh plain JavaScript me compile hoti hai taaki kisi bhi web browser par execute ho sake.
 
 ## Why do we need it?
-JavaScript is dynamically typed, which leads to silent errors that only manifest during runtime. For example, passing an incorrect object type into a function can crash an app. TypeScript adds compile-time type checking, allowing IDEs to flag type errors immediately, document APIs inline, and provide intelligent autocomplete.
+JavaScript dynamically typed hai, jiski wajah se silent errors aate hain aur wo directly application run hone (runtime) par hi pata chalte hain. Jaise ki, kisi function me galat object pass kar dene se app crash ho sakta hai. TypeScript compiler-time par hi type checking add kar dene se code likhte waqt hi IDE errors show kar deta hai, inline APIs documentation de deta hai, aur smart autocomplete provide karta hai.
 
 ```
 JS Flow:
@@ -15,20 +15,20 @@ Write Code ──> Compiler checks types ──> Reports error during coding ─
 ```
 
 ## How does it work?
-1. **Type Checker**: Runs during compilation to ensure variables, arguments, and return types adhere to declared types.
-2. **TSConfig**: The config file (`tsconfig.json`) dictates how strictly typescript checks types and what ECMA version the code compiles to.
-3. **Transpilation**: Strips out all type annotations, leaving plain JavaScript that engines like V8 can execute.
+1. **Type Checker**: Compilation ke dauran chalta hai taaki ensure kar sake ki variables, arguments, aur return types declared types ke rules ko follow kar rahe hain.
+2. **TSConfig**: Config file (`tsconfig.json`) yeh guidelines batata hai ki TypeScript kitni strictly type checking karega aur kis ECMA version me code compile karega.
+3. **Transpilation**: Compilation ke waqt saare type annotations ko remove kar ya strips out kiya jata hai, aur plain JavaScript bachti hai jise browser engines execute kar sakein.
 
 ## Impact
-* **Application Architecture**: Improves structure via strict classes, interfaces, and design patterns.
-* **Performance**: Zero runtime overhead. TypeScript annotations are completely compiled away.
-* **Maintainability**: Refactoring is highly predictable since changing a parameter or property rename updates/flags all usages.
+* **Application Architecture**: Strict classes, interfaces, aur design patterns ke zariye code architecture ko improve karta hai.
+* **Performance**: Runtime par zero overhead hota hai. Saare TypeScript annotations compile ke waqt remove ho jate hain.
+* **Maintainability**: Refactoring behad predictable ho jati hai, kyunki ek parameter name change karne par compiler un sabhi places ko point out kar deta hai jahan wo use ho raha hai.
 
 ## Real World Example
-When coding a checkout form, using a TypeScript interface like `interface CartItem { id: string; price: number; }` prevents a developer from mistakenly sending a string representation of `price` to a mathematical service.
+Checkout form model code karte waqt, TypeScript interface `interface CartItem { id: string; price: number; }` design karne se developer galti se bhi string value ko number calculations me forward nahi kar zeg, jisse mathematical errors se bacha ja sakta hai.
 
 ## Syntax
-Common TS typings and syntax elements:
+Common TS typings aur syntax elements:
 ```typescript
 let age: number = 28;
 let username: string = "Nishant";
@@ -50,32 +50,8 @@ enum UserRole {
 }
 ```
 
-## Hinglish Explanation
-
-Angular me TypeScript isliye mandatory hai kyunki yeh JavaScript ko "strict discipline" aur extra powers deti hai.
-
-### 1. Types kya hain? (Type Safety)
-Normal JavaScript me aap kisi number variable me badme string bhi daal sakte ho (`let count = 5; count = "five"`). Isse runtime errors hote hain. TypeScript me hum type lock kar dete hain:
-* `let count: number = 5;` -> Ab agar aap isme string daalne ki koshish karoge toh compiler compile-time par hi error de dega.
-
-### 2. Interfaces (Object ke Blueprints)
-Interface ek contract ki tarah hota hai jo batata hai ki kisi Object ke andar kaun-kaunsi properties aur functions honi chahiye:
-```typescript
-interface User {
-  id: number;
-  name: string;
-  email?: string; // "?" matlab yeh property optional hai
-}
-```
-
-### 3. Generics (Reusable Templates)
-Generics `<T>` ek wildcard character ki tarah hai. Iska use karke hum aisi classes ya functions bana sakte hain jo dynamic types ke sath kaam kar sakein bina type-safety khoye. Jaise ek aam Container class, jo `Container<string>` ya `Container<number>` dono ban sakti hai.
-
-### 4. Async/Await (Promises handling)
-Network se data fetch karne me time lagta hai. `async/await` syntax se asynchronous code ko likhna aur padhna behad aasan ho jata hai. Yeh Promises ko linear aur clean code style me consume karne ki suvidha deta hai.
-
 ## Code Examples
-A comprehensive example showing Classes, OOP, Generics, and Async programming in TypeScript:
+TypeScript me Classes, OOP, Generics, aur Async programming ka ek comprehensive example:
 
 ```typescript
 // Interfaces and Enums
@@ -118,12 +94,10 @@ class TaskLoader {
   // Simulate API fetch returning a Promise
   async fetchTasksFromApi(): Promise<Task[]> {
     return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve([
-          new Task('1', 'Learn TypeScript', Priority.High),
-          new Task('2', 'Setup Angular CLI', Priority.Medium)
-        ]);
-      }, 1000);
+      resolve([
+        new Task('1', 'Learn TypeScript', Priority.High),
+        new Task('2', 'Setup Angular CLI', Priority.Medium)
+      ]);
     });
   }
 }
@@ -142,26 +116,23 @@ runDemo();
 ```
 
 ## Best Practices
-1. **Avoid `any` Type**: Using `any` disables type checking. Use `unknown` if a type is truly dynamic, then narrow it down with type guards.
-2. **Use Interfaces for Object Models**: For public APIs, interfaces are preferred because they support inheritance and declaration merging.
-3. **ReadOnly Modifiers**: Mark properties as `readonly` if they should not be modified post-initialization.
+1. **Avoid `any` Type**: `any` type declare karne se TypeScript compile checks bypass ho jate hain. Agar type dynamic hai toh `unknown` use karein aur use logic se check karein (narrow down).
+2. **Use Interfaces for Object Models**: Public APIs aur application data models ke liye `interface` use karein kyunki yeh OOP patterns aur extension (declaration merging) support karta hai.
+3. **ReadOnly Modifiers**: Aise variables jinhe object initialize karne ke baad modify nahi karna chahiye, unhe `readonly` set karein.
 
 ## Common Mistakes
-* **Overusing Enums**: Standard numeric enums can be bypassed with arbitrary numbers in older TS. Prefer string enums or literal type unions: `type Role = 'admin' | 'user'`.
-* **Ignoring strictNullChecks**: Not checking if an object is null before reading its properties. Always enable strict configurations.
+* **Overusing Enums**: Basic numeric enums ko compiler prevent nahi kar pata compile time me. Unke badle string enums ya literal type unions prefer karein: `type Role = 'admin' | 'user'`.
+* **Ignoring strictNullChecks**: Kisi object key ko access karna bina check kiye ki wo value defined hai ya null, jisse runtime error aa sakta hai. Humesha strict config settings enable rakhein.
 
 ## Interview Questions & Answers
 ### Q: What is the difference between an Interface and a Type Alias?
-**A**: Interfaces are open to extension (you can redeclare them and they merge), support `implements` in classes, and are suited for object shapes. Type aliases (`type`) can describe primitives, unions, tuples, and intersections, making them highly versatile for complex logical mapping.
-
-* **Hinglish Explanation**: `interface` kisi object ke layout/shape ko design karne ke liye best hota hai kyunki hum isse extend kar sakte hain (inheritance support) aur isse same name se dubara declare karke features merge kar sakte hain (declaration merging). Jabki `type` alias dynamic types (jaise single types, union types like `string | number`, custom types) ko merge ya modify nahi karta, balki bas unka ek alias (nickname) banata hai. Iska redeclaration ya direct extension possible nahi hota.
+**A**: Interfaces extension ke liye open hoti hain (same name se dubara declare karne par merge ho jati hain), classes me `implements` support karti hain, aur object shapes ke liye best hain. Type aliases (`type`) primitives, unions, tuples, aur intersections ke variables setup me use hote hain, jo complex mapping ke liye powerful hain.
 
 ### Q: What does `unknown` mean and how is it different from `any`?
-**A**: Both represent any value. However, `any` bypasses all static type checks, allowing any method call. `unknown` is type-safe; the compiler prevents you from performing any operations on it until you perform type narrowing (using `typeof`, `instanceof`, or custom type guards).
-* **Hinglish Explanation**: Dono hi variable me kisi bhi type ki value accept kar sakte hain. Lekin `any` use karne par TypeScript compiler saare type checks band kar deta hai aur koi validation error nahi deta. Jabki `unknown` ek safe option hai; jab tak aap type check (jaise `typeof` ya `instanceof`) laga kar value ka actual type verify (narrow) nahi kar lete, compiler aapko us variable par koi operation chalane nahi dega.
+**A**: Dono hi kisi bhi value ko represent kar sakte hain. Lekin `any` use karne par compiler saare checks bypass kar deta hai. Jabki `unknown` type-safe hai; compiler tab tak operations block rakhta hai jab tak aap type checks (jaise `typeof` ya `instanceof`) se variable type narrow nahi kar lete.
 
 ## Summary
-TypeScript is standard in modern web development. By adding types, classes, interfaces, generics, and async utilities, it helps catch bugs early and keeps complex code bases readable and manageable.
+TypeScript modern web development ka standard hai. Isme types, classes, interfaces, generics, aur async helpers add hone se, developers ko coding time par hi bugs find karne me help milti hai aur enterprise codebase clean aur readable rehta hai.
 
 ---
 

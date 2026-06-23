@@ -1,23 +1,23 @@
 # Enterprise Architecture
 
 ## What is it?
-Enterprise Architecture is the system design framework used to structure large-scale Angular applications. It defines how folder structures, domain boundaries, feature modules, and application layers (such as UI, State, and Data layers) are organized to keep the codebase maintainable across multiple development teams.
+Enterprise Architecture ek system design framework hai jise large-scale Angular applications ko structure karne ke liye use kiya jata hai. Yeh define karta hai ki folder structures, domain boundaries, feature modules, aur application layers (jaise UI, State, aur Data layers) ko kaise organize kiya jaye taaki codebase ko multiple development teams ke beech maintainable rakha ja sake.
 
 ## Why do we need it?
-Without a structured architecture, large codebases can become difficult to maintain as features grow. Developers may write redundant API integrations, mix business logic with presentation code, or create tightly coupled components. Enforcing structured architectural boundaries (like Domain-Driven Design and Smart/Dumb component separation) keeps codebases clean and scalable.
+Bina ek structured architecture ke, large codebases me features badhne ke sath hi unhe maintain karna bohot difficult ho jata hai. Developers redundant API integrations likh sakte hain, business logic ko presentation code ke sath mix kar sakte hain, ya tightly coupled components bana sakte hain. Structured architectural boundaries (jaise Domain-Driven Design aur Smart/Dumb component separation) enforce karne se codebases clean aur scalable rehte hain.
 
 ```
 Enterprise Layered Architecture:
 ┌────────────────────────────────────────────────────────┐
 │                        UI Layer                        │
 │             (Dumb Components / Presentational)         │
-└──────────────────────────┬─────────────────────────────┘
-                           ▼
+│└──────────────────────────┬─────────────────────────────┘
+                            ▼
 ┌────────────────────────────────────────────────────────┐
 │                        State Layer                     │
 │             (NgRx Store / Signals State / Smart)       │
-└──────────────────────────┬─────────────────────────────┘
-                           ▼
+│└──────────────────────────┬─────────────────────────────┘
+                            ▼
 ┌────────────────────────────────────────────────────────┐
 │                        Data Layer                      │
 │             (API Services / Http Clients)              │
@@ -25,24 +25,24 @@ Enterprise Layered Architecture:
 ```
 
 ## How does it work?
-1. **Domain-Driven Design (DDD)**: Partitions applications into isolated domain folders (e.g. `billing`, `catalog`, `shipping`). Each domain contains its own features, state, and UI.
-2. **Smart Components (Container)**: Manage state, subscribe to services or store actions, and handle core routing events.
-3. **Dumb Components (Presentational)**: Receive data via inputs, trigger user interactions via outputs, and contain no direct dependencies on services or APIs.
+1. **Domain-Driven Design (DDD)**: Yeh applications ko isolated domain folders (jaise `billing`, `catalog`, `shipping`) me divide karta hai. Har domain ka apna khud ka features, state, aur UI hota hai.
+2. **Smart Components (Container)**: Yeh state ko manage karte hain, services ya store actions ko subscribe karte hain, aur core routing events ko handle karte hain.
+3. **Dumb Components (Presentational)**: Yeh inputs ke zariye data receive karte hain, outputs ke zariye user interactions trigger karte hain, aur inka services ya APIs par koi direct dependency nahi hoti.
 4. **Layered Boundaries**:
-   - **Core Layer**: Singletons instantiated during application bootstrap (such as authentication configurations and guards).
-   - **Shared Layer**: Reusable components, directives, and pipes (such as custom buttons, loading spinners, and layout grids) that can be imported anywhere.
-   - **Feature Layer**: Contains components and business logic specific to individual features.
+   - **Core Layer**: Singletons jo application bootstrap ke dauran instantiate hote hain (jaise authentication configurations aur guards).
+   - **Shared Layer**: Reusable components, directives, aur pipes (jaise custom buttons, loading spinners, aur layout grids) jinhe kahin bhi import kiya ja sakta hai.
+   - **Feature Layer**: Kisi particular feature ke specific components aur business logic ko contain karta hai.
 
 ## Impact
-* **Application Architecture**: Prevents tight coupling, making features easy to locate, test, and refactor.
-* **Performance**: Modular, domain-driven boundaries make features easy to lazy-load.
-* **Scalability**: Multiple developers can work on separate domains concurrently without merge conflicts.
+* **Application Architecture**: Tight coupling ko rokta hai, jisse features ko locate, test, aur refactor karna easy ho jata.
+* **Performance**: Modular, domain-driven boundaries feature files ko lazy-load karna simple bana deti hain.
+* **Scalability**: Multiple developers bina merge conflicts ke parallelly alag-alag domains par kaam kar sakte hain.
 
 ## Real World Example
-In a multi-team retail portal, the customer service domain and the checkout payment domain are structured in separate folders. The checkout team updates payment methods and gateways without affecting or rebuilding the customer service features.
+Ek multi-team retail portal me, customer service domain aur checkout payment domain ko alag-alag folders me structure kiya jata hai. Checkout team customer service features ko impact kiye bina ya use rebuild kiye bina payment methods aur gateways ko update kar sakti hai.
 
 ## Syntax
-An enterprise-grade folder structure for an Angular workspace:
+Angular workspace ke liye ek enterprise-grade folder structure:
 ```
 src/
 ├── app/
@@ -56,20 +56,8 @@ src/
 │       └── catalog/       # Catalog Domain
 ```
 
-## Hinglish Explanation
-
-Enterprise-level Angular applications ko handle karne ke liye clean structural code design ke do core rules hain:
-
-### 1. Smart vs Dumb Components Pattern (Dimaag vs Display)
-* **Smart Components:** Inhe containers bhi bolte hain. Inka kaam data logical services handle karna, routes parameters dynamic check karna, aur API calls trigger karna hota hai.
-* **Dumb Components:** Inka kaam sirf visual render (display UI layout) karna hota hai. Inka koi connection network requests ya state services se nahi hota. Yeh strictly inputs ke through data receive karte hain aur outputs se events emit karte hain. Isse inka test execution aur reusability bohot strong ho jati hai.
-
-### 2. Domain-Driven Design (Feature division)
-* Code folder grouping business features ke base par honi chahiye (jaise checkout module, payment features, account profile).
-* **Shared Folder Restrictions:** Shared layer ke andar feature-specific business details nahi honi chahiye, wahan sirf universal global helpers (jaise custom loading spinner, common format custom pipes, basic custom wrapper button layouts) hone chahiye.
-
 ## Code Examples
-Below is an implementation of the **Smart and Dumb Component** pattern.
+Neeche **Smart and Dumb Component** pattern ka implementation diya gaya hai.
 
 ### `product-card.component.ts` (Dumb Component: Presentational)
 ```typescript
@@ -161,26 +149,25 @@ export class ProductCatalogComponent implements OnInit {
   }
 }
 ```
+
 ## Best Practices
-1. **Enforce Smart/Dumb Separation**: Keep presentational components clean of services, APIs, or state. Use inputs and outputs to pass data and events.
-2. **Organize by Domain**: Group related components, services, and state by domain, making features easy to manage and navigate.
-3. **Use Lint rules (Nx boundary tags)**: When using Monorepos, configure lint rules to prevent domains from importing private files from other domains.
+1. **Enforce Smart/Dumb Separation**: Presentational components ko services, APIs, ya state se clean rakhein. Data aur events pass karne ke liye inputs aur outputs ka use karein.
+2. **Organize by Domain**: Related components, services, aur state ko domain wise group karein, jisse features ko manage aur navigate karna easy ho.
+3. **Use Lint rules (Nx boundary tags)**: Monorepos use karte waqt lint rules configure karein taaki ek domain dusre domain ke private files ko import na kar sake.
 
 ## Common Mistakes
-* **Injecting Services into Dumb Components**: Injecting services directly into presentational components. This makes them difficult to reuse or test in isolation.
-* **Bloated Shared Layer**: Placing feature-specific components inside the global shared folder. Shared directories should only contain generic, reusable UI controls (such as buttons, inputs, and spinners).
+* **Injecting Services into Dumb Components**: Presentational components me directly services inject karna. Isse unhe test karna aur in isolation reuse karna mushkil ho jata hai.
+* **Bloated Shared Layer**: Feature-specific components ko global shared folder me rakhna. Shared directories me sirf generic, reusable UI controls (jaise buttons, inputs, aur spinners) hi hone chahiye.
 
 ## Interview Questions & Answers
 ### Q: What is the difference between a Smart Component and a Dumb Component?
-**A**: Smart components (containers) manage state, interact with services, handle routing, and dispatch actions. Dumb components (presentational) focus on rendering UI layouts. They receive data through inputs and emit interactions through outputs, keeping them reusable and easy to test.
-* **Hinglish Explanation**: Smart Components (jaise page containers) app ke logical brain hote hain—yeh API calls handle karte hain, service inject karte hain, routes handle karte hain aur state manage karte hain. Dumb Components (presentational components) sirf UI dikhane ke liye hote hain—yeh bina kisi service ko inject kiye, data parent component se `@Input()` dwara lete hain aur user events `@Output()` dwara parent ko pass kar dete hain, jisse inhen pure project me kahin bhi reuse kiya ja sake.
+**A**: Smart Components (jaise page containers) app ke logical brain hote hain—yeh API calls handle karte hain, service inject karte hain, routes handle karte hain aur state manage karte hain. Dumb Components (presentational components) sirf UI dikhane ke liye hote hain—yeh bina kisi service ko inject kiye, data parent component se `@Input()` dwara lete hain aur user events `@Output()` dwara parent ko pass kar dete hain, jisse inhen pure project me kahin bhi reuse kiya ja sake.
 
 ### Q: Why do we separate applications by domain folders?
-**A**: Separating applications by domain folders groups related features together, making codebases easier to maintain. This approach prevents tight coupling, makes lazy-loading straightforward, and allows multiple teams to work on separate domains concurrently.
-* **Hinglish Explanation**: Domain folders (jaise checkout, auth, billing) me application ko divide karne se tight coupling (ek feature ka dusre feature par dependent hona) khatam hoti hai. Isse code easily manage hota hai, lazy-loading setup karna simple ho jata hai, aur different teams bina ek dusre ke code ko impact kiye parallelly alag feature modules par kaam kar sakti hain.
+**A**: Domain folders (jaise checkout, auth, billing) me application ko divide karne se tight coupling (ek feature ka dusre feature par dependent hona) khatam hoti hai. Isse code easily manage hota, lazy-loading setup karna simple ho jata hai, aur different teams bina ek dusre ke code ko impact kiye parallelly alag feature modules par kaam kar sakti hain.
 
 ## Summary
-Enterprise Angular architectures use Domain-Driven Design (DDD) to keep codebases scalable. Separating presentation (Dumb components) from logic (Smart components) and organizing files by domain helps build maintainable applications.
+Enterprise Angular architectures me codebase ko scalable rakhne ke liye Domain-Driven Design (DDD) ka use hota. Presentation (Dumb components) ko logic (Smart components) se separate rakhna aur files ko domain wise organize karna maintainable applications banane me help karta hai.
 
 ---
 

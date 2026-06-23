@@ -1,10 +1,10 @@
 # Performance Optimization
 
 ## What is it?
-Performance Optimization in Angular involves techniques used to accelerate rendering times, minimize JavaScript bundle sizes, and optimize runtime change detection checks.
+Angular me Performance Optimization un techniques aur methods ka collection hai jiske zariye page rendering speed ko fast kiya jata hai, JavaScript bundle size minimize kiya jata hai, aur runtime change detection calculations coordinate optimize kiye jate hain.
 
 ## Why do we need it?
-By default, Angular applications check the entire component tree for changes whenever an asynchronous event (like a keystroke or timer) occurs. While this works well for small apps, it can cause lagging UIs in large enterprise applications with thousands of active DOM elements. Optimizing change detection and lazy-loading code chunks ensures fast rendering times and smooth user interactions.
+Default settings me, Angular change updates checks coordinate karne ke liye pure applications components tree ko traverse (scan) karta hai jab bhi asynchronous clicks ya timer events trigger hon. Chote applications me isse koi problem nahi hoti, par thousands components scale wale enterprise products me yeh UI response lag aur sluggishness create kar deta hai. Change detection checking logic streamline karne aur components lazy-loading bundles apply karne se application dynamic interaction super-smooth ban jata hai.
 
 ```
 Standard Change Detection (Full Scan):
@@ -15,22 +15,22 @@ Any event ──> Only scans branch if Input Reference changed, Event fired, or 
 ```
 
 ## How does it work?
-1. **`ChangeDetectionStrategy.OnPush`**: Instructs Angular to only run change detection on a component when:
+1. **`ChangeDetectionStrategy.OnPush`**: Angular change verification checks mechanism ko instruction deta hai ki component scans cycles tabhi trigger hon jab:
    - One of its `@Input` references changes.
    - An event handler in the component triggers.
    - You request a check manually using `ChangeDetectorRef.markForCheck()`.
-2. **Zoneless Angular**: Replaces Zone.js with Signals to update the DOM directly, reducing change detection overhead.
-3. **Deferred Loading (`@defer` block)**: Lazily loads components and dependencies when specific conditions are met (e.g. when a component enters the viewport).
-4. **List Tracking (`track` loop)**: Tracks list items using unique identifiers (like `id`) instead of array index references. This prevents Angular from recreating the entire list structure when array elements change.
-5. **Virtual Scrolling**: Only renders elements that are currently visible within the browser's viewport.
+2. **Zoneless Angular**: Zone.js change track framework engine bypass karke direct template elements reactivity updates signals apply karna, jo browser check cycles reduce karta hai.
+3. **Deferred Loading (`@defer` block)**: Heavy modules assets loading tab tak delay coordinate karna jab tak specific event bounds criteria complete na ho (jaise element viewport intersection enter checks).
+4. **List Tracking (`track` loop)**: Loop iterations collections elements track keys parameters (jaise id index check) declare karna taaki dynamic list updates limits re-render elements calculations save ho sakein.
+5. **Virtual Scrolling**: Scrolling lists layouts limits me viewport coordinates items list rendering limit elements parameters set karna, un-rendered list components RAM parameters save setups.
 
 ## Impact
-* **Application Architecture**: Directs component and module structure design to enable lazy-loading.
-* **Performance**: Reduces change detection sweeps, resulting in faster rendering times and smaller bundle sizes.
-* **Scalability**: Keeps user interfaces responsive even when rendering large lists or processing heavy datasets.
+* **Application Architecture**: Decoupled component bundle splits structure parameters maintain kar lazy-load setups support karta hai.
+* **Performance**: Browser check loops minimize hone se screen components loads aur updates updates milliseconds timing speed checks execute hote hain.
+* **Scalability**: Heavy products records data grid processing limits checks responsive and functional banata hai.
 
 ## Real World Example
-An e-commerce catalog page renders hundreds of product cards. By using `ChangeDetectionStrategy.OnPush` and tracking items using `track product.id`, the catalog updates smoothly without page lag when users toggle filters.
+E-commerce website catalog lists updates features me checks cards layout render limits optimization check apply settings coordinate track tags apply `track product.id` configure setups checks perform clean updates coordinate smooth output settings reflect kar leta hai.
 
 ## Syntax
 * **Configuring OnPush**:
@@ -48,26 +48,11 @@ An e-commerce catalog page renders hundreds of product cards. By using `ChangeDe
 }
 ```
 
-## Hinglish Explanation
-
-Performance optimization ke teen core techniques hain:
-
-### 1. OnPush Change Detection (Smart checking)
-* **Default:** Angular me jab bhi koi mouse click ya event hota hai, toh wo pure components tree me check karta hai ki data badla ya nahi (Dirty Checking).
-* **OnPush:** `@Component` me `changeDetection: ChangeDetectionStrategy.OnPush` lagane se Angular faaltu checking rok deta hai. Yeh component ko sirf tabhi scan karega jab input parameters ka reference badlega ya component me koi click event hoga.
-
-### 2. track check validation (Lists updating)
-* `@for (user of users; track user.id)` me `track` specify karna mandatory hai. Isse list me naya item add hone par Angular poori HTML list re-render nahi karta, balki sirf badle hue element ko hi target karke modify karta hai.
-
-### 3. `@defer` blocks (Lazy Loading for elements)
-* `@defer` modern Angular (v17+) ka automatic lazy loading block hai.
-* Hum heavy charts, feedback dialogs ya map widgets ko `@defer (on viewport)` block me wrap kar dete hain. Isse page ke initial loading bundles lightweight rehte hain aur jab widget screen par scroll hone par scroll-range me aata hai, tabhi browser bundle load aur compile karta hai.
-
 ## Code Examples
-Below is an implementation demonstrating the modern `@defer` control block, list tracking, and the `OnPush` change detection strategy.
+Neeche dynamic list updates optimizations, `@defer` trigger methods aur `OnPush` components setups configuration details program build integration model diya gaya hai:
 
 ```typescript
-import { Component, ChangeDetectionStrategy, Input, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 
@@ -75,24 +60,20 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
   selector: 'app-perf-demo',
   standalone: true,
   imports: [CommonModule, ScrollingModule],
-  // 1. Configure OnPush Change Detection
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="perf-container">
       <h3>Performance Optimization Sandbox</h3>
 
-      <!-- 2. Track By List Optimization -->
       <div class="list-section">
         <h4>User Accounts (track optimization)</h4>
         <ul>
-          <!-- Using Angular 17+ new control flow track syntax -->
           <li *ngFor="let user of users; track: user.id">
             {{ user.name }} (ID: {{ user.id }})
           </li>
         </ul>
       </div>
 
-      <!-- 3. Deferred Block: Loads only when it enters the viewport -->
       <div class="deferred-section">
         <h4>Lazy Chart Loader</h4>
         @defer (on viewport) {
@@ -113,7 +94,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     .perf-container { padding: 20px; font-family: sans-serif; }
     .heavy-mock-chart { height: 150px; background: #e0f2fe; border: 2px solid #0284c7; padding: 20px; }
     .placeholder-box { height: 150px; background: #f3f4f6; border: 2px dashed #9ca3af; padding: 20px; }
-    .deferred-section { margin-top: 400px; } /* Force scroll space */
+    .deferred-section { margin-top: 400px; }
   `]
 })
 export class PerfDemoComponent {
@@ -126,25 +107,23 @@ export class PerfDemoComponent {
 ```
 
 ## Best Practices
-1. **Default to OnPush**: Configure `ChangeDetectionStrategy.OnPush` as the default change detection strategy for new components.
-2. **Always Use Unique Track Identifiers**: Track list elements using unique identifiers (like `id`) instead of array indexes when rendering lists using loops.
-3. **Lazy Load Heavy Components**: Wrap heavy charts, complex markdown parsers, or modal windows in `@defer` blocks to prevent them from increasing the initial bundle size.
+1. **Default to OnPush**: New components declarations configurations setups me default change detection config strategy parameter standard `ChangeDetectionStrategy.OnPush` target set karein.
+2. **Always Use Unique Track Identifiers**: Dynamic looping variables arrays display templates me track selectors parameter index arrays coordinate checks parameters strictly mapping unique pointers use karein.
+3. **Lazy Load Heavy Components**: Heavy assets (charts diagrams grids modules, modal panels templates) lazy render coordinate `@defer` templates checks boundaries blocks configure optimize block utilize karein.
 
 ## Common Mistakes
-* **Mutating Objects in OnPush Components**: Mutating object properties directly (e.g. `user.name = 'new name'`) in components that use the `OnPush` strategy. Angular checks object references rather than property values, so it will not detect the change.
-* **Underestimating `@defer` triggers**: Using `@defer` without specifying triggers (such as `on viewport` or `on interaction`), which can cause components to load immediately and increase initial bundle sizes.
+* **Mutating Objects in OnPush Components**: OnPush component boundaries parameters me variables mutations reference changes bypass update setups run karna. Object property value target update variable change `OnPush` checker track nahi kar pata, reference overwrite coordinate updates triggers set check use karein.
+* **Underestimating `@defer` triggers**: Dynamic load blocks parameter tags `@defer` setup checks settings rules properties boundaries parameters define na karna, jo initialization speed check slow bundles settings bypass setups break kar deta hai.
 
 ## Interview Questions & Answers
 ### Q: How does `ChangeDetectionStrategy.OnPush` improve application performance?
-**A**: By default, Angular checks the entire component tree for changes whenever an asynchronous event occurs. Setting `changeDetection` to `OnPush` instructs Angular to skip checking the component and its children unless it receives updated input references, event handlers trigger within the component, or you request a check manually using `ChangeDetectorRef`.
-* **Hinglish Explanation**: Default change detection me Angular har asynchronous event (jaise mouse click ya timer) par pure component tree ko upar se niche tak scan karta hai. Jabki `OnPush` strategy use karne par Angular us component aur uske child elements ko change detection scan se skip kar deta hai. Yeh sirf tabhi check karta hai jab: (1) Component ko parent se bilkul naya `@Input()` reference mile, (2) Component ke template ke andar se koi event trigger ho, ya (3) Hum manually `ChangeDetectorRef` ke zariye check request karne ke liye command chalayein.
+**A**: `OnPush` strategy component scan change detection loops checks bypass setups restrict karti hai jisse change checks scans updates check parameters components branches trigger skip ho jate hain.
 
 ### Q: What is the purpose of the `@defer` block in modern Angular?
-**A**: The `@defer` block enables deferred loading for components, directives, and pipes. It compiles these dependencies into separate JavaScript chunks, loading them only when specific conditions are met (such as entering the viewport or on user interaction), which helps keep the initial page load fast.
-* **Hinglish Explanation**: `@defer` block (v17+) components, directives, aur pipes ki lazy loading ko control karne ka ek modern declarative feature hai. Yeh block un parts ko automatically alag JavaScript bundles me compile kar deta hai aur tabhi load karta hai jab unki actual requirements puri hon (jaise jab element scroll hokar viewport me aaye, ya user kisi element par click ya hover kare). Isse page ka initial bundle size bohot control me rehta hai.
+**A**: `@defer` block codes modules loading structures optimization check coordinates templates delay apply system configure karta hai jo on-demand bundles coordinates loads checks dynamic updates execute setups targets follow karta hai.
 
 ## Summary
-Optimizing Angular performance involves managing change detection and code bundles. Using `OnPush` strategies, tracking list items, and deferred loading (`@defer`) helps keep application interfaces responsive and load times fast.
+Angular performance features optimization settings change structures coordinate check levels check setups control targets apply map setup complete balance manage karta hai. OnPush change detection calculations, lazy element viewport loading patterns systems dynamic speed check manage karte hain.
 
 ---
 

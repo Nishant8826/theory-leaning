@@ -1,10 +1,10 @@
 # Angular Material
 
 ## What is it?
-Angular Material is an official UI component library developed by the Angular team. It implements Google's Material Design specification, providing a collection of pre-built, accessible, and themeable UI components (like tables, dialogs, form controls, and navigation bars).
+Angular Material ek official UI component library hai jise Angular core team develop aur maintain karti hai. Yeh Google ke **Material Design** specifications guidelines ko implement karti hai aur developer ko pre-built, fully accessible aur customizable UI components (jaise tables, sliders, dialog boxes, aur menus) ka collection provide karti hai.
 
 ## Why do we need it?
-Building accessible, high-performance UI components (like dropdown menus, modal dialogs, and paginated tables) from scratch is time-consuming. You have to handle ARIA accessibility attributes, keyboard navigation, and responsive layouts. Angular Material provides pre-tested, accessible components out of the box, allowing developers to focus on application logic.
+Complex components (jaise access-friendly dialogs, sliding menus, ya dynamic paginated tables) ko HTML/CSS scratch se banana time-consuming aur tedious task hai. Aapko manually ARIA labels accessibility, keyboard navigation shortcuts, aur screen layouts handle karne padte hain. Angular Material in pre-tested components ko out of the box deta hai, jisse developers framework design coordinates badle bina main application rules and coding par focus kar sakte hain.
 
 ```
 Development from scratch:
@@ -15,17 +15,17 @@ Import MatTableModule ──> Bind data source ──> Access, responsiveness, a
 ```
 
 ## How does it work?
-1. **Component Imports**: Standalone components import specific Material modules (like `MatButtonModule` or `MatTableModule`) directly.
-2. **Theming (SASS)**: Uses SASS variables and mixins to customize color palettes, typography, and density across components.
-3. **Accessibility (A11y)**: Built on the Angular CDK (Component Dev Kit), which provides utilities for focus trapping, keyboard navigation, and screen reader announcements.
+1. **Component Imports**: Standalone components direct dynamic modules (jaise `MatButtonModule` ya `MatTableModule`) import karte hain.
+2. **Theming (SASS)**: Components layout styles parameters colors, fonts, margins controls configure karne ke liye built-in SASS dynamic mixins setup compile options use karti hai.
+3. **Accessibility (A11y)**: Angular CDK (Component Dev Kit) utility systems follow karti hai jo elements transitions keyboard controls aur screen reader dynamic instructions pre-handle rakhte hain.
 
 ## Impact
-* **Application Architecture**: Accelerates UI development by providing standard components.
-* **Performance**: Modular design allows you to import only the components you need, keeping bundle sizes small.
-* **Maintainability**: Centralizes design rules and styles using Material's theming system.
+* **Application Architecture**: Pre-built standardized widgets templates standard layout setups build karne me speed boost deta hai.
+* **Performance**: Modular structure follow karta hai. Iska matlab hai ki aapko complete package compile karne ki zaroorat nahi hai, jo files compile components dynamic chunks package size thin rakhte hain.
+* **Maintainability**: Centralized designs coordinates colors codes locations handle ho jati hain dynamic SCSS maps options ke zariye.
 
 ## Real World Example
-An enterprise application uses Angular Material's `MatTable` and `MatPaginator` to render lists of transactions. Users can sort columns and navigate pages, and the table dynamically adapts to mobile screens.
+Enterprise application client dashboard data reports display karne ke liye Angular Material `MatTable` aur `MatPaginator` use karta hai. Column sorting aur mobile pages layout transitions background systems self-optimize kar page rendering complete kar dete hain.
 
 ## Syntax
 * **Adding Angular Material**: `ng add @angular/material`
@@ -35,27 +35,14 @@ import { MatButtonModule } from '@angular/material/button';
 ```
 * **Declaring Button**: `<button mat-raised-button color="primary">Click Me</button>`
 
-## Hinglish Explanation
-
-Angular Material Google ki **Material Design** specifications par bani ek popular component library hai. Iska use karke hume tables, sidebars, buttons ya input forms scratch se khud develop aur style nahi karne padte, balki ready-made components use karne ko milte hain.
-
-### 1. Modularity (Har tool alag hai)
-* Angular Material me har component (e.g. Table, Button, Dialog) ke module alag hote hain. Aapko poori library ek sath compile karne ke bajaye sirf unhi modules ko import karna chahiye jinhe component me actual use karna ho (jaise `MatTableModule`).
-
-### 2. CDK (Component Dev Kit - Dimaag bina Body ke)
-* CDK Angular Material ki foundation hai. Yeh components ke behaviors ko control karti hai (accessibility keyboard shortcuts, focus trapping, overlays) par isme koi default styling/colors nahi hote. Material isi CDK foundation ke upar theme aur Google Material UI add karta hai.
-
-### 3. Theming (Colors setup)
-* Material me dynamic color configurations ke liye custom SCSS Mixins use hoti hain. Custom classes me `!important` likh kar styles overwrite karna bad practice hai, hume material ke default themes configuration maps ko dynamic SCSS compile variables se custom theme design karni chahiye.
-
 ## Code Examples
-Below is an implementation of an Angular Material Dialog modal and a styled Table.
+Neeche Angular Material Dialog popup aur dynamic Table integrate karne ka complete implementation details example code coordinate setup diya gaya hai:
 
 ```typescript
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
-import { MatDialogModule, MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogModule, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 
 export interface UserElement {
@@ -70,7 +57,6 @@ const USER_DATA: UserElement[] = [
   { id: 3, name: 'Bob', role: 'Designer' }
 ];
 
-// 1. Dialog Component Definition
 @Component({
   selector: 'app-user-dialog',
   standalone: true,
@@ -92,7 +78,6 @@ export class UserDialogComponent {
   }
 }
 
-// 2. Parent Component with Table and Dialog trigger
 @Component({
   selector: 'app-material-demo',
   standalone: true,
@@ -101,7 +86,6 @@ export class UserDialogComponent {
     <div class="material-container">
       <h3>Active Team Directory</h3>
       
-      <!-- Material Table -->
       <table mat-table [dataSource]="dataSource" class="mat-elevation-z2">
         <ng-container matColumnDef="id">
           <th mat-header-cell *header-cell-def> ID </th>
@@ -149,26 +133,25 @@ export class MaterialDemoComponent {
   }
 }
 ```
+
 ## Best Practices
-1. **Avoid Storing Dialog States Globally**: Keep modal dialog lifecycle configurations isolated. Do not expose `MatDialogRef` logic to global state stores.
-2. **Leverage the Angular CDK**: If you need a custom UI layout that doesn't follow Material Design guidelines, use the Angular CDK directly. This allows you to build accessible custom components with less styling override overhead.
-3. **Use SCSS Mixins for Theming**: Customize the appearance of components using Angular Material's SCSS theming mixins instead of writing CSS overrides with `!important`.
+1. **Avoid Storing Dialog States Globally**: Modal states, dialog models pointers templates variables coordinates single components controllers me manage karein. `MatDialogRef` logic checks ko dynamic stores models variable setup me inject na karein.
+2. **Leverage the Angular CDK**: Agar aap Material UI patterns custom layout styles implement karna chahte hain, toh direct Angular CDK options evaluate karein. Isse extra styles custom overriding overhead compile time warnings check prevent honge.
+3. **Use SCSS Mixins for Theming**: Custom modifications parameters update themes styles setup ke liye SCSS mixins custom parameters files check use karein, direct CSS overwrite class blocks me `!important` markers avoid karein.
 
 ## Common Mistakes
-* **Writing Custom CSS Overrides**: Overriding Material styles with custom classes and `!important`. This can cause styling issues when upgrading to newer versions of the library.
-* **Importing unnecessary modules**: Importing the entire Angular Material library in a single file instead of importing only the specific component modules you need.
+* **Writing Custom CSS Overrides**: Component default styles override rules setup classes me force styles properties set karna. Yeh future versions coordinates upgrade compatibility warnings errors generate kar sakta hai.
+* **Importing unnecessary modules**: Dynamic imports coordinate components declarations blocks me complete module elements classes library direct drag variables configurations configure karna.
 
 ## Interview Questions & Answers
 ### Q: What is the Angular CDK and how does it relate to Angular Material?
-**A**: The Angular CDK (Component Dev Kit) is a library that provides tools to build custom UI components (such as overlay services, accessibility utilities, drag-and-drop tools, and virtual scrolling) without imposing Material Design styling choices. Angular Material is built on top of the CDK.
-* **Hinglish Explanation**: Angular CDK (Component Dev Kit) ek core logic library hai jo custom components banane ke liye basic behaviours aur functionalities (jaise accessibility, overlay windows, drag-and-drop, virtual scrolling) provide karti hai bina kisi design style (like colors/themes) ko force kiye. Angular Material is CDK par hi build kiya gaya hai, jo is basic logic ko Google ke Material Design specification ke theme aur elements (styling) me transform karta hai.
+**A**: CDK behaviors mechanisms controls handles patterns framework utility pack hai jisme design styles colors specifications bounds override setups constraints parameters dependencies configuration models options target default templates styling setups pre-defined features checks define karte hain.
 
 ### Q: How do you pass data into an Angular Material Dialog?
-**A**: Pass data in the configuration object when opening the dialog using the `data` property. For example: `this.dialog.open(MyDialog, { data: { id: 1 } })`. You can then inject this data in the dialog component constructor using the `MAT_DIALOG_DATA` token.
-* **Hinglish Explanation**: Dialog kholte waqt configuration object ke under `data` property ka use karke data pass kiya jata hai: `dialog.open(MyDialogComponent, { data: { id: 10 } })`. Phir child dialog component ke constructor me `MAT_DIALOG_DATA` injection token ka use karke use read kiya jata hai: `constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}`.
+**A**: Dialog constructor trigger coordinates configs properties checks setup me parameter option dynamic token input variables `MAT_DIALOG_DATA` token maps select logic properties define karke.
 
 ## Summary
-Angular Material implements Google's Material Design specification for Angular. Importing components directly into standalone structures simplifies building accessible, themeable web interfaces.
+Angular Material Angular applications Google design standards systems implementation tools provide karta hai. Modular directives files references inject configurations UI structure clean aur clean coordinate setups check build parameters dynamic parameters manage karte hain.
 
 ---
 

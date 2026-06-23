@@ -1,10 +1,10 @@
 # Dependency Injection
 
 ## What is it?
-Dependency Injection (DI) is a design pattern where a class requests its dependencies from an external system rather than instantiating them itself. Angular has a built-in DI framework that handles class instantiation and lifecycle management, providing dependencies where requested.
+Dependency Injection (DI) ek software design pattern hai jahan ek class apni dependencies ko khud create (instantiate) karne ke bajaye kisi external system se demand karti hai. Angular ke paas ek built-in DI framework hota hai jo classes instantiation aur lifecycle management ko internally process karta hai, aur jahan bhi zaroorat ho dependencies supply karta hai.
 
 ## Why do we need it?
-If components instantiate their own services (e.g. `const api = new ApiService()`), they become tightly coupled to those implementations. This makes testing difficult (you can't mock network requests), leads to duplicate instances, and limits flexibility. Angular's DI decouples classes, allowing you to swap mock implementations during testing or change providers globally without modifying component logic.
+Agar components apni services khud hi instantiate karne lagenge (jaise `const api = new ApiService()`), toh components aur services aapas me tightly coupled ho jayenge. Isse unit testing mushkil ho jayegi (aap network requests ko mock nahi kar payenge), duplicate instances banenge, aur structure strict ho jayega. Angular ka DI design is dependency coupling ko dur karta hai, jisse unit tests me mock classes pass karna aur global configurations update karna aasan ho jata hai.
 
 ```
 Without DI (Tightly Coupled):
@@ -15,21 +15,21 @@ Component requests "ApiService" ──> Angular DI Injector ──> Returns inst
 ```
 
 ## How does it work?
-1. **Providers**: Instruct the DI system how to create dependency instances. Registered via `@Injectable()`, component decorators, or bootstrap configuration.
-2. **Injector Hierarchy**: Angular uses a hierarchical injector tree:
-   - **Platform Injector**: Configures platform-wide services.
-   - **Root Injector**: Provides global singletons (`providedIn: 'root'`).
-   - **Environment/Route Injector**: Instantiated for lazy-loaded route paths.
-   - **Element Injector**: Dedicated to individual components and their template children.
-3. **Lookup Resolution**: When a component requests a dependency, Angular checks its Element Injector. If not found, it traverses up the tree to the Root Injector. If the dependency isn't found anywhere, it throws a runtime error.
+1. **Providers**: DI system ko instructions dete hain ki kisi dependency ka object kaise create karna hai. Inhe `@Injectable()`, component decorators metadata, ya `app.routes.ts` environment options me configure kiya jata hai.
+2. **Injector Hierarchy**: Angular hierarchical injector tree use karta hai:
+   - **Platform Injector**: Platform level features coordinate karta hai.
+   - **Root Injector**: Global singletons compile karta hai (`providedIn: 'root'`).
+   - **Environment/Route Injector**: Lazy-loaded routes ke path par elements create karta hai.
+   - **Element Injector**: Specific parent components aur unke child views levels par inject hota hai.
+3. **Lookup Resolution**: Jab koi component dependency ki request karta hai, Angular pehle local Element Injector check karta hai. Agar wahan nahi milta, toh hierarchical path se Root Injector tak up direction me search parameters check karta hai. Agar match nahi milta, toh compiler/runtime exception alert call hoti hai.
 
 ## Impact
-* **Application Architecture**: Decouples services from components.
-* **Performance**: Shared singletons save memory, and `providedIn: 'root'` services are tree-shakable.
-* **Scalability**: Hierarchical injection allows sub-sections of an application (like feature routes) to manage their own isolated state.
+* **Application Architecture**: UI presentation aur logic data layer ke beech binding details fully decouple rakhta hai.
+* **Performance**: Shared singletons memory waste control karte hain aur `providedIn: 'root'` configurations tree-shakable bundles download optimize karti hain.
+* **Scalability**: Hierarchical tree layout projects feature packages ko unki local routing boundary me secure state manage karne ki features deta hai.
 
 ## Real World Example
-In a multi-tenant application, the UI requests an API client. The DI system determines the user's role and injects either the standard client or a premium client with caching capabilities without changing the component's code.
+Ek multi-tenant enterprise portal me, UI component API data loading request karta hai. DI system authentication status check karke decide karta hai ki user premium hai ya normal aur dynamic coordinates check karke appropriate PremiumClient ya StandardClient data injector inject kar deta hai bina component code lines modify kiye.
 
 ## Syntax
 * **Inject via constructor**:
@@ -45,34 +45,8 @@ private api = inject(ApiService);
 export const API_URL = new InjectionToken<string>('ApiUrl');
 ```
 
-## Hinglish Explanation
-
-Dependency Injection (DI) ko simple terms me **"Catering Service"** ki tarah samajhein.
-Agar aap ek class likh rahe hain, toh use chalne ke liye dusri classes (jaise API call helper, logging helper) ki zaroorat hoti hai. In dependencies ko class ke andar manually create karne ke bajaye (`const logger = new Logger()`), hum Angular se bolte hain: *"Bhai, mujhe Logger ka object laa kar de do!"* Aur Angular background me use create karke hume supply kar deta hai.
-
-### 1. Dependency Inject Kaise Karte Hain? (Do Tarike)
-* **Old Way (Constructor Injection):**
-  ```typescript
-  constructor(private apiService: ApiService) {}
-  ```
-* **New Way (`inject()` function):**
-  ```typescript
-  private apiService = inject(ApiService);
-  ```
-  Modern Angular me `inject()` function prefer kiya jata hai kyunki isse code simple aur readability behtar ho jati hai.
-
-### 2. Injector Tree (Hierarchical Injector)
-Angular me services ka ek hierarchy system hota hai:
-* **Root Level (`providedIn: 'root'`):** Service poori application me singleton (poore app me sirf ek hi single copy) ban jati hai. Aur agar app me iska use kahi nahi ho raha, toh build time par yeh final bundle se remove (tree-shake) ho sakti hai.
-* **Component Level (`providers: [MyService]`):** Agar kisi component ke `@Component` metadata ke `providers` array me service daal di, toh us component aur uske children ke liye ek bilkul naya, isolated instance banega.
-
-### 3. Custom Providers (useClass, useValue, useFactory)
-* **`useClass`:** Kisi class ke badle doosri replacement class use karna (jaise normal service ki jagah testing me MockService pass karna).
-* **`useValue`:** Direct configuration static values ya configs inject karna.
-* **`useFactory`:** Jab service object create karne ke liye hume dynamic checks ya complex factory code likhna pede.
-
 ## Code Examples
-A comprehensive example showing Injection Tokens, Factory Providers, Multi Providers, and the `inject()` pattern:
+Neeche Injection Tokens, Factory Providers, Multi Providers, aur `inject()` pattern ka complete design integration example diya gaya hai:
 
 ```typescript
 import { Component, Injectable, InjectionToken, inject } from '@angular/core';
@@ -113,7 +87,6 @@ export class ApiService {
     <button (click)="load()">Fetch Data</button>
   `,
   providers: [
-    // Element level injection
     LoggerService,
     {
       provide: APP_CONFIG,
@@ -130,7 +103,6 @@ export class ApiService {
   ]
 })
 export class DiDemoComponent {
-  // Injecting using the modern inject() function
   private apiService = inject(ApiService);
 
   load() {
@@ -140,25 +112,23 @@ export class DiDemoComponent {
 ```
 
 ## Best Practices
-1. **Prefer `providedIn: 'root'`**: Decorate services with `@Injectable({ providedIn: 'root' })` to make them global singletons and enable tree-shaking.
-2. **Use the `inject()` Function**: Use the modern `inject()` function for property initialization to write cleaner classes and make inherits straightforward.
-3. **Use Injection Tokens for Configurations**: Do not inject raw strings or arbitrary config objects directly. Use type-safe `InjectionToken` instances instead.
+1. **Prefer `providedIn: 'root'`**: Services ko `@Injectable({ providedIn: 'root' })` decorator se setup karein taaki wo global singletons rahein aur unused components compile build se automatically remove (tree-shake) ho sakein.
+2. **Use the `inject()` Function**: Property setup declarations me clean typescript structure maintenance aur linear layouts class inheritance ke liye modern `inject()` use karein.
+3. **Use Injection Tokens for Configurations**: Config values or constants pass karne ke liye simple object maps/strings target na karein. Type-safe custom `InjectionToken` use karein.
 
 ## Common Mistakes
-* **Multiple Singleton instances**: Registering a service in a shared list of providers across components, which creates new service instances instead of utilizing the root singleton.
-* **Injecting Services from a Lazy Module into Root**: Injecting a lazy-loaded service into a root-level component, which forces the lazy module to load during application startup and increases initial bundle sizes.
+* **Multiple Singleton instances**: Shared services list ko multiple sub-components level `providers` metadata arrays me add karna, jo single root resource ke bajaye har component level par dynamic unique copies create kar deta hai.
+* **Injecting Services from a Lazy Module into Root**: Lazy route module service parameters ko direct root level main component me inject karna, jo application loading startup behavior scale aur page initial rendering slow kar deta hai.
 
 ## Interview Questions & Answers
 ### Q: What is the difference between injecting a service via `providedIn: 'root'` and registering it in a component's `providers` array?
-**A**: Declaring `providedIn: 'root'` registers the service as a global singleton. It is instantiated lazily on demand and can be tree-shaken if unused. Registering it in a component's `providers` array instantiates a new instance of the service dedicated to that component and its children, preventing it from being tree-shaken.
-* **Hinglish Explanation**: `@Injectable({ providedIn: 'root' })` likhne se Angular us service ko ek global singleton (poori application me ek hi copy) bana deta hai, jo tabhi banti hai jab uski zaroorat ho aur tree-shaking support karti hai (agar service use nahi ho rahi toh final bundle se hat jati hai). Component ke `providers` array me register karne se us component aur uske bachon ke liye ek naya alag instance (copy) banta hai aur wo tree-shaken nahi ho pata.
+**A**: `providedIn: 'root'` service ko global singleton aur tree-shakable banata hai. Component level providers array use karne se specific component aur child levels ke liye unique isolated objects generate hote hain aur tree-shaking prevent hoti hai.
 
 ### Q: What are multi-providers and what is a common use case for them?
-**A**: Multi-providers allow you to register multiple dependencies under a single injection token by setting `multi: true`. A common use case is adding custom HTTP interceptors to Angular's built-in `HTTP_INTERCEPTORS` token.
-* **Hinglish Explanation**: Multi-providers ka use ek single token ke under multiple dependencies ko register karne ke liye hota hai (`multi: true` set karke). Iska sabse common use-case `HTTP_INTERCEPTORS` me hota hai jahan hum ek hi HTTP token ke under multiple custom interceptors lines me add kar sakte hain.
+**A**: Multi-providers multiple class bindings ko single array collection token me bundle karte hain (`multi: true` property ke zariye). HTTP interceptors stack pipeline design iska best utility example hai.
 
 ## Summary
-Dependency Injection decouples classes from their dependencies. Angular's hierarchical injector tree resolves dependencies at different levels, while custom providers (useClass, useValue, useFactory) and Injection Tokens customize how instances are created.
+Dependency Injection service modules dependency decoupling manage karta hai. Angular hierarchy structures options customizable setups (useClass, useValue, useFactory) aur custom Injection Tokens developers ko clean objects injection controls create karne me leverage karte hain.
 
 ---
 

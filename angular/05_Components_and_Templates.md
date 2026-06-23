@@ -1,37 +1,37 @@
 # Components and Templates
 
 ## What is it?
-A component is the fundamental block of an Angular application. It encapsulates three parts: the UI (HTML template), the layout styling (CSS), and the logical behavior (TypeScript class). Templates are the HTML representation of the view, annotated with special Angular template syntax to bind and render data.
+Component Angular application ka sabse basic aur important building block hai. Yeh teen parts ko encapsulate karta hai: UI (HTML template), layout styling (CSS), aur logical behavior (TypeScript class). Templates HTML layout hote hain jo view ko represent karte hain, aur inme data show/bind karne ke liye special Angular template syntax use hota hai.
 
 ## Why do we need it?
-In vanilla web development, syncing JS variables with the DOM requires repetitive `document.getElementById().innerText = value` queries. Angular components and templates solve this by providing automated, declarative data binding. This ensures that the layout updates instantly whenever logic variables change, preventing desynchronization.
+Vanilla web development me, JS variables ko DOM ke sath sync rakhne ke liye baar-baar `document.getElementById().innerText = value` jaise element queries likhne padte hain. Angular components aur templates ise declarative aur automated data binding ke zariye solve karte hain. Isse jab bhi runtime logic variables change hote hain, UI instantly aur automatically update ho jati hai.
 
 ```
 ┌─────────────────────────────────────────────────────────┐
 │                    Component Class                      │
 │                  username: 'Nishant'                    │
-└──────────────────────────┬──────────────────────────────┘
-                           │ (Data Binding)
-                           ▼
-┌─────────────────────────────────────────────────────────┐
-│                    HTML Template                        │
-│             <p>Welcome, {{ username }}</p>              │
-└─────────────────────────────────────────────────────────┘
+│└──────────────────────────┬──────────────────────────────┘
+│                            │ (Data Binding)
+│                            ▼
+│┌─────────────────────────────────────────────────────────┐
+││                    HTML Template                        │
+││             <p>Welcome, {{ username }}</p>              │
+│└─────────────────────────────────────────────────────────┘
 ```
 
 ## How does it work?
-1. **Property Binding & Interpolation**: Values flow from the component class down into the DOM template.
-2. **Event Binding**: Interactive actions (clicks, keypresses) flow up from the DOM template to trigger methods in the component class.
-3. **Two-Way Binding**: Synchronizes the class variable and the DOM input element automatically.
-4. **Change Detection**: When a event occurs, Angular checks for changes in variables and updates the template.
+1. **Property Binding & Interpolation**: Values component class se generate hokar bottom direction me HTML DOM template me display hoti hain (One-Way).
+2. **Event Binding**: Interactive actions (clicks, keypresses) view layer se trigger hokar up direction me component class ke methods ko trigger karte hain (One-Way).
+3. **Two-Way Binding**: Input elements aur TypeScript variables ko double-way sync structure me bind kar deta hai (Two-Way).
+4. **Change Detection**: Jab bhi koi browser event trigger hota hai, Angular check karta hai ki kya koi data variables change huye hain, aur update hone par template ko refresh karta hai.
 
 ## Impact
-* **Application Architecture**: Strongly component-oriented. Promotes reusable, isolated UI widgets.
-* **Performance**: Ivy compiles templates into compact JavaScript functions, bypassing slow virtual DOM diff structures.
-* **Maintainability**: Clear division between design (HTML/CSS) and presentation behavior (TS).
+* **Application Architecture**: Fully component-oriented architecture. Reusable, isolated, aur independent UI widgets banane ko promote karta hai.
+* **Performance**: Ivy compiler templates ko high-performance, compact JavaScript functions me compile karta hai, jisse virtual DOM diff calculations bypass ho jate hain.
+* **Maintainability**: Web page styling (HTML/CSS) aur dynamic code presentation behavior (TS) me saaf separation of concerns rehta hai.
 
 ## Real World Example
-On a user settings page, when the user types their new username in a text box, the header text updates in real-time, and a "Save" button becomes enabled as a direct result of data binding.
+User settings page par, jaise hi user text box me apna naya username type karta hai, header text real-time me updates dikhane lagta hai aur data binding ki wajah se 'Save' button dynamically active ho jata hai.
 
 ## Syntax
 * **Interpolation**: `{{ expression }}`
@@ -40,29 +40,8 @@ On a user settings page, when the user types their new username in a text box, t
 * **Two-Way Binding**: `[(ngModel)]="property"`
 * **Template Reference Variable**: `#varName`
 
-## Hinglish Explanation
-
-Components and Templates Angular ke building blocks hain jo user interface banane ke kaam aate hain. Component me data (TypeScript) hota hai aur Template (HTML) me show hota hai. In dono ko connect karne ke liye hum 4 tarah ke Data Bindings use karte hain:
-
-### 1. Interpolation (`{{ value }}`) (One-Way: Class to Template)
-* Jab aapko component.ts se koi normal variable ya text template me directly print karana ho, toh double curly braces `{{ username }}` use hote hain. Yeh har cheez ko string me convert karke dikhata hai.
-
-### 2. Property Binding (`[property]="value"`) (One-Way: Class to Template DOM)
-* Jab aapko kisi HTML element ki property (jaise image ka `src`, button ka `disabled` status, ya child component ka data) set karna ho, toh square brackets `[]` use hote hain. Isme aap dynamic objects/boolean values bhi pass kar sakte ho.
-* **Example:** `<button [disabled]="isProcessing">Submit</button>`
-
-### 3. Event Binding (`(event)="handler()"`) (One-Way: Template to Class)
-* Jab user browser me koi action karta hai (jaise click karna, keypress karna) aur aapko component me logic chalana ho, toh parentheses `()` use hote hain.
-* **Example:** `<button (click)="saveData()">Save</button>`
-
-### 4. Two-Way Data Binding (`[(ngModel)]="property"`) (Double-way connection)
-* Jab aap chahte hain ki input field me change karne par component ka variable change ho, aur component ka variable change karne par input field me badlaav dikhe, toh banana-in-a-box `[()]` syntax use kiya jata hai. Yeh form validation me bohot use hota hai.
-
-### 5. Template Reference Variable (`#variableName`)
-* Yeh kisi HTML tag ko ek custom id ya handle dene jaisa hai. Jaise `<input #myInput>`, ab aap pure HTML template me kahin bhi `myInput.value` likh kar iski value access kar sakte ho bina TS file me code likhe.
-
 ## Code Examples
-Below is a complete standalone component demonstrating all template binding mechanisms.
+Neeche dynamic data bindings support karne wale standalone component ka full example diya gaya hai:
 
 ```typescript
 import { Component } from '@angular/core';
@@ -122,25 +101,23 @@ export class UserProfileComponent {
 ```
 
 ## Best Practices
-1. **No Side Effects in Interpolation**: Avoid executing complex computation inside `{{ }}` templates as they execute on every change detection cycle.
-2. **Use Two-Way Binding Exclusively for Form Elements**: Limit `[(ngModel)]` to user input controls, utilizing unidirectional bindings elsewhere.
-3. **Prefer Component Styles**: Use encapsulated styles (`styles` or `styleUrls`) instead of polluting global style sheets.
+1. **No Side Effects in Interpolation**: Templates me `{{ }}` brackets ke andar kabhi bhi complex computations ya expensive loops execute na karein, kyunki yeh change detection cycle par baar-baar run hote hain.
+2. **Use Two-Way Binding Exclusively for Form Elements**: Input elements ko chhodkar, other logic flows ke liye normal unidirectional bindings target karein.
+3. **Prefer Component Styles**: Global CSS codebases ko pollute karne ke bajaye, component level `styles` ya style encapsulation settings utilize karein.
 
 ## Common Mistakes
-* **Syntax Confusions**: Forgetting square brackets for property binding, e.g. `<img src="imageUrl">` will set the source strictly to the literal string `"imageUrl"` instead of binding to the class property.
-* **Binding directly to expensive methods**: Calling an expensive method like `[disabled]="calculateTax()"` inside template bindings, degrading user interface responsiveness.
+* **Syntax Confusions**: Property binding ke liye square brackets na lagana, jaise `<img src="imageUrl">` likhne par src variable string `"imageUrl"` set ho jayega na ki variable value.
+* **Binding directly to expensive methods**: Elements dynamic behaviors me expensive logic lagana, jaise `[disabled]="calculateTax()"`, jo pure page updates ko slow aur unresponsive bana deta hai.
 
 ## Interview Questions & Answers
 ### Q: What is the difference between Property Binding and Interpolation?
-**A**: Interpolation is a specialized syntax that converts its contents to a string and inserts them into HTML text. Property binding is more general; it binds a value directly to a DOM element property, allowing you to pass complex types (objects, arrays, booleans) directly to native elements or custom component input fields.
-* **Hinglish Explanation**: Interpolation (`{{ }}`) ek shortcut syntax hai jo final value ko string (text) me badal kar HTML page par print karta hai. Property binding (`[property]="value"`) isse zyada powerful hai kyunki yeh browser DOM property ko directly target karta hai, jisse aap primitive datatypes ke alawa complex types (jaise object, array, ya boolean) ko kisi component ya element me pass kar sakte hain.
+**A**: Interpolation ek direct shortcut syntax hai jo values ko string me badal kar templates me insert karta hai. Property binding generic hai; yeh variable data ko directly DOM properties ke sath connect karta hai, jiske through object, array ya boolean dynamic types elements me pass kiye ja sakte hain.
 
 ### Q: What is a Template Reference Variable and how do you use it?
-**A**: A template reference variable (declared using `#varName`) is a reference to a DOM element, directive, or component within a template. It allows you to access its properties (like value, classes, and native methods) in another part of the same template without writing event handlers or TypeScript logic.
-* **Hinglish Explanation**: Template reference variable (jo `#varName` syntax se banta hai) HTML template ke kisi element ka ek handle ya address hota hai. Iski madad se aap us element ki properties (jaise `<input #myInput>` me se `myInput.value`) ko HTML me hi kisi doosri jagah direct access kar sakte hain, bina TypeScript file me extra handler likhe.
+**A**: Template reference variable (jo `#varName` se declare hota hai) template inside HTML elements, directives ya child components ka ek reference identifier hota hai. Yeh direct values ya inputs ko template me access karne me help karta hai bina TS file handlers setup kiye.
 
 ## Summary
-Components combine TypeScript logic with HTML templates and styles. Template bindings (interpolation, property, event, two-way, and reference variables) form the reactive connection that links class state to visual markup.
+Components TypeScript code, HTML template, aur design styles ka ek package hote hain. Template bindings (interpolation, property, event, two-way, aur template variables) state variables aur visual page markup ke beech dynamic link activate karte hain.
 
 ---
 

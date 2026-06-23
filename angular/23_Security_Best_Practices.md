@@ -1,10 +1,10 @@
 # Security Best Practices
 
 ## What is it?
-Security in Angular involves the strategies, features, and configurations used to protect applications from vulnerabilities like Cross-Site Scripting (XSS), Cross-Site Request Forgery (CSRF), and unauthorized data access.
+Angular me Security un strategies, built-in features aur server configurations ka collection hai jo web application ko vulnerabilities (jaise Cross-Site Scripting - XSS, Cross-Site Request Forgery - CSRF, aur unauthorized data access) se protect karne me use hota hai.
 
 ## Why do we need it?
-Modern web applications handle sensitive user data (like passwords, session tokens, and personal details) and run scripts in browser environments. Vulnerabilities like XSS allow attackers to inject malicious scripts into pages, potentially stealing user sessions or credentials. Securing client-side code and configuring the browser properly helps prevent unauthorized script execution.
+Modern web applications sensitive user data (jaise passwords, session auth tokens, aur billing logs) browser variables me store karte hain. XSS vulnerability attackers ko client browser page par malicious scripts execute karne ki permission deti hai, jisse session tokens steal ho sakte hain. Client code bases ko secure design karna aur templates constraints properly apply karna XSS risks ko resolve karta hai.
 
 ```
 Attacker injects script tag ──> Angular sanitizes string by default (strips <script>) ──> Safe UI rendering
@@ -14,18 +14,18 @@ Attacker injects script tag ──> Developer bypasses security with bypassSecur
 ```
 
 ## How does it work?
-1. **Sanitization**: Angular treats all user values as untrusted by default. When inserting values into templates via interpolation or bindings, it automatically sanitizes them, stripping out unsafe scripts or styling configurations.
-2. **`DomSanitizer`**: A service used to bypass Angular's default sanitization when you explicitly trust a resource (e.g. embedding safe external IFrames or raw HTML).
-3. **Context-Specific Security**: Angular classifies values into security contexts (HTML, Style, URL, Resource URL) and sanitizes them according to their context rules.
-4. **CSRF (Cross-Site Request Forgery) Prevention**: Angular's `HttpClient` can read security tokens from cookies (such as `XSRF-TOKEN`) and append them to outgoing headers, ensuring requests originate from authenticated user sessions.
+1. **Sanitization**: Angular by default saari dynamic user values ko untrusted (unsafe) treatment deta hai. Templates HTML elements variable inputs bindings compilation runtime par scripts tags filter mechanisms clean features run kar dynamic links save karta hai.
+2. **`DomSanitizer`**: Angular default sanitization filters bypass engine coordinate interface. Agar hume target external assets source links (jaise dynamic external iframe URLs ya dynamic SVG markup) securely load settings override parameters trigger karne hon.
+3. **Context-Specific Security**: Angular elements attributes dynamic environments safety checks context levels classify (HTML, Style, URL, Resource URL) categories me monitor karta hai aur validation rules check run karta hai.
+4. **CSRF (Cross-Site Request Forgery) Prevention**: Angular `HttpClient` cookies validation coordinate logic support target (jaise `XSRF-TOKEN` values check) out of the box automate configure kar headers sets verify coordinate requests origins validation secure banata hai.
 
 ## Impact
-* **Application Architecture**: Enforces secure data binding and input validation across components.
-* **Performance**: Sanitization processes run quickly with minimal change detection overhead.
-* **Security**: Automatic sanitization mitigates common client-side vulnerabilities out of the box.
+* **Application Architecture**: Data properties injection secure template parameters setup enforce karta hai.
+* **Performance**: Auto-sanitization procedures checks millisecond calculations limits execute dynamic check loops optimize rakhte hain.
+* **Security**: Out of the box sanitizations standard client checks vulnerabilities mitigates dynamic logic check.
 
 ## Real World Example
-In a chat application, a user types `<script>maliciousCode()</script>` into a message field. Angular sanitizes this input, displaying it as plain text instead of executing it in other users' browsers.
+Social chat application me user input field box me `<script>hack()</script>` malicious alert command code type karke parameters send karta hai. Angular validation check runtime script filter tags clean kar textual format me message screen standard rendering display settings apply kar safe rakhta hai.
 
 ## Syntax
 * **Inject DomSanitizer**:
@@ -37,25 +37,10 @@ private sanitizer = inject(DomSanitizer);
 this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl('https://trusted-site.com');
 ```
 
-## Hinglish Explanation
-
-Web Security me sabse bada issue hota hai **XSS (Cross-Site Scripting)**, jisme dynamic user authentication credentials/tokens leak hone ka khatra rehta hai. Angular default me hume secure environment provide karta hai:
-
-### 1. Default Sanitization (Auto Cleanup)
-* Angular browser me koi bhi dynamic value render karne se pehle use automatic sanitize (saaf) karta hai.
-* Agar background data me koi `<script>` ya `<iframe>` tag hai, toh Angular use template compilation cycle me delete kar deta hai taaki browser me dynamic threat logic run na ho.
-
-### 2. DomSanitizer (Security check override)
-* Kai baar hume dynamic external pages ya YouTube embeds render karne padte hain. Angular security engine unhe compile-time par block kar deta hai.
-* Ise resolve karne ke liye hum `DomSanitizer` ka use karke kehte hain: *"Yeh input secure hai, is par default check apply mat karo"*. Isme `bypassSecurityTrustHtml` ya `bypassSecurityTrustResourceUrl` method use hote hain.
-
-### 3. DOM API Direct Access Restrictions
-* Direct element values manipulate karna (jaise `nativeElement.innerHTML = ...` use karna) security engine ko bypass kar deta hai jo XSS vulnerability create karta hai. Hume clean standard template bindings ya `Renderer2` functions hi call karne chahiye.
-
 ## Code Examples
-Below is an implementation demonstrating how to render dynamic HTML safely, bypass sanitization for trusted resources, and configure CSRF cookie tracking.
+Neeche CSRF token headers apply, dynamic HTML rendering safety checks aur `DomSanitizer` use logic integration model code sample configure kiya gaya hai:
 
-### `app.config.ts` (CSRF Cookie Tracking Configuration)
+### `app.config.ts`
 ```typescript
 import { ApplicationConfig } from '@angular/core';
 import { provideHttpClient, withXsrfConfiguration } from '@angular/common/http';
@@ -63,7 +48,6 @@ import { provideHttpClient, withXsrfConfiguration } from '@angular/common/http';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideHttpClient(
-      // Configure client to read cookie and append token to headers
       withXsrfConfiguration({
         cookieName: 'MY-XSRF-COOKIE',
         headerName: 'X-XSRF-TOKEN'
@@ -73,7 +57,7 @@ export const appConfig: ApplicationConfig = {
 };
 ```
 
-### `safe-render.component.ts` (Sanitization Demonstration)
+### `safe-render.component.ts`
 ```typescript
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -87,13 +71,11 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
     <div class="security-box">
       <h3>Security Sandbox</h3>
       
-      <!-- 1. Default Sanitization (Safe) -->
       <h4>Default Sanitization (Strips script tags):</h4>
       <div [innerHTML]="rawUserContent"></div>
 
       <hr />
 
-      <!-- 2. Bypassed Sanitization (Danger) -->
       <h4>Explicitly Trusted Content (Bypassed):</h4>
       <div [innerHTML]="safeUserContent()"></div>
     </div>
@@ -106,46 +88,41 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 export class SecurityDemoComponent {
   private sanitizer = inject(DomSanitizer);
 
-  // Untrusted input from user
   rawUserContent = `
     <p>This is standard text.</p>
     <script>alert("XSS Vulnerability Executed!")</script>
     <div style="color: red;">Red styling applied.</div>
   `;
 
-  // Trusted content (using DomSanitizer to bypass checks)
   safeUserContent = signal<SafeHtml>('');
 
   constructor() {
     const trustedHtml = '<strong style="color: green;">Explicitly trusted green text.</strong>';
-    
-    // Explicitly bypass sanitization for trusted HTML
     this.safeUserContent.set(
       this.sanitizer.bypassSecurityTrustHtml(trustedHtml)
     );
   }
 }
 ```
+
 ## Best Practices
-1. **Avoid `ElementRef.nativeElement` for DOM Mutations**: Direct DOM mutations bypass Angular's sanitization checks, which can introduce XSS vulnerabilities. Use `Renderer2` or standard template bindings instead.
-2. **Limit Bypassing Sanitization**: Use `DomSanitizer` methods (such as `bypassSecurityTrustHtml`) sparingly. Always sanitize inputs on the server before treating them as trusted in the client.
-3. **Configure Content Security Policy (CSP) Headers**: Set up strict CSP HTTP headers on your server to restrict where scripts can be loaded from and block inline script executions.
+1. **Avoid `ElementRef.nativeElement` for DOM Mutations**: Direct DOM changes native elements indicators coordinates scripts `innerHTML` bypass updates patterns apply checks avoid karein. Humesha `Renderer2` features standard template bindings structures utilize karein.
+2. **Limit Bypassing Sanitization**: DomSanitizer methods properties bypass inputs logic updates systems (jaise `bypassSecurityTrustHtml`) use case values target control boundaries limits verify checks ke baad hi configure parameters set verify.
+3. **Configure Content Security Policy (CSP) Headers**: Servers boundaries deployment coordinate setup me strict CSP HTTP headers define check apply, jo inline script executions variables settings block.
 
 ## Common Mistakes
-* **Using DomSanitizer on raw user input**: Passing raw user inputs directly into `bypassSecurityTrustHtml`. This allows users to execute malicious scripts in other users' browsers.
-* **Binding to Dynamic Resource URLs**: Binding dynamic URLs to `iframe` sources without validating them, allowing attackers to load malicious external web resources.
+* **Using DomSanitizer on raw user input**: User parameters values direct inputs options bypass sanitize wrappers me pass dynamic checks override code lines verify configurations set logic variables inject.
+* **Binding to Dynamic Resource URLs**: Dynamic urls controls coordinate iframe targets sets parameters bypass checks filter dynamic logic controls execute check criteria ignore.
 
 ## Interview Questions & Answers
 ### Q: How does Angular protect applications from Cross-Site Scripting (XSS) attacks?
-**A**: Angular protects applications by treating all user values as untrusted by default. When values are inserted into templates, it automatically sanitizes them, stripping out unsafe tags (like `<script>` or `<iframe>`) and styling attributes.
-* **Hinglish Explanation**: Angular default me saare values ko untrusted (unsafe) maanta hai. Jab bhi templates me koi value dynamic data binding (`[innerHTML]`, interpolation) ke zariye insert hoti hai, toh Angular use automatically sanitize kar deta hai. Yeh dangerous tags (jaise `<script>`, `<iframe>`) aur inline malicious styles/attributes ko remove (strip) kar deta hai taaki browser me harmful code execute na ho sake.
+**A**: Angular dynamic bindings contexts input updates parameters sanitization rules systems automatically apply karke elements codes layout setup safety checks compile standard configure karta hai.
 
 ### Q: When and why should you use `DomSanitizer`?
-**A**: Use `DomSanitizer` when you need to bypass Angular's default sanitization to render trusted content (like safe external IFrames or pre-sanitized HTML). You should only use it on trusted values, as it disables security checks for that content.
-* **Hinglish Explanation**: `DomSanitizer` ka use tab karna chahiye jab aapko pata ho ki data completely safe hai (jaise backend se double-checked trusted external videos ya pre-secured HTML blocks), par Angular use blocking rules ki wajah se disable kar raha ho. Hum `bypassSecurityTrustHtml` ya `bypassSecurityTrustResourceUrl` ka use karke Angular ko security checks bypass karne ke liye bolte hain, par user input par iska direct use tabhi karna chahiye jab backend pe deep sanitization ho chuki ho.
+**A**: DomSanitizer resources bypass systems templates check settings override structures maps coordinates check options limits use case values dynamic coordinate logic variables safe properties definitions target sets checks me select kiya jata hai.
 
 ## Summary
-Angular sanitizes user inputs by default to protect applications from vulnerabilities like XSS. While services like `DomSanitizer` can bypass these security checks for trusted content, they should be used with caution.
+Angular web templates data values injection security controls systems manage karta hai. DomSanitizer interfaces overrides exceptions features inputs parameters checks setups safety boundaries details secure system setups handle rules execute karte hain.
 
 ---
 

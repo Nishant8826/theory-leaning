@@ -1,10 +1,10 @@
 # Pipes
 
 ## What is it?
-Pipes are template utilities in Angular designed to transform data directly within your HTML templates. They accept input data, process it according to instructions, and output the formatted result without altering the underlying raw data in the component class.
+Pipes Angular ke template utilities hain jinhe HTML templates ke andar data ko directly transform karne ke liye design kiya gaya hai. Yeh input data receive karte hain, guidelines ke mutabik use process karte hain, aur formatted result output karte hain bina component class ke actual/raw data ko modify kiye.
 
 ## Why do we need it?
-Often, database values are stored in generic, unformatted structures (such as lowercase strings, numeric timestamps, or large float amounts). Displaying this raw data to users is unprofessional. Instead of writing duplicate formatting methods in multiple component files, you can use pipes to format currencies, dates, percentages, and case text directly inside templates.
+Database values aksar raw aur unformatted format me store hoti hain (jaise lowercase strings, numeric timestamps, ya float numbers). Is raw data ko directly users ko dikhana sahi nahi lagta. Alag-alag components me formatting methods likhne ke bajaye, aap templates ke andar directly currencies, dates, percentages, aur cases ko format karne ke liye pipes use kar sakte hain.
 
 ```
 Raw Data in Class: 
@@ -15,47 +15,25 @@ Formatted Output via Pipe in Template:
 ```
 
 ## How does it work?
-1. **Built-in Pipes**: Angular includes standard formats (`DatePipe`, `UpperCasePipe`, `LowerCasePipe`, `CurrencyPipe`, `PercentPipe`, `DecimalPipe`, `JsonPipe`, and `AsyncPipe`).
-2. **Pure Pipes (Default)**: Angular only executes a pure pipe when it detects a change in the input value reference (primitive change or object reference swap). This makes pure pipes highly performant.
-3. **Impure Pipes**: Angular executes an impure pipe during every change detection cycle, regardless of whether the input has changed. This is useful for tracking mutations within arrays or objects, but must be used with caution to avoid performance issues.
+1. **Built-in Pipes**: Angular me standard formats ke liye pehle se built-in pipes milte hain (jaise `DatePipe`, `UpperCasePipe`, `LowerCasePipe`, `CurrencyPipe`, `PercentPipe`, `DecimalPipe`, `JsonPipe`, aur `AsyncPipe`).
+2. **Pure Pipes (Default)**: Angular pure pipe ko tabhi execute karta hai jab use input value reference (primitive values me changes ya object/array reference swap) me koi badlaav dikhta hai. Is wajah se pure pipes highly performant hote hain.
+3. **Impure Pipes**: Angular impure pipes ko har change detection cycle ke dauran execute karta hai, chahe input change hua ho ya nahi. Yeh array ya object mutations ko track karne me kaam aata hai, lekin performance issues se bachne ke liye ise dhyan se use karna chahiye.
 
 ## Impact
-* **Application Architecture**: Keeps formatting utilities highly reusable across components.
-* **Performance**: Pure pipes prevent unnecessary recalculations, but impure pipes can severely degrade performance if they run expensive logic during change detection.
-* **Maintainability**: Centralizes formatting logic, allowing you to change display formats application-wide in one place.
+* **Application Architecture**: Formatting logics ko components ke beech highly reusable banata hai.
+* **Performance**: Pure pipes unnecessary calculations se bachate hain, lekin impure pipes change detection cycle me slow processing badha kar performance degrade kar sakte hain.
+* **Maintainability**: Formatting logic ko ek central place par manage karta hai, jisse dynamic modifications pure application me instantly reflect ho jati hain.
 
 ## Real World Example
-In an international financial portal, currency figures are stored as floating-point numbers. We use `currency:'EUR'` to display values formatted correctly for European users automatically.
+Ek international financial app me dynamic currency values floating-point format me store hoti hain. Hum client location ke coordinates ke mutabik numbers ko currency filter me `currency:'EUR'` pass karke display karte hain.
 
 ## Syntax
 * **Applying a pipe**: `{{ value | pipeName }}`
 * **Passing parameters**: `{{ value | pipeName:arg1:arg2 }}`
 * **Chaining pipes**: `{{ value | pipe1 | pipe2 }}`
 
-## Hinglish Explanation
-
-Pipes ka simple kaam hai **"Data ko display ke liye format karna"**. Yeh background data ko actual me change kiye bina, user ko screen par sahi tarike se show karne ke liye use hote hain (jaise lower case ko upper case banana ya raw number ko currency format me convert karna).
-
-### 1. Built-in Pipes (Pehle se bane pipes)
-* **Uppercase/Lowercase:** Text ko caps/small karne ke liye: `{{ 'hello' | uppercase }}` -> HELLO.
-* **Currency:** Numbers ko currency format me transform karne ke liye: `{{ 100 | currency }}` -> $100.00.
-* **Date:** Raw timestamp ko standard date format me show karne ke liye.
-
-### 2. Pure Pipes (Smart & Performance Friendly)
-* By default, Angular ke saare pipes **Pure** hote hain.
-* Yeh tabhi chalte hain jab inki input value (ya object/array reference) change hoti hai. Agar input badla nahi hai, toh yeh cached value return kar dete hain, jisse computation power bachti hai.
-* **Example/Gotcha:** Agar aap kisi array me `.push()` se element insert karte hain, toh pure pipe run nahi hoga kyunki array ka references (address) change nahi hua. Isko fix karne ke liye hume de-structuring use karke array reference change karna padta hai: `items = [...items, newItem]`.
-
-### 3. Impure Pipes (Har cycle par chalne wale)
-* Inhe `@Pipe({ name: 'myPipe', pure: false })` se define kiya jata hai.
-* Yeh component ke har ek action (change detection cycle) par execute hote hain. Yeh memory leaks ya performance issue kar sakte hain, isliye inka use avoid karna chahiye jab tak array/object elements ke andar deep mutation track na karni ho.
-
-### 4. Async Pipe (`async`)
-* Yeh Angular ka sabse popular pipe hai. Jab dynamic data (Observables/Promises) direct template me render karna ho, tab iska use hota hai.
-* Yeh component lifecycle ke sath synchronous subscribe aur unsubscribe handle kar leta hai, jisse memory leaks ka khatra bilkul zero ho jata hai.
-
 ## Code Examples
-Below is an implementation of a custom **pure pipe** to truncate text and add an ellipsis, and an **impure pipe** to filter collections.
+Neeche text truncate karne wale **pure pipe** aur collection filter karne wale **impure pipe** ka custom implementation demo component ke sath diya gaya hai:
 
 ```typescript
 import { Pipe, PipeTransform, Component } from '@angular/core';
@@ -119,25 +97,23 @@ export class PipesDemoComponent {
 ```
 
 ## Best Practices
-1. **Keep Pipes Pure**: Unless absolutely necessary, keep `pure: true`. Pure pipes cache values, providing a significant performance boost.
-2. **Never Put Expensive Logic in Impure Pipes**: Avoid heavy array operations, network fetches, or database calls in impure pipes.
-3. **Prefer Pipes Over Component Methods**: Using a method inside a template, like `{{ formatName(user) }}`, forces Angular to invoke it on every change detection sweep. Pipes avoid this by caching results based on input identity.
+1. **Keep Pipes Pure**: Jab tak bohot zaroori na ho, pipes ko `pure: true` hi rakhein. Pure pipes results ko cache karte hain, jisse performance kaafi improve hoti hai.
+2. **Never Put Expensive Logic in Impure Pipes**: Impure pipes me heavy calculations, network APIs calls, ya database handling logic kabhi na likhein.
+3. **Prefer Pipes Over Component Methods**: Template bindings me code operations ke liye component methods (jaise `{{ formatName(user) }}`) calls avoid karne chahiye. Method calls change detection cycle par repeat call hote hain, jagki pipes references checks filter caching use karte hain.
 
 ## Common Mistakes
-* **Mutating Arrays and Expecting Pure Pipes to Update**: Mutating an array with `.push()` does not change its reference, so a pure pipe won't re-run. To trigger a pure pipe, replace the array reference: `items = [...items, newItem]`.
-* **Injecting HTTP Calls into Pipes**: Using a pipe to fetch API details directly inside a template. This can create infinite network loops. Delegate API calls to services.
+* **Mutating Arrays and Expecting Pure Pipes to Update**: Array me `.push()` se element insert karne par object index reference change nahi hota, isliye pure pipe updates show nahi karta. Array update ke liye hamesha reference change karein: `items = [...items, newItem]`.
+* **Injecting HTTP Calls into Pipes**: Pipes ke andar directly network API requests trigger karna. Yeh layout rendering parameters ko slow aur infinite loop me fansa sakta hai. API calls ko services me handle karein.
 
 ## Interview Questions & Answers
 ### Q: What is the difference between a Pure and an Impure Pipe?
-**A**: A pure pipe is only executed when Angular detects a change in its input reference (primitive changes or reference updates for objects/arrays). An impure pipe is invoked during every change detection cycle, regardless of input changes, making it less performant but useful for tracking mutations within arrays or objects.
-* **Hinglish Explanation**: Pure Pipe tabhi execute hota hai jab uski input value/reference badalta hai (primitive type badle ya array/object ka reference badle). Impure Pipe har change detection cycle par chalta hai, chahe input change hua ho ya nahi. Pure pipe caching ki wajah se bohot fast aur performant hota hai, jabki impure pipe performance slow kar sakta hai par array modifications ko update karne me useful hota hai.
+**A**: Pure pipe tabhi execute hota hai jab input reference badalta hai. Impure pipe har change detection cycle par chalta hai chahe input badla ho ya nahi. Pure pipes caching use karte hain isliye faster hote hain, jabki impure pipes arrays/objects mutations live track karne me use hote hain par slow hote hain.
 
 ### Q: Why is the `Async` pipe highly recommended?
-**A**: The `AsyncPipe` automatically subscribes to an Observable or Promise, returns the emitted values to the template, and handles unsubscription when the component is destroyed. This prevents memory leaks without requiring manual subscription cleanup in your TypeScript code.
-* **Hinglish Explanation**: `AsyncPipe` bohot useful hai kyunki yeh component template me directly Observable ya Promise ko handle karta hai. Yeh background me auto-subscribe karta hai aur component destroy hone par auto-unsubscribe bhi kar deta hai. Isse memory leak hone ka khatra bilkul khatam ho jata hai aur aapko TS file me manual subscription aur unsubscription ka boilerplate code nahi likhna padta.
+**A**: `AsyncPipe` templates me directly Observable/Promise data stream handle karta hai. Yeh background me dynamically subscribe karta hai aur component destroy phase me auto-unsubscribe triggers handle karta hai, jisse memory leaks control hoti hain.
 
 ## Summary
-Pipes format data for display in HTML templates. Pure pipes optimize performance by caching results, while the async pipe automatically manages subscriptions. Custom pipes are easily declared using the `@Pipe` decorator.
+Pipes templates me visual presentation ke liye data format change karte hain. Pure pipes inputs caching se rendering performance optimize rakhte hain aur async pipe subscriptions flow logic direct handle karta hai. Custom pipes hum `@Pipe` decorator se bana sakte hain.
 
 ---
 

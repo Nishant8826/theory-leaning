@@ -1,10 +1,10 @@
 # Signals
 
 ## What is it?
-An Angular Signal is a reactive wrapper around a value that notifies consumers whenever that value changes. Signals introduce fine-grained reactivity to Angular, allowing the framework to know exactly where state is read and precisely which DOM elements require updating.
+Angular Signal ek value ke charo taraf ek reactive wrapper container hota hai jo apne consumers (jahan wo read ho raha hai) ko value update hone par alert notify karta. Signals Angular application me high-performance, fine-grained reactivity lane ka kaam karte hain, jisse framework ko exact pata chalta hai ki state variable kahan read hua hai aur kis browser HTML template node ko update karna hai.
 
 ## Why do we need it?
-Historically, Angular has relied on Zone.js to check the entire component tree for updates on every async event (like clicks, timers, or HTTP responses). This "dirty checking" approach is inefficient, as parts of the DOM that didn't change are still scanned. Signals enable fine-grained updates, allowing components to run without Zone.js (Zoneless applications).
+Legacy Angular versions me, change updates check karne ke liye Zone.js engine pure component tree ko check/verify (dirty checking) karta tha jab bhi koi asynchronous click, timer, ya HTTP request handle hoti thi. Yeh approach bade applications me slow rendering performance generate karta tha. Signals change checking process ko exact specific element level par target karta hai, jisse dynamic rendering bina Zone.js engine background overheads ke run ho sakti hai (Zoneless applications).
 
 ```
 Zone.js Change Detection (Coarse-Grained):
@@ -15,18 +15,18 @@ Signal value updates ──> Notify only elements bound to Signal ──> Re-ren
 ```
 
 ## How does it work?
-1. **Writable Signals (`signal()`)**: Holds state that can be directly updated using `.set()` or `.update()`.
-2. **Computed Signals (`computed()`)**: Read-only reactive values derived from other signals. They are lazily evaluated and cache their values until their dependencies change.
-3. **Effects (`effect()`)**: Developer hooks that execute side-effect logic whenever the signals read inside them change.
-4. **Signal Inputs (`input()`)**: A modern, signal-based alternative to the legacy `@Input()` decorator.
+1. **Writable Signals (`signal()`)**: Aise mutable state wrappers jinhe direct `.set(newValue)` ya `.update(val => nextVal)` methods se change kiya ja sakta hai.
+2. **Computed Signals (`computed()`)**: Aise read-only reactive signals jo doosre dependent signals se values calculate karte hain. Yeh lazy values compute karte hain aur inputs references updates hone tak values cached memory me hold karte hain.
+3. **Effects (`effect()`)**: Developer hooks logic jo read coordinate signals change hone par background actions (jaise logging, storage save) trigger karte hain.
+4. **Signal Inputs (`input()`)**: Modern, high-performance signals inputs attributes jo legacy decorator style `@Input()` wrapper settings ko replace karte hain.
 
 ## Impact
-* **Application Architecture**: Simplifies local state tracking, reducing boilerplate compared to RxJS streams for basic UI states.
-* **Performance**: Drastically reduces change detection overhead, paving the way for Zoneless rendering.
-* **Maintainability**: Makes data dependencies clear, as computed signals update automatically based on their dependencies.
+* **Application Architecture**: Direct component state tracking ko simple aur boiler-plate free banata hai.
+* **Performance**: Browser DOM change detection processing time drastically reduce karta hai, jisse modern Zoneless application initialization clean execute hoti hai.
+* **Maintainability**: Data dependencies flow logic fully visible rakhta hai, kyunki dependencies update hone par computed models automatically recalculate ho jate hain.
 
 ## Real World Example
-In a shopping cart checkout form, signals track quantity, price, discount codes, and taxes. As quantity scales up or down, the total price (computed) recalculates instantly without manual event listeners.
+E-commerce payment bill settings screen me, signals dynamic checkout inputs (item quantity, tax rate, discount coupons) monitor karte hain. Jaise hi quantity counter increment hota, billing subtotal `computed()` automatically values recalculate kar deta hai.
 
 ## Syntax
 * **Declare a Writable Signal**: `const count = signal(0);`
@@ -36,54 +36,9 @@ In a shopping cart checkout form, signals track quantity, price, discount codes,
 * **Declare Computed Signal**: `const double = computed(() => count() * 2);`
 * **Signal Input**: `name = input<string>('guest');`
 
-## Hinglish Explanation
-
-Agar aap Angular me state management aur Change Detection ko simple aur super-fast banana chahte hain, toh **Signals** ko samajhna zaroori hai.
-
-### 1. Signals Kya Hain? (Signal is a Container)
-Normal JavaScript variables me value change hoti hai, toh Angular ko khud se nahi pata chalta ki use page (UI) par kahan update karna hai.
-**Signal** ek reactive container (wrapper) hai jo kisi value ko hold karta hai. Jab bhi iski value change hoti hai, toh yeh Angular ko notify karta hai: 
-*"Bhai! Meri value change ho gayi hai, jahan-jahan main use ho raha hoon, wahan screen ko update kar do!"*
-
-### 2. Zone.js vs Signals (Purana vs Naya tareeka)
-* **Zone.js (Dirty Checking - Old Way):** Pehle jab bhi koi event (jaise click, timer, ya API response) hota tha, toh Zone.js pure component tree ko upar se neeche tak check karta tha ki kahin kuch change toh nahi hua. Yeh bilkul waisa hai jaise pure building me check karna ki kis room ka fan band hai.
-* **Signals (Fine-grained - New Way):** Signals ke aane se Angular ko exact pata hota hai ki kaunsi value kis component me kis HTML tag par use ho rahi hai. Value change hone par Angular **sirf usi specific HTML element ko update** karta hai. Baaki components ko chhua tak nahi jata! Isse performance bohot badh jati hai.
-
-### 3. Signals Ke Teen Main Pillars (Core Features)
-
-#### A. Writable Signals (`signal()`)
-Yeh ek simple box ki tarah hai jisme value store hoti hai aur hum jab chahein use change kar sakte hain.
-* **Read Kaise Karein?** Signal ko padhne ke liye function ki tarah execute karna padta hai: `mySignal()`.
-* **Value Update Kaise Karein?**
-  * Direct change karne ke liye: `count.set(5)`
-  * Purani value par depend karke change karne ke liye: `count.update(val => val + 1)`
-
-#### B. Computed Signals (`computed()`)
-Yeh read-only signals hote hain jo kisi dusre signal ke badalne par **automatically recalculate** ho jate hain.
-* **Example:** `total = computed(() => qty() * price())`
-* **Fayde:** 
-  1. **Lazy Evaluation:** Yeh tab tak calculate nahi hote jab tak inki value ko kahin read na kiya jaye.
-  2. **Caching:** Agar dependents (`qty` ya `price`) ki value change nahi hui, toh yeh calculation dobara nahi karte, purani cached value hi return kar dete hain.
-
-#### C. Effects (`effect()`)
-Jab bhi koi signal change ho aur aapko koi external kaam (side-effect) karna ho, tab `effect()` ka use hota hai.
-* **Example:** Jab bhi counter badle, local storage me value save karna:
-  ```typescript
-  effect(() => {
-    localStorage.setItem('counter', this.count().toString());
-  });
-  ```
-* **Note:** Iska use main UI business logic ke liye nahi, balki logging, analytics, local storage update, ya custom DOM integration ke liye kiya jata hai.
-
-### 4. Real-World Analogy (Ghar aur Light Bulbs)
-Socho ki aapke ghar me 10 rooms hain.
-* **Old Way (Zone.js):** Ek room ka switch daba, toh poore ghar ke har ek room ke bulb ko check kiya gaya ki wo sahi chal raha hai ya nahi. (Slow & unnecessary).
-* **New Way (Signals):** Har bulb ko pata hai ki uska switch kaunsa hai. Jaise hi switch (Signal) daba, sirf wahi specific bulb (DOM Element) notify hua aur turn on/off ho gaya. (Super Fast & Clean).
-
 ## Code Examples
-Below is a complete implementation demonstrating Writable Signals, Computed Signals, Effects, and Signal Inputs.
+Neeche Writable Signals, Computed Signals, Effects, aur Signal Inputs ka dynamic cart component example diya gaya hai:
 
-### `cart-calculator.component.ts`
 ```typescript
 import { Component, signal, computed, effect, input } from '@angular/core';
 
@@ -151,25 +106,23 @@ export class CartCalculatorComponent {
 ```
 
 ## Best Practices
-1. **Always Use Computed for Derived State**: Do not manually update a writable signal inside an effect to store derived calculations. Use `computed()` instead.
-2. **Limit Side Effects in Effects**: Avoid setting other writable signals inside an `effect()` unless explicitly configured (`allowSignalWrites: true`), as this can lead to infinite update loops.
-3. **Pipes and Signals**: When binding a signal in a template, invoke it as a function before applying pipes: `{{ price() | currency }}`.
+1. **Always Use Computed for Derived State**: Derived values computations calculate karne ke liye custom effect write loops avoid karein. Humesha `computed()` wrappers ka use karein.
+2. **Limit Side Effects in Effects**: `effect()` hooks block ke andar writable signals values state modify (`.set()`, `.update()`) karna avoid karein jag tak setup `allowSignalWrites` override configuration explicitly set na ho, nahi toh infinite loops create ho sakte hain.
+3. **Pipes and Signals**: HTML templates variables me dynamic filters pipelines apply karte waqt signals execution syntax parameters function key `()` lagana na bhoolein: `{{ price() | currency }}`.
 
 ## Common Mistakes
-* **Forgetting to Call the Signal**: Forgetting the parenthesis when reading a signal in a template or logic block, e.g. writing `{{ quantity }}` instead of `{{ quantity() }}`. This binds the signal function reference itself instead of its value.
-* **Overusing RxJS for Local State**: Converting simple boolean toggles (like menu open/closed states) into RxJS BehaviorSubjects. Use writable signals instead to reduce boilerplate.
+* **Forgetting to Call the Signal**: Template UI ya TS code lines parsing me signals parameters brackets references missing hona, jaise query line me `{{ quantity }}` likhna `{{ quantity() }}` ke bajaye. Isse output print values text ke bajaye internal JS function signature show karta hai.
+* **Overusing RxJS for Local State**: Components basic local status indicators (jaise menu show/hide checks) manage karne ke liye complex RxJS `BehaviorSubject` streams deploy karna. In basic tasks ke liye writable signals simple aur neat option hain.
 
 ## Interview Questions & Answers
 ### Q: What are the main differences between Signals and RxJS Observables?
-**A**: Signals are designed for state management; they always hold an active value, are read synchronously, and are optimized for UI data-binding. Observables are designed for event streams; they deliver values asynchronously over time, support complex transformations (filtering, debouncing), and do not need to hold a default starting value.
-* **Hinglish Explanation**: Signals ko primary UI state track karne ke liye design kiya gaya hai; inme hamesha ek core active value rehti hai jo synchronously bina kisi subscription ke read ki ja sakti hai. Dusri taraf, RxJS Observables event streams aur data pipelines ke liye hain; yeh asynchronously multiple events deliver kar sakte hain, inme custom operations (debounce, mapping) support hote hain, aur inme default value hona compulsory nahi hai.
+**A**: Signals UI status details maintain karne ke liye design huye hain jinme hamesha synchronous default value exist karti hai. Observables async event pipelines ke liye bane hain jo complex data modifiers (jaise debounce, filtering) execute kar sakte hain.
 
 ### Q: Why are computed signals performant?
-**A**: Computed signals are lazily evaluated and cache their values. They only run their calculations when read, and only recalculate if one of the signals they depend on emits a new value, preventing unnecessary work during change detection.
-* **Hinglish Explanation**: Computed signals performance ke mamle me bohot smart hote hain kyunki yeh lazy evaluation aur caching concept par kaam karte hain. Jab tak inki value ko HTML ya code me call na kiya jaye, yeh calculation nahi karte. Aur agar dependent signals ki value nahi badli hai, toh yeh purani cached value hi return karte hain bina calculations ko repeat kiye.
+**A**: Computed signals lazy assessment aur cache memory calculations use karte hain. Yeh tab tak computations compute nahi karte jab tak logic call na ho, aur dependencies updates hone par hi calculations refresh karte hain.
 
 ## Summary
-Signals introduce fine-grained reactivity to Angular. Writable signals hold state, computed signals derive cached values, and effects run side effects. Using signals simplifies local state tracking and enables Zoneless change detection.
+Signals Angular applications me fine-grained reactivity add karte hain. Writable signals variables holds state, computed signals derived memory cache calculations aur effects background side-effects execute karte hain. Signals implementation local state tracking simple banata hai aur Zoneless rendering enable karta hai.
 
 ---
 

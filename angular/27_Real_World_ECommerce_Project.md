@@ -1,10 +1,10 @@
 # Real World E-Commerce Project
 
 ## What is it?
-The Real-World E-Commerce Project design specification defines the architecture, routing, state, and deployment configurations used to build a scalable shop application. It serves as a practical guide for organizing features and data flows in production environments.
+Real-World E-Commerce Project design specification us architecture, routing, state, aur deployment configurations ko define karta hai jiske zariye ek scalable shop application build kiya jata hai. Yeh production environments me features aur data flows ko organize karne ke liye ek practical guide ki tarah kaam kaam karta hai.
 
 ## Why do we need it?
-While learning individual features in isolation is useful, building a production application requires combining them into a cohesive structure. Designing a mock application (like an e-commerce platform) shows how to structure routing tables, manage shared state (such as shopping carts and authentication), configure APIs, and set up deployment pipelines.
+Individual features ko alag-alag seekhna zaroori hai, par ek production application build karne ke liye unhe ek cohesive structure me combine karna padta. Ek mock application (jaise e-commerce platform) design karne se yeh samajh aata hai ki routing tables ko kaise structure karein, shared state (jaise shopping carts aur authentication) ko kaise manage karein, APIs ko kaise configure karein, aur deployment pipelines ko kaise set up karein.
 
 ```
 E-Commerce Architecture Overview:
@@ -15,29 +15,29 @@ E-Commerce Architecture Overview:
                                     ▼
        ┌────────────────────────────┼────────────────────────────┐
        ▼                            ▼                            ▼
-┌──────────────┐             ┌──────────────┐             ┌──────────────┐
-│ Auth Domain  │             │ Catalog/Cart │             │ Checkout     │
-│ (Login/JWT)  │             │ (Signals)    │             │ (Forms/Auth) │
-└──────────────┘             └──────────────┘             └──────────────┘
+ ┌──────────────┐             ┌──────────────┐             ┌──────────────┐
+  │ Auth Domain  │             │ Catalog/Cart │             │ Checkout     │
+  │ (Login/JWT)  │             │ (Signals)    │             │ (Forms/Auth) │
+  └──────────────┘             └──────────────┘             └──────────────┘
 ```
 
 ## How does it work?
-1. **Folder Layout**: Uses a domain-driven structure (`core`, `shared`, `domains/cart`, `domains/catalog`).
-2. **Routing Structure**: Lazy-loads domain features (like `/catalog`, `/cart`, and `/checkout`) and uses functional guards to secure checkout paths.
-3. **State Management**: Uses the `NgRx Signal Store` or shared services to manage cart items and user sessions.
-4. **API Integration**: Integrates with REST APIs using `HttpClient` and functional interceptors to append authorization tokens automatically.
-5. **Deployment Configuration**: Compiles production assets and hosts them in Nginx/Docker containers on cloud environments.
+1. **Folder Layout**: Domain-driven structure ka use karta hai (`core`, `shared`, `domains/cart`, `domains/catalog`).
+2. **Routing Structure**: Domain features (jaise `/catalog`, `/cart`, aur `/checkout`) ko lazy-load karta hai aur checkout paths ko secure karne ke liye functional guards ka use karta hai.
+3. **State Management**: Cart items aur user sessions ko manage karne ke liye `NgRx Signal Store` ya shared services ka use karta hai.
+4. **API Integration**: `HttpClient` aur functional interceptors ka use karke REST APIs ke sath integrate karta hai taaki authorization tokens automatically append ho sakein.
+5. **Deployment Configuration**: Production assets ko compile karta hai aur cloud environments par Nginx/Docker containers me host karta hai.
 
 ## Impact
-* **Application Architecture**: Prevents tight coupling, making features easy to scale and refactor.
-* **Performance**: Lazy loading and state caching keep page transitions smooth and load times fast.
-* **Scalability**: Keeps feature boundaries clean, allowing multiple teams to develop features independently.
+* **Application Architecture**: Tight coupling ko rokta hai, jisse features ko scale aur refactor karna easy ho jata hai.
+* **Performance**: Lazy loading aur state caching page transitions ko smooth aur load times ko fast rakhte hain.
+* **Scalability**: Feature boundaries ko clean rakhta hai, jisse multiple teams independent tarike se features develop kar sakti hain.
 
 ## Real World Example
-In a commercial e-commerce platform, the catalog team updates search filters and details layouts while the payments team works on checkout integrations, allowing both teams to release updates independently without merge conflicts.
+Ek commercial e-commerce platform me, catalog team search filters aur details layouts ko update karti hai jabki payments team checkout integrations par kaam karti hai. Isse dono teams bina kisi merge conflicts ke updates ko independently release kar sakti hain.
 
 ## Syntax
-An enterprise-grade folder structure for an e-commerce platform:
+E-commerce platform ke liye ek enterprise-grade folder structure:
 ```
 src/app/
 ├── core/                  # Core singletons (JWT, interceptors, guards)
@@ -48,22 +48,8 @@ src/app/
     └── checkout/          # Checkout domain (payment gateways, address forms)
 ```
 
-## Hinglish Explanation
-
-Ek real-world e-commerce portal develop karne ke liye Angular ke core standards ko combine kiya jata hai:
-
-### 1. Cart State Management (Shopping Cart)
-* E-commerce app me cart items list pure application ke different pages (product catalog, mini-cart header icon, checkout view) me update honi chahiye.
-* Iske liye hum ek centralized `CartStore` (Signal Store API) banate hain jo items store karta hai aur computed properties ke zariye automatic `grandTotal`, tax aur billing subtotal calculations dynamically manage karta hai.
-
-### 2. Lazy Loading (Performance)
-* Catalog details ko main bundle me load kiya jata hai jabki checkout payment scripts aur components ko separate JavaScript chunks me lazy load kiya jata hai. Isse page ka first-load response fast ho jata hai.
-
-### 3. Route Access Authorization (Checkout protection)
-* Secure paths (checkout) ko guard karne ke liye login checks route authorization functions lagaye jate hain. Agar authentication confirm nahi hai, toh page bundle download karne se pehle hi redirect command execute ho jati hai.
-
 ## Code Examples
-Below are the key architectural configurations for the e-commerce project.
+Neeche e-commerce project ke liye key architectural configurations diye gaye hain.
 
 ### `app.routes.ts` (Routing Layout)
 ```typescript
@@ -156,26 +142,25 @@ export const CartStore = signalStore(
   }))
 );
 ```
+
 ## Best Practices
-1. **Always lazy-load domains**: Configure route views to lazy-load their code bundles on-demand using `loadComponent`.
-2. **Secure routes with functional guards**: Secure checkout paths using functional guards that redirect users to `/login` if auth checks fail.
-3. **Isolate domain boundaries**: Do not import private helpers or data models across unrelated domain folders. Keep shared interfaces in the core directory.
+1. **Always lazy-load domains**: Route views ko configure karein taaki unke code bundles on-demand dynamically loading process run karein using `loadComponent`.
+2. **Secure routes with functional guards**: Secure checkout paths ko configure karne ke liye functional guards ka use karein, jo status fail hone par user ko `/login` par redirect kar dein.
+3. **Isolate domain boundaries**: Kisi domain folder ke andar dusre domain ke private files ya helpers ko reference na karein. Shared interfaces ko core directory me hi rakhein.
 
 ## Common Mistakes
-* **Monolithic state models**: Managing catalog, billing, and layout configurations inside a single store. Break state down into separate domain stores (e.g. `CartStore`, `UserStore`).
-* **Statically importing feature bundles**: Importing route components statically in configuration files. This includes their code bundles in the main bundle size, causing slower initial page loads.
+* **Monolithic state models**: Catalog, billing, aur layout configurations ko ek hi single store me manage karna. State ko separate domain stores (jaise `CartStore`, `UserStore`) me divide karein.
+* **Statically importing feature bundles**: Configuration files me route components ko statically import karna. Isse unke code bundles main bundle size me add ho jate hain, jisse initial page load slow ho jata hai.
 
 ## Interview Questions & Answers
 ### Q: How would you design a shopping cart state in a large Angular e-commerce application?
-**A**: I would design the cart state using a functional `CartStore` (via the NgRx Signal Store API) registered as a global singleton. It would expose computed signals for subtotal, shipping fee, and grand total. This enables fast, reactive UI updates and separates shopping cart data from presentation components.
-* **Hinglish Explanation**: E-commerce cart state ko design karne ke liye main ek functional `CartStore` (using NgRx Signal Store API) develop karunga jise global singleton register kiya jayega. Yeh store current items list ko hold karega aur computed signals ke zariye automatic subtotal, shipping charges, aur grand total dynamically calculate karega. Isse UI automatic update hogi aur data presentation files se separate rahega.
+**A**: E-commerce cart state ko design karne ke liye main ek functional `CartStore` (using NgRx Signal Store API) develop karunga jise global singleton register kiya jayega. Yeh store current items list ko hold karega aur computed signals ke zariye automatic subtotal, shipping charges, aur grand total dynamically calculate karega. Isse UI automatic update hogi aur data presentation files se separate rahega.
 
 ### Q: Why is the separation of public catalog routes and secure checkout routes important?
-**A**: It is important because it keeps the checkout bundle secure. Public routes (like catalog and details) load immediately without validation checks, while secure checkout routes are guarded using auth guards that prevent unauthorized users from downloading billing files or checkout bundles.
-* **Hinglish Explanation**: Yeh security aur performance dono ke liye zaroori hai. Public catalog route ko har user access kar sakta hai aur iska bundle turant render hota hai. Checkout route par hum authentication route guards lagate hain. Isse unauthorized users secure checkout page/payment codes aur JS bundles ko download nahi kar paate, jisse overall page startup load time reduce hota hai.
+**A**: Lead updates coordinates security aur performance dono ke liye zaroori hai. Public catalog route ko har user access kar sakta hai aur iska bundle turant render hota hai. Checkout route par hum authentication route guards lagate hain. Isse unauthorized users secure checkout page/payment codes aur JS bundles ko download nahi kar paate, jisse overall page startup load time reduce hota hai.
 
 ## Summary
-The enterprise e-commerce design leverages lazy-loaded domains, functional guards (`CanActivateFn`), and global state configurations (`CartStore`) to build a fast, secure, and maintainable shopping application.
+Enterprise e-commerce design lazy-loaded domains, functional guards (`CanActivateFn`), aur global state configurations (`CartStore`) ka leverage karta hai taaki ek fast, secure, aur maintainable shopping application build kiya ja sake.
 
 ---
 

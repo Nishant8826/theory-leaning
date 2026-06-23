@@ -1,34 +1,34 @@
 # Services and Business Logic
 
 ## What is it?
-A Service is a class decorated with `@Injectable` that encapsulates non-UI logic. It forms the business logic layer of your application, managing tasks like API calls, calculations, state tracking, and data persistence.
+Service ek normal class hoti hai jise `@Injectable` decorator se decorate kiya jata hai aur yeh non-UI logic ko encapsulate karti hai. Yeh aapke application ki business logic layer banati hai, jo tasks jaise API calls, calculations, state management, aur data persistence (local storage) ko control karti hai.
 
 ## Why do we need it?
-Components should only be responsible for displaying data and handling user interactions. If you write data processing, calculation, or HTTP request logic inside component files, they become bloated, hard to test, and duplicate code. Services solve this by encapsulating business logic in reusable, testable classes that can be injected anywhere.
+Components ka kaam sirf data show karna aur user interactions handle karna hona chahiye. Agar aap data processing, mathematical calculations, ya direct API integration requests component files me likhenge, toh class code bohot bada aur chaotic ho jayega. Services is problem ko reusable, testable classes me business logic wrap karke solve karti hain jinhe kahin bhi inject kiya ja sakta hai.
 
 ```
 M-V-S Architecture:
 Component (View Presentation) <─── (Observable/Signal updates) ─── Service (Business Logic Layer)
                                                                      │
                                                                      ▼
-                                                             External APIs / DB
+                                                              External APIs / DB
 ```
 
 ## How does it work?
-1. **Singleton Lifecycle**: By default, decorating a service with `@Injectable({ providedIn: 'root' })` registers it as a global singleton. When injected into multiple components, they all share the same instance and state.
-2. **Transient Lifecycle**: If registered in a component's `providers: [...]` array, Angular creates a new instance of the service for that component, destroying it when the component is removed from the DOM.
-3. **Decoupled Architecture**: Components query the service for data, and the service manages calculations or fetches new data over the network.
+1. **Singleton Lifecycle**: By default, service ke upar `@Injectable({ providedIn: 'root' })` register karne se yeh global singleton ban jati hai. Jab hum ise multiple components me inject karte hain, toh sabhi components same single copy aur active status values share karte hain.
+2. **Transient Lifecycle**: Agar service ko component metadata array `providers: [...]` me register kiya jaye, toh Angular us specific component ke liye ek naya custom instance generate karega aur component destroy hone par us service object copy ko destroy kar dega.
+3. **Decoupled Architecture**: Components data fetch ya actions updates ke liye service variables ya methods call karte hain aur service background calculations aur computations coordinate karti hai.
 
 ## Impact
-* **Application Architecture**: Creates a clean separation between the presentation layer (components) and the data/business logic layer (services).
-* **Performance**: Shared singletons prevent duplicate network requests and conserve memory.
-* **Maintainability**: Changing business logic or API endpoints only requires updating the service file, leaving components untouched.
+* **Application Architecture**: View presentation (components) aur core calculations layer (services) ke beech clean separation create karta hai.
+* **Performance**: Shared singletons duplicate background network requests control karte hain aur RAM memory optimize rakhte hain.
+* **Maintainability**: API endpoints updates ya calculations formula change karne ke liye components code edit nahi karna padta, sirf service file code update karna padta hai.
 
 ## Real World Example
-In a financial dashboard, a `CurrencyExchangeService` periodically fetches conversion rates from a server. Multiple components (checkout, billing, catalog) inject this service to convert currencies without running separate network timers.
+Fintech portal website me, `CurrencyExchangeService` periodically backend service se current conversion rates updates load karti hai. Checkout page, profile options, ya invoice bill details component direct is service ko inject kar rates read kar lete hain bina unique network request trigger kiye.
 
 ## Syntax
-A standard service setup:
+Ek standard service layout design setup:
 ```typescript
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -45,29 +45,8 @@ export class ProductService {
 }
 ```
 
-## Hinglish Explanation
-
-Angular me Components ko **"Waiter"** aur Services ko **"Kitchen/Chef"** ki tarah samajhein.
-* **Component (Waiter):** Yeh customer (user) se order leta hai aur screen par display dikhata hai (presentation logic). Isko actual computations (business logic ya API calls) nahi karni chahiye.
-* **Service (Chef/Kitchen):** Yeh kitchen me back-end operations karta hai (data fetch karna, calculations karna, database transactions). Waiter sirf Chef se raw material ya prepared data lekar UI par render kar deta hai.
-
-### 1. Services Kyun Zaroori Hain?
-* **Code Reusability:** Agar product list fetch karne ka logic do alag-alag pages (dashboard aur search) me chahiye, toh hum use components ke andar duplicate karne ke bajaye ek common Service me likhte hain aur dono components me inject kar lete hain.
-* **Clean Code:** Service use karne se component file choti aur simple rehti hai, jisse code readable aur maintainable banta hai.
-
-### 2. Service Kaise Banate Hain?
-Service banane ke liye `@Injectable()` decorator ka use hota hai:
-```typescript
-@Injectable({
-  providedIn: 'root' // Matlab poore app me ek hi copy share hogi (Singleton)
-})
-export class ProductService {
-  // Business logic & HTTP calls yahan hote hain
-}
-```
-
 ## Code Examples
-Below is a complete implementation of a shared state service managing a shopping cart.
+Shopping cart data manage karne wali stateful service ka standalone implementation demo setup:
 
 ### `cart.service.ts`
 ```typescript
@@ -131,7 +110,6 @@ import { CommonModule } from '@angular/common';
   `]
 })
 export class ProductCatalogComponent {
-  // Inject the CartService singleton
   cart = inject(CartService);
 
   addProduct() {
@@ -146,25 +124,23 @@ export class ProductCatalogComponent {
 ```
 
 ## Best Practices
-1. **Delegation**: Components should remain thin. If a component method contains more than 10-15 lines of logic or calculations, consider delegating it to a service.
-2. **Read-Only State**: Do not expose writable signals or RxJS Subjects directly from services. Expose them as read-only computed signals or observables.
-3. **Encapsulate HTTP logic**: Keep raw `HttpClient` requests inside services. Do not call endpoints directly from component files.
+1. **Delegation**: Components code layout lightweight rakhein. Agar component method logic 10-15 lines se badhne lage, toh use helper service function me transfer karein.
+2. **Read-Only State**: Public services variables me direct modification inputs block karein. Signals ya RxJS streams ko components interface ke liye read-only formats (`asReadonly()`, `asObservable()`) me expose karein.
+3. **Encapsulate HTTP logic**: Saare network routes request details services file me locate rakhein, component file methods me endpoints parameters hardcode na karein.
 
 ## Common Mistakes
-* **Storing Local UI State globally**: Using a shared singleton service to track UI-specific state, like whether a sidebar is open in an individual component, which can affect other instances of the component.
-* **Forgetting the `@Injectable()` Decorator**: Creating a service class without the `@Injectable()` decorator. This prevents the class from receiving other DI dependencies, throwing errors during compilation.
+* **Storing Local UI State globally**: Sibling components dynamic flags (jaise sidebar toggle status check) global singleton service me maintain karna, jo other views behaviors conflict kar sakta hai.
+* **Forgetting the `@Injectable()` Decorator**: Custom service class ke upar `@Injectable()` decoration remove rakhna. Isse components inject system service dependencies inject nahi kar pata aur build errors aate hain.
 
 ## Interview Questions & Answers
 ### Q: How do you implement a singleton service in Angular?
-**A**: Decorate the service class with `@Injectable({ providedIn: 'root' })`. This registers the service with the root injector, making a single, shared instance available application-wide.
-* **Hinglish Explanation**: Singleton service banane ke liye, service class ke upar `@Injectable({ providedIn: 'root' })` decorator lagaya jata hai. Isse yeh service globally root level par register ho jati hai aur pure application me iski sirf ek hi single shared copy (instance) use hoti hai.
+**A**: Service class definition ke upar `@Injectable({ providedIn: 'root' })` tag declare karein. Isse root injector setup dynamic memory me application-wide single instance configure kar deta hai.
 
 ### Q: Why is it bad practice to write calculations or HTTP operations inside components?
-**A**: Writing calculations or HTTP operations inside components violates the Single Responsibility Principle, makes testing difficult, and leads to duplicate code. Delegating these tasks to services keeps components focused on presentation.
-* **Hinglish Explanation**: Components ka kaam hota hai sirf screen par layout dikhana aur events capture karna. Agar aap business logic ya HTTP operations components me likhoge, toh code ganda (complex) ho jayega aur usey reuse ya test karna bohot mushkil ho jayega. Services me data calculations rakhne se components clean rehte hain aur hum ek hi service logic ko different components me easily reuse kar sakte hain.
+**A**: Calculation aur HTTP variables components me likhna Single Responsibility Principle violation hai aur data reuse restrictions badhata hai. Services use karne se UI code clean aur scalable rehta hai.
 
 ## Summary
-Services contain your application's business and data logic. Global singletons are declared using `@Injectable({ providedIn: 'root' })`, separating data management from presentation component files.
+Services application core business calculations aur API requests handle karti hain. `@Injectable({ providedIn: 'root' })` decorator global singleton configuration handle karta hai jisse visual components and logic codes beautifully manage hote hain.
 
 ---
 

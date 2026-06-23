@@ -1,10 +1,10 @@
 # Introduction to Angular
 
 ## What is it?
-Angular is a component-based, production-ready frontend framework developed and maintained by Google. It is written in TypeScript and provides a comprehensive collection of libraries that cover routing, form management, client-server communication, and more. It is designed to scale from single-developer projects to enterprise-level web applications.
+Angular ek component-based, production-ready frontend framework hai jise Google ne develop kiya hai aur wahi ise maintain karta hai. Yeh TypeScript me likha gaya hai aur isme routing, form management, client-server communication jaise features ke liye libraries ka ek comprehensive collection milta hai. Ise single-developer projects se lekar bade enterprise-level web applications tak scale karne ke liye design kiya gaya hai.
 
 ## Why do we need it?
-Building modern, robust web applications in vanilla JavaScript is incredibly challenging. You must manually manage DOM updates, handle complex state synchronizations, build custom routing engines, write form validators, and manage HTTP requests. Angular solves these challenges by providing a standardized, opinionated framework. It enforces a strict architectural structure, meaning developers across teams can easily understand and contribute to any Angular codebase.
+Vanilla JavaScript me modern aur robust web applications banana behad challenging hota hai. Aapko manually DOM updates manage karne padte hain, complex state sync karni padti hai, custom routing systems banane padte hain, aur form validators aur HTTP requests likhne hote hain. Angular in sabhi problems ko solve karta hai ek standardized, opinionated framework dekar. Yeh ek strict architectural structure enforce karta hai, jiska matlab hai ki alag-alag teams ke developers bhi kisi bhi Angular codebase ko aasani se samajh aur usme contribute kar sakte hain.
 
 ```
 Traditional Development: 
@@ -15,22 +15,22 @@ Component State (TypeScript) ──> Angular Engine (Reactivity/Ivy) ──> Aut
 ```
 
 ## How does it work?
-Angular operates as a Single Page Application (SPA) framework. It loads a single HTML file (`index.html`) and dynamically updates the DOM as the user interacts with the application.
-1. **Compilation (Ivy compiler)**: Angular compiles TypeScript templates into highly optimized execution code.
-2. **Reactivity & Change Detection**: Angular tracks application state. When state changes, Angular's engine identifies which DOM elements need updates and efficiently updates them.
-3. **Standalone Bootstrapping**: Modern Angular loads the root component directly using `bootstrapApplication()`, skipping the legacy `NgModule` abstraction entirely.
+Angular ek Single Page Application (SPA) framework ki tarah kaam karta hai. Yeh ek single HTML file (`index.html`) load karta hai aur jab user app ke sath interact karta hai, toh dynamic tareeqe se DOM ko update karta hai.
+1. **Compilation (Ivy compiler)**: Angular TypeScript templates ko highly optimized execution code me compile karta hai.
+2. **Reactivity & Change Detection**: Angular application state ko track karta hai. Jab state change hoti hai, toh Angular ka engine identify karta hai ki kis DOM element ko update chahiye aur unhe efficiently update karta hai.
+3. **Standalone Bootstrapping**: Modern Angular root component ko directly `bootstrapApplication()` ke zariye load karta hai, jisse legacy `NgModule` abstraction completely bypass ho jata hai.
 
 ## Impact
-* **Application Architecture**: Strongly modularized, component-driven, and highly readable.
-* **Performance**: Out-of-the-box bundle optimizations, tree-shaking, and fast rendering engine (Ivy).
-* **Maintainability**: Clear separation of template, style, logic, and testing makes files easy to locate and refactor.
-* **Scalability**: The modular DI and enterprise routing architectures make Angular the framework of choice for multi-team large-scale products.
+* **Application Architecture**: Behad modular, component-driven, aur highly readable architecture banata hai.
+* **Performance**: Out-of-the-box bundle optimization, tree-shaking, aur fast Ivy rendering engine milta hai.
+* **Maintainability**: HTML template, CSS styles, TypeScript logic, aur testing code ka clear separation files ko locate aur refactor karna aasan banata hai.
+* **Scalability**: Modular Dependency Injection aur enterprise routing architectures ki wajah se bade, multi-team projects ke liye Angular sabse best choice hai.
 
 ## Real World Example
-Large scale applications like Google Cloud Console, Gmail (parts of it), and Microsoft Office Online leverage Angular to handle massive datasets, complex routing tables, and heavy client-side user operations.
+Bade scale ke applications jaise Google Cloud Console, Gmail (kuch parts), aur Microsoft Office Online Angular ka use karte hain taaki massive datasets, complex routing tables, aur heavy client-side user actions ko handle kiya ja sake.
 
 ## Syntax
-A basic Angular standalone component structure looks like this:
+Ek basic Angular standalone component structure aisa dikhta hai:
 ```typescript
 import { Component } from '@angular/core';
 
@@ -56,22 +56,8 @@ export class HomeComponent {
 }
 ```
 
-## Hinglish Explanation
-
-Angular ek **framework** hai na ki ek simple library.
-
-### 1. Framework vs Library (Angular vs React)
-* **Library (React):** Yeh ek dukan ki tarah hai jahan se aap sirf ek component (jaise door ya window) lete ho, aur poora ghar (application) banane ke liye baaki tools (routing, forms validation) alag se doosri dukano se kharidte ho.
-* **Framework (Angular):** Yeh ek ready-made, functional flat/house ki tarah hai. Isme kitchen (forms), corridors (routing), aur water supply (HttpClient) pehle se hi built-in installed milte hain. Aapko alag se kisi external library ki zaroorat nahi padti.
-
-### 2. Standalone Components (Modern Angular)
-Pehle Angular me `@NgModule` banana padta tha jisme har component ko register karna mandatory tha. Lekin ab modern Angular me **Standalone Components** default hain. Har component apne aap me azaad (independent) hai aur use kisi module ke registration ki zaroorat nahi hoti. Use jo bhi components ya directives use karne hote hain, wo direct metadata ke `imports` block me define kar deta hai.
-
-### 3. SPA (Single Page Application)
-Jab aap kisi web app par click karte hain aur bina page reload/refresh hue data change ho jata hai, toh use SPA bolte hain. Angular isme expert hai kyunki yeh page ka structure browser me load kar leta hai aur sirf zaroorat ka data dynamically server se laakar screen par update karta hai.
-
 ## Code Examples
-Below is a full example of a standalone application's entry point using modern bootstrapping:
+Neeche modern bootstrapping use karne wale ek standalone application ke entry point ka complete example diya gaya hai:
 
 ### `main.ts`
 ```typescript
@@ -98,25 +84,23 @@ bootstrapApplication(AppComponent)
 ```
 
 ## Best Practices
-1. **Always Use Standalone Components**: Standardize on Standalone components instead of legacy `NgModule` patterns.
-2. **Strict TypeScript Mode**: Keep `strict` enabled in `tsconfig.json` to avoid typing bugs.
-3. **Follow Single Responsibility Principle (SRP)**: Keep components focused on presenting data. Delegate API operations and business logic to services.
+1. **Always Use Standalone Components**: Legacy `NgModule` patterns ke bajaye hamesha Standalone components use karein.
+2. **Strict TypeScript Mode**: Typing bugs se bachne ke liye `tsconfig.json` me `strict` mode ko hamesha enable rakhein.
+3. **Follow Single Responsibility Principle (SRP)**: Components ko sirf data present karne par focus karne dein. API calls aur business calculations ko services me delegate karein.
 
 ## Common Mistakes
-* **Treating Angular like React**: Trying to write JSX or bypassing Angular's template syntax with direct DOM injections (`element.innerHTML`), which introduces security vulnerabilities (XSS).
-* **Large Monolithic Components**: Writing thousands of lines of HTML, CSS, and TS inside a single component. Break them down into smaller reusable parts.
+* **Treating Angular like React**: Direct DOM injections (`element.innerHTML`) ya JSX likhne ki koshish karna, jisse Angular template syntax bypass ho jata hai aur security vulnerabilities (XSS) ka khatra badh jata hai.
+* **Large Monolithic Components**: Ek hi component ke andar hazaron lines ka HTML, CSS, aur TS likhna. Inhe chote aur reusable components me break karein.
 
 ## Interview Questions & Answers
 ### Q: What is the main difference between Angular and React?
-**A**: Angular is a full-featured framework providing routing, HTTP client, and form validators out of the box. React is a UI library that requires third-party packages (React Router, Axios, Formik) to build a complete application. Angular enforces structure (opinionated), while React leaves architectural decisions to the developer.
-* **Hinglish Explanation**: Angular ek complete framework hai jisme routing, HTTP request handle karne ke liye `HttpClient`, aur form validation features directly built-in milte hain. Dusri taraf, React sirf ek UI library hai, jisme routing ya API calls ke liye third-party packages (jaise React Router, Axios) install karne padte hain. Angular structured hai aur rules enforce karta hai (opinionated), jabki React developer ko poori aazadi deta hai ki wo apna structure khud select karein.
+**A**: Angular ek full-featured framework hai jo routing, HTTP client, aur form validation out of the box deta hai. React ek UI library hai jisme complete application banane ke liye third-party packages (jaise React Router, Axios, Formik) lagte hain. Angular code style aur structure ko enforce karta hai (opinionated), jabki React decisions developer par chhod deta hai.
 
 ### Q: What is a Single Page Application (SPA)?
-**A**: An SPA is a web application that loads a single document, then updates its body content dynamically using JavaScript API calls instead of requesting new pages from the server on every link click.
-* **Hinglish Explanation**: SPA (Single Page Application) ek aisi web app hoti hai jo page load hone par sirf ek hi HTML document load karti hai. Iske baad, user jab bhi kisi link par click karta hai, toh naya page load hone ke bajaye JavaScript background me data fetch karke screen ke specific part ko dynamically update kar deti hai. Isse page refresh nahi hota aur user experience super smooth ho jata hai.
+**A**: SPA ek aisi web application hai jo ek hi HTML page load karti hai, aur har click par server se naya page mangane ke bajaye JavaScript API calls se content dynamically update karti hai.
 
 ## Summary
-Angular is a powerful framework that offers a complete set of features for front-end engineers. It features Standalone components by default, relies on TypeScript for type safety, and is designed to build enterprise-grade apps.
+Angular ek powerful framework hai jo frontend engineers ko features ka complete package deta hai. Isme default roop se Standalone components aate hain, type-safety ke liye TypeScript use hoti hai, aur yeh enterprise-grade applications banane ke liye design kiya gaya hai.
 
 ---
 
