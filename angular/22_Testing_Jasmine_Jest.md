@@ -1,10 +1,10 @@
 # Testing (Jasmine & Jest)
 
 ## What is it?
-Angular me Testing ka matlab hai yeh verify karna ki individual code units (jaise components aur services) aur complete user pathways behaviors specs ke mutabik perform kar rahe hain. Angular unit tests (using Jasmine, Karma, ya Jest) aur End-to-End (E2E) UI scripts tests (using Playwright ya Cypress) dono mechanisms supports provide karta hai.
+Angular me Testing ka matlab hai yeh verify karna ki individual code units (jaise components aur services) aur complete user flows specs ke mutabik perform kar rahe hain. Angular unit tests (using Jasmine, Karma, ya Jest) aur End-to-End (E2E) UI testing (using Playwright ya Cypress) dono ko support karta hai.
 
 ## Why do we need it?
-Bina test kiye code changes ko production par deploy karne se bugs create ho sakte hain jo UI elements ko break kar deta hai ya data corrupt kar sakta hai. Automated testing se development phase me ya CI/CD pipeline runs me hi bugs early trace ho jate hain, jisse yeh safety confirmation milti hai ki naye changes se existing features parameters break nahi huye hain.
+Bina test kiye code production par deploy karne se bugs create ho sakte hain jo user experience ko break kar sakte hain. Automated testing se development time ya CI/CD run me hi bugs trace ho jate hain, jisse safety confirmation milti hai ki naye changes se purana code break nahi hua hai.
 
 ```
 Testing Pyramid:
@@ -16,18 +16,18 @@ Testing Pyramid:
 ```
 
 ## How does it work?
-1. **`TestBed`**: Component parameters testing environments configurations, compile, aur dependency injection setups create karne ke liye primary Angular utility class framework.
-2. **Jasmine/Jest Assertions**: Test files structure (`describe`, `it`) maintain karne aur dynamic expectations parameters outputs verify checks (jaise `expect(val).toBe(true)`) execute karne wale tools.
-3. **Component Fixture (`ComponentFixture`)**: Test component logic control panel wrapper. Change detection triggers manually execute karne ka feature deta hai.
-4. **Mocking HTTP (`HttpTestingController`)**: Fakes network routes setups parameters manage check, jo services backend data API responses status handle scenarios test setups coordinate karta hai.
+1. **`TestBed`**: Testing context me components aur services ko configure aur compile karne ke liye primary Angular utility class hai.
+2. **Assertions**: Test files structure (`describe`, `it`) aur expectations verify checks (jaise `expect(val).toBe(true)`) execute karne wale functions.
+3. **Component Fixture (`ComponentFixture`)**: Test component ka handler wrapper jo DOM interaction testing aur manual change detection trigger (`fixture.detectChanges()`) verify karne ka access deta hai.
+4. **Mocking HTTP (`HttpTestingController`)**: Fake API responses return karke HTTP request flow aur response handling behaviors ko test karne ka tool.
 
 ## Impact
-* **Application Architecture**: Solid code design decouple pattern (lightweight views interfaces, robust business logic services) follow rules enforce karta hai.
-* **Performance**: UI infinite loop bugs, event leaks variables, aur memory crash points testing me pehle hi pakad me aa jate hain.
-* **Maintainability**: Clear testing cases configurations documentation components behaviour specs represent karte hain jisse refactoring execution easy ho jati hai.
+* **Application Architecture**: Code testable hone se modular architecture aur solid design pattern self-enforce ho jata hai.
+* **Performance**: Infinite rendering loops aur event subscription memory leaks logic tests me hi pakad me aa jate hain.
+* **Maintainability**: Unit tests documentation specs ki tarah behave karte hain jisse component refactoring safe aur easy ho jati hai.
 
 ## Real World Example
-Payment billing checkout component testing flow me, unit test check execute karta hai ki credit card details number logic correct patterns checks verify settings trigger status validation complete hone tak submit operations button locked position target state default ensure kare.
+Jaise payment checkout component me testing yeh verify karti hai ki card details validate hone se pehle submit button locked rahey, aur invalid input par validator error display kare.
 
 ## Syntax
 * **Service Testing Structure**:
@@ -40,7 +40,7 @@ beforeEach(() => {
 * **Jasmine Assertion**: `expect(component.title).toEqual('New App');`
 
 ## Code Examples
-Neeche dynamic HTTP Mock service testing aur DOM visual elements check unit test script design coordinate components check options configurations models compile examples diye gaye hain:
+Neeche dynamic HTTP service mocking aur DOM component interaction testing ke complete code examples diye gaye hain:
 
 ### `api-test.service.spec.ts`
 ```typescript
@@ -141,23 +141,23 @@ describe('CounterComponent DOM tests', () => {
 ```
 
 ## Best Practices
-1. **Always Isolate Unit Tests**: External dependencies coordinate API classes parameters coordinates spy functions triggers mock settings check verify isolated test pipelines configure karein.
-2. **Call `fixture.detectChanges()`**: Component parameters values mock UI templates updates verify checks limits updates render coordinates apply setups me hamesha manually change detector check update method `detectChanges()` trigger call use karein.
-3. **Write E2E Tests for Critical Paths**: Application core logic paths (jaise login options checkout flow transactions) automation verify test checks ke liye standard Playwright E2E files define karein.
+1. **Always Isolate Unit Tests**: External services aur HTTP requests ko mock karne ke liye spies/mocks ya mock classes injection configure karein taaki test cases isolated pipeline me run ho saken.
+2. **Call `fixture.detectChanges()`**: Component state change hone par UI template re-rendering updates check karne ke liye hamesha manually `fixture.detectChanges()` trigger karein.
+3. **Write E2E Tests for Critical Paths**: Application ke main features (jaise authentication ya checkout dynamic paths) ko end-to-end testing systems (jaise Playwright) se verify karein.
 
 ## Common Mistakes
-* **Forgetting `httpMock.verify()`**: Mock requests check verify assertions parameters calls block coordinates end me `verify()` tag call clean features miss karna, jo unexpected network pending queries ignore updates warnings throw kar leta hai.
-* **Testing DOM elements before compile**: Compile components structures actions trigger declarations sets parameters initialization calculations run `compileComponents()` coordinates call setup se pehle elements select access karna (null target values warnings check).
+* **Forgetting `httpMock.verify()`**: Test case completion par `httpMock.verify()` call na karna, jisse unexpected pending network requests detect nahi ho pati hain.
+* **Testing DOM elements before compile**: `compileComponents()` execute hone se pehle templates select/access karne ki koshish karna, jisse components instantiation compile errors throw kar dete hain.
 
 ## Interview Questions & Answers
 ### Q: What is the purpose of `TestBed` in Angular testing?
-**A**: `TestBed` Angular applications components services unit testing config environment settings initialize aur mock inputs components compile setups manage coordinate classes setup target handle karta hai.
+**A**: `TestBed` Angular applications ke components aur services unit testing ke liye testing sandbox environment create karta hai. Yeh standard dependencies aur mock inputs providers register karne aur components compile karne me help karta hai.
 
 ### Q: Why do we use `HttpTestingController` in unit tests?
-**A**: Unit tests parameters setup limits me backend connection block options coordinates mock checks compile setups use handles controllers verify parameters, `flush()` dynamic payloads logic test coordinate paths utilize setups configure checks implement karke.
+**A**: `HttpTestingController` real HTTP backend calls ko block karke dynamic assertions verify karta hai. Yeh faked responses return karne (`flush()`) aur pending HTTP connections check settings verify karne ke options compile karta hai.
 
 ## Summary
-Testing applications scripts codes dynamic behaviors control checks coordinate verify karta hai. Unit test codes validation `TestBed` checks and assertions configurations coordinates maintain check run, play scripts browsers E2E testing systems safe systems setups manage rules ensure karte hain.
+Testing code behaviors aur system flows validation ensure karta hai. Unit testing (`TestBed` and assertions) controllers and templates rules check manage karte hain, jabki E2E tests complete browser features simulate karte hain.
 
 ---
 

@@ -14,18 +14,18 @@ Input Tag (with ngModel) ──> Angular automatically creates Form Control
 ```
 
 ## How does it work?
-1. **`FormsModule`**: Standalone component declarations me template-driven features active karne ke liye standard module register check apply karta hai.
-2. **`ngModel`**: Dynamic value flow aur event tracking input element ko parent form controller me auto-register kar data sync (two-way) handle karta hai.
-3. **`ngForm`**: Form elements wrapper `<form>` tags par attach hokar values coordinate karta hai, forms fields dirty/pristine states trace karta hai aur form submission events coordinate karta hai.
-4. **HTML validation attributes**: Standard attributes (jaise `required`, `email`, `minlength`) browser engine validations check Angular inputs system ke dynamic validation algorithms par redirect mapping check logic run karte hain.
+1. **`FormsModule`**: Standalone component me template-driven features ko use karne ke liye ise imports array me register kiya jata hai.
+2. **`ngModel`**: Yeh component class aur input elements ke beech data flow (two-way data binding) aur value tracking ko handle karta hai.
+3. **`ngForm`**: Yeh dynamic form controls ko auto-detect karta hai, form ke state (dirty, pristine, valid, invalid) ko track karta hai, aur submit events handle karta hai.
+4. **`HTML validation attributes`**: Standard HTML validation rules (required, minlength, email) ko direct templates me attach kiya jata hai jinhe Angular parse kar validations verify karta hai.
 
 ## Impact
-* **Application Architecture**: Form attributes aur validations direct templates structure coordinate settings me run karte hain, jo simple inputs settings ke liye neat hai par heavy complex layouts custom tests me limits badha sakta hai.
-* **Performance**: Lightweight rendering flow, minimally logic memory processing resources utilize karta hai.
-* **Maintainability**: Custom parameters validation templates ke limits me encapsulate hone ke karan component logic TS code files tidy rehti hain.
+* **Application Architecture**: Validation aur data binding HTML templates me hi manage hoti hai. Yeh simple forms ke liye toh sahi hai par complex forms ke testing aur scaling me dikkat karta hai.
+* **Performance**: Light framework footprint ke chalte local inputs change fast render hote hain.
+* **Maintainability**: Chote validation rules HTML code me hi rehne se TS file compact rehti hai.
 
 ## Real World Example
-Newsletter subscription popup form me simple email input field aur button setup required hota hai. Hamen HTML validations controls input tag me specify karne hote hain taaki email pattern values check correctly complete hone par submit actions automatically enable parameters coordinates update kar de.
+Jaise newsletter subscription popup me sirf ek email input aur submit button hota hai. Yahan HTML input validation rules direct define karke complete form configuration check ki ja sakti hai.
 
 ## Syntax
 * **Binding input**: `<input name="username" [(ngModel)]="user.username" />`
@@ -114,23 +114,23 @@ export class SignupFormComponent {
 ```
 
 ## Best Practices
-1. **Always Set the Name Attribute**: Directives jaise `ngModel` use karte waqt input elements me standard `name` attribute declare karna mandatory hai taaki compiler data tracking maps correctly bind kar sake.
-2. **Handle CSS states**: Input fields validation visual alerts setup karne ke liye Angular status dynamic CSS classes (jaise `.ng-invalid`, `.ng-touched`) class styles apply karein.
-3. **Use novalidate**: Form tag configurations parameters me standard `novalidate` declare karein taaki default browser validation engines bypass hokar component logic checks customize trigger hon.
+1. **Always Set the Name Attribute**: `ngModel` use karte waqt inputs me `name` attribute lagana zaroori hai, warna form control correctly register nahi ho payega.
+2. **Handle CSS states**: Validation UI styling ke liye Angular dwara automatic apply hone wali CSS classes (jaise `.ng-invalid`, `.ng-touched`) ka use karein.
+3. **Use novalidate**: Form tag par `novalidate` lagayein taaki browser ka default validation disabled ho jaye aur Angular ka custom validation logic chale.
 
 ## Common Mistakes
-* **Forgetting the Name Attribute**: Input elements options declare karte waqt `name` parameter miss karna, jiske chalte page render failures aur compilation errors check loops return ho jate hain.
-* **Testing Ambiguities**: Validations formulas layout checks expressions parameters directly template HTML markers me include karna, jise programmatic unit testing algorithms coordinate tests bypass systems mock structures access setups tough ho jate hain.
+* **Forgetting the Name Attribute**: `ngModel` ke sath `name` attribute design na karna, jiske chalte run-time par data synchronization error ho sakta hai.
+* **Testing Complexity**: Validation logic HTML templates me likha hone ke karan components ko programmatically unit test karna mushkil ho jata hai.
 
 ## Interview Questions & Answers
 ### Q: What is the purpose of `ngModel` in template-driven forms?
-**A**: `ngModel` input tag value aur component class properties me two-way data sync set karta hai aur internally default dynamic `FormControl` values tracking handle karta hai.
+**A**: `ngModel` input control ko bind karta hai component properties se, aur template validation/state tracking ko maintain karta hai.
 
 ### Q: How do you reset a template-driven form?
-**A**: Template variable link (jaise `#regForm="ngForm"`) reference select karke class component logic method ke coordinates parameters target me `.resetForm()` parameter execute command apply karein.
+**A**: Template side variable reference (jaise `#regForm="ngForm"`) ke through reference lekar TS component code me `regForm.resetForm()` method call karein.
 
 ## Summary
-Template-driven forms HTML element level parameters attributes direct declarations rules (ngModel, required) check simple structure forms design optimization manage karte hain. Isse extra class files logics boilerplate code minimize ho jata hai.
+Template-driven forms simple forms ke liye design kiye gaye hain. HTML attributes ke zariye bindings aur validations declare kiye jate hain jisse template aur logic code separated rehkar dynamic forms create ho jate hain.
 
 ---
 

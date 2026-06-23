@@ -1,10 +1,10 @@
 # Performance Optimization
 
 ## What is it?
-Angular me Performance Optimization un techniques aur methods ka collection hai jiske zariye page rendering speed ko fast kiya jata hai, JavaScript bundle size minimize kiya jata hai, aur runtime change detection calculations coordinate optimize kiye jate hain.
+Angular me Performance Optimization un techniques aur methods ka collection hai jiske zariye page rendering speed ko fast kiya jata hai, JavaScript bundle size minimize kiya jata hai, aur runtime change detection cycle ko optimize kiya jata hai.
 
 ## Why do we need it?
-Default settings me, Angular change updates checks coordinate karne ke liye pure applications components tree ko traverse (scan) karta hai jab bhi asynchronous clicks ya timer events trigger hon. Chote applications me isse koi problem nahi hoti, par thousands components scale wale enterprise products me yeh UI response lag aur sluggishness create kar deta hai. Change detection checking logic streamline karne aur components lazy-loading bundles apply karne se application dynamic interaction super-smooth ban jata hai.
+Default settings me, Angular state updates check karne ke liye pure application component tree ko traverse (scan) karta hai jab bhi koi event ya click trigger ho. Chote apps me isse issue nahi hota, par bade projects me yeh screen lag create kar sakta hai. Change detection logic ko optimize karne aur bundles lazy load karne se application performance super-smooth ho jati hai.
 
 ```
 Standard Change Detection (Full Scan):
@@ -15,22 +15,22 @@ Any event ──> Only scans branch if Input Reference changed, Event fired, or 
 ```
 
 ## How does it work?
-1. **`ChangeDetectionStrategy.OnPush`**: Angular change verification checks mechanism ko instruction deta hai ki component scans cycles tabhi trigger hon jab:
+1. **OnPush Strategy**: Angular change detector ko instruct karta hai ki component tree tabhi scan ho jab:
    - One of its `@Input` references changes.
    - An event handler in the component triggers.
    - You request a check manually using `ChangeDetectorRef.markForCheck()`.
-2. **Zoneless Angular**: Zone.js change track framework engine bypass karke direct template elements reactivity updates signals apply karna, jo browser check cycles reduce karta hai.
-3. **Deferred Loading (`@defer` block)**: Heavy modules assets loading tab tak delay coordinate karna jab tak specific event bounds criteria complete na ho (jaise element viewport intersection enter checks).
-4. **List Tracking (`track` loop)**: Loop iterations collections elements track keys parameters (jaise id index check) declare karna taaki dynamic list updates limits re-render elements calculations save ho sakein.
-5. **Virtual Scrolling**: Scrolling lists layouts limits me viewport coordinates items list rendering limit elements parameters set karna, un-rendered list components RAM parameters save setups.
+2. **Zoneless Angular**: Zone.js bypass karke change detection logic ko custom signals se connect karna, jisse useless global loops avoid ho saken.
+3. **Deferred Loading (`@defer` block)**: Heavy elements ya components ki loading tab tak delay karna jab tak specific triggers meet na ho (jaise user viewport scroll).
+4. **List Tracking (`track` loop)**: Loop arrays render karte waqt unique track keys specify karna, taaki updates par poori list refresh hone ke bajaye sirf changed items hi re-render hon.
+5. **Virtual Scrolling**: Heavy tables ya lists ke liye sirf viewport me visible records hi render karna aur memory leakage avoid karna.
 
 ## Impact
-* **Application Architecture**: Decoupled component bundle splits structure parameters maintain kar lazy-load setups support karta hai.
-* **Performance**: Browser check loops minimize hone se screen components loads aur updates updates milliseconds timing speed checks execute hote hain.
-* **Scalability**: Heavy products records data grid processing limits checks responsive and functional banata hai.
+* **Application Architecture**: Decoupled modules split hone se chunks size optimized rehta hai.
+* **Performance**: Browser scanning time drop hone se UI responsiveness milliseconds me execute hoti hai.
+* **Scalability**: Heavy datasets render hone par bhi interface smooth aur responsive behave karta hai.
 
 ## Real World Example
-E-commerce website catalog lists updates features me checks cards layout render limits optimization check apply settings coordinate track tags apply `track product.id` configure setups checks perform clean updates coordinate smooth output settings reflect kar leta hai.
+Jaise e-commerce website list page me cards render karte waqt `@for` loop me `track product.id` custom configuration use karte hain, taaki user scroll karte waqt components dynamically re-render na hon.
 
 ## Syntax
 * **Configuring OnPush**:
@@ -107,23 +107,23 @@ export class PerfDemoComponent {
 ```
 
 ## Best Practices
-1. **Default to OnPush**: New components declarations configurations setups me default change detection config strategy parameter standard `ChangeDetectionStrategy.OnPush` target set karein.
-2. **Always Use Unique Track Identifiers**: Dynamic looping variables arrays display templates me track selectors parameter index arrays coordinate checks parameters strictly mapping unique pointers use karein.
-3. **Lazy Load Heavy Components**: Heavy assets (charts diagrams grids modules, modal panels templates) lazy render coordinate `@defer` templates checks boundaries blocks configure optimize block utilize karein.
+1. **Default to OnPush**: Naye components create karte waqt by default `ChangeDetectionStrategy.OnPush` change detection strategy use karein.
+2. **Always Use Unique Track Identifiers**: Looping arrays me track functions me index ke bajaye humesha unique ID (jaise `track user.id`) use karein.
+3. **Lazy Load Heavy Components**: Heavy UI elements (jaise charts, graphs, dynamic modals) ko render karne ke liye `@defer` blocks ka use karein.
 
 ## Common Mistakes
-* **Mutating Objects in OnPush Components**: OnPush component boundaries parameters me variables mutations reference changes bypass update setups run karna. Object property value target update variable change `OnPush` checker track nahi kar pata, reference overwrite coordinate updates triggers set check use karein.
-* **Underestimating `@defer` triggers**: Dynamic load blocks parameter tags `@defer` setup checks settings rules properties boundaries parameters define na karna, jo initialization speed check slow bundles settings bypass setups break kar deta hai.
+* **Mutating Objects in OnPush Components**: OnPush components me state objects ko directly mutate karna. Reference change na hone par Angular detection updates skip kar deta hai. Isliye hamesha spread operator se new reference overwrite use karein.
+* **Underestimating `@defer` triggers**: `@defer` block par specific conditions (viewport, interaction, prefetch) na lagana, jisse dynamic code splitted bundles sahi time par load nahi ho paate.
 
 ## Interview Questions & Answers
 ### Q: How does `ChangeDetectionStrategy.OnPush` improve application performance?
-**A**: `OnPush` strategy component scan change detection loops checks bypass setups restrict karti hai jisse change checks scans updates check parameters components branches trigger skip ho jate hain.
+**A**: `OnPush` strategy component scans aur change detection checks ko restricted/limited kar deti hai. Isse irrelevant events par components branches re-evaluation bypass skip ho jati hai.
 
 ### Q: What is the purpose of the `@defer` block in modern Angular?
-**A**: `@defer` block codes modules loading structures optimization check coordinates templates delay apply system configure karta hai jo on-demand bundles coordinates loads checks dynamic updates execute setups targets follow karta hai.
+**A**: `@defer` block codes split chunks loading ko optimized delay apply setup configure karta hai, jo conditions met hone par template chunks ko on-demand lazy load karke execute aur update karta hai.
 
 ## Summary
-Angular performance features optimization settings change structures coordinate check levels check setups control targets apply map setup complete balance manage karta hai. OnPush change detection calculations, lazy element viewport loading patterns systems dynamic speed check manage karte hain.
+Angular me performance optimization bundles minimize karne aur unnecessary rendering loops ko restrict karne par depend karta hai. `OnPush` change detection aur `@defer` control patterns ke dynamic use se application loading speeds smooth behave karti hai.
 
 ---
 

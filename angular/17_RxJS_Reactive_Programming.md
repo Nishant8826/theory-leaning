@@ -14,26 +14,26 @@ User Types ──> [ 'a' ... 'ab' ... 'abc' ]
 ```
 
 ## How does it work?
-1. **Observable**: Ek aisa variable ya stream collection jo continuous values ya dynamic events updates time to time deliver karta hai.
-2. **Observer**: Callback collection blocks jo Observables flows me values (`next`), exceptions (`error`), ya completed indicators (`complete`) ko listen karte hain.
-3. **Subscription**: Observable stream execution setup link. Subscriptions objects check control se memory leaks save karne ke liye paths unsubscribe triggers trigger kiye jate hain.
-4. **Subjects**: Multicast systems jo multiple observers ko values share karte hain:
-   - **Subject**: Active subscribers ko runtime events deliver karta hai.
-   - **BehaviorSubject**: Ek initial data store rakhta hai aur new subscriptions ko immediately state current status return karta hai.
-   - **ReplaySubject**: New subscribers connect hone par historical index collections values return triggers execute karta hai.
-5. **Flattening Operators**: Nested inputs parameters observables handles logic:
-   - **`switchMap`**: Chal rahe execution context ko abort kar immediately next input value check select stream par switch kar leta hai. Search auto-complete structures me best hai.
-   - **`mergeMap`**: Background parallel operations trigger coordinates parameters run karta hai.
-   - **`concatMap`**: Sequentially serial order flow inputs tasks checks execute karta hai.
-   - **`exhaustMap`**: Current background API processing time ke doran incoming requests skip filters parameters check active rakhta hai. Submit double clicks prevention checks me useful hai.
+1. **Observable**: Ek data stream jo future me clean sequence of events ya values emit karti hai.
+2. **Observer**: Callbacks ka collection jo observable stream ke standard emissions (`next`, `error`, `complete`) ko listen karta hai.
+3. **Subscription**: Yeh execution link hai jo observable stream ko run karta hai. Memory leaks se bachne ke liye subscriptions ko unsubscribe karna zaroori hai.
+4. **Subjects**: Ek special type ka Observable jo values ko multiple observers me multicast kar sakta hai:
+   - **Subject**: Naye events ko real-time me active subscribers ko emit karta hai.
+   - **BehaviorSubject**: Ek default ya current state value hold karke rakhta hai, aur naye subscribers ko join karte hi wahi value immediately mil jati hai.
+   - **ReplaySubject**: Naye subscribers ko subscription ke waqt past/historical emitted values ka buffer replay karta hai.
+5. **Flattening Operators**: Yeh nested observables ko flatten karke single stream me convert karte hain:
+   - **`switchMap`**: Naya response/request aate hi pichli active request ko cancel karke new stream par switch kar jata hai (jaise auto-complete searches).
+   - **`mergeMap`**: Har event ke liye parallel streams run karta hai bina kisi query ko cancel kiye.
+   - **`concatMap`**: Streams ko serial queue order me sequentially run karta hai.
+   - **`exhaustMap`**: Jab tak active stream execute ho rahi hai, tab tak aane wali duplicate/extra events ko ignore karta hai (jaise double-click form submits prevent karna).
 
 ## Impact
-* **Application Architecture**: Data fetch pipelines API to template integration layers me declarative rules define karta hai.
-* **Performance**: Stream control filters (`debounceTime`, `distinctUntilChanged`) server trips request traffic limit down rakhte hain.
-* **Maintainability**: Nested callback lines "callback hell" code traps bypass kar clean codes patterns establish karta hai.
+* **Application Architecture**: Data flows aur event transitions declarative pipelines ke roop me define hote hain.
+* **Performance**: Operators jaise `debounceTime` network traffic aur duplicate API requests ko filter karte hain.
+* **Maintainability**: JavaScript ke callback hell/spaghetti patterns ko pure, pipeline design options se bypass karta hai.
 
 ## Real World Example
-Real-time chat platform portal application interface me, online users list variable `BehaviorSubject` me save hoti hai. User select profile details switch logic checks trigger karne par dynamic requests checks `switchMap` process handle karta hai aur `shareReplay(1)` cache filters values data return handles check active rakhta hai redundant network network loading bypass setups ke liye.
+Jaise real-time chat application me users list `BehaviorSubject` me store hoti hai. Jab user kisi alag profile card par click karta hai, toh dynamic details load karne ke liye `switchMap` pichli HTTP requests ko abort kar deta hai, aur `shareReplay(1)` cache ke zariye duplicate network loading bypass karta hai.
 
 ## Syntax
 * **Creating an Observable**:
@@ -146,25 +146,25 @@ export class SearchAutocompleteComponent implements OnInit, OnDestroy {
 ```
 
 ## Best Practices
-1. **Always Clean Up Subscriptions**: Memory leaks block updates handle checks settings coordinate me `takeUntil` operators direct custom Subject alert config rules compile ya modern `takeUntilDestroyed()` apply checks rules setup ensure karein.
-2. **Prefer the `Async` Pipe**: HTML view templates variables bindings me observable outputs maps coordinate `async` pipe target verify check apply karein. Isse auto-unsubscribe mechanisms self-manage compile logic run coordinate parameters complete options configure hote hain.
+1. **Always Clean Up Subscriptions**: Memory leaks se bachne ke liye `takeUntil` ya naye `takeUntilDestroyed()` operator ka use karke subscriptions ko automatically destroy phase me unsubscribe karein.
+2. **Prefer the `Async` Pipe**: Templates me data render karne ke liye `async` pipe prefer karein. Yeh auto-subscribe aur component destroy hone par auto-unsubscribe handle kar leta hai.
 3. **Choose the Right Flattening Operator**:
-   - Outgoing processes requests cancel checks rules setup parameters me `switchMap` execute trigger set karein.
-   - Double click checks triggers protection constraints rules setup properties checks me `exhaustMap` target set karein.
+   - Outgoing processes requests ko cancel karne ke liye `switchMap` use karein.
+   - Form submissions ko double click clicks se protect karne ke liye `exhaustMap` use karein.
 
 ## Common Mistakes
-* **Manual subscriptions without cleanup**: Components TS lifecycle logic codes me streams subscribe lines create parameters, reset hooks options parameters clear actions target ignore karna.
-* **Nested subscriptions (Callback Hell)**: Nesting subscribe commands parameters like `service.getData().subscribe(x => { service.getDataB(x).subscribe(y => ...) })`. Request chains flow logic coordinates linear configure variables setup flat targets (jaise `switchMap`) configure check implement karein.
+* **Manual subscriptions without cleanup**: Component lifecycle me manually subscribe karna aur `ngOnDestroy` me unsubscribe clear actions perform na karna.
+* **Nested subscriptions (Callback Hell)**: Ek subscription ke andar dusri subscribe logic nested tarike se run karna. Linear streams ke liye hamesha flattening operators (jaise `switchMap`, `mergeMap`) ka use karein.
 
 ## Interview Questions & Answers
 ### Q: What is the difference between `switchMap`, `mergeMap`, and `concatMap`?
-**A**: `switchMap` new values arriving coordinate updates par existing inner operations abort settings parameters apply karta hai. `mergeMap` parallel coordinate processes dynamic flows handle karta hai. `concatMap` sequentially serial queue updates setups target use karta hai.
+**A**: `switchMap` naya incoming event/request aate hi purani active request abort kar deta hai. `mergeMap` parallel tasks request execute karta hai. `concatMap` serial queue design structures me request sequentially run karta hai.
 
 ### Q: What is a BehaviorSubject and how does it differ from a standard Subject?
-**A**: Standard `Subject` state indicators values memory storage maintain nahi karta. `BehaviorSubject` initialization parameters settings checks me default starting parameters accept target set karke hamesha dynamic variables status cache hold check update coordinate patterns rules maintain rakhta hai.
+**A**: Standard `Subject` state store nahi karta. `BehaviorSubject` ek default value accept karta hai aur subscription par immediate current state return kar caching patterns support karta hai.
 
 ## Summary
-RxJS dynamic web apps interfaces asynchronous events streams data components control settings configure karta hai. Functional filters pipeline operations (`switchMap`, `debounceTime`) data memory safe parameters integrations execute dynamic robust systems coordinate settings ensure karte hain.
+RxJS asynchronous event streams aur data pipelines ko manage karne ka standard framework hai. Declarative filters aur operations (`switchMap`, `debounceTime`) memory leaks prevent karte hain aur complex async flows ko predictable banate hain.
 
 ---
 

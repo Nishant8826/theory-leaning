@@ -31,11 +31,6 @@ Welcome to the Angular master module revision sheet. Is document me saare key ar
 - [24. SSR and Advanced Concepts](#24-ssr-and-advanced-concepts)
 - [25. Enterprise Architecture](#25-enterprise-architecture)
 - [26. Deployment and CI/CD](#26-deployment-and-ci-cd)
-- [27. Real World E-Commerce Project](#27-real-world-e-commerce-project)
-- [28. Beginner Interview Prep](#28-beginner-interview-prep)
-- [29. Interview Prep - Intermediate](#29-interview-prep---intermediate)
-- [30. Interview Prep - Advanced](#30-interview-prep---advanced)
-- [31. Scenario and System Design](#31-scenario-and-system-design)
 
 ---
 
@@ -557,49 +552,4 @@ server {
 }
 ```
 
----
-
-## 27. Real World E-Commerce Project
-🔗 **Full Lesson:** [27_Real_World_ECommerce_Project.md](./27_Real_World_ECommerce_Project.md)
-
-* **Why It Exists (Yeh kyun exist karta hai)**: Lazy-loaded routes, state stores, secure authentication, API interceptors, aur checkout paths ka ek unified project me practical integration.
-* **Real-World Analogy (Real-world Udaharan)**: **Online Mall**. Display shelves (catalog feature), user accounts (auth feature), cashiers (payment feature), aur shopping carts (state feature) ko integrate karta hai.
-
----
-
-## 28. Beginner Interview Prep
-🔗 **Full Lesson:** [28_Interview_Prep_Beginner.md](./28_Interview_Prep_Beginner.md)
-
-* **Scope (Scope)**: Basic directive syntax, TypeScript bindings, aur setup workflows ke knowledge ko evaluate karta hai.
-* **Example Question (Example Question)**: *What is the difference between `@Input` and `@Output`?*
-  * **Answer**: `@Input` parent component se child component me data pass karta hai. `@Output` child se parent components me action events bubble karne ke liye `EventEmitter` ka use karta hai.
-
----
-
-## 29. Interview Prep - Intermediate
-🔗 **Full Lesson:** [29_Interview_Prep_Intermediate.md](./29_Interview_Prep_Intermediate.md)
-
-* **Scope (Scope)**: Reactive form schemas, custom validation, pipes, directives, aur lifecycle hooks ke knowledge ko evaluate karta hai.
-* **Example Question (Example Question)**: *What is the difference between Reactive Forms and Template-Driven Forms?*
-  * **Answer**: Template-driven forms HTML template me declarative directives (jaise `ngModel`) ka use karte hain (simple, relies on two-way bindings). Reactive forms TypeScript class me programmatically declare hote hain (type-safe, scalable, testable, runs via RxJS streams).
-
----
-
-## 30. Interview Prep - Advanced
-🔗 **Full Lesson:** [30_Interview_Prep_Advanced.md](./30_Interview_Prep_Advanced.md)
-
-* **Scope (Scope)**: Custom DI providers, performance, change detection, complex RxJS operators, aur token refresh interceptors ko evaluate karta hai.
-* **Example Question (Example Question)**: *Explain how OnPush change detection improves performance.*
-  * **Answer**: Default change detection poore component tree ko traverse karta hai. `OnPush` Angular ko component aur uske children ko check karne se skip karne ko kehta hai jab tak uski `@Input` property references update na hon, component event fire na ho, ya manually change detection trigger na kiya jaye.
-
----
-
-## 31. Scenario and System Design
-🔗 **Full Lesson:** [31_Interview_Prep_Scenario_and_System_Design.md](./31_Interview_Prep_Scenario_and_System_Design.md)
-
-* **Scope (Scope)**: Enterprise systems architecture, monorepos, state management boundaries, caching interceptors, aur SSR hydration.
-* **Example Question (Example Question)**: *How do you build a caching HTTP interceptor in Angular?*
-  * **Answer**: Ek Map cache use karein. Interceptor outgoing `GET` requests ko intercept karta hai, check karta hai ki URL map cache me hai ya nahi, aur agar hai, toh cached `HttpResponse` observable return karta hai. Agar nahi hai, toh network call execute karta hai, map cache me response save karta hai, aur expiration timer set karta hai.
-
----
 Previous : [00_index.md](./00_index.md) | Index : [00_index.md](./00_index.md) | Next : [01_Introduction_to_Angular.md](./01_Introduction_to_Angular.md)

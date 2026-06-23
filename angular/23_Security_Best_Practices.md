@@ -14,18 +14,18 @@ Attacker injects script tag ──> Developer bypasses security with bypassSecur
 ```
 
 ## How does it work?
-1. **Sanitization**: Angular by default saari dynamic user values ko untrusted (unsafe) treatment deta hai. Templates HTML elements variable inputs bindings compilation runtime par scripts tags filter mechanisms clean features run kar dynamic links save karta hai.
-2. **`DomSanitizer`**: Angular default sanitization filters bypass engine coordinate interface. Agar hume target external assets source links (jaise dynamic external iframe URLs ya dynamic SVG markup) securely load settings override parameters trigger karne hon.
-3. **Context-Specific Security**: Angular elements attributes dynamic environments safety checks context levels classify (HTML, Style, URL, Resource URL) categories me monitor karta hai aur validation rules check run karta hai.
-4. **CSRF (Cross-Site Request Forgery) Prevention**: Angular `HttpClient` cookies validation coordinate logic support target (jaise `XSRF-TOKEN` values check) out of the box automate configure kar headers sets verify coordinate requests origins validation secure banata hai.
+1. **Sanitization**: Angular default behavior me dynamic value inputs ko raw text ki tarah handle karta hai aur dynamic HTML elements/script tags ko render hone se pehle sanitizes/clean kar deta hai.
+2. **`DomSanitizer`**: Ek framework utility jiske zariye explicit trust relationships configure kar dynamic resources (jaise trusted SVG markup ya custom iframe URLs) ko bypass kar load kiya ja sake.
+3. **Context-Specific Security**: Angular HTML context (HTML templates), Style context (styles), aur URL context ke distinct values aur security rules check automatically execute karta hai.
+4. **CSRF (Cross-Site Request Forgery) Prevention**: Angular `HttpClient` server verification token check (`XSRF-TOKEN` check) out-of-the-box support automate karta hai, jisse dynamic network operations coordinate and secure hote hain.
 
 ## Impact
-* **Application Architecture**: Data properties injection secure template parameters setup enforce karta hai.
-* **Performance**: Auto-sanitization procedures checks millisecond calculations limits execute dynamic check loops optimize rakhte hain.
-* **Security**: Out of the box sanitizations standard client checks vulnerabilities mitigates dynamic logic check.
+* **Application Architecture**: Built-in template protection patterns secure coding standard set karte hain.
+* **Performance**: Lightweight sanitization mechanism bina compile checks speed ko drop kiye secure rendering perform karta hai.
+* **Security**: Client applications standard web security benchmarks automatically fulfill ho jate hain.
 
 ## Real World Example
-Social chat application me user input field box me `<script>hack()</script>` malicious alert command code type karke parameters send karta hai. Angular validation check runtime script filter tags clean kar textual format me message screen standard rendering display settings apply kar safe rakhta hai.
+Jaise chat application me agar koi user input box me `<script>maliciousCode()</script>` enter karke submit kare, toh Angular automatically script tags ko filter/strip kar deta hai taaki screen par normal string display ho aur dynamic exploit run na ho sake.
 
 ## Syntax
 * **Inject DomSanitizer**:
@@ -38,7 +38,7 @@ this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl('https://trusted-si
 ```
 
 ## Code Examples
-Neeche CSRF token headers apply, dynamic HTML rendering safety checks aur `DomSanitizer` use logic integration model code sample configure kiya gaya hai:
+Neeche CSRF token configure karne aur `DomSanitizer` utilize karne ka complete implementation setup design diya gaya hai:
 
 ### `app.config.ts`
 ```typescript
@@ -106,23 +106,23 @@ export class SecurityDemoComponent {
 ```
 
 ## Best Practices
-1. **Avoid `ElementRef.nativeElement` for DOM Mutations**: Direct DOM changes native elements indicators coordinates scripts `innerHTML` bypass updates patterns apply checks avoid karein. Humesha `Renderer2` features standard template bindings structures utilize karein.
-2. **Limit Bypassing Sanitization**: DomSanitizer methods properties bypass inputs logic updates systems (jaise `bypassSecurityTrustHtml`) use case values target control boundaries limits verify checks ke baad hi configure parameters set verify.
-3. **Configure Content Security Policy (CSP) Headers**: Servers boundaries deployment coordinate setup me strict CSP HTTP headers define check apply, jo inline script executions variables settings block.
+1. **Avoid `ElementRef.nativeElement` for DOM Mutations**: Direct DOM mutations (jaise `nativeElement.innerHTML = ...`) avoid karein. Humesha standard template data bindings ya `Renderer2` service ka use karein.
+2. **Limit Bypassing Sanitization**: `DomSanitizer` bypass methods (jaise `bypassSecurityTrustHtml`) ka use restrict karein aur clean check ke baad hi manually trusted declare karein.
+3. **Configure Content Security Policy (CSP) Headers**: Server side settings deployment configuration me strict CSP headers implement karein, jo unauthorized dynamic script loading ko block karein.
 
 ## Common Mistakes
-* **Using DomSanitizer on raw user input**: User parameters values direct inputs options bypass sanitize wrappers me pass dynamic checks override code lines verify configurations set logic variables inject.
-* **Binding to Dynamic Resource URLs**: Dynamic urls controls coordinate iframe targets sets parameters bypass checks filter dynamic logic controls execute check criteria ignore.
+* **Using DomSanitizer on raw user input**: Direct user inputs ko check kiye bina `DomSanitizer` ke bypass methods me pass karna, jisse XSS security checks bypass ho sakti hain.
+* **Binding to Dynamic Resource URLs**: Dynamic URLs ko proper sanitization ya context constraints lagaye bina script variables or dynamic components parameters me access karna.
 
 ## Interview Questions & Answers
 ### Q: How does Angular protect applications from Cross-Site Scripting (XSS) attacks?
-**A**: Angular dynamic bindings contexts input updates parameters sanitization rules systems automatically apply karke elements codes layout setup safety checks compile standard configure karta hai.
+**A**: Angular dynamic values ko templates me render karne se pehle automatically sanitize karta hai. Agar value me unsafe HTML ya scripts tags aate hain, toh yeh unhe parse kar strip kar deta hai.
 
 ### Q: When and why should you use `DomSanitizer`?
-**A**: DomSanitizer resources bypass systems templates check settings override structures maps coordinates check options limits use case values dynamic coordinate logic variables safe properties definitions target sets checks me select kiya jata hai.
+**A**: Jab hume security constraints bypass karke intentionally external resources or unsafe elements load karne hon (jaise raw HTML ya safe iframe URLs), tab specific trust APIs (jaise `bypassSecurityTrustHtml`) use karne ke liye `DomSanitizer` use kiya jata hai.
 
 ## Summary
-Angular web templates data values injection security controls systems manage karta hai. DomSanitizer interfaces overrides exceptions features inputs parameters checks setups safety boundaries details secure system setups handle rules execute karte hain.
+Angular applications standard features dynamic sanitization aur XSS protection implement karte hain. `DomSanitizer` explicit exceptions rules configure karne ke paths manage karta hai jo application layers and resources ko safe banate hain.
 
 ---
 

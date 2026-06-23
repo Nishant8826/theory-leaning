@@ -177,23 +177,23 @@ export class UserDetailComponent {
 ```
 
 ## Best Practices
-1. **Use Functional Guards**: Modern routing logic architecture configuration ke liye simple, clean functional guards (jaise `CanActivateFn`) compile tools declare karein legacy class-based guards setups ke badle.
-2. **Always Lazy Load Route Components**: Static imports components routes parameters avoid karein. Dynamic import function configurations `loadComponent` run parameters follow karein bundle size small rakhne ke liye.
-3. **Catch Wildcards**: Route mapping boundaries array setup me end path position wildcard `**` register check humesha verify rakhein dynamic 404 views rendering controls ke liye.
+1. **Use Functional Guards**: Modern routing logic ke liye legacy class-based guards ke badle lightweight functional guards (jaise `CanActivateFn`) use karein.
+2. **Always Lazy Load Route Components**: Routes configurations me components ko directly import karne ke bajaye, bundle size small rakhne ke liye dynamic import function `loadComponent` ka use karein.
+3. **Catch Wildcards**: Route configuration array ke end me wildcard `**` route configure karein taaki dynamic 404 views handle kiye ja sakein.
 
 ## Common Mistakes
-* **Order of Routes**: Sequential match flow settings sequence bypass karna. Wildcard page selector route parameter array rules ke top layout positions par use karna. Isse target routes evaluate calculations interrupt ho jati hai aur normal navigation page bypass failure blocks create ho jata hai.
-* **Component Instantiation Errors**: HTML views template block configuration codes lines parsing setup targets checks missing parameters, jaise container directive tag `<router-outlet></router-outlet>` compile structures missing rakhna, jisse page templates show hi nahi hote.
+* **Order of Routes**: Wildcard route (`**`) ko configuration array me sabse upar rakhna ek common mistake hai. Isse niche ke actual routes match nahi ho paate aur unexpected redirects hote hain.
+* **Component Instantiation Errors**: Template me `<router-outlet></router-outlet>` directive lagana bhool jana, jiske bina matched route components display hi nahi honge.
 
 ## Interview Questions & Answers
 ### Q: What is lazy loading in routing and how is it implemented?
-**A**: Lazy loading routing bundles files optimized on-demand download methods logic hai. Route templates coordinate parameter definitions elements me dynamic import `loadComponent` setup target check define karke apply kiya jata hai.
+**A**: Lazy loading routing bundles ko demand ke according browser me load karne ki methodology hai. Ise implement karne ke liye `routes` definitions me components ko dynamic `loadComponent: () => import(...)` syntax se call kiya jata hai.
 
 ### Q: How do you read route parameters and query parameters in a component?
-**A**: Route parameter data access updates values check dynamic observable patterns `ActivatedRoute` params stream access parameters key reads coordinate check options trigger kar map kiya jata hai.
+**A**: Route parameters ko dynamic query streams ya component params ke dynamic inputs se `ActivatedRoute` class ya `@Input` binding se clean format me resolve kar liya jata hai.
 
 ## Summary
-Angular Router URLs coordinates components views maps define karta hai. Dynamic lazy-load code blocks rendering optimizations templates structures and safety verification checks secure components control applications configurations setup ensure karte hain.
+Angular Router URLs aur component views ko map karta hai. Dynamic lazy loading ke zariye rendering performance clean hoti hai aur route guards routes ko secure banate hain.
 
 ---
 

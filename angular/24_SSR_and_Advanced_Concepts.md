@@ -4,7 +4,7 @@
 Server-Side Rendering (SSR) Angular templates ko client browser me send karne se pehle Node.js server par static HTML pages me pre-render karta hai. Hydration client-side process hai jahan Angular is static HTML elements par events listeners attach karta hai taaki page dynamic aur interactive ban sake bina pure DOM structure ko re-create kiye.
 
 ## Why do we need it?
-Standard Single Page Applications (SPAs) browser parameters loading limits me blank document `index.html` load karte hain, aur client side par JS loading complete hone par elements compile karte hain. Isse users ko first load par blank layouts show hote hain, aur search engine crawlers dynamically client side scripts waiting checks support na hone ke karan metadata index nahi kar pate. SSR pre-rendered templates client side deliver karke instant visual layouts display speed aur SEO rankings improve karta hai.
+Standard Single Page Applications (SPAs) browser me blank `index.html` file load karte hain, aur client side par JS download aur compile hone ke baad content render karte hain. Isse first load par blank screen aati hai aur search engine crawlers metadata index nahi kar paate. SSR pre-rendered HTML browser me deliver karke page load speed aur SEO rankings improve karta hai.
 
 ```
 Standard SPA (Client-Side Rendering):
@@ -18,19 +18,19 @@ Browser requests index.html ──> Server runs Node, pre-renders HTML
 ```
 
 ## How does it work?
-1. **Server-Side Engine**: Node.js server environment setup. Jab user page navigate query send karta hai, server app memory context load kar static HTML files templates calculate karta hai aur direct client machine par deliver kar deta hai.
-2. **Hydration**: Client page instantly load templates layout verify display kar deta hai. JS assets download complete hote hi Angular dynamic binding properties DOM nodes connect kar interactive coordinates updates handle kar leta hai.
-3. **Platform Check**: Code since server engine Node aur client browser dono contexts par render hoti hai, isliye client features parameters references utilize karne se pehle environmental validations settings check checks lagane mandatory hain:
-   - `isPlatformServer(platformId)`: Server compile checks details.
-   - `isPlatformBrowser(platformId)`: Client browser checks details.
+1. **Server-Side Engine**: Node.js server par application files run hoti hain. Jab user page request bhejta hai, toh server dynamic HTML template compile karke direct browser me deliver kar deta hai.
+2. **Hydration**: Browser me static HTML render hone ke baad, jab background me JS assets download ho jate hain, toh Angular templates and dynamic variables ko DOM nodes se connect karke application ko interactive bana deta hai.
+3. **Platform Checks**: SSR code server aur client dono par run hota hai. Isliye browser-specific objects (jaise `window` ya `localStorage`) ko access karne se pehle environment check karna zaroori hai:
+   - `isPlatformServer(platformId)`: Server context validation check.
+   - `isPlatformBrowser(platformId)`: Client browser context check.
 
 ## Impact
-* **Application Architecture**: Direct reference standard values indicators checks global parameters (jaise browser window coordinates elements variables) safe wrappers codes me write formats configure ensure karta hai.
-* **Performance**: First Contentful Paint (FCP) dynamic speed improve aur Cumulative Layout Shift (CLS) layout errors optimize rakhta hai.
-* **SEO**: Search engine crawler engines pages index templates coordinate checks easily verify kar lete hain index metadata updates coordinate setups me.
+* **Application Architecture**: Globals (jaise window/document) ko secure platform wrappers or checks ke through execute karne ka structure define karta hai.
+* **Performance**: First Contentful Paint (FCP) ka time kam hota hai aur page layout shift (CLS) optimize rehta hai.
+* **SEO**: Search engine crawlers content ko easily index kar sakte hain kyunki HTML server se hi fully-rendered aata hai.
 
 ## Real World Example
-Dynamic portal blog site web application articles rendering processes optimize rakhne ke liye SSR apply karti hai. Crawlers pages metadata check triggers apply hone par instant text summaries verify kar dynamic indexes mapping configure kar lete hain.
+Jaise ek news ya blog website ke articles ko instant load karne aur organic search rank improve karne ke liye SSR use kiya jata hai. Crawlers ko dynamic rendering waiting check ke bina hi dynamic pages fully indexed milte hain.
 
 ## Syntax
 * **Platform Check**:
@@ -109,23 +109,23 @@ export class SsrSafeComponent implements OnInit {
 ```
 
 ## Best Practices
-1. **Never Reference Globals Directly**: Browser-specific global objects (jaise `window`, `document`, ya `localStorage`) ko directly reference na karein, unhe humesha `isPlatformBrowser` guards wrap conditions me safe logic me run karein.
-2. **Enable Hydration**: Page updates flickering options dynamic bugs save ke liye startup bootstrapping me standard config settings parameter `provideClientHydration()` configure enable rakhein.
-3. **Use Monorepos (Nx)**: Large scale enterprise models (jaise multi-theme portals micro frontend setups) configurations parameters projects clean design balance maintain karne ke liye Nx monorepo frame layouts use karein.
+1. **Never Reference Globals Directly**: Browser-specific global objects (jaise `window`, `document`, ya `localStorage`) ko server-side context me directly run na karein. Unhe humesha `isPlatformBrowser` environment checks ke andar wrap karke hi execute karein.
+2. **Enable Hydration**: Page load par content flickering aur rendering anomalies se bachne ke liye application bootstrapping me `provideClientHydration()` configure aur enable rakhein.
+3. **Use Monorepos (Nx)**: Large-scale enterprise models aur shared systems configurations ko clean maintain karne ke liye Nx monorepo patterns ka use karein.
 
 ## Common Mistakes
-* **Accessing localStorage directly**: Environment checks checks parameters bypass setups parameters me `localStorage` variables read compile loops me call execute karna. Isse backend compile build trigger checks me crashes errors warnings return ho jate hain.
-* **Layout Shifts**: HTML coordinates dynamically change calculations update parameters manually elements changes logic checks values inputs run calculations parameters updates configure setup indicators (flickering options alerts updates).
+* **Accessing localStorage directly**: Server context checks ke bina `localStorage` ya raw browser elements ko directly call karna. Isse Node server-side build process me errors aur crashes aa jate hain.
+* **Layout Shifts**: Dynamic data load hone ke baad HTML structures ke coordinates shift hona, jiske chalte UI page compile hone ke baad content flicker or jump karta hai.
 
 ## Interview Questions & Answers
 ### Q: What is Hydration in Angular and how does it relate to SSR?
-**A**: Hydration server components dynamic static outputs variables ko browser DOM changes logic elements destroy settings coordinate update bypass mechanisms use cases parameters handles settings process target chalta hai.
+**A**: Hydration server-rendered static HTML structure ko standard dynamic DOM nodes ke sath bind karta hai. Yeh server components outputs ko browser event listeners se attach karta hai taaki page static se dynamically active ho sake.
 
 ### Q: Why do checks like `isPlatformBrowser` matter in SSR?
-**A**: SSR application logic code structures properties variables Node runtime controllers models me parameters execute elements checks handles settings systems parameters evaluate check utilize karta hai.
+**A**: Chunki SSR me same application files server (Node) aur client (Browser) dono contexts par run hoti hain, isliye browser-only APIs ko server execution errors se bachane ke liye environment check parameters matter karte hain.
 
 ## Summary
-Server-Side Rendering (SSR) pages speed optimized checks Node servers settings calculations coordinate details balance configure rakhta hai. Platform checks (`isPlatformBrowser`) validation steps aur hydration parameters clean balance maintain models manage karte hain.
+Server-Side Rendering (SSR) pages first content display and SEO rankings ko optimize karta hai. Platform checks (`isPlatformBrowser`) aur client hydration application dynamic behaviors ko browser me smooth execute karne me help karte hain.
 
 ---
 

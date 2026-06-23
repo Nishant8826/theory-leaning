@@ -4,7 +4,7 @@
 Angular Material ek official UI component library hai jise Angular core team develop aur maintain karti hai. Yeh Google ke **Material Design** specifications guidelines ko implement karti hai aur developer ko pre-built, fully accessible aur customizable UI components (jaise tables, sliders, dialog boxes, aur menus) ka collection provide karti hai.
 
 ## Why do we need it?
-Complex components (jaise access-friendly dialogs, sliding menus, ya dynamic paginated tables) ko HTML/CSS scratch se banana time-consuming aur tedious task hai. Aapko manually ARIA labels accessibility, keyboard navigation shortcuts, aur screen layouts handle karne padte hain. Angular Material in pre-tested components ko out of the box deta hai, jisse developers framework design coordinates badle bina main application rules and coding par focus kar sakte hain.
+Complex components (jaise access-friendly dialogs, sliding menus, ya paginated tables) ko scratch se HTML/CSS se banana behad time-consuming aur tedious task hai. Isme manually ARIA labels (accessibility), keyboard navigation rules, aur response styles handle karne padte hain. Angular Material in pre-tested components ko out of the box deta hai, jisse developers direct main app logic par focus kar saken.
 
 ```
 Development from scratch:
@@ -16,16 +16,16 @@ Import MatTableModule ──> Bind data source ──> Access, responsiveness, a
 
 ## How does it work?
 1. **Component Imports**: Standalone components direct dynamic modules (jaise `MatButtonModule` ya `MatTableModule`) import karte hain.
-2. **Theming (SASS)**: Components layout styles parameters colors, fonts, margins controls configure karne ke liye built-in SASS dynamic mixins setup compile options use karti hai.
-3. **Accessibility (A11y)**: Angular CDK (Component Dev Kit) utility systems follow karti hai jo elements transitions keyboard controls aur screen reader dynamic instructions pre-handle rakhte hain.
+2. **Theming (SASS)**: Built-in SASS dynamic mixins ke through components ke themes, colors, aur typography ko centralize aur customize kiya ja sakta hai.
+3. **Accessibility (A11y)**: Angular CDK (Component Dev Kit) accessibility APIs follow karti hai jisse screen readers aur keyboard controls custom widgets par automatically map ho jate hain.
 
 ## Impact
-* **Application Architecture**: Pre-built standardized widgets templates standard layout setups build karne me speed boost deta hai.
-* **Performance**: Modular structure follow karta hai. Iska matlab hai ki aapko complete package compile karne ki zaroorat nahi hai, jo files compile components dynamic chunks package size thin rakhte hain.
-* **Maintainability**: Centralized designs coordinates colors codes locations handle ho jati hain dynamic SCSS maps options ke zariye.
+* **Application Architecture**: Pre-built standardized widgets ke chalte development speed boost hoti hai aur custom configurations minimal ho jati hain.
+* **Performance**: Modular structure (module-per-component) ke chalte sirf wahi components import hote hain jo application me use kiye gaye hain, jisse final bundle size small rehta hai.
+* **Maintainability**: Centralized theming colors aur layouts standard dynamic SCSS variable maps ke through pure application me easily maintain ho jate hain.
 
 ## Real World Example
-Enterprise application client dashboard data reports display karne ke liye Angular Material `MatTable` aur `MatPaginator` use karta hai. Column sorting aur mobile pages layout transitions background systems self-optimize kar page rendering complete kar dete hain.
+Jaise client dashboard page me data display karne ke liye hum `MatTable` aur `MatPaginator` use karte hain. Isse column sorting aur dynamic pagination responsive behavior ke sath instantly configure ho jate hain.
 
 ## Syntax
 * **Adding Angular Material**: `ng add @angular/material`
@@ -36,7 +36,7 @@ import { MatButtonModule } from '@angular/material/button';
 * **Declaring Button**: `<button mat-raised-button color="primary">Click Me</button>`
 
 ## Code Examples
-Neeche Angular Material Dialog popup aur dynamic Table integrate karne ka complete implementation details example code coordinate setup diya gaya hai:
+Neeche Angular Material Dialog popup aur Table component use karne ka complete example code structure diya gaya hai:
 
 ```typescript
 import { Component, inject } from '@angular/core';
@@ -135,23 +135,23 @@ export class MaterialDemoComponent {
 ```
 
 ## Best Practices
-1. **Avoid Storing Dialog States Globally**: Modal states, dialog models pointers templates variables coordinates single components controllers me manage karein. `MatDialogRef` logic checks ko dynamic stores models variable setup me inject na karein.
-2. **Leverage the Angular CDK**: Agar aap Material UI patterns custom layout styles implement karna chahte hain, toh direct Angular CDK options evaluate karein. Isse extra styles custom overriding overhead compile time warnings check prevent honge.
-3. **Use SCSS Mixins for Theming**: Custom modifications parameters update themes styles setup ke liye SCSS mixins custom parameters files check use karein, direct CSS overwrite class blocks me `!important` markers avoid karein.
+1. **Avoid Storing Dialog States Globally**: Dialog/Modal ke reference state ko hamesha local component controls me hi manage karein. `MatDialogRef` ko global state stores me inject karna avoid karein.
+2. **Leverage the Angular CDK**: Custom UI elements (jaise overlays ya drag-drop list layouts) likhte waqt Angular CDK use karein, jisse behavior handling automatic ho jaye aur extra custom markup likhne ki zaroorat na ho.
+3. **Use SCSS Mixins for Theming**: Component colors aur customization change karne ke liye Angular Material SCSS mixins configure karein. Direct class overwrites aur `!important` tags ka use control karein.
 
 ## Common Mistakes
-* **Writing Custom CSS Overrides**: Component default styles override rules setup classes me force styles properties set karna. Yeh future versions coordinates upgrade compatibility warnings errors generate kar sakta hai.
-* **Importing unnecessary modules**: Dynamic imports coordinate components declarations blocks me complete module elements classes library direct drag variables configurations configure karna.
+* **Writing Custom CSS Overrides**: Component default visual properties ko brute-force styling class se override karna, jisse future version upgrades ke dauran UI compatibility breaks ho sakte hain.
+* **Importing Unused Modules**: Pure Material library components (jaise `MatAutocompleteModule`) ko bina utilization ke templates imports me configure karna, jisse page startup bundle increase ho jaye.
 
 ## Interview Questions & Answers
 ### Q: What is the Angular CDK and how does it relate to Angular Material?
-**A**: CDK behaviors mechanisms controls handles patterns framework utility pack hai jisme design styles colors specifications bounds override setups constraints parameters dependencies configuration models options target default templates styling setups pre-defined features checks define karte hain.
+**A**: Angular CDK (Component Dev Kit) behaviors aur interactions manage karne ka framework utility library hai. Yeh core styles aur design constraints se free hai, jisse developers access controls, overlay systems, aur tables layouts ko bina material defaults visual patterns force kiye dynamic customize kar sakein.
 
 ### Q: How do you pass data into an Angular Material Dialog?
-**A**: Dialog constructor trigger coordinates configs properties checks setup me parameter option dynamic token input variables `MAT_DIALOG_DATA` token maps select logic properties define karke.
+**A**: Dialog open karte waqt config object parameters me `data` property assign karke, aur dialog component constructor me `MAT_DIALOG_DATA` injection token ke zariye data inject kar liya jata hai.
 
 ## Summary
-Angular Material Angular applications Google design standards systems implementation tools provide karta hai. Modular directives files references inject configurations UI structure clean aur clean coordinate setups check build parameters dynamic parameters manage karte hain.
+Angular Material Google material standard applications design ke tools customize karta hai. CDK utilities aur modular elements bundle optimizations visual components designs ko dynamic control settings apply aur manage karne ke options provide karte hain.
 
 ---
 

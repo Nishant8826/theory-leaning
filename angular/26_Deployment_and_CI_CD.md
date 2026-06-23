@@ -13,14 +13,14 @@ Developer pushes code ──> GitHub Actions ──> Runs npm run test ──> B
 ```
 
 ## How does it work?
-1. **Production Compilation (`ng build`)**: esbuild compile compiler typescript codes ko AOT (Ahead-of-Time) optimization me transform kar optimized HTML, CSS, aur JS files bundles build folder me save karta hai.
-2. **Web Server hosting (Nginx)**: Compiled assets standard HTTP servers (jaise Nginx, Apache) directory locations par copy ho kar web clients ko serve hoti hain.
-3. **Nginx Redirection Rule**: Single Page App dynamic routing URL paths settings (jaise `/dashboard`) client browser logic par run karte hain. Agar user direct URL page refresh select kare, server native dynamic file checks fail ho jayegi (404 Error). Nginx rewrite directive rule `try_files $uri /index.html` use kiya jata hai server checks index page par redirect mapping check apply settings trigger karne ke liye.
-4. **CI/CD Configuration**: GitHub actions configuration yaml workflows coordinates define details checks mapping (jaise `action/checkout`, `node setup` configurations) pipeline triggers automatically execute indicators support karti hain.
+1. **Production Compilation (`ng build`)**: Production build script typescript code ko Ahead-of-Time (AOT) compile karke optimized, minified HTML, CSS, aur static JS files generate karta hai.
+2. **Web Server Hosting**: Generated static assets ko Nginx ya Apache jaise HTTP web servers par host kiya jata hai.
+3. **Nginx Redirection**: Single Page Applications (SPAs) me routing client-side par hoti hai. Agar user page refresh kare, toh web server 404 throw kar sakta hai. Ise resolve karne ke liye Nginx me redirection rule `try_files $uri /index.html` apply kiya jata hai.
+4. **CI/CD Configuration**: Workflow config files (jaise GitHub Actions yaml files) define karte hain ki codebase changes par kaise building, testing, aur deployment trigger honge.
 
 ## Impact
 * **Application Architecture**: Clear build commands, server redirections, aur automated deployments setups.
-* **Performance**: esbuild production compiles bundlers tree-shakable static files delivery size optimized coordinate rakhte hain.
+* **Performance**: esbuild compiling process tree-shaking perform karke production code bundle size minimize rakhta hai.
 * **Maintainability**: Automated deployments aur unit test runs ensure karte hain ki code production me jaane se pehle saare test assertions ko pass kare.
 
 ## Real World Example
@@ -133,4 +133,4 @@ Deployment static assets ko build aur package karta hai web servers ke liye, jab
 
 ---
 
-Previous : [Enterprise Architecture](./25_Enterprise_Architecture.md) | Index : [Home](./00_index.md) | Next : [Real World E-Commerce Project](./27_Real_World_ECommerce_Project.md)
+Previous : [Enterprise Architecture](./25_Enterprise_Architecture.md) | Index : [Home](./00_index.md) | Next : [None]()

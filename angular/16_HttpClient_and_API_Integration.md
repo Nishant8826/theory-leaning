@@ -14,18 +14,18 @@ Component triggers fetch ──> Service makes request ──> Auth Interceptor 
 ```
 
 ## How does it work?
-1. **`provideHttpClient()`**: App configuration bootstrap options setups me HttpClient features initialize aur register karne ke liye use hota hai.
-2. **Type Safety**: API calls requests (jaise `http.get<Product[]>(url)`) database parameters ko automatically mapping specifications ke target TypeScript models arrays/objects formats me convert kar deti hain.
-3. **Interceptors**: Functions jo outgoing requests or incoming responses ko intercept karke request headers update, jwt auth token apply, ya error codes handling globally manage karte hain.
-4. **RxJS Streams**: Saare network calls functions transactions base variables data return cold observables me deliver karte hain jo subscribe triggers apply hone par hi run parameters resolve karte hain.
+1. **`provideHttpClient()`**: Application bootstrap ke waqt `app.config.ts` me HTTP services ko globally register karne ke liye `provideHttpClient()` ka use kiya jata hai.
+2. **Type Safety**: API requests ko response type dynamically override karne ke liye strong models/interfaces support milta hai, jaise `http.get<Product[]>(url)`.
+3. **Interceptors**: Yeh global handlers hote hain jo outgoing HTTP requests ya incoming responses ko process karte hain (jaise automatic headers set karna ya request intercept karna).
+4. **RxJS Streams**: HTTP operations cold observables return karte hain, yaani jab tak hum unhe subscribe nahi karte, tab tak actual network call trigger nahi hota.
 
 ## Impact
-* **Application Architecture**: Data fetch operations backend APIs integrations components controls se move karke dynamic client services file me isolate rakhta hai.
-* **Performance**: Interceptors me local caching logic build karke standard GET request server trips save kiye ja sakte hain.
-* **Security**: Globally applied headers mechanism auth JWT settings standard maintain rakhta hai jisse automatic validations complete security checkpoints establish hote hain.
+* **Application Architecture**: API communications UI component class se completely decoupled hokar dedicated services me handle hoti hai.
+* **Performance**: API caching configure karke network round trips ko optimize kiya ja sakta hai.
+* **Security**: HTTP Interceptors request headers me secure credentials attach karte hain taaki access endpoints valid rahen.
 
 ## Real World Example
-Secure enterprise system dashboard me, functional interceptor automatic setup apply karta hai. Outgoing dynamic API request coordinate parameters me client authorization keys, JWT headers value index update settings background automatically write execute kar details forward parameters check trigger kar leta hai.
+Jaise secure dashboard page me JWT Token add karne ke liye, hum ek auth interceptor likhte hain. Yeh interceptor har ek outgoing request ke header me token inject karta hai, jisse dynamic backend endpoints authenticate ho sakein.
 
 ## Syntax
 * **GET Request**: `this.http.get<User[]>('/api/users')`
@@ -142,23 +142,23 @@ export class ProductService {
 ```
 
 ## Best Practices
-1. **Always Type Responses**: Non-typed data load queries `this.http.get('/api')` avoid karein. Response models properties verification structures clean rakhne ke liye hamesha strict types use karein: `this.http.get<MyType>('/api')`.
-2. **Separate HTTP logic from UI**: Components templates boundaries coordinate controllers clear rakhein. Components class API URLs variables direct access na karein, unhe services methods coordinate streams call targets par bind rakhein.
-3. **Use catchError Globally and Locally**: Main application level exceptions checks error alerts logic globally interceptors context handlers check me write karein aur views specific exceptions configurations local catch parameters rules execute karein.
+1. **Always Type Responses**: Bina type ke HTTP requests (jaise `this.http.get('/api')`) call na karein. Hamesha response data models ke liye strict type parameters define karein, jaise `this.http.get<MyType>('/api')`.
+2. **Separate HTTP logic from UI**: HTTP operations ko component templates ya components se seedhe call na karein. Humesha HTTP logic ko services me delegate karein aur component me sirf un methods ko call karein.
+3. **Use catchError Globally and Locally**: Application level errors ko globally handle karne ke liye interceptor me `catchError` lagayein, aur components ke specific error responses ko handle karne ke liye local level par check karein.
 
 ## Common Mistakes
-* **Forgetting to Subscribe**: HttpClient methods use dynamic setup triggers, jaise `this.http.post(url, body)` call logic setup me `.subscribe()` block parameters skip rakhna. Observables system parameters values flow calls trigger nahi honge jab tak indicators variables subscribe actions handle na karein.
-* **Creating Interceptor Loops**: Auth check validation token reload actions check flows me custom interceptors coordinates calls recursively loop limits evaluate validation criteria loop limits crash warnings throw kar deta hai.
+* **Forgetting to Subscribe**: HttpClient methods (jaise `this.http.post(...)`) call karte waqt `.subscribe()` call karna bhool jana. Jab tak hum observable stream ko subscribe nahi karte, tab tak request dispatch nahi hoti.
+* **Creating Interceptor Loops**: Interceptor ke andar token refresh ya error fallback call karte waqt circular loop create kar dena, jisse request flow crash ho jaye.
 
 ## Interview Questions & Answers
 ### Q: Why do `HttpClient` methods return cold RxJS Observables?
-**A**: HttpClient transactions based REST request systems return parameters elements me dynamic operations pipeline calculations checks flow rules apply settings trigger hone tak parameters execute blocks coordinate nahi karte jab tak client subscribe elements execution run functions trigger na kare.
+**A**: `HttpClient` ke methods "cold" streams return karte hain. Iska matlab hai ki request tab tak fire nahi hoti jab tak client explicitly `.subscribe()` call na kare. Isse hum request pipeline ko subscribe karne se pehle modify ya abort kar sakte hain.
 
 ### Q: What is the difference between functional interceptors and class-based interceptors?
-**A**: Modern functional interceptors simple logic functions settings parameters patterns me direct registers optimize structures handle karte hain, jabki legacy class structures components updates details registers providers rules setups utilize karte hain jisme extra boilerplate setup configurations compile dependencies add ho jati hain.
+**A**: Functional interceptors simple JS functions hote hain jo dependency injection `inject()` use karte hain aur lightweight hote hain. Legacy class-based interceptors class structures hote hain jinki configuration aur registering dependency injection providers setup me extra boilerplate aur compile code lagta hai.
 
 ## Summary
-`HttpClient` Angular applications REST interface dynamic backend communications utilities options coordinate configure karta hai. Functional interceptors patterns, data filters retry methods validations pipelines layout setup optimize configurations manage karte hain.
+`HttpClient` Angular applications me REST APIs ke sath communication set karne ke liye primary tool hai. Interceptors ke zariye headers, logging, token attach, aur security mechanisms ko globally manage kiya jata hai.
 
 ---
 
