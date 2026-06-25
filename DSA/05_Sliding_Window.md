@@ -77,24 +77,28 @@ Slide the window: add the new element entering the right side, subtract the elem
 ```javascript
 // Optimized: Sliding Window — O(n)
 function maxSumOptimized(arr, k) {
-  if (arr.length < k) return null;
+    let i = 0;
+    let j = 0;
+    let sum = 0;
+    let max = -Infinity;
 
-  // Calculate sum of the first window
-  let windowSum = 0;
-  for (let i = 0; i < k; i++) {
-    windowSum += arr[i];
-  }
+    while (i < arr.length) {
+        sum += arr[i];
 
-  let maxSum = windowSum;
+        // window size < k
+        if (i - j + 1 < k) {
+            i++;
+        }
+        // window size == k
+        else if (i - j + 1 === k) {
+            max = Math.max(max, sum);
+            sum -= arr[j];
+            j++;
+            i++;
+        }
+    }
 
-  // Slide the window: add right element, remove left element
-  for (let i = k; i < arr.length; i++) {
-    windowSum += arr[i];       // Add new element entering window
-    windowSum -= arr[i - k];   // Remove element leaving window
-    maxSum = Math.max(maxSum, windowSum);
-  }
-
-  return maxSum;
+    return max;
 }
 
 console.log(maxSumOptimized([2, 1, 5, 1, 3, 2], 3)); // 9
