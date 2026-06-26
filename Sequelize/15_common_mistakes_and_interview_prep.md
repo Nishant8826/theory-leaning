@@ -150,6 +150,41 @@ src/
 ### Q8: What does `{ raw: true, nest: true }` do when querying associations?
 * **Answer**: By default, eager loading returns a nested array of hydrated model instances, which has a performance overhead. `{ raw: true }` flats query keys (e.g. `"comments.content"`). Adding `nest: true` formats these flat keys back into nested JSON objects (e.g. `{ comments: { content: '...' } }`) as plain JavaScript objects, skipping the performance cost of model hydration.
 
+  #### Code Example:
+  ```javascript
+  const users = await User.findAll({
+    include: [{ model: Post, as: 'posts' }],
+    raw: true,
+    nest: true
+  });
+  ```
+
+  #### Output Comparison:
+  * **With ONLY `raw: true`**:
+    ```json
+    [
+      {
+        "id": 1,
+        "username": "alice",
+        "posts.id": 101,
+        "posts.title": "Sequelize Tips"
+      }
+    ]
+    ```
+  * **With `raw: true, nest: true`**:
+    ```json
+    [
+      {
+        "id": 1,
+        "username": "alice",
+        "posts": {
+          "id": 101,
+          "title": "Sequelize Tips"
+        }
+      }
+    ]
+    ```
+
 ### Q9: Why is editing an already executed migration file dangerous, and what is the correct approach to edit a column schema?
 * **Answer**: If you edit a migration file that has already run in development, Sequelize will not execute it again on staging or production servers because the filename is already stamped inside the `SequelizeMeta` table. This creates database drift between servers. The correct approach is to generate a new migration file (e.g., `npx sequelize-cli migration:generate --name modify-users-email`) that applies the specific schema modifications.
 
