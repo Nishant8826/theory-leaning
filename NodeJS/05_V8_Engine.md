@@ -138,17 +138,36 @@ if (typeof %GetOptimizationStatus === 'function') {
 **Q:** Describe the structural layout of V8 heap generations. How does the scavenger algorithm operate differently from the major mark-sweep-compact collector, and how does this affect application performance spikes?
 
 > **Answer:**
-> The V8 heap is divided into the Young Generation (New Space, composed of two semi-spaces: To-space and From-space) and the Old Generation (Old Space).
+> The V8 heap is divided into the Young Generation (New Space, composed of two semi-spaces: To-space and From-space) and the Old Generation (Old Space). 
+> 
+> * **Young Generation (New Space)**: A small buffer (usually 1–64MB) where new objects are allocated. Because most objects die young, it is cleaned very frequently using the fast **Scavenger algorithm**.
+> * **Old Generation (Old Space)**: A much larger area containing objects that survived multiple Scavenger cycles. It is cleaned less frequently using the **Major GC (Mark-Sweep-Compact)** algorithm.
+> 
+> **Performance Impact:**
+> Scavenger cycles run in 1–5ms and cause imperceptible pauses. In contrast, Major GC must scan and organize the entire old space, which can take 50–500ms or more. This stops code execution ("Stop-The-World" pauses), causing noticeable latency spikes in web applications during high traffic.
 
-**Q:** Scavenger Collection
+**Q:** How does the Scavenger Collection algorithm operate under the hood?
 
 > **Answer:**
+> The Scavenger algorithm manages the **New Space** using Cheney's copying algorithm, dividing the space into two equal halves: **From-Space** and **To-Space**:
 > 
+> 1. New objects are allocated in the **From-Space**.
+> 2. When the From-Space fills up, a Scavenger cycle begins.
+> 3. V8 scans the From-Space, identifies active/reachable objects, and copies them to the **To-Space** (compacting them next to each other to prevent memory fragmentation).
+> 4. Unreachable objects are left behind and cleared.
+> 5. The roles of the From-Space and To-Space are swapped.
+> 6. Objects that survive two Scavenger cycles are promoted to the **Old Space**.
 
-**Q:** Major Garbage Collection
+**Q:** How does Major Garbage Collection (Mark-Sweep-Compact) work, and when is it triggered?
 
 > **Answer:**
+> Major Garbage Collection manages the **Old Space** and is triggered when the old space reaches its capacity limit. It uses a three-phase algorithm:
 > 
+> 1. **Marking**: V8 traverses the object graph starting from root pointers (like global objects and active call stacks) and marks all reachable objects.
+> 2. **Sweeping**: V8 scans the memory space and adds the addresses of un-marked (unreachable) objects to a "free list" so that their memory can be reused for future allocations.
+> 3. **Compacting**: V8 shifts surviving objects together in memory to eliminate empty fragmentation gaps, preventing out-of-memory errors caused by fragmented memory.
+> 
+> Because this process can block execution, V8 uses **Incremental Marking** (interleaving marking steps with normal JS execution) and **Concurrent Sweeping/Compacting** (offloading work to background helper threads) to minimize Stop-The-World latency spikes.
 
 ---
 Previous : [04_Runtime_vs_Framework.md](04_Runtime_vs_Framework.md) | Index : [00_index.md](00_index.md) | Next : [06_Event_Loop_Basics.md](06_Event_Loop_Basics.md)
