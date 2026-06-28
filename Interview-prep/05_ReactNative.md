@@ -760,6 +760,386 @@ Pass parameters in the `navigate` function: `navigation.navigate('Details', { it
 </details>
 <hr/>
 
+### ❓ Q71. **What is the role of the shadow tree and Yoga layout engine?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+- **Shadow Tree:** An internal C++ representation of the layout structure. As JS executes, it defines UI elements. React Native creates a shadow tree corresponding to the JS virtual tree structure.
+- **Yoga Engine:** An open-source layout engine (written in C++) that implements Flexbox layout specifications. It parses the shadow tree, calculates exact dimensions and coordinates for each component, and passes these coordinates to the native UI manager to render real platforms view layers.
+
+> 💡 **Interviewer Focus:** Understanding the intermediate layout step between JS definitions and native views.
+</details>
+<hr/>
+
+### ❓ Q72. **How do you implement SSL Pinning in React Native?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+SSL Pinning prevents Man-In-The-Middle (MITM) attacks by checking the server's certificate or public key against a pinned local certificate copy.
+- **Implementation:**
+  - You cannot configure SSL pinning directly in standard JS `fetch` or `axios`.
+  - Use native libraries like `react-native-ssl-pinning` which wrap native iOS (`AFNetworking`) and Android (`OkHttp`) network clients.
+  - Alternatively, configure the native project files directly (e.g. `network_security_config.xml` on Android and trust policies on iOS).
+
+> 💡 **Interviewer Focus:** Security engineering: why default HTTPS is vulnerable to proxy intercepts (like Charles Proxy or Fiddler) and how pinning resolves it.
+</details>
+<hr/>
+
+### ❓ Q73. **Explain how worklets work in React Native Reanimated (v2/v3).**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+- **Worklets:** Small JavaScript functions compiled to run on the **UI thread** directly in a separate JS context (using a secondary engine context).
+- **How they work:**
+  - Standard JS functions run on the JS thread, causing animation lag if the JS thread is busy with API calls or calculations.
+  - Adding the `"worklet";` directive tells Reanimated to compile the function so it executes synchronously on the UI thread, facilitating 60/120fps animations even when the main JS thread is blocked.
+
+> 💡 **Interviewer Focus:** Multi-JS-runtime concepts and keeping animations running at maximum frame rates.
+</details>
+<hr/>
+
+### ❓ Q74. **What is the difference between TurboModules and Legacy Native Modules?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+- **Legacy Native Modules:** Loaded eagerly during app startup over the JSON Bridge, increasing cold start time even if the module is never used.
+- **TurboModules (New Architecture):**
+  - Loaded lazily on demand.
+  - Uses JSI (JavaScript Interface) to invoke native C++ methods directly without JSON serialization overhead, minimizing latency.
+
+> 💡 **Interviewer Focus:** Cold start optimizations and direct invocation benefits.
+</details>
+<hr/>
+
+### ❓ Q75. **How does the Fabric rendering engine differ from the legacy UI Manager?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+- **Legacy UI Manager:** Calculates layout in the shadow thread, serializes coordinate instructions to JSON, and sends them over the bridge to the main thread to render. It cannot handle synchronous layout interactions (like scroll inputs) smoothly.
+- **Fabric Renderer (New Architecture):**
+  - Written in C++ to run across platforms.
+  - Direct communication using JSI, allowing the UI thread to fetch layouts synchronously.
+  - Prioritizes UI updates to keep user interactions responsive.
+
+> 💡 **Interviewer Focus:** Layout synchronization and eliminating lag on complex scroll layouts.
+</details>
+<hr/>
+
+### ❓ Q76. **How do you handle deep links Universal Links (iOS) and App Links (Android) verification?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Universal Links (iOS) and App Links (Android) are secure deep links associated directly with a domain.
+- **Verification Setup:**
+  - **Server-side:** Host a verification file at `/.well-known/apple-app-site-association` (iOS) and `/.well-known/assetlinks.json` (Android) linking your domain to your mobile app bundle ID/signature fingerprints.
+  - **App-side:** Configure capabilities (Associated Domains in Xcode, Intent Filters in Android Manifest).
+  - When the user clicks a URL, the OS verifies the domain files and routes the link to the app without showing browser picker prompts.
+
+> 💡 **Interviewer Focus:** Server-to-app cryptographic handshakes configuration.
+</details>
+<hr/>
+
+### ❓ Q77. **What is the role of Fastlane in React Native CI/CD?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Fastlane is an open-source tool written in Ruby that automates iOS and Android deployment.
+- **Role:**
+  - Manages provisioning profiles and signing certificates (`match`).
+  - Automates incrementing build versions, building release binaries (`gym` for iOS, `gradle` for Android), and uploading builds to TestFlight and Google Play Console.
+
+> 💡 **Interviewer Focus:** Automating delivery workflows to eliminate manual building tasks.
+</details>
+<hr/>
+
+### ❓ Q78. **How do you analyze and optimize the bundle size of a React Native app?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+- **Analysis:** Use `react-native-bundle-visualizer` to see which dependencies consume the most kilobytes in the JS bundle.
+- **Optimization:**
+  - Exclude large libraries; use lightweight alternatives (like `date-fns` instead of `moment`).
+  - Configure Proguard on Android to strip unused Java bytecode.
+  - Enable `shrinkResources` and `minifyEnabled` in the `build.gradle` file.
+
+> 💡 **Interviewer Focus:** Minimizing download sizes for users on limited bandwidth networks.
+</details>
+<hr/>
+
+### ❓ Q79. **Explain how code obfuscation is configured for React Native apps.**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Since JS code bundles are packaged inside the APK/IPA files, they can be easily decompiled and read.
+- **Android Obfuscation:** Enable **ProGuard** in `android/app/build.gradle` (`minifyEnabled true`). It obfuscates compiled Java/Kotlin bytecode.
+- **JavaScript Obfuscation:** Use tools like `javascript-obfuscator` during Metro bundling phases, or use commercial products (like Dexguard or Guardsquare) to encrypt strings and obfuscate logic paths.
+
+> 💡 **Interviewer Focus:** Protecting API keys and proprietary algorithms from reverse engineering.
+</details>
+<hr/>
+
+### ❓ Q80. **What is the difference between `react-native-gesture-handler` and the default Responder System?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+- **Default Responder System:** Evaluates gestures entirely on the JavaScript thread. If the JS thread is busy or dropped frames occur, gesture tracking lags.
+- **`react-native-gesture-handler`:**
+  - Moves gesture interaction logic to the native thread.
+  - Communicates directly with native platform touch handlers, keeping gestures smooth and responsive even under heavy JS thread load.
+
+> 💡 **Interviewer Focus:** Thread boundaries and gesture responsiveness.
+</details>
+<hr/>
+
+### ❓ Q81. **How do you debug JS on physical devices when using Hermes?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Since Hermes runs pre-compiled bytecode:
+- You cannot use the legacy Chrome remote debugger because Hermes does not use Chrome's JS engine.
+- **Hermes Debugging:** Connect the device via USB and use **Flipper** or Chrome DevTools pointing to the local debugger port (`chrome://inspect`). This connects directly to the Hermes engine debugging port on the physical device via a WebSocket bridge.
+
+> 💡 **Interviewer Focus:** Modern debugging workflows using Hermes.
+</details>
+<hr/>
+
+### ❓ Q82. **What are custom Metro bundler options for asset routing?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Configure `metro.config.js` to modify how files are bundled:
+- **`assetExts`**: Append support for custom binary assets (like `.ttf`, `.svg`).
+- **`sourceExts`**: Prioritize specific code resolutions (e.g., placing `ts`, `tsx` before `js`).
+- Use custom transformers (like `react-native-svg-transformer`) to compile SVG files to React components on the fly.
+
+> 💡 **Interviewer Focus:** Metro bundle lifecycle customization.
+</details>
+<hr/>
+
+### ❓ Q83. **Explain the concept of monorepos in React Native and Expo projects.**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Monorepos group multiple packages (web app, mobile app, shared API layer) inside a single Git repository.
+- **Implementation:**
+  - Uses workspaces (Yarn Workspaces, pnpm, or npm workspaces).
+  - **Metro configuration:** Metro expects all dependencies in the local `node_modules`. In monorepos, dependencies are hoisted to the root directory. You must configure Metro's `watchFolders` to scan root directories.
+
+> 💡 **Interviewer Focus:** Code sharing and resolution of Metro path hoisting issues.
+</details>
+<hr/>
+
+### ❓ Q84. **How do you write E2E tests for React Native using Detox?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Detox is a grey-box testing framework for mobile apps:
+- Unlike black-box testers (like Appium), Detox monitors the internal state of the app, automatically waiting for network requests, layout animations, and thread queues to clear before running test assertions.
+- **Writing Tests:** Select elements using `by.id('testID')` and trigger actions: `await element(by.id('login_btn')).tap()`.
+
+> 💡 **Interviewer Focus:** Automated UI testing stability and resolving asynchronous test flakes.
+</details>
+<hr/>
+
+### ❓ Q85. **How does CodePush perform updates rollback on failure?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+CodePush tracks deployment health:
+- When a new JS bundle is downloaded, CodePush marks it as pending.
+- On startup, the app calls `codePush.notifyAppReady()`.
+- If the app crashes on launch before calling `notifyAppReady()`, CodePush rolls back to the previous stable JS bundle automatically on the next restart.
+
+> 💡 **Interviewer Focus:** Safe OTA rollouts and crash protection.
+</details>
+<hr/>
+
+### ❓ Q86. **Explain how memory is managed in JSI (JavaScript Interface) using garbage collection.**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+JSI allows JS code to hold references to C++ Host Objects directly.
+- **Memory Management:**
+  - JSI objects are garbage collected by the JS engine (Hermes/V8).
+  - When the JS reference is garbage collected, the engine triggers the corresponding C++ destructor to free the native memory blocks, preventing memory leaks across runtime boundaries.
+
+> 💡 **Interviewer Focus:** Cross-runtime memory management mechanics.
+</details>
+<hr/>
+
+### ❓ Q87. **How do you configure SSL Pinning on Android network security config files?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Configure `res/xml/network_security_config.xml`:
+```xml
+<network-security-config>
+  <domain-config>
+    <domain includeSubdomains="true">example.com</domain>
+    <pin-set>
+      <pin digest="SHA-256">Base64PublicKeyFingerprint=</pin>
+    </pin-set>
+  </domain-config>
+</network-security-config>
+```
+Link this file in `AndroidManifest.xml` under the `<application>` tag using `android:networkSecurityConfig`.
+
+> 💡 **Interviewer Focus:** Native Android network security configurations.
+</details>
+<hr/>
+
+### ❓ Q88. **Explain the difference between `useMemo` and `useCallback` in React Native thread context.**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+While they work identically to React web:
+- In React Native, saving computational overhead is even more critical because JS runs on a single thread.
+- If a component re-renders and recalculates values, it blocks the JS thread, delaying messages sent to the native thread and causing dropped frames (stuttering UI).
+
+> 💡 **Interviewer Focus:** Performance impacts on mobile thread queues.
+</details>
+<hr/>
+
+### ❓ Q89. **How do you optimize long-running background tasks in React Native?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Mobile operating systems suspend app execution shortly after the app goes to the background.
+- **Optimization:**
+  - Use native services like `react-native-background-actions` or `react-native-background-fetch`.
+  - These register native background tasks with the OS (using Android Foreground Services with a persistent notification, or iOS Background Tasks APIs) to run code when the app is minimized.
+
+> 💡 **Interviewer Focus:** OS background restrictions and system resource governance.
+</details>
+<hr/>
+
+### ❓ Q90. **What is the purpose of native UI managers?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Native UI managers translate React components into platform-specific views (e.g. converting a `<View>` into `ViewGroup` on Android and `UIView` on iOS) and coordinate layout updates calculated by the Yoga engine.
+
+> 💡 **Interviewer Focus:** View rendering pipeline.
+</details>
+<hr/>
+
+### ❓ Q91. **Explain how you would implement offline synchronizations in WatermelonDB.**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+WatermelonDB is a reactive local database built for offline-first apps:
+- It tracks unsynced local changes (creates, updates, deletes).
+- **Sync Workflow:**
+  - Call `synchronize()` passing `pullChanges` and `pushChanges` function parameters.
+  - `pullChanges` fetches remote updates and applies them locally.
+  - `pushChanges` sends local unsynced records to the backend, marking them as synced once successful.
+
+> 💡 **Interviewer Focus:** Designing robust offline-first synchronization protocols.
+</details>
+<hr/>
+
+### ❓ Q92. **How do you troubleshoot thread block issues causing frame drops?**
+
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+- Monitor performance using **Flipper Performance Plugin** or **Xcode Instruments** to isolate CPU usage.
+- Look for long-running calculations on the JS thread. Move heavy computations to native modules, use worklets, or chunk execution using `setTimeout` / requestAnimationFrame to yield control back to the thread scheduler.
+
+> 💡 **Interviewer Focus:** Frame budget optimizations (maintaining 16.6ms window for 60fps).
+</details>
+<hr/>
+
+### ❓ Q93. **Explain the difference between CocoaPods static frameworks and dynamic libraries.**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+- **Static Frameworks:** Compiled code is copied directly into the main application executable binary at build time. Increases binary size but loads faster at startup.
+- **Dynamic Libraries:** Linked at runtime. Kept separate from the main binary, reducing compilation sizes but adding loading latency during app startup.
+
+> 💡 **Interviewer Focus:** iOS dependency compilation structures.
+</details>
+<hr/>
+
+### ❓ Q94. **What is the role of the `Android.mk` and `CMakeLists.txt` files in React Native new architecture?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+They are build configurations for C++ compilation:
+- **`Android.mk`**: Used by the Android NDK (Native Development Kit) to compile C++ source files for legacy builds.
+- **`CMakeLists.txt`**: Modern standard used by CMake to compile JSI/C++ code (TurboModules/Fabric components) into shared libraries for Android.
+
+> 💡 **Interviewer Focus:** Android native compilation chains.
+</details>
+<hr/>
+
+### ❓ Q95. **How do you implement custom SVG rendering in React Native?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Use `react-native-svg` to declare paths and shapes, or compile `.svg` files directly to React component functions using `react-native-svg-transformer`.
+
+> 💡 **Interviewer Focus:** Scalable asset management.
+</details>
+<hr/>
+
+### ❓ Q96. **Explain how app launch times (TTI) are measured using Flipper.**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Using the Flipper Performance Profiler, you measure the time from process creation (native init) to the point where the JS bundle completes loading and renders the first interactive screen (Time to Interactive).
+
+> 💡 **Interviewer Focus:** Launch speed analytics.
+</details>
+<hr/>
+
+### ❓ Q97. **How do you implement dynamic orientation layout changes using Hooks?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Use the `useWindowDimensions()` hook to fetch layout bounds:
+```typescript
+const { width, height } = useWindowDimensions();
+const isLandscape = width > height;
+```
+This hook automatically triggers a re-render when the device orientation changes.
+
+> 💡 **Interviewer Focus:** Responsive layout architectures.
+</details>
+<hr/>
+
+### ❓ Q98. **What is the role of `AppState` listener in stopping active threads?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+When the app goes to the `background` state, it is best practice to stop active socket connections, pause background tracking, and clear CPU-heavy polling tasks to prevent the OS from force-killing the app due to excessive background battery usage.
+
+> 💡 **Interviewer Focus:** App lifecycle governance.
+</details>
+<hr/>
+
+### ❓ Q99. **Explain how `react-native-keychain` secures access to storage keys using biometrics.**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+It writes sensitive credentials to Keychain (iOS) or Keystore (Android) configured with biometric access requirements. Accessing the key at runtime prompts the user for FaceID/Fingerprint authentication before returning the decrypted secret.
+
+> 💡 **Interviewer Focus:** Native hardware security integration.
+</details>
+<hr/>
+
+### ❓ Q100. **How do you build multi-bundle applications for micro-frontends in React Native?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+By splitting the JavaScript code into multiple bundles:
+- Run a core bundle containing shared dependencies (React, React Native, common state).
+- Load feature-specific bundles dynamically using tools like **Re.Pack** (a Webpack-based bundler for React Native) to lazy-load micro-frontend bundles over a CDN.
+
+> 💡 **Interviewer Focus:** Scaling large apps using micro-frontend architecture.
+</details>
+<hr/>
+
 ### 🧭 Navigation
 
 | ⬅️ Previous | 🏠 Index | ➡️ Next |

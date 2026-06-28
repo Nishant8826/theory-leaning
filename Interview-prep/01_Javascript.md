@@ -960,12 +960,12 @@ To check if a property belongs to the object itself and not its prototype, use `
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-JavaScript mein, `call()`, `apply()`, aur `bind()` methods ka use kisi function ke `this` context ko **explicitly set** (control) karne ke liye kiya jata hai.
+In JavaScript, the `call()`, `apply()`, and `bind()` methods are used to **explicitly set** (control) the `this` context of a function.
 
 ---
 
 ### 1. `call()` method
-- **Concept:** `call()` function ko immediately invoke (execute) karta hai. Isme hum `this` ki value ke sath arguments ko **ek-ek karke (comma-separated list)** pass karte hain.
+- **Concept:** `call()` invokes (executes) the function immediately. We pass the `this` value followed by arguments **individually (as a comma-separated list)**.
 - **Syntax:** `func.call(thisArg, arg1, arg2, ...)`
 - **Example:**
   ```javascript
@@ -980,26 +980,26 @@ JavaScript mein, `call()`, `apply()`, aur `bind()` methods ka use kisi function 
 ---
 
 ### 2. `apply()` method
-- **Concept:** `apply()` bhi `call()` ki tarah function ko immediately invoke karta hai, lekin isme arguments ko ek **Array** ke roop mein pass kiya jata hai.
+- **Concept:** `apply()` also invokes the function immediately, but it takes arguments as an **Array**.
 - **Syntax:** `func.apply(thisArg, [arg1, arg2, ...])`
 - **Example:**
   ```javascript
   greet.apply(person, ["Mumbai", "Maharashtra"]); 
   // Output: Hello, I am Nishant from Mumbai, Maharashtra
   ```
-- **💡 Memory Trick (Hinglish):** 
-  - **A**pply = **A**rray (**A** se Apply, **A** se Array).
-  - **C**all = **C**omma-separated (**C** se Call, **C** se Comma-separated).
+- **💡 Memory Trick:** 
+  - **A**pply = **A**rray (Starts with **A**).
+  - **C**all = **C**omma-separated (Starts with **C**).
 
 ---
 
 ### 3. `bind()` method
-- **Concept:** `bind()` function ko immediately call **nahi** karta. Yeh ek **naya bound function return** karta hai jisme `this` ki value permanently lock ho jati hai. Hum is returned function ko future mein jab chahein call kar sakte hain.
+- **Concept:** `bind()` does **not** call the function immediately. Instead, it **returns a new bound function** with the `this` value permanently locked. We can invoke this returned function in the future whenever needed.
 - **Syntax:** `const newFunc = func.bind(thisArg, arg1, arg2, ...)`
 - **Example:**
   ```javascript
   const newGreet = greet.bind(person, "Bengaluru", "Karnataka");
-  // Abhi function call nahi hua hai. Bad mein jab chahein run kar sakte hain:
+  // The function has not been invoked yet. We can run it later whenever needed:
   newGreet(); 
   // Output: Hello, I am Nishant from Bengaluru, Karnataka
   ```
@@ -1012,14 +1012,14 @@ JavaScript mein, `call()`, `apply()`, aur `bind()` methods ka use kisi function 
 | :--- | :--- | :--- | :--- |
 | **Invocation** | Immediately calls | Immediately calls | Returns new function (calls later) |
 | **Arguments** | Comma-separated list (`arg1, arg2`) | Array format (`[arg1, arg2]`) | Comma-separated (can be partially pre-bound) |
-| **Return Value** | Function ka output | Function ka output | A new function reference |
+| **Return Value** | The output of the function | The output of the function | A new function reference |
 
 ---
 
 ### 💡 Interviewer Focus:
-* **Function Borrowing:** Ek object dusre object ka method use kar sakta hai bina use recreate kiye (`Object.prototype.toString.call(obj)` is a common trick to detect types).
-* **React / Event Handlers:** Arrow functions se pehle, class components mein event handlers ko `this` preserve karne ke liye handler functions ko constructor mein `bind(this)` karna padta tha.
-* **Currying:** `bind()` ke through hum initial parameters ko fix (pre-configure) kar sakte hain.
+* **Function Borrowing:** Allows an object to borrow and execute a method from another object without recreating it (e.g. using `Object.prototype.toString.call(obj)` to detect type properties).
+* **React / Event Handlers:** Before arrow functions were introduced, class components had to bind handlers in constructors (`this.handler = this.handler.bind(this)`) to preserve the `this` execution context.
+* **Currying:** Using `bind()` to pre-configure or partially apply initial parameters to functions.
 
 </details>
 
@@ -1079,34 +1079,34 @@ p.then(onFulfilled).catch(onRejected).finally(onSettled);
 
 ### 🌐 Promise Combinators: `Promise.all()` vs `Promise.allSettled()` vs `Promise.race()` vs `Promise.any()`
 
-JavaScript mein multiple promises ko parallelly resolve ya reject (handle) karne ke liye 4 main static methods hote hain:
+In JavaScript, there are 4 main static methods to resolve or reject (handle) multiple promises in parallel:
 
 #### 1. `Promise.all()`
-- **Concept (Hinglish):** **"Sabhi success hone chahiye" (All or Nothing).**
+- **Concept:** **"All or Nothing" (All must succeed).**
 - **Behavior:**
-  - Agar **sabhi** promises resolve ho jate hain, toh yeh ek array return karta hai jisme sabhi resolved values hoti hain.
-  - Agar **ek bhi** promise reject ho jata hai, toh yeh immediately usi reject error ke sath fail ho jata hai (short-circuiting).
-- **Use Case:** Jab multiple API calls ek dusre par dependent hon, aur sabhi data zaroori ho.
+  - If **all** promises resolve, it returns an array containing all resolved values.
+  - If **even one** promise rejects, it immediately rejects with that error (short-circuiting).
+- **Use Case:** When multiple API calls depend on each other and all data is mandatory.
 
 #### 2. `Promise.allSettled()`
-- **Concept (Hinglish):** **"Sabhi complete hone do" (Chahe fail hon ya pass).**
+- **Concept:** **"Let all complete" (Whether they fail or succeed).**
 - **Behavior:**
-  - Yeh tab tak wait karta hai jab tak sabhi promises settle (resolve ya reject) nahi ho jate.
-  - Yeh hamesha resolve hota hai aur ek array of objects return karta hai jisme har promise ka status (`"fulfilled"` ya `"rejected"`) aur uski `value`/`reason` hoti hai.
-- **Use Case:** Jab aapko sabhi calls ka status dekhna ho, aur kisi ek ke fail hone par baki data ko stop na karna ho.
+  - It waits until all promises are settled (either resolved or rejected).
+  - It always resolves and returns an array of objects describing the outcome of each promise (containing `status` as `"fulfilled"` or `"rejected"`, along with `value` or `reason`).
+- **Use Case:** When you want to see the status of all calls, and the failure of one call should not prevent the execution of others.
 
 #### 3. `Promise.race()`
-- **Concept (Hinglish):** **"Jo pehle settle hoga, wahi winner hai" (First one wins, success/failure doesn't matter).**
+- **Concept:** **"First one to settle wins" (Success or failure does not matter).**
 - **Behavior:**
-  - Yeh sabse pehle settle (chahe **resolve** ho ya **reject**) karne wali promise ka result return karta hai.
-- **Use Case:** Jab aap operation ka timeout lagana chahein (jaise, user request vs a 5-second timer).
+  - It returns the result of the first promise that settles (whether it **resolves** or **rejects**).
+- **Use Case:** When you want to implement a timeout for an operation (e.g., racing a user request against a 5-second timer).
 
 #### 4. `Promise.any()`
-- **Concept (Hinglish):** **"Pehla success chahiye" (First successful promise).**
+- **Concept:** **"First success wins" (First successful promise).**
 - **Behavior:**
-  - Yeh sabse pehle **resolve** hone wali promise ka result return karta hai.
-  - Agar **sabhi** promises reject ho jati hain, tabhi yeh fail hota hai aur ek `AggregateError` deta hai.
-- **Use Case:** Jab aapke paas duplicate/fallback servers hon aur aapko sabse jaldi chalne wala working response chahiye.
+  - It returns the result of the first promise that **resolves**.
+  - It only fails if **all** promises reject, returning an `AggregateError`.
+- **Use Case:** When you have redundant/fallback servers and you want to use the fastest successful response.
 
 ---
 
@@ -1114,10 +1114,10 @@ JavaScript mein multiple promises ko parallelly resolve ya reject (handle) karne
 
 | Method | Wait for all? | When does it Resolve? | When does it Reject? |
 | :--- | :--- | :--- | :--- |
-| **`Promise.all()`** | Yes | Jab **sabhi** resolve ho jayein. | Jaise hi **koi ek** reject ho. |
-| **`Promise.allSettled()`** | Yes | Jab **sabhi** settle ho jayein. | Never rejects. |
-| **`Promise.race()`** | No | Jab **pehle settle** hone wali promise resolve ho. | Jab **pehle settle** hone wali promise reject ho. |
-| **`Promise.any()`** | No | Jab **pehli** promise resolve ho. | Jab **sabhi** promises reject ho jayein. |
+| **`Promise.all()`** | Yes | When **all** resolve. | As soon as **any one** rejects. |
+| **`Promise.allSettled()`** | Yes | When **all** settle. | Never rejects. |
+| **`Promise.race()`** | No | When the **first settled** promise resolves. | When the **first settled** promise rejects. |
+| **`Promise.any()`** | No | When the **first** promise resolves. | When **all** promises reject. |
 
 ---
 

@@ -1413,8 +1413,422 @@ Import `cookies` from `next/headers`. You can read cookies using `cookies().get(
 </details>
 <hr/>
 
+### ❓ Q71. **How do you configure custom cache handlers with Redis in Next.js?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Next.js allows configuring custom cache storage (instead of local file-system caching) by setting up a custom Cache Handler.
+- **Implementation:**
+  - Create a `cache-handler.js` file.
+  - Implement the `get`, `set`, and `revalidateTag` methods interface using a Redis client (like `ioredis`).
+  - In `next.config.js`, configure the path: `experimental: { cacheHandler: require.resolve('./cache-handler.js') }`.
+  - This is critical for scaling Next.js in containerized multi-node environments (like Kubernetes) where file-system cache is not shared.
+
+> 💡 **Interviewer Focus:** Distributing page caches across load-balanced application instances.
+</details>
+<hr/>
+
+### ❓ Q72. **Explain the difference between Edge Runtime and Node.js Runtime in Next.js.**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+- **Node.js Runtime:**
+  - Standard Node environment.
+  - Supports all Node.js APIs and libraries (e.g. `fs`, net, full cryptography packages).
+  - Higher cold start latency.
+- **Edge Runtime:**
+  - Built on V8 engine isolates (similar to Cloudflare Workers).
+  - Supports only lightweight APIs (Subset of Web APIs like `fetch`, `Headers`, `Request`, `Response`).
+  - Cannot access native Node.js APIs (e.g., no `fs`).
+  - Near-zero cold starts, making it ideal for fast global routing.
+
+> 💡 **Interviewer Focus:** Operational limits and API compatibility differences.
+</details>
+<hr/>
+
+### ❓ Q73. **How do you secure Next.js Server Actions against CSRF and authorization vulnerabilities?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Server Actions behave like POST API endpoints, meaning they are vulnerable if not secured.
+- **Security Protocols:**
+  - **CSRF:** Next.js automatically sets checking headers for Server Actions to guard against simple CSRF attacks.
+  - **Authentication:** Always fetch and verify session tokens (e.g. via `getServerSession()` or JWT tokens) *inside* the Server Action function body before executing write changes.
+  - **Input Validation:** Enforce strict type validation using schemas (e.g. Zod) to block malicious payload injections.
+
+> 💡 **Interviewer Focus:** Security: treating Server Actions with the same security checks as standard REST API endpoints.
+</details>
+<hr/>
+
+### ❓ Q74. **How does React Server Component (RSC) streaming work under the hood?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+RSC streaming allows sending HTML fragments to the client as soon as they are rendered.
+- **Mechanism:**
+  - Uses HTTP **Chunked Transfer-Encoding**.
+  - Next.js opens a single HTTP connection. The server renders static layouts first and streams them.
+  - Slow database-bound components wrapped in `<Suspense>` are replaced by placeholder skeletons.
+  - Once the server resolves the data and renders the component, it streams the final HTML chunk along with inline script blocks to replace the fallback skeleton in the DOM dynamically.
+
+> 💡 **Interviewer Focus:** Progressive rendering, connection streaming, and DOM replacements.
+</details>
+<hr/>
+
+### ❓ Q75. **What is the difference between `revalidatePath` and `revalidateTag`?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+- **`revalidatePath(path)`**: Purges cached data for a specific URL path. Useful for updating specific page layouts (e.g., `/products/123`).
+- **`revalidateTag(tag)`**: Purges cached data across *any* route that fetched data using a specific tag parameter: `fetch(url, { next: { tags: ['products'] } })`. Offers finer control, allowing updates to multiple layouts with a single cache tag purge.
+
+> 💡 **Interviewer Focus:** Granular caching and CDN purging strategies.
+</details>
+<hr/>
+
+### ❓ Q76. **How do you configure dynamic route segment configurations like force-static and force-dynamic?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+You configure page behavior by exporting segment config constants from the page file:
+- `export const dynamic = 'force-static'`: Forces caching and static generation, ignoring headers or search parameters.
+- `export const dynamic = 'force-dynamic'`: Disables caching, forcing server rendering on every request (similar to `getServerSideProps`).
+- `export const revalidate = 60`: Sets ISR cache TTL to 60 seconds.
+
+> 💡 **Interviewer Focus:** Page-level caching configurations.
+</details>
+<hr/>
+
+### ❓ Q77. **Explain Intercepting Routes and provide a common use case.**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Intercepting Routes allows loading a route from another part of the application inside the current layout.
+- **Syntax:** `(.)` matches segments on the same level, `(..)` matches one level above.
+- **Use Case: Photo Feed Modal.**
+  - Clicking a photo in a feed opens the photo details inside a modal overlay overlay. The URL updates to `/photo/12` but the feed remains in the background (intercepted route).
+  - Refreshing the page (or sharing the link) ignores the interception, loading the photo details as a full standalone page.
+
+> 💡 **Interviewer Focus:** Dynamic routing and preserving page state.
+</details>
+<hr/>
+
+### ❓ Q78. **How does Next.js handle Hydration Mismatches, and how do you resolve them?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+A hydration mismatch occurs when the pre-rendered server HTML differs from the initial HTML rendered by the client browser.
+- **Common Causes:**
+  - Accessing browser-only globals (like `window` or `localStorage`) during initial render.
+  - Rendering dynamic dates (like `new Date()`) that change between server render and client load.
+- **Resolution:**
+  - Use `useEffect` to trigger client-only renders after mount.
+  - Disable SSR for specific components using `next/dynamic`: `const NoSSR = dynamic(() => import(...), { ssr: false })`.
+  - Use the `suppressHydrationWarning` attribute (only for small discrepancies).
+
+> 💡 **Interviewer Focus:** Hydration cycle mechanics and debugging tools.
+</details>
+<hr/>
+
+### ❓ Q79. **How do you implement local static exports in Next.js, and what are its limitations?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+- **Setup:** Configure `output: 'export'` in `next.config.js`. Running `next build` generates raw HTML, CSS, and JS assets in an `out` folder.
+- **Limitations:**
+  - Disables server features like API routes, middleware, redirects/rewrites, dynamic SSR, ISR, and standard Image Optimization (which requires a server).
+
+> 💡 **Interviewer Focus:** Export architectures (building static sites for deployment on S3/Cloudflare Pages).
+</details>
+<hr/>
+
+### ❓ Q80. **What is the purpose of the next/font component, and why is it preferred over Google Web Fonts?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+- **`next/font`**: Downloads font files at build time and hosts them locally inside the app bundle.
+- **Why preferred:**
+  - Eliminates network requests to Google Fonts APIs during page loads, improving privacy.
+  - Zero Layout Shift (CLS): It automatically generates fallback system fonts with matching sizing descriptors, preventing layout shifts when the custom font loads.
+
+> 💡 **Interviewer Focus:** Page performance optimization and CLS reduction.
+</details>
+<hr/>
+
+### ❓ Q81. **Explain how you would deploy a Next.js app in a multi-tenant monorepo with Turborepo.**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+In Turborepo:
+- Create separate packages for shared components (`@repo/ui`), configurations (`@repo/eslint-config`), and business logic.
+- Reference these shared packages in the Next.js `package.json`.
+- In `next.config.js`, configure `transpilePackages: ['@repo/ui']` so Next.js transpiles the shared TypeScript packages during bundling.
+
+> 💡 **Interviewer Focus:** Monorepo architecture and build speed optimizations.
+</details>
+<hr/>
+
+### ❓ Q82. **How do you write middleware in Next.js that runs only on specific routes?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Export a `config` object containing a `matcher` array from the `middleware.js` file:
+```javascript
+export const config = {
+  matcher: ['/dashboard/:path*', '/api/secure/:path*']
+};
+```
+This forces the middleware to run only on matching routes, bypassing static assets and public pages to save execution resources.
+
+> 💡 **Interviewer Focus:** Performance tuning and limiting middleware execution scopes.
+</details>
+<hr/>
+
+### ❓ Q83. **What is the purpose of unstable_cache in the App Router?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+`unstable_cache` allows caching the results of expensive database calls or calculations across server requests:
+```javascript
+import { unstable_cache } from 'next/cache';
+const getCachedUser = unstable_cache(
+  async (id) => db.findUser(id),
+  ['user-cache-key'],
+  { tags: ['users'], revalidate: 3600 }
+);
+```
+
+> 💡 **Interviewer Focus:** Cache abstraction outside standard fetch functions.
+</details>
+<hr/>
+
+### ❓ Q84. **Explain how next/image optimizes images under the hood.**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+`next/image` performs multiple automatic optimizations:
+1. **Format Conversion:** Converts images to modern formats (WebP/AVIF) based on browser support headers.
+2. **Resizing:** Dynamically resizes images based on the requested layout width.
+3. **Lazy Loading:** Images are lazy-loaded by default, loading only when they approach the viewport.
+4. **Placeholder Skeletons:** Renders blur-up placeholders to prevent Layout Shift.
+
+> 💡 **Interviewer Focus:** Automated asset optimization pipeline.
+</details>
+<hr/>
+
+### ❓ Q85. **What is the difference between parallel routing and route interception?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+- **Parallel Routing (`@slot`):** Renders multiple pages simultaneously inside the same layout (useful for dashboards with different panels or tabs).
+- **Route Interception (`(.)route`):** Loads a route inside a modal overlay, while keeping the background context page active.
+
+> 💡 **Interviewer Focus:** Advanced UI layouts in the App Router.
+</details>
+<hr/>
+
+### ❓ Q86. **How do you handle redirects inside Server Actions?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Import `redirect` from `next/navigation`. Call it directly inside the Server Action:
+```javascript
+'use server';
+import { redirect } from 'next/navigation';
+export async function submitForm(data) {
+  // process data
+  redirect('/success');
+}
+```
+*Note: Under the hood, `redirect` throws a special exception that Next.js catches to handle the redirect, so do not wrap it inside try/catch blocks.*
+
+> 💡 **Interviewer Focus:** Control flow exception handling.
+</details>
+<hr/>
+
+### ❓ Q87. **How do you configure security headers in Next.js?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Define custom headers in `next.config.js`:
+```javascript
+module.exports = {
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          { key: 'Content-Security-Policy', value: "default-src 'self'" },
+          { key: 'X-Frame-Options', value: 'DENY' }
+        ]
+      }
+    ];
+  }
+};
+```
+
+> 💡 **Interviewer Focus:** Securing headers at the framework layer.
+</details>
+<hr/>
+
+### ❓ Q88. **What is Draft Mode in Next.js?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Draft Mode allows users to view draft content from a Headless CMS on static pages without rebuilding the entire site.
+- **How it works:** Enabling Draft Mode sets a cookie. Subsequent requests bypass the static build cache and render pages dynamically on the server, fetching live draft content from the CMS.
+
+> 💡 **Interviewer Focus:** Static site CMS editing workflows.
+</details>
+<hr/>
+
+### ❓ Q89. **What are the limitations of using WebSockets inside Next.js?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Next.js is designed to run in serverless environments (like Vercel).
+- **Limitations:**
+  - Serverless functions have execution time limits and cannot maintain persistent TCP connections (WebSockets).
+  - **Solution:** Host WebSocket servers separately (on ECS/EC2) or use managed pub/sub services (like Pusher or Ably) while calling them from Next.js client components.
+
+> 💡 **Interviewer Focus:** Serverless limitations and persistent connection management.
+</details>
+<hr/>
+
+### ❓ Q90. **How do you analyze package dependencies bundle size in Next.js?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Use `@next/bundle-analyzer`:
+1. Install the package.
+2. Configure it in `next.config.js`.
+3. Run `ANALYZE=true next build`. This generates interactive HTML reports showing size metrics for each JS bundle.
+
+> 💡 **Interviewer Focus:** Eliminating bloated dependency libraries.
+</details>
+<hr/>
+
+### ❓ Q91. **What is the difference between static metadata and dynamic metadata?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+- **Static Metadata:** Defined by exporting a static `metadata` object from a page/layout.
+- **Dynamic Metadata:** Defined by exporting a `generateMetadata` function. It receives routing parameters and dynamically fetches data (e.g. product title from DB) to return the metadata object, optimizing SEO.
+
+```javascript
+export async function generateMetadata({ params }) {
+  const product = await getProduct(params.id);
+  return { title: product.name };
+}
+```
+
+> 💡 **Interviewer Focus:** Dynamic search engine optimization.
+</details>
+<hr/>
+
+### ❓ Q92. **How does Partial Prerendering (PPR) work in Next.js?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+PPR combines static shell pre-rendering with dynamic server streaming in the same request.
+- The static layout shell is served instantly from the CDN cache.
+- The dynamic holes (wrapped in `<Suspense>`) are streamed from the server and plugged into the page once resolved, providing the speed of static sites with the flexibility of SSR.
+
+> 💡 **Interviewer Focus:** Hybrid rendering models.
+</details>
+<hr/>
+
+### ❓ Q93. **What is the difference between React Server Components (RSC) and standard SSR?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+- **SSR (Server-Side Rendering):** Converts React components into HTML on the server. The client downloads this HTML along with the full JS bundle to hydrate the page and execute interactions.
+- **RSC:** Components execute *only* on the server. The client receives a lightweight JSON-like serialization format representing the rendered virtual DOM tree, requiring zero JavaScript bundle download for those components, significantly reducing page bundle sizes.
+
+> 💡 **Interviewer Focus:** Reducing client-side JavaScript overhead.
+</details>
+<hr/>
+
+### ❓ Q94. **How do you prevent hydration errors when displaying local client timestamps?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+- Initialize a boolean state `isMounted` to `false` and set it to `true` inside `useEffect`.
+- Only render the dynamic timestamp if `isMounted` is `true`. This guarantees the initial server render matches the initial client render (before mount), avoiding mismatch alerts.
+
+> 💡 **Interviewer Focus:** Handling dynamic data in SSR pages.
+</details>
+<hr/>
+
+### ❓ Q95. **What is the difference between next/script beforeInteractive and afterInteractive strategies?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+- `beforeInteractive`: Injects the script tag directly in the initial HTML before hydration. Best for core dependencies (like security managers or bot checks).
+- `afterInteractive` (Default): Loads the script after the page hydrates, preventing third-party trackers from blocking the initial page rendering performance.
+
+> 💡 **Interviewer Focus:** Script prioritization.
+</details>
+<hr/>
+
+### ❓ Q96. **How does Next.js handle revalidation triggers in ISR?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+ISR uses a stale-while-revalidate model:
+1. User requests a page. The server returns the cached stale page.
+2. If the revalidation timer has expired, Next.js triggers a background regeneration page build.
+3. Once the build completes, the cache is updated. Subsequent requests receive the updated page.
+
+> 💡 **Interviewer Focus:** Background compilation and stale cache strategies.
+</details>
+<hr/>
+
+### ❓ Q97. **Explain the purpose of the next.config.js experimental optimizePackageImports flag.**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+It instructs the compiler to transpile imports from specific packages (e.g. `@mui/icons-material`, `lucide-react`) dynamically, loading only the utilized icons instead of processing the entire icon set module, which speeds up development builds.
+</details>
+
+<hr/>
+
+### ❓ Q98. **How do you implement local SSL for HTTPS in local Next.js development?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Use tools like `mkcert` to generate local security certificates.
+- Configure `next dev` to run with HTTPS by mapping the certificate files via command arguments: `next dev --experimental-https --key local-key.pem --cert local-cert.pem`.
+
+> 💡 **Interviewer Focus:** Local development configurations.
+</details>
+
+<hr/>
+
+### ❓ Q99. **How does Sentry integration track server-side errors in Next.js?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Sentry injects monitoring hooks inside `instrumentation.ts` or `sentry.server.config.js` to intercept uncaught exceptions in Server Actions, API routes, or SSR lifecycle steps, capturing detailed stack traces and request contexts.
+
+> 💡 **Interviewer Focus:** Error tracking and reliability monitoring.
+</details>
+
+<hr/>
+
+### ❓ Q100. **What is the default execution limit of Serverless Functions in Next.js on standard cloud hosts?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+On Vercel Hobby accounts, it is **10 seconds** (can be configured up to 5 minutes on Pro plans). Workloads exceeding this threshold throw timeout errors; long-running operations should be offloaded to queues or asynchronous background services.
+
+> 💡 **Interviewer Focus:** Serverless platform constraints.
+</details>
+<hr/>
+
 ### 🧭 Navigation
 
 | ⬅️ Previous | 🏠 Index | ➡️ Next |
 | :--- | :---: | ---: |
 | [⬅️ React & Redux](./03_React_Redux.md) | [Home](./00_Index.md) | [➡️ React Native](./05_ReactNative.md) |
+

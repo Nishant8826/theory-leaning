@@ -39,16 +39,14 @@ V8 is Google's open-source, high-performance JavaScript and WebAssembly engine, 
 3. **TurboFan (Optimizing Compiler):** Once code is identified as "hot", V8 passes it to TurboFan. TurboFan aggressively compiles the bytecode into pure **Native Machine Code** (CPU-specific 1s and 0s). The next time that code runs, it bypasses the interpreter completely and executes the lightning-fast machine code.
 4. **Deoptimization:** If TurboFan's assumptions about the code break (e.g., a function suddenly receives a `String` instead of a `Number`), V8 discards the machine code and deoptimizes back down to the Ignition interpreter to handle the data safely.
 
----
+**Detailed Explanation:**
+V8 engine basically acts as a translator written in C++. Both Google Chrome and Node.js rely on this engine. Its primary role is to compile human-readable JavaScript source code directly into native machine code (1s and 0s) to achieve super-fast execution speeds.
 
-**Hinglish Explanation (आसान भाषा में):**
-V8 engine basically ek translator hai jo C++ mein likha gaya hai. Google Chrome aur Node.js dono isi engine ka use karte hain. Iska main kaam kya hai? Jo JavaScript code hum likhte hain (jo human-readable hota hai), use computer ke samajhne layak machine code (1s & 0s) mein convert karna taaki execution super-fast ho sake.
-
-Ye kaam **Just-In-Time (JIT) Compilation** ke through hota hai, jiske 4 main parts hain:
-1. **Ignition (Interpreter):** Jaise hi hum program run karte hain, Ignition hamare code ko turant **Bytecode** (intermediate level language) mein badal deta hai aur use chalana shuru kar deta hai. Isse startup time bilkul zero lagta hai aur app turant boot ho jati hai.
-2. **Profiling:** Jab code chal raha hota hai, toh V8 ka ek monitor (Profiler) lagatar check karta rehta hai ki kaun sa code "hot code" hai—yaani jo functions ya loops baar-baar execute ho rahe hain.
-3. **TurboFan (Optimizing Compiler):** Us hot code ko TurboFan compiler optimized **Native Machine Code** (pure binary 1s aur 0s) mein convert kar deta hai. Jab wo code next time chalega, toh browser/Node.js interpreter ko bypass karke direct us lightning-fast machine code ko chalayega.
-4. **Deoptimization:** JS ek dynamically-typed language hai (variable ka data type dynamic hota hai). Agar kisi function ne pehle `Number` receive kiya tha (jiske liye TurboFan ne optimization ki thi), aur achanak wahan `String` aa jaye, toh assumptions fail ho jati hain. Aise mein V8 optimized code ko fenk deta hai aur wapis safe side rehne ke liye normal Ignition interpreter par switch kar jata hai (ise deoptimization kehte hain).
+This process is handled via **Just-In-Time (JIT) Compilation**, which consists of 4 main phases:
+1. **Ignition (Interpreter):** As soon as a program runs, Ignition immediately translates the JavaScript source code into **Bytecode** (an intermediate-level language) and begins executing it. This ensures that application startup is instant, with virtually zero boot delay.
+2. **Profiling:** While the code runs, V8's Profiler continuously monitors execution to identify "hot code"—frequently invoked functions or loops.
+3. **TurboFan (Optimizing Compiler):** TurboFan compiles that hot code into optimized **Native Machine Code** (pure binary instructions). The next time this code is executed, the engine completely bypasses the interpreter, running the pre-compiled machine code directly at hardware speed.
+4. **Deoptimization:** Since JavaScript is dynamically typed, variable types can change at runtime. If a function that was previously optimized for `Number` inputs suddenly receives a `String`, the compiler's structural assumptions are violated. When this happens, V8 discards the optimized machine code and safely reverts back to the standard Ignition interpreter (a process called deoptimization).
 
 
 > 💡 **Interviewer Focus:**
@@ -140,23 +138,23 @@ With newer versions, Node.js also supports ES Modules (ESM) using `import` and `
 
 ---
 
-**Hinglish Explanation (आसान भाषा में):**
-`require` aur `import` dono ka main kaam dusri files/modules ko load karna hai, par dono ke rules aur behavior kaafi alag hain:
+**Detailed Explanation:**
+While both `require` and `import` serve the primary purpose of loading external files and modules, their rules and behaviors are fundamentally different:
 
-1. **require (CommonJS):**
-   * **Synchronous hota hai:** Matlab ek-ek karke files ko sequential load karta hai. Jab tak file poori load nahi hoti, tab tak aage ka code execute nahi hota (blocks execution).
-   * **Dynamic loading support:** Ise aap code ke beech mein, kisi `if-else` condition ke andar ya function ke andar bhi call kar sakte hain. E.g., `if (userLoggedIn) { const dashboard = require('./dashboard'); }`.
-   * **Old Standard:** Node.js ka default module system yahi raha hai.
+1. **`require` (CommonJS):**
+   * **Synchronous:** Modules are loaded sequentially. Execution blocks until the module is fully read, parsed, and executed.
+   * **Dynamic Loading Support:** You can call `require()` anywhere in your code, such as inside `if-else` blocks or functions (e.g., `if (userLoggedIn) { const dashboard = require('./dashboard'); }`).
+   * **Legacy Standard:** This has historically been the default module system for Node.js.
 
-2. **import (ES Modules / ESM):**
-   * **Asynchronous hota hai:** Background mein parallel load ho sakta hai bina code execution ko block kiye.
-   * **Static Analysis:** Program run hone se pehle (parse time par) hi engine check kar leta hai ki kaun si dependency load ho rahi hai. Iska bada fayda ye hai ki compiler bina kaam ka code pehle hi nikal deta hai, jise **Tree-shaking (dead code elimination)** kehte hain.
-   * **Strict Rules:** Standard form mein ise aap kisi condition ya function ke andar nahi daal sakte. Ise hamesha file ke top par hi declare karna padta hai (agar conditional loading chahiye toh dynamic `import()` use karna padega).
-   * **Modern Standard:** Ye standard JavaScript ka naya rule hai, jo browser (React/Vue) aur Node.js (v14+) dono par natively chalta hai.
+2. **`import` (ES Modules / ESM):**
+   * **Asynchronous:** It can resolve dependencies in the background in parallel without blocking main thread execution.
+   * **Static Analysis:** The engine evaluates dependencies at parse time, before running the code. This enables bundlers and compilers to safely strip out unused code (a process known as **Tree-Shaking / Dead Code Elimination**).
+   * **Strict Structural Rules:** In its standard form, `import` cannot be placed inside conditional blocks or functions. It must be declared at the top-level of the file. (If conditional loading is required, you must use dynamic `import()`).
+   * **Modern Standard:** This is the official ECMAScript module standard, natively supported in both browsers (React/Vue/Angular) and modern Node.js (v14+).
 
 **Short Summary (TL;DR):**
-* Legacy / purane Node.js projects mein `require` chalta hai.
-* Modern frontend aur backend dono ke naye projects mein `import` use karna best aur optimized approach hai.
+* Use `require` for legacy Node.js codebases and specialized dynamic loading requirements.
+* Use `import` (ESM) as the standard, optimized approach for all modern frontend and backend development.
 
 
 > 💡 **Interviewer Focus:**
@@ -173,7 +171,7 @@ With newer versions, Node.js also supports ES Modules (ESM) using `import` and `
 <summary><b>👀 Show Answer</b></summary>
 
 **Answer:**
-`package.json` is the **manifest file** for any Node.js project. *(A manifest file is simply a central document that describes the project, its identity, and exactly what external resources or libraries it needs to run—similar to a shipping invoice or a table of contents. **Hinglish mein samjhein toh:** Jaise kisi courier parcel par chipki slip (manifest) uske andar ke items aur details batati hai, waise hi `package.json` project ki information aur required libraries ki list/requirements hold karti hai).* 
+`package.json` is the **manifest file** for any Node.js project. *(A manifest file is simply a central document that describes the project, its identity, and exactly what external resources or libraries it needs to run—similar to a shipping invoice or a table of contents. To understand it simply: just like a shipping slip stuck on a courier parcel lists the details and items inside, `package.json` holds the metadata, configuration, and required libraries/requirements for the project).* 
 
 It holds metadata relevant to the project and is used to manage dependencies, scripts, versions, and project details.
 Key fields include:
@@ -593,14 +591,14 @@ app.get('/data', (req, res) => {
 
 ---
 
-**Hinglish Explanation (आसान भाषा में):**
-* **Global Objects** do tarah ke hote hain:
-  1. **True Globals**: Jo sach mein har jagah available hain (jaise `global`, `process`, `Buffer`).
-  2. **Pseudo-Globals**: Jo globally visible toh hain par asal mein **IIFE (Immediately Invoked Function Expression)**—ek aisa function jo bante hi turant execute ho jata hai—ke parameters hote hain. Node hamari file ke code ko ek hidden wrapper function `(function(exports, require, module, __filename, __dirname) { ... })` ke andar daal deta hai. Isliye ye objects sirf usi specific file (CommonJS module) ke andar kaam karte hain.
-* **Memory Leak Kaise Hota Hai?**
-  Garbage Collector (GC) sirf un objects ko memory se hatata hai jinki zarurat nahi hoti (no active reference). Lekin `global` aur `process` objects pure application lifecycle (jab tak server chal raha hai) tak active rehte hain.
-  1. Agar aapne galti se bina `let/const` ke variable bana diya, toh wo `global` se attach ho jayega aur kabhi delete nahi hoga (Memory Leak).
-  2. Agar aapne `process` par event listener (`process.on()`) kisi API request ke andar laga diya, toh har request par naya listener register hoga. Wo listener `process` (global) se juda rahega aur us request se connected saara data memory mein fasa reh jayega.
+**Detailed Explanation:**
+* **Global Objects** are categorized into two types:
+  1. **True Globals**: Objects that are truly accessible globally across all modules in Node.js (e.g., `global`, `process`, `Buffer`).
+  2. **Pseudo-Globals**: Objects that appear to be globally visible but are actually parameters passed into the wrapper function wrapping each CommonJS module: `(function(exports, require, module, __filename, __dirname) { ... })`. Because of this module wrapper function, these pseudo-globals are only scoped and accessible within that specific file/module.
+* **How Memory Leaks Occur:**
+  The Garbage Collector (GC) only reclaims memory from objects that are no longer reachable (meaning there are no active references to them). However, global objects like `global` and `process` live for the entire lifespan of the application process.
+  1. If you accidentally define a variable without `let`, `const`, or `var` (e.g., in non-strict mode), it attaches directly to the `global` object and cannot be garbage collected, resulting in a memory leak.
+  2. If you attach an event listener to `process` (e.g., `process.on(...)`) inside an HTTP request handler, a new listener gets registered on every incoming request. Since the `process` object is global and never dies, it will keep holding references to those request callbacks, locking all related request/response memory in the heap permanently.
 
 > 💡 **Interviewer Focus:**
 - Distinguish between true globals and pseudo-globals (like `__dirname` which doesn't exist in ESM).
@@ -1076,10 +1074,10 @@ A **Preflight Request** is a quick **test request** sent automatically by the br
   * Custom headers (like `Authorization` tokens).
 * **Why it's needed**: It protects legacy backend servers from performing destructive operations (like deletion or modification) originating from malicious cross-origin websites before checking permissions.
 
-**Hinglish Explanation (आसान भाषा में):**
-* **Preflight** ek test request hai jo browser background mein automatically **`OPTIONS`** method ke sath bhejta hai.
-* Ye real request (jaise `PUT`, `DELETE` ya JSON data) bhejne se pehle server se permission leti hai: *"Kya is external website se request lena safe hai?"*
-* Agar server permission deta hai, toh browser actual request bhejta hai, nahi toh block kar deta hai.
+**Summary of Preflight Requests:**
+* A **Preflight request** is a dry-run test request sent automatically by the browser in the background using the HTTP **`OPTIONS`** method.
+* It asks the server for permission before sending the actual request (like `PUT`, `DELETE`, or a request containing JSON payload): *"Is it safe and allowed to process requests originating from this cross-origin website?"*
+* If the server responds with headers granting permission, the browser proceeds to dispatch the actual request; otherwise, it blocks it immediately.
 
 ---
 
@@ -1528,15 +1526,16 @@ readable.on('end', () => {
 
 ---
 
-### Hinglish Explanation (आसान भाषा में)
+### Detailed Explanation
 
-**Backpressure** तब होता है जब data read करने की speed write करने की speed se ज़्यादा हो जाती है। 
-* **Real-world example**: मान लो एक नल (Readable Stream) से पानी बहुत तेज़ बह रहा है, और नीचे एक पतली नली/कीप (Writable Stream) लगी है जो धीरे-धीरे पानी निकाल रही है। अगर आप पानी की speed control नहीं करेंगे, तो कीप भर जाएगी और पानी बाहर गिरने लगेगा (यानी RAM overflow हो जाएगी और App crash हो जाएगा)।
+**Backpressure** occurs when the rate of reading data (data producer) is faster than the rate of writing data (data consumer).
+* **Real-world analogy**: Think of a water tap (Readable Stream) running at high pressure, with a narrow funnel (Writable Stream) underneath it draining water slowly. If you do not regulate the water flow from the tap, the funnel will quickly overflow and spill (which is equivalent to RAM overflow and the application crashing due to out-of-memory errors).
 * **Solution**: 
-  1. जब Writable stream की internal buffer limit (`highWaterMark`) भर जाती है, तो `write()` function `false` return करता है। 
-  2. इसे देखकर हम Readable stream को `pause()` कर देते हैं।
-  3. जब Writable stream अपना buffer खाली कर लेता है, तो वह `'drain'` event emit करता है। इसे सुनकर हम Readable stream को वापस `resume()` कर देते हैं।
-  4. `.pipe()` या `pipeline()` use करने पर Node.js ये सारा काम back-and-forth खुद ही handle कर लेता है।
+  1. When the Writable Stream's internal buffer limit (`highWaterMark`) is reached, its `.write()` method returns `false`, indicating it cannot accept more data for now.
+  2. Upon receiving `false`, the code pauses the Readable Stream (`readable.pause()`).
+  3. Once the Writable Stream processes its queued buffer and frees up space, it fires a `'drain'` event.
+  4. Upon listening to the `'drain'` event, the code resumes the Readable Stream (`readable.resume()`).
+  5. Using `.pipe()` or `pipeline()` automates this entire handshaking process internally, preventing backpressure issues automatically.
 
 ---
 
@@ -1721,9 +1720,9 @@ process.on('message', (msg) => {
 
 ---
 
-**Hinglish Explanation (आसान भाषा में):**
-* **Child Process** ka use hum tab karte hain jab hume koi **alag ya doosra kaam** parallel mein karwana ho, jaise terminal command chalana (`exec`) ya koi doosra background python script run karna. Ye processes aapas mein server ports share nahi kar sakte.
-* **Cluster** ka use hum tab karte hain jab hume **apne hi web server ko fast/scale** karna ho. Ye hamare server ki multiple copies (workers) fork kar deta hai jo sabhi single port (e.g. 3000) par traffic handle kar sakti hain kyunki master process load-balancer ki tarah kaam karta hai.
+**Detailed Explanation:**
+* Use **Child Processes** when you need to run **different or arbitrary tasks** in parallel (such as executing shell commands via `exec` or running a background Python script). These spawned child processes cannot share the same server TCP port.
+* Use the **Cluster Module** specifically to **horizontally scale your web server**. It forks multiple copies (worker processes) of the exact same server code, allowing them to share and listen on a single port (e.g., port 3000) because the master process acts as a built-in load balancer distributing incoming connections.
 
 ---
 
@@ -1902,11 +1901,11 @@ app.use('/api/search', speedLimiter);
 
 ---
 
-### Hinglish Explanation (आसान भाषा में)
+### Detailed Explanation
 
-* **Rate Limiting (दर सीमित करना):** यह एक बाउंस/गार्ड की तरह काम करता है। अगर आपने कहा है कि "1 मिनट में 5 से ज़्यादा requests नहीं मिलेंगी", तो छठी (6th) request पर यह सीधे **`HTTP 429 Too Many Requests`** error थ्रो कर के request को block कर देगा।
-* **Throttling (धीमा करना):** यह यूज़र को ब्लॉक नहीं करता, बल्कि धीरे-धीरे रिस्पॉन्स को लेट करता है। जैसे—शुरुआती 50 requests नॉर्मल स्पीड पर चलेंगी, लेकिन उसके बाद हर एक्स्ट्रा request पर 500ms का delay जुड़ता जाएगा। इससे scrapers या automated bots बहुत ज़्यादा परेशान हो जाते हैं क्योंकि उनके request का process बहुत धीमा हो जाता है, जबकि genuine users ब्लॉक नहीं होते।
-* **Redis का महत्व:** अगर हमारा App 3 अलग-अलग servers (replicas) पर चल रहा है, तो locally memory-store काम नहीं करेगा। क्योंकि User की पहली request Server-A पर जाएगी और दूसरी Server-B पर। इसलिए हमें **Redis** जैसे common database में counters रखने पड़ते हैं ताकि तीनों servers एक ही counter check कर सकें।
+* **Rate Limiting:** This acts as a strict guard. If you configure a rule like "maximum of 5 requests per minute," the 6th request will be blocked immediately, throwing an **`HTTP 429 Too Many Requests`** error.
+* **Throttling (Speed Limiting):** Instead of outright blocking users, this progressively delays responses. For example, the first 50 requests are processed at normal speed, but each subsequent request gets hit with a 500ms delay. This deters scrapers and automated bots by heavily slowing down their operations, while preventing genuine users from being locked out.
+* **Importance of Redis:** If your application is scaled horizontally across 3 replica servers behind a load balancer, standard local in-memory storage will not work correctly. A user's first request might hit Server A, and the second might hit Server B. To resolve this, you need a shared, fast store like **Redis** to keep unified track of request counters across all servers.
 
 ---
 

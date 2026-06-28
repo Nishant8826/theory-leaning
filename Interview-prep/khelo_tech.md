@@ -200,32 +200,32 @@ All answers are wrapped in `<details>` tags to enable active recall. Try to answ
 
 <hr/>
 
-### ❓ Q5. What is the difference between streams and buffers and which holds complete data like images? (Hinglish Explained)
+### ❓ Q5. What is the difference between streams and buffers and which holds complete data like images?
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-*   **Both streams and buffers are binary data ko handle karne ke liye use hote hain, par inka tarika aur memory allocation bilkul alag hota hai:**
+*   **Both streams and buffers are used to handle binary data, but their approach and memory allocation are completely different:**
 
     1.  **Buffer:**
-        *   **Definition:** RAM (memory) ka ek temporary, fixed-size block hota hai (V8 engine heap se bahar) jo binary bytes store karta hai.
-        *   **Data Handling:** Yeh **poore data** ko ek sath memory mein hold karta hai.
-        *   **Use Case:** Files ko modify/edit karne ke liye, jaise poori image ko load karke crop/resize karna, config file parse karna, ya bytes ko manipulate karna.
+        *   **Definition:** A temporary, fixed-size block of RAM (memory) allocated outside the V8 engine heap that stores binary bytes.
+        *   **Data Handling:** It holds the **entire data** in memory at once.
+        *   **Use Case:** Modifying or editing files, such as loading an entire image to crop/resize it, parsing config files, or manipulating bytes.
     2.  **Stream:**
-        *   **Definition:** Yeh data ko ek sath memory me load karne ki jagah **chunk-by-chunk (chote-chote tukdo mein)** process karne ka tarika hai.
-        *   **Data Handling:** Yeh kabhi bhi poore data block ko RAM me nahi rakhta, jisse memory consumption minimal rehta hai.
-        *   **Use Case:** Large files (videos, server logs, database exports) ko network ya file system par transfer karne ke liye.
+        *   **Definition:** A mechanism to process data **chunk-by-chunk (in small pieces)** instead of loading it entirely into memory.
+        *   **Data Handling:** It never keeps the entire data block in RAM, ensuring minimal memory consumption.
+        *   **Use Case:** Transferring large files (videos, server logs, database exports) over a network or file system.
 
     **Which holds complete data like images?**
-    **Buffer** complete data ko hold karta hai. Jab aap `fs.readFile()` se image read karte hain, toh Node.js RAM mein us image ka complete binary Buffer return karta hai. Jabki **Stream** us image data ko chunk-by-chunk transport karne ke liye use hota hai (jaise S3 bucket se user response tak bhejte waqt bina server RAM waste kiye).
+    A **Buffer** holds the complete data. When you read an image using `fs.readFile()`, Node.js returns a complete binary Buffer of that image in RAM. On the other hand, a **Stream** is used to transport that image data chunk-by-chunk (for example, sending it from an S3 bucket to a user response without wasting server RAM).
 
 *   **Real-world Example:**
-    *   **Using Buffer (Memory Intensive - Server crash ka darr):**
+    *   **Using Buffer (Memory Intensive - Risks server crash):**
         ```javascript
         const fs = require('fs');
-        // Pura 500MB image RAM me load ho jayega. High traffic me OOM crash ho sakta hai.
+        // The entire 500MB image will be loaded into RAM. High traffic can cause an OOM crash.
         fs.readFile('heavy_image.png', (err, buffer) => {
           if (err) throw err;
-          console.log("Buffer length:", buffer.length); // Pura image memory me hai
+          console.log("Buffer length:", buffer.length); // The entire image is in memory
         });
         ```
     *   **Using Stream (Memory Optimized - Safe for production):**
@@ -235,7 +235,7 @@ All answers are wrapped in `<details>` tags to enable active recall. Try to answ
         
         http.createServer((req, res) => {
           const stream = fs.createReadStream('heavy_image.png');
-          // Chunks (default 64KB) ko directly response me pipe (flow) karega. RAM save hogi.
+          // Chunks (default 64KB) will be piped (flowed) directly to the response, saving RAM.
           stream.pipe(res);
         }).listen(3000);
         ```
@@ -518,35 +518,35 @@ All answers are wrapped in `<details>` tags to enable active recall. Try to answ
 
 ## 3. Database Engineering & Caching
 
-### ❓ Q11. What are ACID properties in databases? (Hinglish Explained)
+### ❓ Q11. What are ACID properties in databases?
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-*   **ACID properties database transactions ko reliably process karne ke rules hain, jo system failure ke waqt bhi data integrity (correctness) banaye rakhte hain:**
+*   **ACID properties are a set of rules for processing database transactions reliably, maintaining data integrity (correctness) even in the event of a system failure:**
 
-    1.  **Atomicity ("All or Nothing" - Sab kuch ya kuch bhi nahi):**
-        *   Transaction ko ek single unit mana jata hai. Ya toh transaction ke saare SQL commands execute honge (Commit), ya fir ek bhi execute nahi hoga aur purani state par rollback ho jayega. Beech ka koi rasta nahi hota.
-    2.  **Consistency (Consistency bani rahe):**
-        *   Transaction complete hone ke baad database hamesha ek valid state se dusri valid state mein hi jayega. Saare rules, foreign keys, triggers, aur constraints strictly follow honge.
-    3.  **Isolation (Alag-alag execution):**
-        *   Jab ek sath multiple transactions chal rahe hon, toh wo ek dusre ke intermediate (adhure) data ko nahi dekh sakte. Har transaction ko lagta hai ki wo database par akela execute ho raha hai. Isko Isolation Levels ke through manage kiya jata hai.
-    4.  **Durability (Hamesha ke liye save):**
-        *   Ek baar transaction `COMMIT` (save) ho gaya, toh uska data permanently disk/SSD par save ho jata hai. Iske baad agar database crash ho jaye, light chali jaye, ya OS restart ho jaye, tab bhi data lost nahi hoga.
+    1.  **Atomicity ("All or Nothing"):**
+        *   The transaction is treated as a single unit. Either all SQL commands in the transaction execute successfully (Commit), or none of them do, and the database rolls back to its previous state. There is no middle ground.
+    2.  **Consistency:**
+        *   After a transaction completes, the database must transition from one valid state to another. All database rules, foreign keys, triggers, and constraints will be strictly enforced.
+    3.  **Isolation (Independent Execution):**
+        *   When multiple transactions run concurrently, they cannot see each other's intermediate (incomplete) data. Each transaction operates as if it is the only one executing on the database. This is managed using Isolation Levels.
+    4.  **Durability (Saved Permanently):**
+        *   Once a transaction is `COMMIT`ted, its data is permanently written to disk/SSD. Even if the database crashes, power is lost, or the OS restarts, the data will not be lost.
 
 *   **Real-world Example (BookMyShow Movie Ticket Booking):**
-    Imagine aap BookMyShow par **Seat A1** book kar rahe hain jiske liye aapko **Rs 300** pay karne hain.
+    Imagine you are booking **Seat A1** on BookMyShow for **Rs 300**.
     ```sql
     START TRANSACTION;
-    -- 1. User ke bank account se Rs 300 deduct karo
+    -- 1. Deduct Rs 300 from the user's bank account
     UPDATE bank_accounts SET balance = balance - 300 WHERE user_id = 'Aman';
-    -- 2. Seat A1 ko booked status par set karo
+    -- 2. Set Seat A1 status to booked
     UPDATE seats SET status = 'BOOKED', booked_by = 'Aman' WHERE seat_number = 'A1';
     COMMIT;
     ```
-    *   **Atomicity:** Agar Step 1 chalne ke baad (paise cut gaye) aur Step 2 se pehle server crash ho jaye, toh database transaction ko automatically rollback kar dega. Aman ke paise bank account me wapas aa jayenge aur ticket book nahi hoga.
-    *   **Consistency:** Database me rule hai ki ek seat par ek hi user map ho sakta hai (Unique Constraint). Transaction se pehle aur baad me yeh rule strictly check hota hai.
-    *   **Isolation:** Agar Aman aur Rohit ek hi exact millisecond par Seat A1 book karne ka try karte hain, toh database isolation / row locks use karega. Jab tak Aman ka transaction chal raha hai, Rohit ka transaction wait karega. Rohit ko tab tak Seat A1 booked nahi dikhegi jab tak Aman ka confirm ya fail nahi ho jata.
-    *   **Durability:** Jaise hi payment successfully complete ho jati hai aur screen par ticket confirm ho jata hai (COMMIT), data disk/SSD par permanently save ho jata hai. Iske baad agar BookMyShow ke servers down bhi ho jayein, restart hone par aapka ticket booked hi rahega.
+    *   **Atomicity:** If the server crashes after Step 1 executes (money is deducted) but before Step 2, the database will automatically roll back the transaction. Aman's money will be returned to his bank account, and the ticket will not be booked.
+    *   **Consistency:** The database enforces a rule that only one user can be mapped to a specific seat (Unique Constraint). This rule is strictly validated before and after the transaction.
+    *   **Isolation:** If Aman and Rohit try to book the exact same Seat A1 at the same millisecond, the database uses isolation/row locks. While Aman's transaction is running, Rohit's transaction will wait. Rohit will not see Seat A1 as booked until Aman's transaction either completes or fails.
+    *   **Durability:** As soon as the payment completes successfully and the ticket is confirmed on screen (COMMIT), the data is permanently saved on the disk/SSD. Even if BookMyShow's servers go down after this, the ticket will remain booked upon restart.
 
 </details>
 
@@ -588,28 +588,28 @@ All answers are wrapped in `<details>` tags to enable active recall. Try to answ
 
 <hr/>
 
-### ❓ Q13. How can a slow query be optimized? (Hinglish Explained)
+### ❓ Q13. How can a slow query be optimized?
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-*   Slow queries ko optimize karne ke liye hum 4 primary levels par approach karte hain:
+*   To optimize slow queries, we approach the problem at 4 primary levels:
 
-    1.  **Diagnosis (Pata lagana ki problem kahan hai):**
-        *   Slow Query Log ya APM tools se slow queries ko locate karein.
-        *   Query ke aage `EXPLAIN` lagakar **Execution Plan** check karein ki data fetch kaise ho raha hai. (E.g., `type: ALL` to nahi hai? `key` NULL to nahi hai?).
-    2.  **Database Level - Indexing lagana:**
-        *   `WHERE`, `JOIN`, `ORDER BY` aur `GROUP BY` ke columns par indexes lagayein.
-        *   Composite indexes banate waqt **ESR Rule** (Equality, Sort, Range) follow karein.
-        *   **Covering Indexes** use karein taaki query ka saara selected data index tree se hi mil jaye aur disk par main table lookup na karna pade.
-    3.  **Query Level - Query rewrite karna (Avoiding SELECT *):**
-        *   **`SELECT *` bilkul use na karein:** Hamesha wahi columns mangayein jinhe use karna hai. Yeh network payload aur database disk I/O ko fast karta hai.
-        *   Queries ko **Sargable** banayein. E.g., `WHERE DATE(created_at) = '2026-06-16'` (non-sargable) ki jagah ranges use karein `WHERE created_at >= '2026-06-16 00:00:00' AND ...` (sargable) taaki index use ho sake.
-    4.  **Application Level - Solving N+1 Query & Caching:**
-        *   **N+1 Query Problem solve karein:** Loop ke andar database query call karne ke bajaye (N+1 queries), **JOINs** ya ORM ki **Eager Loading** (e.g., Prisma's `include` ya Sequelize's `include`) ka use karein. Yeh database round-trips ko 101 se seedhe 1 ya 2 par le aayega.
-        *   Read-heavy aur database calculation-heavy data ko **Redis** me cache (Cache-Aside pattern) karein.
+    1.  **Diagnosis (Identifying the problem):**
+        *   Locate slow queries using the Slow Query Log or Application Performance Monitoring (APM) tools.
+        *   Prepend `EXPLAIN` to the query to check its **Execution Plan** and see how the database is fetching data (e.g., check if `type` is `ALL` or if `key` is `NULL`).
+    2.  **Database Level (Indexing):**
+        *   Add indexes to columns used in `WHERE`, `JOIN`, `ORDER BY`, and `GROUP BY` clauses.
+        *   Follow the **ESR Rule** (Equality, Sort, Range) when creating composite indexes.
+        *   Use **Covering Indexes** so the query retrieves all selected data directly from the index tree, avoiding a lookup in the primary table on the disk.
+    3.  **Query Level (Query Rewriting - Avoiding SELECT *):**
+        *   **Do not use `SELECT *`:** Only request the specific columns you need. This reduces network payload size and speeds up database disk I/O.
+        *   Write **Sargable** queries. For example, instead of using `WHERE DATE(created_at) = '2026-06-16'` (which is non-sargable and disables indexes), use range filters: `WHERE created_at >= '2026-06-16 00:00:00' AND created_at < '2026-06-17 00:00:00'` (which is sargable and utilizes indexes).
+    4.  **Application Level (Solving N+1 Queries & Caching):**
+        *   **Solve the N+1 Query Problem:** Instead of querying the database inside a loop (making N+1 queries), use **JOINs** or **Eager Loading** in ORMs (e.g., Prisma's `include` or Sequelize's `include`). This reduces database round-trips from 101 down to 1 or 2.
+        *   Cache read-heavy and computationally expensive data in **Redis** (using the Cache-Aside pattern).
 
 *   **Real-world Example (N+1 Query vs Eager Loading):**
-    *   *Bad Pattern (N+1 Queries - loop me call karna):*
+    *   *Bad Pattern (N+1 Queries - querying inside a loop):*
         ```javascript
         // 1 query to get all posts (say 100 posts)
         const posts = await db.query('SELECT * FROM posts'); 
@@ -634,46 +634,46 @@ All answers are wrapped in `<details>` tags to enable active recall. Try to answ
 
 <hr/>
 
-### ❓ Q14. What is a Query Execution Plan, and how do you analyze it? (Hinglish Explained)
+### ❓ Q14. What is a Query Execution Plan, and how do you analyze it?
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-*   **Query Execution Plan** database engine (jaise MySQL ya PostgreSQL) dwara generate kiya gaya ek sequence of steps (roadmap) hota hai jo batata hai ki database query ka data fetch karne ke liye kaunsa raasta lega. Database optimizer is plan ko table ke metrics, indexes, aur filter conditions ke aadhar par banata hai.
+*   A **Query Execution Plan** is a sequence of steps (a roadmap) generated by the database engine (like MySQL or PostgreSQL) showing how it will fetch the data for a given query. The database optimizer designs this plan based on table statistics, indexes, and filter conditions.
 
-    **How to Generate and Analyze Plan in MySQL (Hinglish):**
-    Apni query statement ke pehle `EXPLAIN` ya `EXPLAIN ANALYZE` keyword lagayein.
+    **How to Generate and Analyze a Plan in MySQL:**
+    Prepend the `EXPLAIN` or `EXPLAIN ANALYZE` keyword to your query statement.
 
-    **Key Output Fields to Review (Important check points):**
-    1.  **`type` (Access Method - Data kaise dhoondha ja raha hai):**
-        *   `ALL` (Full Table Scan): Sabse bekar. Poore table ki ek-ek row ko disk par scan karta hai.
-        *   `const`/`eq_ref`: Sabse best. Unique Primary Key lookup.
-        *   `ref`/`range`: Acha hai. Index search ya specific range scan.
-    2.  **`key` (Selected Index):** Kaunsa index search ke liye select hua. Agar `NULL` hai, toh matlab index use hi nahi ho raha.
-    3.  **`rows` (Estimated rows):** Database ko kitne records check karne padenge. Row count jitna zyada hoga, query utni slow hogi.
-    4.  **`Extra` (Additional info):**
-        *   `Using index`: Bohat badhiya! Pura data index tree se hi mil gaya, table disk par jump nahi karna pada (Covering Index).
-        *   `Using filesort`: Kharab sign. Database ko manual sorting karni pad rahi hai (slow performance).
-        *   `Using temporary`: Kharab sign. Database ko temporary table banana pad raha hai results filter karne ke liye.
+    **Key Output Fields to Review:**
+    1.  **`type` (Access Method - How the data is retrieved):**
+        *   `ALL` (Full Table Scan): The least efficient method. It scans every single row in the table on the disk.
+        *   `const`/`eq_ref`: The most efficient method. A lookup via a unique primary key.
+        *   `ref`/`range`: Highly efficient. An index search or a specific range scan.
+    2.  **`key` (Selected Index):** The index selected for the search. If it is `NULL`, it means no index is being used.
+    3.  **`rows` (Estimated rows):** The number of records the database estimates it needs to inspect. The higher the row count, the slower the query.
+    4.  **`Extra` (Additional information):**
+        *   `Using index`: Excellent! The data was found entirely within the index tree, avoiding a disk read for the primary table (Covering Index).
+        *   `Using filesort`: A bad sign. The database must manually sort the results in memory or on disk, reducing performance.
+        *   `Using temporary`: A bad sign. The database needs to build a temporary table to filter or process the results.
 
 *   **Real-world Example (GPS Navigator analogy):**
-    Jaise Google Maps batata hai ki shortest root kaunsa hai (highway se jana hai ya galiyon se), vaise hi Execution Plan database ka map hai.
-    *   **Without Index (Highway block - Galiyon se jana):**
+    Just as Google Maps determines the shortest route (whether to take the highway or side streets), the Execution Plan is the database's navigation map.
+    *   **Without Index (Highway blocked - taking side streets):**
         ```sql
         EXPLAIN SELECT * FROM orders WHERE status = 'SHIPPED';
         ```
         *Output Plan:*
-        - `type`: `ALL` (Har order ko check karega)
-        - `key`: `NULL` (Koi map/index nahi hai)
-        - `rows`: `984,212` (Lagbhag 10 lakh rows scan karega - Very Slow)
+        - `type`: `ALL` (Scans every order)
+        - `key`: `NULL` (No index/map available)
+        - `rows`: `984,212` (Scans about 1 million rows - Very Slow)
     *   **With Index (Highway clear):**
         ```sql
         CREATE INDEX idx_status ON orders(status);
         EXPLAIN SELECT * FROM orders WHERE status = 'SHIPPED';
         ```
         *Output Plan:*
-        - `type`: `ref` (Directly status match karega)
-        - `key`: `idx_status` (Index highway use karega)
-        - `rows`: `1,420` (Sirf matching rows ko scan karega - Instant Output)
+        - `type`: `ref` (Directly matches the status)
+        - `key`: `idx_status` (Uses the index highway)
+        - `rows`: `1,420` (Scans only the matching rows - Instant Output)
 
 </details>
 
@@ -1191,25 +1191,25 @@ All answers are wrapped in `<details>` tags to enable active recall. Try to answ
 
 <hr/>
 
-### ❓ Q25. How do Razorpay/Stripe integrations and webhooks work in a payment flow? (Hinglish Explained)
+### ❓ Q25. How do Razorpay/Stripe integrations and webhooks work in a payment flow?
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-*   Ek secure online payment flow sensitive card details (like Card number, CVV) ko aapke app server par aane se rokta hai (PCI-DSS compliance ke liye) aur saara heavy security work Stripe/Razorpay handle karta hai.
+*   A secure online payment flow prevents sensitive card details (like Card number, CVV) from reaching your app server (for PCI-DSS compliance), offloading all the heavy security tasks to Stripe/Razorpay.
 
-    **Step-by-Step Payment Flow (Hinglish):**
-    1.  **Initiation (Shooruaat):** User frontend par "Buy Now" button click karta hai.
-    2.  **Order Creation (Backend):** Aapka backend server, Stripe/Razorpay APIs ko ek secure server-to-server request bhejta hai (amount aur currency details ke sath). Gateway wahan se ek `client_secret` (Stripe) ya `order_id` (Razorpay) return karta hai.
-    3.  **UI Render (Frontend):** Frontend is ID ko receive karta hai aur Stripe/Razorpay ka payment library (modal/iframe) load karta hai. User card details direct is iframe ke andar fill karta hai jo secure way me gateway se linked hota hai.
-    4.  **Authorization (Bank se permission):** Gateway details ko process karta hai aur user ke bank ke sath authenticate karta hai (jaise OTP validation).
+    **Step-by-Step Payment Flow:**
+    1.  **Initiation:** The user clicks the "Buy Now" button on the frontend.
+    2.  **Order Creation (Backend):** Your backend server sends a secure server-to-server request to the Stripe/Razorpay APIs (containing details like amount and currency). The gateway returns a `client_secret` (Stripe) or `order_id` (Razorpay).
+    3.  **UI Render (Frontend):** The frontend receives this ID and loads the Stripe/Razorpay payment library (modal/iframe). The user enters their card details directly inside this iframe, which is securely linked directly to the payment gateway.
+    4.  **Authorization (Bank permission):** The gateway processes the details and authenticates with the user's bank (e.g., via OTP validation).
     5.  **Redirect & Webhook Dispatch:**
-        *   Payment successful hote hi, browser user ko redirect karta hai success page par.
-        *   **Sabse Important Step:** Same time par, gateway backend server ko ek asynchronous **Webhook** event (HTTP POST request) bhejta hai (e.g. `payment_intent.succeeded` event) payment success confirm karne ke liye.
-    6.  **Fulfillment (Order delivery):** Aapka backend webhook ka **signature verify** karta hai, user ka status paid mark karta hai, aur payment gateway ko `200 OK` response bhej deta hai.
+        *   Upon successful payment, the browser redirects the user to a success page.
+        *   **Critical Step:** At the same time, the gateway sends an asynchronous **Webhook** event (HTTP POST request, such as `payment_intent.succeeded`) to your backend server to confirm the successful payment.
+    6.  **Fulfillment (Order delivery):** Your backend verifies the webhook **signature**, updates the user's payment status to paid, and returns a `200 OK` response to the payment gateway.
 
-    **Why Webhooks are Mandatory (Webhooks kyun zaroori hain?):**
-    Maan lo user ne payment kar di, bank se paise bhi cut gaye, par usi microsecond par user ka browser freeze ho gaya, tab close ho gayi, ya internet disconnect ho gaya. 
-    Aise case me client-side frontend aapke backend ko "Success" notification nahi bhej payega, aur user ke paise katne par bhi use order deliver nahi hoga. **Webhook ek secure server-to-server link hai** jo guaranteed data transfer ensure karta hai chahe client (browser) down hi kyun na ho jaye.
+    **Why Webhooks are Mandatory:**
+    Imagine a user has made the payment, their bank account has been debited, but at that exact millisecond, the user's browser freezes, the tab is closed, or the internet disconnects. 
+    In such scenarios, the client-side frontend cannot notify your backend of the "Success", and the user will not receive their order despite being charged. **A Webhook provides a secure server-to-connection** that guarantees data delivery even if the client's browser crashes or loses connectivity.
 
 *   **Real-world Example (Stripe Webhook Handler in Node.js):**
     ```javascript
@@ -1221,21 +1221,21 @@ All answers are wrapped in `<details>` tags to enable active recall. Try to answ
       let event;
 
       try {
-        // 1. Signature check karna zaroori hai taaki koi fake request na bhej sake
+        // 1. Signature validation is mandatory to prevent spoofing/fake requests
         event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
       } catch (err) {
         console.error(`Webhook signature verification failed: ${err.message}`);
         return res.status(400).send(`Webhook Error: ${err.message}`);
       }
 
-      // 2. Event type check karo aur database update karo
+      // 2. Inspect the event type and update the database
       if (event.type === 'payment_intent.succeeded') {
         const paymentIntent = event.data.object;
         console.log(`Payment successful for amount: ${paymentIntent.amount}`);
-        // Yahan database update karein (e.g., markOrderAsPaid(orderId))
+        // Update database here (e.g., markOrderAsPaid(orderId))
       }
 
-      // 3. Gateway ko 200 OK bhein taaki wo dobara same event retry na kare
+      // 3. Return a 200 OK to the gateway so it stops retrying the event
       res.json({ received: true });
     });
     ```
@@ -1563,5 +1563,5 @@ All answers are wrapped in `<details>` tags to enable active recall. Try to answ
 
 | ⬅️ Previous | 🏠 Index | ➡️ Next |
 | :--- | :---: | ---: |
-| [⬅️ Angular](./06_Angular.md) | [Home](./00_Index.md) | 🚫 *None* |
+| [⬅️ Angular](./06_Angular.md) | [Home](./00_Index.md) | [➡️ SQL](./08_SQL.md) |
 

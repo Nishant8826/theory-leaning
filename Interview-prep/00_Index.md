@@ -15,6 +15,11 @@
 | 05 | **React Native** | [View Prep Material](./05_ReactNative.md) | ✅ Completed |
 | 06 | **Angular** | [View Prep Material](./06_Angular.md) | ✅ Completed |
 | 07 | **Khelo Tech Prep** | [View Prep Material](./khelo_tech.md) | ✅ Completed |
+| 08 | **SQL** | [View Prep Material](./08_SQL.md) | ✅ Completed |
+| 09 | **MongoDB** | [View Prep Material](./09_MongoDB.md) | ✅ Completed |
+| 10 | **AWS** | [View Prep Material](./10_AWS.md) | ✅ Completed |
+| 11 | **DevOps** | [View Prep Material](./11_DevOps.md) | ✅ Completed |
+| 12 | **JS Output Questions** | [View Prep Material](./12_JS_Output_Questions.md) | ✅ Completed |
 
 ---
 

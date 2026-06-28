@@ -2369,6 +2369,381 @@ JSX is syntactic sugar for `React.createElement`. Babel transpiles JSX into `Rea
 </details>
 <hr/>
 
+### ❓ Q71. **What is the difference between `useTransition` and `useDeferredValue` in React 18?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Both are concurrent features used to prioritize UI updates:
+- **`useTransition`:**
+  - Used when you have access to the state-updating code.
+  - Returns a pending state variable and a startTransition function to wrap state updates.
+  - Marks state updates as non-urgent (e.g. filtering a long list).
+- **`useDeferredValue`:**
+  - Used when you receive a value from a parent prop and do not have access to the state setter.
+  - Returns a deferred version of the value that lags behind the fast updates, preventing stuttering in children.
+
+> 💡 **Interviewer Focus:** When to choose input transition wrappers vs property deferrals.
+</details>
+<hr/>
+
+### ❓ Q72. **Explain React 18's Automatic Batching.**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+- **Legacy React:** Batched state updates only inside React event handlers. Updates inside promises, timeouts, or native event handlers triggered separate re-renders.
+- **React 18 Automatic Batching:** Batches multiple state updates into a single re-render, regardless of where they originate (inside promises, timeouts, or async callbacks), optimizing rendering performance.
+
+> 💡 **Interviewer Focus:** Performance advantages and how to opt-out using `flushSync` when immediate DOM updates are required.
+</details>
+<hr/>
+
+### ❓ Q73. **Explain the execution sequence of React Strict Mode double rendering.**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+In development mode, React Strict Mode double-invokes components, lifecycle methods, and state setter functions:
+- **Purpose:** To detect side effects and impure render logic (e.g., mutating local variables or modifying global state during rendering).
+- **Behavior:** Pure functions yield identical outputs on double rendering, but impure code causes noticeable differences, helping catch bugs before production.
+
+> 💡 **Interviewer Focus:** Identifying side effects and understanding that double rendering is disabled in production builds.
+</details>
+<hr/>
+
+### ❓ Q74. **What are the limits of Error Boundaries in React?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Error Boundaries (components implementing `getDerivedStateFromError` or `componentDidCatch`) catch rendering errors, but **cannot** catch:
+- Errors inside Event Handlers (e.g. button click exceptions).
+- Asynchronous code (e.g. `setTimeout` or `fetch` callbacks).
+- Server-side rendering errors.
+- Errors thrown in the Error Boundary component itself.
+
+> 💡 **Interviewer Focus:** Error boundaries boundaries and handling event errors with try/catch.
+</details>
+<hr/>
+
+### ❓ Q75. **What is the difference between React Server Components (RSC) and Client Components?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+- **Server Components:** Execute *only* on the server. They can query databases and read file systems directly, and their JS bundle code is never sent to the client, reducing download size.
+- **Client Components:** (Marked with `'use client'`). Executed on the server (initial pre-rendering) and hydrated on the client. They support state, effects, and browser APIs.
+
+> 💡 **Interviewer Focus:** Defining boundaries between server-side operations and client hydration.
+</details>
+<hr/>
+
+### ❓ Q76. **How does the React virtual DOM reconciliation diffing algorithm achieve $O(N)$ complexity?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Finding the minimum modifications to transform one tree to another has $O(N^3)$ complexity. React uses two heuristics to reduce this to $O(N)$:
+1. **Different Types:** If two elements have different types (e.g. swapping `<div>` for `<span>`), React tears down the entire tree and builds a new one.
+2. **Keys:** The `key` prop allows identifying elements across renders, preventing tearing down list elements when items are reordered.
+
+> 💡 **Interviewer Focus:** Diffing heuristics and key props optimization.
+</details>
+<hr/>
+
+### ❓ Q77. **How do you prevent Context API re-render issues in large apps?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+If a Context value changes, *all* consumer components re-render, even if they only read a subset of the context object.
+- **Mitigation:**
+  - **Split Context:** Separate state context from dispatcher context.
+  - **Memoization:** Wrap children in `React.memo` or use `useMemo` for the context value.
+  - Use state managers (Redux/Zustand) for high-frequency state updates.
+
+> 💡 **Interviewer Focus:** Mitigating context consumer performance bottlenecks.
+</details>
+<hr/>
+
+### ❓ Q78. **What is the purpose of `forwardRef` and `useImperativeHandle`?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+- **`forwardRef`**: Passes a ref through a component to one of its child elements.
+- **`useImperativeHandle`**: Customizes the instance value exposed to parent components when using refs. Allows defining select API methods (like `.focus()` or `.toggle()`) instead of exposing the raw DOM element.
+
+> 💡 **Interviewer Focus:** Encapsulating DOM access and exposing custom component controls.
+</details>
+<hr/>
+
+### ❓ Q79. **How do you test custom hooks in React?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Use the `renderHook` helper from React Testing Library:
+```javascript
+import { renderHook, act } from '@testing-library/react';
+import useCounter from './useCounter';
+
+test('should increment counter', () => {
+  const { result } = renderHook(() => useCounter());
+  act(() => {
+    result.current.increment();
+  });
+  expect(result.current.count).toBe(1);
+});
+```
+- Wrap state-modifying actions inside the `act()` block to ensure state changes propagate before assertions run.
+
+> 💡 **Interviewer Focus:** Writing isolated hook tests using `renderHook` and `act()`.
+</details>
+<hr/>
+
+### ❓ Q80. **What is Redux Thunk and how does it handle asynchronous actions?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Redux Thunk is a middleware that allows writing action creators that return a **function (thunk)** instead of an action object.
+- **How it works:**
+  - The middleware intercepts actions.
+  - If the action is a function, Thunk calls it, passing `dispatch` and `getState` arguments.
+  - The function executes async calls (fetch APIs) and dispatches standard synchronous actions when complete.
+
+> 💡 **Interviewer Focus:** Thunk source code structure (it is only ~14 lines of code) and asynchronous logic control.
+</details>
+<hr/>
+
+### ❓ Q81. **How do you configure RTK Query tag invalidations for auto-caching?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+RTK Query uses a tag system to automate re-fetching:
+- **`providesTags`**: Queries declare tags for the data they return (e.g. `['Post']`).
+- **`invalidatesTags`**: Mutations declare which tags they invalidate (e.g. `['Post']` on adding a new post).
+- When the mutation runs, RTK Query detects the invalidation and automatically triggers queries subscribed to that tag to refresh data.
+
+> 💡 **Interviewer Focus:** Decoupled data cache synchronization.
+</details>
+<hr/>
+
+### ❓ Q82. **Explain Redux Reselect selector memoization rules.**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Reselect's `createSelector` memoizes output:
+- It recalculates values only if the input selectors return different values (using reference equality checks `===`).
+- If inputs do not change, it returns the cached result, preventing heavy calculations on the store state during re-renders.
+
+> 💡 **Interviewer Focus:** Preventing unnecessary selectors executions.
+</details>
+<hr/>
+
+### ❓ Q83. **How do you handle WebSocket streaming inside Redux?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Do not manage WebSockets directly inside components. Implement them inside a custom **Redux Middleware**:
+- The middleware initializes the WebSocket connection during app startup.
+- It listens for server events and dispatches Redux actions (`dispatch({ type: 'WS_DATA', payload })`) to update the store state.
+- Components dispatch standard actions to send messages over the socket.
+
+> 💡 **Interviewer Focus:** Separation of concerns in state managers.
+</details>
+<hr/>
+
+### ❓ Q84. **What is the difference between `useLayoutEffect` and `useEffect` rendering queues?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+- **`useEffect`:** Runs asynchronously **after** the browser paints the screen, preventing blocking UI rendering.
+- **`useLayoutEffect`:** Runs synchronously **after** DOM mutations but **before** the browser paints the screen. Use it to measure DOM layouts and execute visual changes before rendering, avoiding visual flicker.
+
+> 💡 **Interviewer Focus:** Rendering sequence queues.
+</details>
+<hr/>
+
+### ❓ Q85. **What is the performance footprint of CSS-in-JS libraries like Styled Components?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Runtime CSS-in-JS libraries:
+- Parse styles and inject `<style>` tags into the DOM during runtime.
+- This creates CPU overhead on render passes and increases bundle size.
+- **Alternative:** Zero-runtime CSS-in-JS (Vanilla Extract, Tailwind) compiles styles to static CSS at build time, improving performance.
+
+> 💡 **Interviewer Focus:** CSS runtime parsing costs.
+</details>
+<hr/>
+
+### ❓ Q86. **How do you debug memory leaks in React applications?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+- Use Chrome DevTools heap snapshots to isolate detached DOM nodes.
+- Common leaks in React:
+  - Not clearing `setInterval` or event listeners inside `useEffect` cleanup functions.
+  - Subscribing to observables or sockets without unsubscribing on component unmount.
+
+> 💡 **Interviewer Focus:** Cleanup routines in useEffect lifecycle hooks.
+</details>
+<hr/>
+
+### ❓ Q87. **What is the role of the dependency array in `useMemo` and `useCallback`?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+The dependency array tells React when to recalculate the cached value or recreate the function.
+- **Warning:** Omitting dependencies causes closures to capture stale variable values (stale closures), causing application logic bugs.
+
+> 💡 **Interviewer Focus:** Stale closure bugs diagnosis.
+</details>
+<hr/>
+
+### ❓ Q88. **How does React's profiling tool measure rendering performance?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Using the React Profiler (API or DevTools):
+- Measures compile and rendering durations.
+- Identifies "commit times" and lists which component triggered updates, helping locate unnecessary re-renders.
+
+> 💡 **Interviewer Focus:** React Profiler metrics.
+</details>
+<hr/>
+
+### ❓ Q89. **What are React Portals and what is a typical use case?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Portals render children into a DOM node located outside the main parent component hierarchy.
+- **Use Case:** Modals, tooltips, or overlays. By rendering them outside parent trees, they escape CSS bounds (like `overflow: hidden` or `z-index` limits) while preserving React event propagation contexts.
+
+> 💡 **Interviewer Focus:** Portal architectures and event bubbles.
+</details>
+<hr/>
+
+### ❓ Q90. **Explain how RTK Query implements optimistic updates.**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Optimistic updates update the cache instantly before API requests complete:
+1. When a mutation runs, use `onQueryStarted` to manually patch the cache state.
+2. If the API request succeeds, do nothing (the cache matches).
+3. If the request fails, execute the rollback function returned by the cache patch helper.
+
+> 💡 **Interviewer Focus:** Enhancing user experience latency.
+</details>
+<hr/>
+
+### ❓ Q91. **What is the difference between shallow copy and deep copy in Redux states update?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Redux checks if state has changed using reference checks.
+- Modifying nested state in place violates immutability.
+- Use shallow copying (spread `{ ...state }`) on the modified branches. Unmodified branches preserve references, avoiding unnecessary re-renders.
+
+> 💡 **Interviewer Focus:** Immutability and reference tracking.
+</details>
+<hr/>
+
+### ❓ Q92. **How does lazy loading using React.lazy and Suspense optimize bundles?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+`React.lazy` splits components into separate JS chunks.
+- When compiled, these chunks are loaded asynchronously via network requests only when the component is rendered.
+- `<Suspense>` manages the loading state, showing a fallback skeleton while the chunk downloads.
+
+> 💡 **Interviewer Focus:** Dynamic code-splitting.
+</details>
+<hr/>
+
+### ❓ Q93. **What is the difference between Redux Saga and Redux Thunk?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+- **Redux Thunk:** Uses async/await functions. Easy to write and test, but can get messy on complex side-effects orchestration.
+- **Redux Saga:** Uses ES6 Generators and declarative effects. Highly testable, runs as a background thread-like loop, and is ideal for complex asynchronous structures (e.g. canceling requests).
+
+> 💡 **Interviewer Focus:** Saga effects (`takeLatest`, `call`, `put`).
+</details>
+<hr/>
+
+### ❓ Q94. **What is the role of `React.Children` API?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Provides utilities (like `React.Children.map` or `React.Children.toArray`) to safely manipulate and inspect the `children` prop array without running into errors if `children` is a single element or function.
+
+> 💡 **Interviewer Focus:** Component utility patterns.
+</details>
+<hr/>
+
+### ❓ Q95. **How do you prevent XSS when using dangerouslySetInnerHTML?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Always sanitize HTML strings using a library like **DOMPurify** before passing them to the prop, removing script tags and javascript execution paths.
+
+> 💡 **Interviewer Focus:** XSS mitigations.
+</details>
+<hr/>
+
+### ❓ Q96. **What is the difference between ref forwarding and standard prop passing?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Standard props do not pass refs to child components.
+- Wrap components in `forwardRef` to expose inner DOM elements, allowing parent components to call methods on the inner element.
+
+> 💡 **Interviewer Focus:** Ref delegation.
+</details>
+<hr/>
+
+### ❓ Q97. **Explain the purpose of the `useSyncExternalStore` hook.**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+A hook designed for state managers (Redux/Zustand) in React 18 to subscribe to external data stores, preventing tearing anomalies under concurrent rendering.
+
+> 💡 **Interviewer Focus:** Concurrent state safety.
+</details>
+<hr/>
+
+### ❓ Q98. **How do you test components wrapping Context API?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Wrap the test component inside the context provider in the test suite:
+```javascript
+render(
+  <MyProvider value={mockValue}>
+    <MyComponent />
+  </MyProvider>
+);
+```
+
+> 💡 **Interviewer Focus:** Context mocking patterns.
+</details>
+<hr/>
+
+### ❓ Q99. **Explain how state batching works under React 17 vs 18.**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+- React 17 only batched state updates inside React native event handlers.
+- React 18 implements Automatic Batching across all scopes (including promises, timeouts, and native callbacks), consolidating multiple updates into a single re-render.
+
+> 💡 **Interviewer Focus:** Batching evolutions.
+</details>
+<hr/>
+
+### ❓ Q100. **What is the role of `useId` hook?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+Generates unique, stable ID strings that are consistent across server and client renders, preventing hydration mismatch errors on accessibility elements.
+
+> 💡 **Interviewer Focus:** Accessibility hydration optimization.
+</details>
+<hr/>
+
 ### 🧭 Navigation
 
 | ⬅️ Previous | 🏠 Index | ➡️ Next |

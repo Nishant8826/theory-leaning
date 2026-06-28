@@ -33,13 +33,13 @@
 
 In legacy Angular, every component had to be registered in a parent `@NgModule` wrapper before it could be used. **Standalone Components** (introduced in Angular 14+) bypass modules by setting `standalone: true` in the `@Component` decorator, making the component independent.
 
-#### 💬 Hinglish Explanation & Analogy:
-* **Pehle (NgModule System):** Pehle Angular mein component akele run nahi ho sakta tha. Use ek wrapper box (`NgModule`) ke andar register karna padta tha. Agar aapko kisi page par ek simple text box ya button use karna hai, toh pehle use dynamic modules mein import/export karo. Isse bohot boilerplate code likhna padta tha.
-* **Ab (Standalone System):** Component class direct metadata setup configures block create kar sakta hai. `standalone: true` set karte hi component azaad ho jata hai. Ab us component ko use karne ke liye kisi module register ki zaroorat nahi hai. Uski apni jo dependencies hain (jaise direct buttons, text fields ya common templates directives), unhe direct component metadata parameters `imports: [...]` ke andar mention kiya jata hai.
-* **Bungalow vs Independent Flat Analogy:** 
-  * *NgModule* ek bada joint-family bungalow hai, jahan agar kisi ko nayi machine (pipe/directive) lani hai toh poore ghar ke system registry/module file change setup rules se guzar kar declare karna padta tha.
-  * *Standalone Component* ek independent modern flat ki tarah hai, jahan flat ka builder/owner direct apni machines and layout details (`imports`) flat ke andar hi install kar leta hai bina poor bungalow config check settings ke.
-* **Performance optimization (Tree Shaking):** Agar koi module use nahi ho raha, toh build ke time bundler (esbuild/webpack) use remove kar deta hai (Tree Shaking), jisse initial loading code dynamic performance optimize ho jati hai.
+#### 💬 Detailed Explanation & Analogy:
+* **Before (NgModule System):** Previously in Angular, components could not exist independently; they had to be registered inside an `@NgModule` wrapper. If you wanted to use a simple text box or button, you had to declare/import it inside a parent module. This introduced significant boilerplate code.
+* **Now (Standalone System):** Component classes directly define their metadata configurations. Setting `standalone: true` frees the component from requiring parent modules. All of its component-level dependencies (like buttons, directives, or pipe imports) are declared directly in the component's `@Component` decorator under the `imports: [...]` metadata property.
+* **Bungalow vs. Independent Flat Analogy:** 
+  * *NgModule* is like a large family bungalow where installing any new appliance or tool requires editing the central register/configuration file for the entire building.
+  * *Standalone Components* are like independent modern flats where the owner directly installs whatever equipment (`imports`) they need inside their flat without altering the configuration of the rest of the building.
+* **Performance Optimization (Tree Shaking):** Since components declare dependencies directly, bundlers (like esbuild or Webpack) can easily analyze the dependency tree during builds and strip out unused components (Tree-Shaking), minimizing the initial application bundle size.
 
 ```typescript
 import { Component } from '@angular/core';
@@ -72,13 +72,13 @@ export class CardComponent {}
 * **`@Component`** is a specialized directive that has an associated **HTML template** and styling definitions. It is the building block of Angular UI.
 * **`@Directive`** does not have a template. It is used to attach styling, behavior, or structural logic to an existing DOM element.
 
-#### 💬 Hinglish Explanation & Analogy:
-* **Basic Antar (Difference):** 
-  * `@Component` ek visual boundary/view control block hai jiske paas apna HTML view template aur unique styles configuration properties hoti hain. Angular application ka visual component trees isi se design hota hai.
-  * `@Directive` ke paas **apna koi HTML template nahi hota**. Element level custom behavior or attributes change dynamic behaviors support rules provide karne ke liye directives utilize hoti hain.
-* **Smart TV vs Remote/Firestick Analogy:**
-  * **`@Component`** ek *Smart TV* screen hai, jiske paas display template window hai contents display karne ke liye.
-  * **`@Directive`** ek *Remote controller* ya *Firestick adapter* hai jiske paas screen toh nahi hai par use TV (DOM host) ke sath plug karne par screen ka behavior or color values control kiya ja sakta hai.
+#### 💬 Detailed Explanation & Analogy:
+* **Core Difference:** 
+  * `@Component` is a visual building block that controls a view. It has its own HTML template and styling definitions. It forms the visual UI tree of the Angular application.
+  * `@Directive` does **not have an HTML template**. It is attached to existing DOM elements to modify their properties, style them, or customize their behavior dynamically.
+* **Smart TV vs. Remote/Adapter Analogy:**
+  * **`@Component`** is like a *Smart TV screen* which has a display template window to render content.
+  * **`@Directive`** is like a *Remote control* or *streaming stick* which has no screen of its own but changes the behavior/style of the TV (the DOM host element) once connected.
 
 ```typescript
 // Component: Has view template
@@ -174,31 +174,31 @@ Constructor ──> ngOnChanges ──> ngOnInit ──> ngDoCheck
                  ──> ngAfterViewInit ──> ngAfterViewChecked ──> ngOnDestroy
 ```
 
-#### 💬 Hinglish Explanations & Analogies of Key Hooks:
+#### 💬 Detailed Explanations & Analogies of Key Hooks:
 
 ##### 1. **`constructor()`** (Class Instantiation)
-* **What it does:** Yeh ES6 class ka standard constructor hai. Is stage par Angular dependency injection (DI) ko resolve karta hai, par inputs (`@Input`) ya DOM template structure ready nahi hota.
-* **Hinglish Analogy:** Ghar ki registry hona. Ghar ban gaya hai par furniture (data/inputs) abhi tak nahi aaya hai.
+* **What it does:** This is the standard constructor for the ES6 class. During this stage, Angular resolves Dependency Injection (DI) parameters, but inputs (`@Input`) and DOM template references are not yet initialized.
+* **Analogy:** Purchasing a house registry. The structural shell is ready, but the furniture (data/inputs) has not arrived yet.
 
 ##### 2. **`ngOnChanges()`** (Input Binding updates)
-* **What it does:** Har baar jab component ka `@Input` value badalta hai, tab yeh method trigger hota hai. Isko ek `SimpleChanges` object milta hai jisme current aur previous values hoti hain.
-* **Hinglish Analogy:** Ghar mein naya delivery package aana. Jab bhi naya item aayega, aap verify karoge ki purana kya tha aur naya kya aaya hai.
+* **What it does:** Triggers every time a component's `@Input` properties update. It receives a `SimpleChanges` object mapping the current and previous values of the changed inputs.
+* **Analogy:** Receiving a new delivery package at your house. Every time a new item arrives, you compare the old version with the new one.
 
 ##### 3. **`ngOnInit()`** (Component Initialization)
-* **What it does:** Component load hone ke baad sirf ek baar chalta hai. Is stage par inputs bind ho chuke hote hain. Yeh API call karne aur data variables set karne ke liye best place hai.
-* **Hinglish Analogy:** Housewarming party. Ab inputs ready hain aur aap setup operations execute kar sakte ho.
+* **What it does:** Runs exactly once after the component has finished initializing and inputs are bound. This is the optimal location for fetching API data and setting up initial variables.
+* **Analogy:** Housewarming party. The inputs are ready, and you can now perform setup operations and fetch initial data.
 
 ##### 4. **`ngDoCheck()`** (Custom Change Detection)
-* **What it does:** Har change detection cycle par yeh method run hota hai. Agar aapko koi aisi change detect karni hai jo Angular direct track nahi kar pata (jaise object mutations), toh aap yahan logic likhte ho.
-* **Hinglish Analogy:** Security Guard checking. Har baar jab bhi click ya events honge, guard verify karega ki sab kuch normal hai ya nahi.
+* **What it does:** Runs during every change detection cycle. This is used to implement custom checking logic for changes that Angular cannot automatically detect (such as object or array mutations).
+* **Analogy:** A security guard performing checks. Every time there is an action or event, the guard checks if everything is in order.
 
 ##### 5. **`ngAfterViewInit()`** (DOM templates ready)
-* **What it does:** Jab component ka HTML aur uske saare child components DOM ke andar render ho jaate hain tab chalta hai. `@ViewChild` references is hook ke baad hi valid hote hain.
-* **Hinglish Analogy:** Building construction certificate. Ab physical walls aur layouts full ready hain, aap direct inspections kar sakte ho.
+* **What it does:** Fires once after the component's HTML view and all of its child components have been fully rendered in the DOM. `@ViewChild` references are safe to access starting in this hook.
+* **Analogy:** Building occupancy certificate. Now that physical walls and layouts are fully constructed, you can perform inspections.
 
 ##### 6. **`ngOnDestroy()`** (Teardown/Cleanup)
-* **What it does:** Jab component screen/DOM se remove hone wala hota hai tab chalta hai. Memory leaks se bachne ke liye subscriptions, timers aur WebSocket links ko cancel karne ke liye iska use hota hai.
-* **Hinglish Analogy:** Flat khali karna. Light-fan switch off karna aur locks check karna taaki baad mein bills (memory leak) na aayein.
+* **What it does:** Runs just before the component is destroyed and removed from the DOM. This is used to cancel active subscriptions, clear timers, and disconnect WebSockets to prevent memory leaks.
+* **Analogy:** Moving out of a flat. You turn off the lights/fans and double-check locks to avoid incurring unnecessary bills (memory leaks) after you leave.
 
 #### 💻 Execution Sequence Code Example:
 ```typescript
@@ -321,9 +321,9 @@ A **Template Reference Variable** (declared using `#varName`) is a reference to 
   * **View to Component:** Event Binding `(event)="handler()"`.
 * **Two-Way Binding:** Data flows in both directions simultaneously. Updates to the view (such as input entries) update the component class property, and modifications to the component class property update the DOM element. It is configured using the "banana-in-a-box" syntax `[(ngModel)]`.
 
-#### 💬 Hinglish Analogy:
-* **One-Way:** Bulletins on a notice board—you can only read updates (Component to View), or a drop-box where you submit a form (View to Component).
-* **Two-Way:** A walkie-talkie conversation—dono directions mein message immediate aur continuous sync hota hai.
+#### 💬 Analogy:
+* **One-Way:** Like reading bulletins on a notice board—you only receive updates (Component to View), or like dropping a letter in a mailbox (View to Component).
+* **Two-Way:** Like a phone conversation—updates flow back and forth in both directions, keeping both parties continuously in sync.
 
 ```html
 <!-- One-Way Property + Event -->
@@ -475,9 +475,9 @@ export class DataService {
 * **HTML Attributes:** Defined in the HTML markup. They initialize DOM properties and their values are always strings (e.g., `value="John"`).
 * **DOM Properties:** Represent properties on DOM nodes. They can be read and updated dynamically, and support complex types like booleans, arrays, or objects.
 
-#### 💬 Hinglish Analogy:
-* **HTML Attribute:** Car design specification sheets (static, set once at build/markup time).
-* **DOM Property:** The actual car's state (dynamic, e.g. current speed or fuel level, which changes during execution).
+#### 💬 Analogy:
+* **HTML Attribute:** Like a car's original design specification sheet (static, initialized once during manufacturing/markup time).
+* **DOM Property:** Like the actual car's operational dashboard state (dynamic, representing changes such as current speed or fuel level during driving/runtime).
 
 > 💡 **Interviewer Focus:** Property binding targets DOM properties directly, which is why property binding supports complex data types while attributes only support string values.
 
@@ -670,7 +670,7 @@ Components can communicate in three main ways depending on their relationship in
 
 ### 📥 1. Parent-to-Child Communication (Using Inputs)
 * **Concept:** The parent component passes data down to the child component using property binding on the child's input properties (either using the classic `@Input()` decorator or modern `input()` signals).
-* **💬 Hinglish Explanation:** Parent component child component ko metadata variables ya variables attributes data pass karta hai. Child component in inputs ko read kar sakta hai. Modern Angular mein signal-based inputs (`input()`) data checks ko aur simple bana dete hain.
+* **💬 Detailed Explanation:** The parent component passes data downwards to its child component via bound attributes. The child component can read these input properties. In modern Angular, signal-based inputs (`input()`) simplify data tracking and change detection checks.
 
 #### 💻 Code Example:
 ```typescript
@@ -719,7 +719,7 @@ export class ParentInputsComponent {
 
 ### 📤 2. Child-to-Parent Communication (Using Outputs & EventEmitters)
 * **Concept:** The child component notifies the parent component about events or interactions by emitting an event using an `@Output()` property combined with `EventEmitter` (or the modern `output()` function). The parent listens to this event in its template.
-* **💬 Hinglish Explanation:** Child component parent component ko messages/events trigger karke updates data return bhejta hai. Jaise child component ka submit button click hone par event emit hota hai, aur parent component use listen karke function run karta hai.
+* **💬 Detailed Explanation:** The child component sends messages or events back up to the parent component. For example, when a button inside the child component is clicked, it emits an event that the parent component listens to and handles with a method.
 
 #### 💻 Code Example:
 ```typescript
@@ -778,7 +778,7 @@ export class ParentOutputsComponent {
 
 ### 🌐 3. Unrelated Components Communication (Using Shared Services)
 * **Concept:** When components do not share a parent-child relationship, they communicate by injecting a shared singleton service. The service exposes a stream (using RxJS `BehaviorSubject`) or a reactive Angular `Signal` that components can subscribe/bind to.
-* **💬 Hinglish Explanation:** Agar do components bilkul alag hain (unrelated), toh wo direct dynamic communication nahi kar sakte. Unke liye ek shared common service banayi jaati hai (providedIn: 'root' ke saath). Ek component service ki state change karta hai aur doosra component use auto-receive (subscribe/read) kar leta hai.
+* **💬 Detailed Explanation:** If two components are unrelated (not sharing a direct parent-child hierarchy), they cannot communicate directly. Instead, they share a common singleton service (decorated with `providedIn: 'root'`). One component updates the state in the service, and the other component automatically receives the updated value (by subscribing to an observable or binding to a signal).
 
 #### 💻 Code Example:
 ```typescript
@@ -854,22 +854,22 @@ export class ComponentB {
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-### 📌 1. Pipe Kya Hai? (What is a Pipe?)
-Angular me **Pipe** ek simple tarika hai template HTML me dynamic data ko format karke represent karne ka. Ye actual value ko backend me change nahi karta, sirf user ko look-and-feel badal ke dikhata hai.
+### 📌 1. What is a Pipe?
+In Angular, a **Pipe** is a simple way to format and transform dynamic data directly in the HTML template before displaying it to the user. It does not modify the actual value in the backend or component model; it only changes how it is rendered in the view.
 * **Syntax:** `{{ rawData | pipeName : arguments }}`
-* **Example:** `{{ 'hello world' | uppercase }}` transforms to `HELLO WORLD`.
+* **Example:** `{{ 'hello world' | uppercase }}` transforms the string to `HELLO WORLD`.
 
 ---
 
-### 🎭 2. Real-Life Analogy: Lallan (Pure) vs Babban (Impure)
+### 🎭 2. Analogy: Pure (Smart & Cache-Friendly) vs Impure (Active & Recalculating)
 
-* **Pure Pipe (Smart & Lazy Lallan):** 
-  * Lallan ek smart ladka hai jo memory/caching ka use karta hai. Agar aapne isse pucha: *"Tell the length of 'Apple'"*, ye calculate karke bolega *"5"* aur ise brain me save (cache) kar lega.
-  * Agar aap isse 10 bar aur puchoge *"Tell the length of 'Apple'"*, ye recalculate nahi karega, balki turant memory se *"5"* bol dega.
-  * Lallan tabhi dobara dimaag chalayega jab input change ho (jaise aapne pucha *"Mango"*).
-* **Impure Pipe (Anxious Babban):** 
-  * Babban bahut hi hyperactive aur anxious hai. Agar aapne isse pucha: *"Tell the length of 'Apple'"*, ye calculate karke bolega *"5"*.
-  * Lekin Babban har second, har mouse movement par, ya page pe kahi bhi click karne par, bar-bar calculate karta rahega ki *"Apple ka length 5 hi hai na?"*. Isse system CPU overload ho jata hai.
+* **Pure Pipe (Smart & Cache-Friendly):** 
+  - Think of a smart assistant who uses caching. If you ask: *"What is the length of 'Apple'?"*, they calculate it, return *"5"*, and cache the result in memory.
+  - If you ask them 10 more times *"What is the length of 'Apple'?"*, they do not recalculate; they immediately return *"5"* from memory.
+  - The assistant only recalculates when the input changes (e.g., you ask for *"Mango"*).
+* **Impure Pipe (Active & Recalculating):** 
+  - Think of an anxious assistant. If you ask: *"What is the length of 'Apple'?"*, they return *"5"*.
+  - However, on every mouse movement, keypress, or click on the page, they recalculate again and again: *"Is the length of 'Apple' still 5?"*. This wastes CPU cycles.
 
 ---
 
@@ -877,29 +877,29 @@ Angular me **Pipe** ek simple tarika hai template HTML me dynamic data ko format
 
 | Parameter | Pure Pipe (Default) | Impure Pipe (`pure: false`) |
 |---|---|---|
-| **Trigger Rule** | Tabhi execute hota hai jab input ka **Reference Change** ho. | Har **Change Detection Cycle** (click, keypress, API response, mouse scroll) par execute hota hai. |
-| **Caching / Memoization** | **Yes.** Previous output ko store rakhta hai agar input same ho. | **No.** Har baar fresh calculation karta hai. |
-| **Use Case** | Formatting dates, currency, numbers, text transforms (strings, numbers, booleans). | Jab array ya object ke andar ki details mutate ho rahi hon bina reference badle (e.g., `list.push(item)`). |
-| **Performance** | **Very High Performance** 🚀 (Very lightweight). | **Poor Performance** ⚠️ (Can freeze the UI if doing heavy calculations). |
+| **Trigger Rule** | Executes only when the **Reference of the input changes** (primitive value changes or new object reference). | Executes on **every Change Detection Cycle** (clicks, keypresses, API responses, mouse events, etc.). |
+| **Caching / Memoization** | **Yes.** Caches the previous output if the inputs remain identical. | **No.** Performs a fresh calculation every time. |
+| **Use Case** | Formatting dates, currency, numbers, and basic text transformations (strings, numbers, booleans). | When you need to track mutations inside arrays or objects without changing their reference (e.g., `list.push(item)`). |
+| **Performance** | **Very High Performance** 🚀 (Very lightweight). | **Poor Performance** ⚠️ (Can freeze the UI if performing heavy operations). |
 
 ---
 
 ### 💻 4. Code Implementation Example
 
-#### Option A: Pure Pipe (Default behaviour)
-Agar aap pure pipe me array pass karoge aur array me `.push()` se naya item add karoge, toh Pure Pipe run **nahi** hoga, kyunki array ka reference change nahi hua.
+#### Option A: Pure Pipe (Default behavior)
+If you pass an array to a pure pipe and mutate it by calling `.push()`, the Pure Pipe will **not** run because the array's memory reference remains unchanged.
 
 ```typescript
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
   name: 'searchFilter',
-  pure: true, // Default true hota hai
+  pure: true, // Default is true
   standalone: true
 })
 export class SearchFilterPipe implements PipeTransform {
   transform(items: string[], searchText: string): string[] {
-    console.log('Pure Pipe executed!'); // Tabhi chalega jab list ya text ka dynamic reference badlega
+    console.log('Pure Pipe executed!'); // Runs only when the list or text reference changes
     if (!items || !searchText) return items;
     return items.filter(item => item.toLowerCase().includes(searchText.toLowerCase()));
   }
@@ -911,26 +911,26 @@ export class SearchFilterPipe implements PipeTransform {
   items = ['Apple', 'Banana'];
   
   addItem() {
-    this.items.push('Mango'); // Pure pipe will NOT execute because array reference is same!
-    // isko chalane ke liye reference badalna padega: 
+    this.items.push('Mango'); // Pure pipe will NOT execute because array reference is the same!
+    // To trigger it, you must assign a new array reference: 
     // this.items = [...this.items, 'Mango'];
   }
   ```
 
 #### Option B: Impure Pipe (`pure: false`)
-Impure pipe check karega ki array ke andar koi elements push huye hain ya nahi, chahe reference same hi kyun na ho.
+An impure pipe will execute on every change detection cycle, allowing it to detect items pushed to an array even if the array reference remains identical.
 
 ```typescript
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
   name: 'searchFilterImpure',
-  pure: false, // ⚠️ Impure banata hai
+  pure: false, // Makes the pipe impure
   standalone: true
 })
 export class SearchFilterImpurePipe implements PipeTransform {
   transform(items: string[], searchText: string): string[] {
-    console.log('Impure Pipe executed on every tick!'); // Har event/click par chalega
+    console.log('Impure Pipe executed on every tick!'); // Runs on every event or click
     if (!items || !searchText) return items;
     return items.filter(item => item.toLowerCase().includes(searchText.toLowerCase()));
   }
@@ -942,14 +942,14 @@ export class SearchFilterImpurePipe implements PipeTransform {
   items = ['Apple', 'Banana'];
   
   addItem() {
-    this.items.push('Mango'); // Impure pipe WILL execute and show Mango instantly!
+    this.items.push('Mango'); // Impure pipe WILL execute and show 'Mango' instantly!
   }
   ```
 
 ---
 
 ### ⚠️ Impure Pipes Performance Alert!
-Impure pipes ko build karte waqt humesha dhyan rakhe ki isme heavy looping ya heavy calculations na ho. Agar aapne ek bada array filter impure pipe me daal diya, toh har cursor click/mouse hover par browser slow ho jayega.
+Always ensure that impure pipes do not contain heavy looping or complex computations. If you bind a large array filter to an impure pipe, every mouse movement or key event will trigger recalculation and degrade UI rendering performance.
 
 > 💡 **Interviewer Focus:** Input reference caching, change detection cycles, why standard filter pipes are generally avoided in Angular (instead using component-level logic or signals), and the performance footprint of impure pipes.
 
