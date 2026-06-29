@@ -36,26 +36,25 @@ Standard OS metrics (CPU, RAM) do not tell the full story of a Node.js process. 
 ## Visual Explanation
 
 ### Pull-Based Metrics Collection with Prometheus and Grafana
-```text
-                    [ Client Traffic ]
-                            │
-                            ▼
-                  [ Node.js Express App ] ── (Runs prom-client)
-                            │
-                            ├─ Exposes GET /metrics (Prometheus format)
-                            ▼
-  ┌──────────────────────────────────────────────────┐
-  │ Prometheus Server                                │
-  │   - Pulls metrics every 15s (HTTP GET /metrics)  │
-  │   - Stores data in Time-Series Database (TSDB)   │
-  └─────────────────────────┬────────────────────────┘
-                            │ (PromQL Queries)
-                            ▼
-  ┌──────────────────────────────────────────────────┐
-  │ Grafana Dashboard                                │
-  │   - Renders CPU, Heap, Event Loop Lag graphs      │
-  │   - Fires Webhook Alerts (Slack/Opsgenie/PagerDuty)│
-  └──────────────────────────────────────────────────┘
+```mermaid
+graph TD
+    Client([Client Traffic]) --> App["Node.js Express App<br/>(Runs prom-client)"]
+    App -->|Exposes GET /metrics| Metrics["Metrics Endpoint<br/>(Prometheus Plaintext Format)"]
+    
+    subgraph Prom ["Prometheus Infrastructure"]
+        Prometheus["Prometheus Server"] -->|HTTP GET /metrics every 15s| Metrics
+        Prometheus --> TSDB[(Time-Series DB)]
+    end
+
+    subgraph Viz ["Visualization & Alerting"]
+        Grafana["Grafana Dashboard"] -->|PromQL Queries| Prometheus
+        Grafana -->|Fires Alerts| Alerts([Slack / Opsgenie / PagerDuty])
+    end
+
+    style App fill:#cce5ff,stroke:#004085,stroke-width:2px
+    style Prometheus fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style Grafana fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style Alerts fill:#f8d7da,stroke:#dc3545,stroke-width:2px
 ```
 
 ---

@@ -31,19 +31,20 @@ Never host databases (like PostgreSQL) directly on your EC2 application servers.
 ## Visual Explanation
 
 ### Scalable ECS Fargate Web Architecture
-```text
-  [ Client Browser ]
-          │
-          ▼ (HTTPS - Route 53 DNS)
-  [ Application Load Balancer (ALB) ]
-          │
-          ├── Routes traffic ──> [ ECS Cluster: Fargate Containers ] (Stateless app nodes)
-          │                            │                       │
-          │                            ▼ (Store files)         ▼ (Query SQL data)
-          │                       [ Amazon S3 ]           [ Amazon RDS (Postgres) ]
-          │                                                    │
-          │                                                    ▼ (Sync replication)
-          └───────────────────────────────────────────────> [ RDS Read Replica ]
+```mermaid
+graph TD
+    Client([Client Browser]) -->|HTTPS - Route 53 DNS| ALB["Application Load Balancer (ALB)"]
+    ALB -->|Routes traffic| Fargate["ECS Cluster: Fargate Containers<br/>(Stateless app nodes)"]
+    Fargate -->|Store files| S3["Amazon S3 Bucket"]
+    Fargate -->|Query SQL data| RDS["Amazon RDS (Postgres - Primary)"]
+    RDS -->|Sync replication| Replica["RDS Read Replica"]
+    ALB -.->|Read Queries| Replica
+
+    style ALB fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style Fargate fill:#cce5ff,stroke:#004085,stroke-width:2px
+    style S3 fill:#d4edda,stroke:#28a745
+    style RDS fill:#f8d7da,stroke:#dc3545
+    style Replica fill:#fee2e2,stroke:#dc2626
 ```
 
 ## Real-World Example

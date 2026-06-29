@@ -27,19 +27,19 @@ Hooks allow you to execute logic at specific stages of a document's lifecycle:
 ## Visual Explanation
 
 ### Mongoose Query Pipeline: Standard vs. Lean Query
-```text
-  [ Client Request: User.find() ]
-                 │
-                 ▼
-     [ Fetch BSON from MongoDB ]
-                 │
-                 ├─────────── Using .lean()?
-                 │                 │
-                 │                 ├── YES ──> [ Plain JavaScript Object ] ──> res.json() (Fast!)
-                 │                 │
-                 │                 └── NO  ──> [ Instantiate Mongoose Document ] (High Memory Cost)
-                 ▼                                  │ (Appends virtuals, change-trackers, hooks)
-  [ Mongoose Document Array ] ──────────────────────┘
+```mermaid
+graph TD
+    Start([Client Request: User.find]) --> Fetch[Fetch BSON from MongoDB]
+    Fetch --> CheckLean{Using .lean()?}
+    CheckLean -- Yes --> Plain["Plain JavaScript Object<br/>(Raw Data)"]
+    Plain --> ReturnFast([res.json - Fast!])
+    CheckLean -- No --> Instantiate["Instantiate Mongoose Document<br/>(Appends virtuals, getters, setters, save() methods)"]
+    Instantiate --> MongooseDoc["Mongoose Document Array"]
+    MongooseDoc --> ReturnSlow([res.json - Slow & High Memory])
+
+    style CheckLean fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style Plain fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style Instantiate fill:#f8d7da,stroke:#dc3545,stroke-width:2px
 ```
 
 ## Real-World Example

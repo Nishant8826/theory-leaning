@@ -24,17 +24,26 @@ Traditional APIs rely on synchronous, request-response communication (like REST)
 ## Visual Explanation
 
 ### Request-Response (Coupled) vs. Event-Driven (Decoupled)
-```text
-Request-Response (Coupled):
-[ Client ] ──> [ Order Service ] ── HTTP POST ──> [ Payment Service ] (If down, checkout fails!)
+```mermaid
+graph TD
+    subgraph Coupled ["Request-Response (Coupled - Synchronous)"]
+        Client1([Client]) -->|HTTP POST| Order1["Order Service"]
+        Order1 -->|HTTP POST| Pay1["Payment Service"]
+        Note over Order1, Pay1: If Payment Service is down, checkout fails!
+    end
 
-Event-Driven (Decoupled):
-[ Client ] ──> [ Order Service ] ──> Save Order (Pending)
-                                          │
-                                          ▼ (Publish: OrderCreated)
-                                 [ Message Broker ]
-                                   ├── Event ──> [ Payment Service ] (Charge card)
-                                   └── Event ──> [ Email Service ]   (Send receipt)
+    subgraph Decoupled ["Event-Driven (Decoupled - Asynchronous)"]
+        Client2([Client]) --> Order2["Order Service"]
+        Order2 -->|Save Order Pending| LocalDB[(Local DB)]
+        Order2 -->|Publish: OrderCreated| Broker["Message Broker"]
+        Broker -->|Asynchronous Event| Pay2["Payment Service<br/>(Charge card)"]
+        Broker -->|Asynchronous Event| Email2["Email Service<br/>(Send receipt)"]
+    end
+
+    style Pay1 fill:#f8d7da,stroke:#dc3545
+    style Broker fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style Pay2 fill:#d4edda,stroke:#28a745
+    style Email2 fill:#d4edda,stroke:#28a745
 ```
 
 ## Real-World Example

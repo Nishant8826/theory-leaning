@@ -20,17 +20,27 @@ Threads communicate by sending messages through a **`MessageChannel`**, which co
 ## Visual Explanation
 
 ### Worker Thread Concurrency Model
-```text
-  [ Main OS Process: Node.js ]
-  ├── [ Main Thread: V8 Heap & Event Loop ]
-  │         │
-  │         ├── Instantiates (MessagePort communication) ──> parentPort
-  │         ▼
-  ├── [ Worker Thread 1: Isolated V8 Engine & Call Stack ]
-  └── [ Worker Thread 2: Isolated V8 Engine & Call Stack ]
-             │                                    │
-             ▼                                    ▼
-       [ Read / Write ] ─── Atomics lock ───> [ SharedArrayBuffer (Shared Memory) ]
+```mermaid
+graph TD
+    subgraph Process ["Main OS Process: Node.js"]
+        MainThread["Main Thread<br/>(V8 Heap & Event Loop)"]
+        
+        subgraph Worker1 ["Worker Thread 1"]
+            W1["Isolated V8 Engine & Call Stack"]
+        end
+        
+        subgraph Worker2 ["Worker Thread 2"]
+            W2["Isolated V8 Engine & Call Stack"]
+        end
+
+        MainThread <-->|MessagePort / parentPort| Worker1
+        MainThread <-->|MessagePort / parentPort| Worker2
+
+        W1 & W2 <-->|Atomics Lock / Read & Write| SharedMemory["SharedArrayBuffer<br/>(Shared Heap Memory)"]
+    end
+
+    style MainThread fill:#cce5ff,stroke:#004085,stroke-width:2px
+    style SharedMemory fill:#fff3cd,stroke:#ffc107,stroke-width:2px
 ```
 
 ## Real-World Example

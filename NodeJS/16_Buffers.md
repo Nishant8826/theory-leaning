@@ -24,15 +24,19 @@ A **Buffer** represents a fixed-size chunk of memory allocated outside the V8 Ja
 ## Visual Explanation
 
 ### Memory Allocation: Safe vs. Unsafe
-```text
-Buffer.alloc(4)  (Safe)
-Allocated Memory Block:
-[ 0x00 ] [ 0x00 ] [ 0x00 ] [ 0x00 ]  <-- Overwritten with zeros
+```mermaid
+graph TD
+    subgraph Safe ["Buffer.alloc(4) (Safe Allocation)"]
+        Alloc1["Query OS for 4 Bytes"] --> Overwrite1["Overwrite entire block with zeros"]
+        Overwrite1 --> Memory1["[ 0x00 ] [ 0x00 ] [ 0x00 ] [ 0x00 ]<br/>(Clean & Safe)"]
+    end
 
-Buffer.allocUnsafe(4)  (Unsafe)
-Allocated Memory Block:
-[ 0xa3 ] [ 0x2f ] [ 0xbd ] [ 0x91 ]  <-- Contains whatever binary values previously sat at those memory addresses!
-  └─ Might be parts of a database connection string, private key, or password!
+    subgraph Unsafe ["Buffer.allocUnsafe(4) (Unsafe Allocation)"]
+        Alloc2["Query OS for 4 Bytes"] --> Memory2["[ 0xa3 ] [ 0x2f ] [ 0xbd ] [ 0x91 ]<br/>(Contains uninitialized leftover system data!)"]
+    end
+
+    style Memory1 fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style Memory2 fill:#f8d7da,stroke:#dc3545,stroke-width:2px
 ```
 
 ## Real-World Example

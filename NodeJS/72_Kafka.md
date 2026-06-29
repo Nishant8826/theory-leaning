@@ -35,17 +35,31 @@ To scale consumption, you add more consumer instances to a **Consumer Group**:
 ## Visual Explanation
 
 ### Consumer Group Partition Allocation
-```text
-Topic Partitions:
-[ Partition 0 ]     [ Partition 1 ]     [ Partition 2 ]     [ Partition 3 ]
-       │                   │                   │                   │
-       ▼                   ▼                   ▼                   ▼
-[ Consumer 1 ]      [ Consumer 1 ]      [ Consumer 2 ]      [ Consumer 2 ]
-  (Allocated)         (Allocated)         (Allocated)         (Allocated)
+```mermaid
+graph TD
+    subgraph Partitions ["Topic Partitions"]
+        P0["Partition 0"]
+        P1["Partition 1"]
+        P2["Partition 2"]
+        P3["Partition 3"]
+    end
 
-*Note*: Active Consumer Group contains 2 instances. Each instance handles 2 partitions.
-If Consumer 1 crashes, Kafka rebalances and assigns all 4 partitions to Consumer 2.
+    subgraph Group ["Consumer Group (2 Instances)"]
+        C1["Consumer Instance 1"]
+        C2["Consumer Instance 2"]
+    end
+
+    P0 & P1 -->|Allocated to| C1
+    P2 & P3 -->|Allocated to| C2
+
+    style P0 fill:#cce5ff,stroke:#004085
+    style P1 fill:#cce5ff,stroke:#004085
+    style P2 fill:#cce5ff,stroke:#004085
+    style P3 fill:#cce5ff,stroke:#004085
+    style C1 fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style C2 fill:#d4edda,stroke:#28a745,stroke-width:2px
 ```
+*Note*: Active Consumer Group contains 2 instances. Each instance handles 2 partitions. If Consumer 1 crashes, Kafka rebalances and assigns all 4 partitions to Consumer 2.
 
 ## Real-World Example
 Consider an activity log pipeline that tracks page views. The website publishes view events to Kafka. You configure a topic with 12 partitions. You run a cluster of 6 Node.js consumer instances inside a consumer group. Each instance processes events from 2 partitions in parallel. If traffic spikes, you can scale the consumer cluster up to 12 instances to handle the load, optimizing throughput.

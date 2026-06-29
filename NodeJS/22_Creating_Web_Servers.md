@@ -28,23 +28,20 @@ To shut down gracefully:
 ## Visual Explanation
 
 ### Graceful Shutdown Sequence Flow
-```text
-  [ SIGTERM Signal Received ]
-              │
-              ▼
-   [ Call: server.close() ] ──> Stops accepting NEW incoming requests
-              │
-              ├── (Active Requests exist?)
-              │     ├── YES ──> Wait for requests to finish (res.end() resolves)
-              │     └── NO  ──> Trigger server close callback
-              ▼
-   [ Close DB Connections / Redis Pools ]
-              │
-              ▼
-   [ Force terminate lingering sockets after timeout ]
-              │
-              ▼
-   [ process.exit(0) ]
+```mermaid
+graph TD
+    SIGTERM([SIGTERM Signal Received]) --> Close[Call: server.close<br/>Stops accepting NEW requests]
+    Close --> ActiveCheck{Active Requests exist?}
+    ActiveCheck -- Yes --> Wait[Wait for requests to finish<br/>res.end resolves]
+    ActiveCheck -- No --> CloseCallback[Trigger server close callback]
+    Wait --> CloseDB[Close DB Connections / Redis Pools]
+    CloseCallback --> CloseDB
+    CloseDB --> ForceTerm[Force terminate lingering sockets after timeout]
+    ForceTerm --> Exit([process.exit 0])
+
+    style SIGTERM fill:#fee2e2,stroke:#dc2626,stroke-width:2px
+    style ActiveCheck fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style Exit fill:#d1fae5,stroke:#059669,stroke-width:2px
 ```
 
 ## Real-World Example

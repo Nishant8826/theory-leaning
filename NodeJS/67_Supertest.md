@@ -23,15 +23,20 @@ If any `.expect()` assertion fails, Supertest throws an error that is caught by 
 ## Visual Explanation
 
 ### Supertest In-Memory Stream Loop
-```text
-Standard Testing (Slow, port conflict risk):
-[ Jest Runner ] ── TCP Socket connection ──> [ Port 3000 ] ──> [ Express Application ]
+```mermaid
+graph TD
+    subgraph Std ["Standard Testing (Slow, port conflict risk)"]
+        Jest1["Jest Runner"] -->|TCP Socket connection| Port["Port 3000"]
+        Port --> Express1["Express Application"]
+    end
 
-Supertest Execution (Fast, in-memory):
-[ Jest Runner ] ────> [ Supertest Client ]
-                             │
-                             ▼ (Streams bytes directly to Server listener)
-                      [ Express App Instance ]  (Zero port allocation!)
+    subgraph Fast ["Supertest Execution (Fast, in-memory)"]
+        Jest2["Jest Runner"] --> Client["Supertest Client"]
+        Client -->|Streams bytes directly to Server listener| Express2["Express App Instance<br/>(Zero port allocation!)"]
+    end
+
+    style Port fill:#f8d7da,stroke:#dc3545
+    style Express2 fill:#d4edda,stroke:#28a745,stroke-width:2px
 ```
 
 ## Real-World Example

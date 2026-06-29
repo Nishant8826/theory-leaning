@@ -34,18 +34,26 @@ A common security misconfiguration is returning database connection strings or e
 ## Visual Explanation
 
 ### OWASP Injection Attack Vector and Mitigation
-```text
-Insecure Execution (NoSQL Injection):
-Query: User.findOne({ username: req.body.username, password: req.body.password })
-Input: { "username": "admin", "password": { "$ne": "" } }  (Password not-equal to empty string operator)
-Compiled Query: SELECT admin WHERE password != ""
-Result: Attacker bypasses authentication and logs in as admin!
+```mermaid
+graph TD
+    subgraph Insecure ["Insecure Execution (NoSQL Injection)"]
+        In1["Query: User.findOne({ username, password })"]
+        InInput["Input: { username: 'admin', password: { '$ne': '' } }"]
+        In1 -->|Raw input evaluation| InExec["Evaluates operator: password != ''"]
+        InInput --> InExec
+        InExec --> InSuccess([Attacker logs in as admin!])
+    end
 
-Secure Execution (Sanitized Input):
-Query: User.findOne({ username: String(req.body.username), password: String(req.body.password) })
-Input: { "username": "admin", "password": { "$ne": "" } }
-Compiled Query: Lookup password literally as the string: '{"$ne": ""}'
-Result: Authentication fails safely!
+    subgraph Secure ["Secure Execution (Sanitized Input)"]
+        Sec1["Query: User.findOne({ username: String(username), password: String(password) })"]
+        SecInput["Input: { username: 'admin', password: { '$ne': '' } }"]
+        Sec1 -->|Typecast input to String| SecExec["Looks up password literally as: '{\"$ne\": \"\"}'"]
+        SecInput --> SecExec
+        SecExec --> SecFail([Authentication fails safely!])
+    end
+
+    style InSuccess fill:#f8d7da,stroke:#dc3545,stroke-width:2px
+    style SecFail fill:#d4edda,stroke:#28a745,stroke-width:2px
 ```
 
 ## Real-World Example

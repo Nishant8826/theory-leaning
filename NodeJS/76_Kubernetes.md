@@ -25,20 +25,18 @@ When Kubernetes shuts down a pod (e.g., during rolling deployments):
 ## Visual Explanation
 
 ### Kubernetes Pod Shutdown Lifecycle and PreStop Hook
-```text
-  [ Rolling Update Initiated ]
-               │
-               ▼ (Asynchronous Network Event)
-  [ Remove Pod from Service routing endpoints ] <──┐
-               │                                   │ (Propagation delay: 5-10s)
-               ▼                                   │
-     [ Run preStop Hook: sleep 10 ] ───────────────┘
-               │
-               ▼ (Drains all active requests in transit)
-     [ Send SIGTERM signal to Node.js process ]
-               │
-               ▼ (Node.js executes server.close() and exits)
-  [ Container terminates cleanly (Zero downtime!) ]
+```mermaid
+graph TD
+    Start([Rolling Update Initiated]) --> Remove["Remove Pod from Service routing endpoints<br/>(Asynchronous propagation)"]
+    Remove --> PreStop["Run preStop Hook: sleep 10<br/>(Allows 5-10s propagation delay)"]
+    PreStop --> Drain["Drains all active requests in transit"]
+    Drain --> SigTerm["Send SIGTERM signal to Node.js process"]
+    SigTerm --> Close["Node.js executes server.close() & exits"]
+    Close --> End([Container terminates cleanly - Zero Downtime!])
+
+    style PreStop fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style Drain fill:#d4edda,stroke:#28a745
+    style End fill:#d4edda,stroke:#28a745,stroke-width:2px
 ```
 
 ## Real-World Example

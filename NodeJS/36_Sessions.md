@@ -26,19 +26,19 @@ To run sessions at scale, use an external in-memory database like **Redis** as y
 ## Visual Explanation
 
 ### Stateful Session Verification using Redis
-```text
-  [ Client Browser ] ─── Request with Session ID Cookie ───> [ Express Application ]
-                                                                   │
-                                                                   ▼ (Read cookie)
-                                                             [ Session ID: sess:abc123 ]
-                                                                   │
-                                                                   ▼ (Fast Cache Lookup)
-  [ Redis Database ] <── Query key 'sess:abc123' ───────────── [ Session Store ]
-         │
-         └── returns ──> Session Payload: { userId: 42, role: 'admin' }
-                               │
-                               ▼
-                    [ Process request logic ] ──> Send HTTP Response
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Client as Client Browser
+    participant App as Express Application
+    participant Redis as Redis Database
+
+    Client->>App: Request with Session ID Cookie (sess:abc123)
+    Note over App: Read cookie & extract Session ID
+    App->>Redis: Query key 'sess:abc123' (Fast cache lookup)
+    Redis-->>App: Return Session Payload: { userId: 42, role: 'admin' }
+    Note over App: Hydrate req.session & execute controller logic
+    App-->>Client: Send HTTP Response
 ```
 
 ## Real-World Example

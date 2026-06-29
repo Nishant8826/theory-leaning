@@ -25,22 +25,20 @@ On the Node.js side, configure the web framework (e.g. `app.set('trust proxy', t
 ## Visual Explanation
 
 ### Reverse Proxy and SSL Termination Architecture
-```text
-  [ Client Request ]
-          │
-          ▼ (HTTPS - Port 443)
-  +──────────────────────────────────────────────────────────+
-  | [ Nginx Gateway ]                                        |
-  |   1. Decrypt SSL Certificate (SSL Termination)           |
-  |   2. Serve Static files directly if path matches /public |
-  |   3. Forward HTTP to Node.js upstream                    |
-  +───────────────────────┬──────────────────────────────────+
-                          │ (HTTP - Port 3000)
-                          ▼
-  +──────────────────────────────────────────────────────────+
-  | [ Node.js Process ]                                      |
-  |   - Executes Business Logic / Database Queries           |
-  +──────────────────────────────────────────────────────────+
+```mermaid
+graph TD
+    Client([Client Request]) -->|HTTPS - Port 443| Nginx["Nginx Gateway"]
+    
+    subgraph NginxTasks ["Nginx Proxy Tasks"]
+        Nginx -->|1| SSL["Decrypt SSL Certificate<br/>(SSL Termination)"]
+        Nginx -->|2| Static["Serve Static files directly<br/>if path matches /public"]
+        Nginx -->|3| Forward["Forward HTTP to Node.js upstream<br/>(Append X-Real-IP, X-Forwarded-For)"]
+    end
+
+    Forward -->|HTTP - Port 3000| Node["Node.js Process<br/>Executes Business Logic / DB Queries"]
+
+    style Nginx fill:#cce5ff,stroke:#004085,stroke-width:2px
+    style Node fill:#d4edda,stroke:#28a745,stroke-width:2px
 ```
 
 ## Real-World Example

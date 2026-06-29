@@ -24,16 +24,22 @@ The `fork` method is a special case of `spawn` designed to run Node.js scripts i
 
 ## Visual Explanation
 
-### Exec (Buffered) vs. Spawn (Streaming) Output Channels
-```text
-exec (Buffered - Allocates RAM up to 1MB):
-[ Child Process ] ── writes ──> [ Memory Buffer (Holds output until done) ] ──> [ Returns all at once ]
-                                   ▲
-                                   └── Danger: If output > 1MB, process is terminated!
+### Child Processes: Exec vs. Spawn
+```mermaid
+graph TD
+    subgraph Exec ["exec (Buffered - RAM limit: 1MB)"]
+        E_Child["Child Process"] -->|Writes output| E_Buf["Memory Buffer (Holds output)"]
+        E_Buf -->|When execution completes| E_Return["Returns all at once"]
+        E_Buf -.->|Output > 1MB| E_Crash([maxBuffer Exceeded - Process Terminated!])
+    end
 
-spawn (Streaming - Dynamic memory footprint):
-[ Child Process ] ── stdout chunk ──> [ Stream Pipe ] ──> [ Process immediately (e.g. write to disk) ]
-  - Chunks are processed as they arrive. Memory remains low regardless of total output size.
+    subgraph Spawn ["spawn (Streaming - Dynamic Memory)"]
+        S_Child["Child Process"] -->|Stdout chunk| S_Pipe["Stream Pipe"]
+        S_Pipe -->|Process immediately| S_Dest["Process / Write to disk"]
+    end
+
+    style E_Crash fill:#f8d7da,stroke:#dc3545,stroke-width:2px
+    style S_Dest fill:#d4edda,stroke:#28a745,stroke-width:2px
 ```
 
 ## Real-World Example

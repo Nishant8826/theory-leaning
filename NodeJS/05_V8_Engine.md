@@ -35,26 +35,21 @@ To keep TurboFan code fast:
 ## Visual Explanation
 
 ### V8 Engine Compilation Pipeline
-```text
-  [ JS Source Code ]
-          │
-          ▼
-     [ Parser ] ───> [ Abstract Syntax Tree (AST) ]
-                              │
-                              ▼
-                    [ Ignition Interpreter ] <───────┐ (Deopt: Fallback)
-                              │                      │
-                              ├─── [Bytecode]        │
-                              ▼                      │
-                     [ Profiler / Monitor ]          │
-                              │                      │
-                   (If function is "Hot")            │
-                              │                      │
-                              ▼                      │
-                    [ TurboFan Compiler ] ───────────┘
-                              │
-                              ▼
-                     [ Machine Code ]
+```mermaid
+graph TD
+    JS["JS Source Code"] --> Parser["Parser"]
+    Parser --> AST["Abstract Syntax Tree (AST)"]
+    AST --> Ignition["Ignition Interpreter"]
+    Ignition --> Bytecode["Bytecode"]
+    Bytecode --> Profiler["Profiler / Monitor"]
+    Profiler -->|If function is 'Hot'| TurboFan["TurboFan Compiler"]
+    TurboFan -->|Deopt: Fallback| Ignition
+    TurboFan --> Machine["Machine Code"]
+
+    style JS fill:#fbecfd,stroke:#d946ef,stroke-width:2px
+    style Ignition fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style TurboFan fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style Machine fill:#cce5ff,stroke:#004085,stroke-width:2px
 ```
 
 ## Real-World Example

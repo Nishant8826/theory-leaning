@@ -27,24 +27,32 @@ To build and deploy your application, your CI/CD pipeline needs access to sensit
 ## Visual Explanation
 
 ### Continuous Deployment Pipeline Lifecycle
-```text
-Developer Commits Code
-         │
-         ▼ (Triggers Pipeline Runner)
-  +──────────────────────────────────────────────────────────+
-  | [ CI Pipeline Stages ]                                   |
-  |   1. Lint Check (eslint) ──> Failed? ──> Abort & Alert   |
-  |   2. Run Tests (jest)    ──> Failed? ──> Abort & Alert   |
-  |   3. Security Audit      ──> Failed? ──> Abort & Alert   |
-  +──────────────────────────┬───────────────────────────────+
-                             │ (All pass)
-                             ▼
-  +──────────────────────────────────────────────────────────+
-  | [ CD Pipeline Stages ]                                   |
-  |   4. Build Docker Image ──> Tag: v1.0.1                  |
-  |   5. Push Image to Container Registry (AWS ECR)          |
-  |   6. Deploy to Production Cluster (Kubernetes rolling)   |
-  +──────────────────────────────────────────────────────────+
+```mermaid
+graph TD
+    Commit([Developer Commits Code]) --> Trigger[Trigger Pipeline Runner]
+    
+    subgraph CI ["CI Pipeline Stages"]
+        Trigger --> Lint{1. Lint Check<br/>eslint}
+        Lint -->|Failed| Abort1[Abort & Alert Developer]
+        Lint -->|Passed| Test{2. Run Tests<br/>jest}
+        Test -->|Failed| Abort2[Abort & Alert Developer]
+        Test -->|Passed| Audit{3. Security Audit<br/>npm audit / Snyk}
+        Audit -->|Failed| Abort3[Abort & Alert Developer]
+    end
+
+    subgraph CD ["CD Pipeline Stages"]
+        Audit -->|Passed| Build["4. Build Docker Image<br/>Tag: v1.0.1"]
+        Build --> Push["5. Push Image to ECR<br/>Container Registry"]
+        Push --> Deploy["6. Deploy to Prod Cluster<br/>Kubernetes rolling update"]
+    end
+
+    style Lint fill:#fff3cd,stroke:#ffc107
+    style Test fill:#fff3cd,stroke:#ffc107
+    style Audit fill:#fff3cd,stroke:#ffc107
+    style Abort1 fill:#f8d7da,stroke:#dc3545
+    style Abort2 fill:#f8d7da,stroke:#dc3545
+    style Abort3 fill:#f8d7da,stroke:#dc3545
+    style Deploy fill:#d4edda,stroke:#28a745,stroke-width:2px
 ```
 
 ## Real-World Example

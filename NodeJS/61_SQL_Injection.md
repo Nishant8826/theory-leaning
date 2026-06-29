@@ -33,19 +33,20 @@ To limit the impact if a vulnerability exists, restrict your database user permi
 ## Visual Explanation
 
 ### SQL Injection Authentication Bypass Flow
-```text
-Insecure Query Template:
-SELECT * FROM users WHERE email = '${email}' AND password = '${password}';
+```mermaid
+graph TD
+    subgraph Flow ["SQL Injection Authentication Bypass Flow"]
+        Input["Attack Input:<br/>email = admin@app.com<br/>password = ' OR '1'='1"] --> Compilation["Compiled SQL String Execution:<br/>SELECT * FROM users WHERE email = 'admin@app.com' AND password = '' OR '1'='1';"]
+        Compilation --> Eval1{Step 1: Evaluate AND}
+        Eval1 -->|'admin@app.com' AND ''| False["False"]
+        False --> Eval2{Step 2: Evaluate OR}
+        Eval2 -->|False OR '1'='1'| True["True"]
+        True --> Bypass([Authentication Bypassed - Logged in as Admin!])
+    end
 
-Attack Input:
-email:    "admin@app.com"
-password: "' OR '1'='1"
-
-Compiled Query executed by Database:
-SELECT * FROM users WHERE email = 'admin@app.com' AND password = '' OR '1'='1';
-  - Step 1: Evaluates (email = 'admin@app.com' AND password = '') ──> False
-  - Step 2: Evaluates (False OR '1'='1') ──> True
-  - Result: Query returns the admin user record, logging the attacker in!
+    style Input fill:#fff3cd,stroke:#ffc107
+    style Compilation fill:#f8d7da,stroke:#dc3545
+    style Bypass fill:#f8d7da,stroke:#dc3545,stroke-width:2px
 ```
 
 ## Real-World Example

@@ -40,17 +40,20 @@ Before writing code, an architect must calculate system constraints:
 ## Visual Explanation
 
 ### Distributed Architecture with Circuit Breakers
-```text
-  [ Client Browser ]
-         │
-         ▼
-  [ API Gateway (Node.js) ] ── (Executes Circuit Breaker wrapper)
-         │
-         ├─ [ Closed State ] ──> routes to ──> [ Internal Billing Microservice ]
-         │                                            (Downstream failure/lag)
-         ├─ [ Open State ] ─── (Blocks traffic instantly, returns fallback mock)
-         ▼
-  [ Fallback Cache Response ]
+```mermaid
+graph TD
+    Client([Client Browser]) --> Gateway["API Gateway (Node.js)<br/>Executes Circuit Breaker wrapper"]
+    
+    Gateway --> Check{Circuit Breaker State?}
+    Check -->|Closed State| Downstream["Internal Billing Microservice"]
+    Check -->|Open State| Fallback["Return Fallback Cache Response<br/>(Blocks traffic instantly, returns mock)"]
+    
+    Downstream -.->|If Downstream Fails/Lags| Gateway
+
+    style Gateway fill:#cce5ff,stroke:#004085,stroke-width:2px
+    style Check fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style Downstream fill:#f8d7da,stroke:#dc3545
+    style Fallback fill:#d4edda,stroke:#28a745,stroke-width:2px
 ```
 
 ---

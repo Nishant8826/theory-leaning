@@ -31,18 +31,19 @@ Express runs middleware in the exact order they are registered in your code.
 ## Visual Explanation
 
 ### The Middleware Pipeline
-```text
-Client Request ──> [ Middleware 1: Logger ] ── next() ──> [ Middleware 2: Auth Check ]
-                                                                   │
-                                                                   ├── (Auth fails?)
-                                                                   │     ├── YES ──> Send 401 Response (End)
-                                                                   │     └── NO  ──> next()
-                                                                   ▼
-                                                          [ Route Controller ] ──> res.json() (End)
-                                                                   │
-                                                           (Exception thrown)
-                                                                   ▼
-                                                      [ Error Handler Middleware ] ──> Send 500 Response (End)
+```mermaid
+graph TD
+    Client["Client Request"] --> Logger["Middleware 1: Logger"]
+    Logger -->|next()| Auth["Middleware 2: Auth Check"]
+    Auth -->|Auth fails: Send 401| AuthFail([401 Response - End])
+    Auth -->|Auth passes: next()| Controller["Route Controller"]
+    Controller -->|Success: res.json()| Success([JSON Response - End])
+    Controller -->|Exception thrown| ErrorHandler["Error Handler Middleware"]
+    ErrorHandler -->|Send 500| Fail([500 Response - End])
+
+    style AuthFail fill:#f8d7da,stroke:#dc3545
+    style Fail fill:#f8d7da,stroke:#dc3545
+    style Success fill:#d4edda,stroke:#28a745,stroke-width:2px
 ```
 
 ## Real-World Example

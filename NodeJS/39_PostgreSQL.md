@@ -39,17 +39,22 @@ To prevent this, always use **Parameterized Queries** (also called Prepared Stat
 ## Visual Explanation
 
 ### Concatenated Query (Insecure) vs. Parameterized Query (Secure)
-```text
-Insecure Approach (String Concatenation):
-Input: "test@db.com'; DROP TABLE users; --"
-Query compiled by Node:
-SELECT * FROM users WHERE email = 'test@db.com'; DROP TABLE users; --';
-Result: Database executes the read query, then executes the malicious DROP TABLE command!
+```mermaid
+graph TD
+    subgraph Insecure ["Insecure Approach (String Concatenation)"]
+        Input1["Input: test@db.com'; DROP TABLE users; --"] -->|Concatenated directly| Query1["SELECT * FROM users WHERE email = 'test@db.com'; DROP TABLE users; --';"]
+        Query1 -->|Database compiles & runs| Exec1["1. Reads user records<br/>2. Drops the 'users' table!"]
+    end
 
-Secure Approach (Parameterized Query):
-Query Template: SELECT * FROM users WHERE email = $1;
-Parameters sent separately: ["test@db.com'; DROP TABLE users; --"]
-Result: Database treats the entire input strictly as a text string lookup value for email, executing safely.
+    subgraph Secure ["Secure Approach (Parameterized Query)"]
+        Template["Query Template: SELECT * FROM users WHERE email = $1;"]
+        Param["Parameter: [test@db.com'; DROP TABLE users; --]"]
+        Template & Param -->|Sent separately| DBEngine["Database Query Parser"]
+        DBEngine -->|Treats input strictly as value| Exec2["Lookup user where email matches exact text string value"]
+    end
+
+    style Exec1 fill:#f8d7da,stroke:#dc3545,stroke-width:2px
+    style Exec2 fill:#d4edda,stroke:#28a745,stroke-width:2px
 ```
 
 ## Real-World Example

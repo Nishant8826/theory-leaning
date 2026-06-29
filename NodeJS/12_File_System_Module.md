@@ -25,20 +25,22 @@ Node.js provides two ways to watch for filesystem changes:
 ## Visual Explanation
 
 ### File Operation Pipeline and Libuv Threads
-```text
-  [ Async Call: fs.promises.readFile ]
-                  │
-                  ▼ (Offload)
-       [ Libuv Event Loop ] ─── Queue task ──> [ Libuv Worker Thread Pool ]
-                  │                                         │
-                  │ (Waiting for notification)              ├── Thread 1: Read chunk from disk
-                  │                                         ├── Thread 2: Compress file
-                  │                                         └── Thread 3: Write network socket
-                  ▼
-         [ OS Disk controller completes read ]
-                  │
-                  ▼
-       [ Callback / Promise resolved on main thread ]
+```mermaid
+graph TD
+    Start([Async Call: fs.promises.readFile]) --> EventLoop["Libuv Event Loop"]
+    EventLoop -->|Offload Task| ThreadPool["Libuv Worker Thread Pool"]
+    subgraph Threads ["ThreadPool Tasks"]
+        ThreadPool --> T1["Thread 1: Read chunk from disk"]
+        ThreadPool --> T2["Thread 2: Compress file"]
+        ThreadPool --> T3["Thread 3: Write network socket"]
+    end
+    T1 -.->|OS Disk completes read| OSNotify([OS Disk Notification])
+    OSNotify -->|Signal Event Loop| EventLoop
+    EventLoop --> Resolve([Callback / Promise resolved on main thread])
+
+    style EventLoop fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style ThreadPool fill:#cce5ff,stroke:#004085,stroke-width:2px
+    style Resolve fill:#d4edda,stroke:#28a745,stroke-width:2px
 ```
 
 ## Real-World Example

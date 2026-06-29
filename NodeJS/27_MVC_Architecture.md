@@ -35,21 +35,20 @@ src/
 ## Visual Explanation
 
 ### MVC Request Lifecycle
-```text
-  [ Client Request ] ────> [ Router ] ────> Passes execution ────> [ Controller ]
-                                                                        │
-                                                                        ├─ Queries ─> [ Model ]
-                                                                        │                 │
-                                                                        │                 ▼
-                                                                        │         [ Database Store ]
-                                                                        │                 │
-                                                                        │   Return Data   │
-                                                                        ├<────────────────┘
-                                                                        │
-                                                                        ▼
-                                                              [ View / Serializer ]
-                                                                        │
-  [ Client Browser ] <── Send JSON (200 OK) ────────────────────────────┘
+```mermaid
+graph TD
+    Client["Client Browser"] -->|Request| Router["Router"]
+    Router -->|Passes execution| Controller["Controller"]
+    Controller -->|Queries| Model["Model"]
+    Model -->|Query| DB["Database Store"]
+    DB -->|Return Data| Model
+    Model -->|Return Data| Controller
+    Controller -->|Format/Serialize| View["View / Serializer"]
+    View -->|Send JSON (200 OK)| Client
+
+    style Controller fill:#cce5ff,stroke:#004085,stroke-width:2px
+    style Model fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style View fill:#d4edda,stroke:#28a745,stroke-width:2px
 ```
 
 ## Real-World Example

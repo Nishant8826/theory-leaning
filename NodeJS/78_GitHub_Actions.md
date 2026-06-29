@@ -24,25 +24,21 @@ Downloading and installing npm packages on clean runner virtual machines on ever
 ## Visual Explanation
 
 ### GitHub Actions Workflow Execution
-```text
-Developer pushes code to branch 'feature/auth'
-         │
-         ▼ (Triggers GitHub Runner Event)
-[ Spin up Clean virtual machine: ubuntu-latest ]
-         │
-         ▼ (Step 1: Check out code)
-[ Action: actions/checkout@v4 ]
-         │
-         ▼ (Step 2: Initialize Node.js + Read cache)
-[ Action: actions/setup-node@v4 ] ── Checks cache ──> Cache Hit?
-                                                       ├── YES ──> Restore packages instantly
-                                                       └── NO  ──> Run: npm ci (Download from registry)
-         │
-         ▼ (Step 3: Run Linters & Tests)
-[ Run command: npm run lint ] ──> [ Run command: npm test ]
-         │
-         ▼
-[ Build Passed! (Pull Request approved for merge) ]
+```mermaid
+graph TD
+    Commit([Developer pushes code to branch feature/auth]) --> Trigger[Triggers GitHub Runner Event]
+    Trigger --> VM["Spin up clean VM<br/>ubuntu-latest"]
+    VM --> Checkout["Step 1: Check out code<br/>actions/checkout@v4"]
+    Checkout --> SetupNode["Step 2: Initialize Node.js + Read cache<br/>actions/setup-node@v4"]
+    SetupNode --> CacheCheck{Cache Hit?}
+    CacheCheck -- Yes --> Restore["Restore packages instantly from cache"]
+    CacheCheck -- No --> Install["Run: npm ci<br/>Download from npm registry"]
+    Restore & Install --> Lint["Step 3: Run Linters<br/>npm run lint"]
+    Lint --> Test["Step 4: Run Tests<br/>npm test"]
+    Test --> Pass([Build Passed!<br/>Pull Request approved for merge])
+
+    style CacheCheck fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style Pass fill:#d4edda,stroke:#28a745,stroke-width:2px
 ```
 
 ## Real-World Example

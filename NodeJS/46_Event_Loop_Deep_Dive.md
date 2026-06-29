@@ -4,43 +4,22 @@ While the basic Event Loop model explains simple async operations, complex produ
 
 ### The Six Phases of the Libuv Event Loop
 The Libuv event loop iterates over six distinct phases in a continuous cycle (a "Tick"):
+```mermaid
+graph TD
+    Start([START]) --> Timers["Timers<br/>setTimeout & setInterval"]
+    Timers --> Pending["Pending Callbacks<br/>TCP errors (e.g. ECONNREFUSED)"]
+    Pending --> Idle["Idle, Prepare<br/>Internal libuv optimization (skip)"]
+    Idle --> Poll["Poll<br/>Fetch new I/O events; blocks if idle"]
+    Poll --> Check["Check<br/>setImmediate() callbacks"]
+    Check --> Close["Close Callbacks<br/>socket.on('close', ...)"]
+    Close --> CheckRefs{Check for active refs?}
+    CheckRefs -- No refs --> Exit([Stop / Exit])
+    CheckRefs -- Yes: Loop again --> NextTick[Next Tick]
+    NextTick --> Timers
 
-```text
-    ┌───────────────────────────┐
-    │          START            │
-    └─────────────┬─────────────┘
-                  ▼
-    ┌───────────────────────────┐
-    │          Timers           │ <-- setTimeout() & setInterval()
-    └─────────────┬─────────────┘
-                  ▼
-    ┌───────────────────────────┐
-    │     Pending Callbacks     │ <-- TCP errors (like ECONNREFUSED)
-    └─────────────┬─────────────┘
-                  ▼
-    ┌───────────────────────────┐
-    │       Idle, Prepare       │ <-- Internal libuv optimization (skip)
-    └─────────────┬─────────────┘
-                  ▼
-    ┌───────────────────────────┐
-    │           Poll            │ <-- Fetch new I/O events; blocks if idle
-    └─────────────┬─────────────┘
-                  ▼
-    ┌───────────────────────────┐
-    │           Check           │ <-- setImmediate() callbacks
-    └─────────────┬─────────────┘
-                  ▼
-    ┌───────────────────────────┐
-    │      Close Callbacks      │ <-- socket.on('close', ...)
-    └─────────────┬─────────────┘
-                  ▼
-    ┌───────────────────────────┐
-    │   Check for active refs   │ ──(No refs?)──> [ Stop / Exit ]
-    └─────────────┬─────────────┘
-                  │ (Yes: Loop again)
-                  └───────────────────────────────────────┐
-                                                          ▼
-                                                   [ Next Tick ]
+    style Start fill:#fbecfd,stroke:#d946ef,stroke-width:2px
+    style Exit fill:#f8d7da,stroke:#dc3545,stroke-width:2px
+    style CheckRefs fill:#fff3cd,stroke:#ffc107,stroke-width:2px
 ```
 
 1. **Timers**: Executes callbacks scheduled by `setTimeout` and `setInterval` whose threshold has passed.

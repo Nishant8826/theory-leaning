@@ -44,25 +44,17 @@ Using the correct status codes allows clients to handle responses programmatical
 ## Visual Explanation
 
 ### REST Request-Response Cycle and Headers
-```text
-Client Request:
-GET /api/v1/orders?status=shipped&limit=5 HTTP/1.1
-Host: api.store.com
-Accept: application/json
-Authorization: Bearer <Token>
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Client as Client Browser
+    participant Server as REST API Server
 
-               │
-               ▼ (Server Processes REST Routing)
-               
-Server Response:
-HTTP/1.1 200 OK
-Content-Type: application/json
-Cache-Control: public, max-age=3600
-
-[
-  { "id": 101, "item": "Laptop", "status": "shipped" },
-  ...
-]
+    Note over Client: Request Headers:<br/>GET /api/v1/orders?status=shipped&limit=5 HTTP/1.1<br/>Host: api.store.com<br/>Accept: application/json<br/>Authorization: Bearer &lt;Token&gt;
+    Client->>Server: HTTP Request
+    Note over Server: Processes REST Routing & Queries DB
+    Server-->>Client: HTTP Response
+    Note over Client: Response Headers & Body:<br/>HTTP/1.1 200 OK<br/>Content-Type: application/json<br/>Cache-Control: public, max-age=3600<br/><br/>[{"id": 101, "item": "Laptop", "status": "shipped"}]
 ```
 
 ## Real-World Example

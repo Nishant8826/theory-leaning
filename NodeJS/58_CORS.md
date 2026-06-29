@@ -27,18 +27,19 @@ If your API requires authenticated cookies or authorization headers to be transm
 ## Visual Explanation
 
 ### CORS Preflight Request Flow
-```text
-  [ Client Browser ] ─── Cross-origin POST /api/data (JSON) ───> [ Blocked by SOP ]
-                                    │
-                                    ▼ (Preflight Check)
-  [ HTTP OPTIONS request ] ─────────────────────────> [ Express API Server ]
-                                                            │
-  [ Access-Control-Allow-Origin: client.com ] <─────────────┘ (Returns permitted origins)
-                                    │
-                                    ▼ (Preflight Succeeded)
-  [ Actual HTTP POST request ] ─────────────────────> [ Express API Server ]
-                                                            │
-  [ HTTP 200 OK + JSON Response ] <─────────────────────────┘
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Client as Client Browser (client.com)
+    participant Server as Express API Server
+
+    Note over Client: Attempting Cross-origin POST (JSON)
+    Client->>Server: HTTP OPTIONS Request (Preflight Check)
+    Note over Server: Check headers & allowed origins
+    Server-->>Client: Access-Control-Allow-Origin: client.com
+    Note over Client: Preflight Succeeded
+    Client->>Server: Actual HTTP POST Request
+    Server-->>Client: HTTP 200 OK + JSON Response
 ```
 
 ## Real-World Example

@@ -44,20 +44,28 @@ This lets you separate concerns, keeping authorization and validation checks out
 ## Visual Explanation
 
 ### Dynamic Route Parameter Processing
-```text
-Registered Path: /organizations/:orgId/departments/:deptId
-Requested Path:  /organizations/acme/departments/engineering
+```mermaid
+graph TD
+    subgraph Mapping ["Route Parameter Extraction"]
+        Reg["Registered Route: /organizations/:orgId/departments/:deptId"]
+        Req["Incoming Request: /organizations/acme/departments/engineering"]
+        
+        Reg -.->|Matches pattern| Req
+        
+        Param1[":orgId"] === Value1["'acme'"]
+        Param2[":deptId"] === Value2["'engineering'"]
+    end
+    
+    subgraph Output ["req.params Object"]
+        Obj["{<br/>&nbsp;&nbsp;orgId: 'acme',<br/>&nbsp;&nbsp;deptId: 'engineering'<br/>}"]
+    end
 
-   /organizations/  [ :orgId ]  /departments/  [ :deptId ]
-          │              │            │             │
-          ▼              ▼            ▼             ▼
-   /organizations/    "acme"    /departments/ "engineering"
+    Value1 --> Obj
+    Value2 --> Obj
 
-Captured Parameters (req.params):
-{
-  orgId: "acme",
-  deptId: "engineering"
-}
+    style Reg fill:#cce5ff,stroke:#004085
+    style Req fill:#fff3cd,stroke:#ffc107
+    style Obj fill:#d4edda,stroke:#28a745,stroke-width:2px
 ```
 
 ## Real-World Example

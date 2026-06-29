@@ -21,17 +21,17 @@ If a worker encounters an uncaught exception, the process will crash. The primar
 ## Visual Explanation
 
 ### Master-Worker Cluster Architecture
-```text
-                          [ Incoming HTTP Request ]
-                                     │
-                                     ▼ (Port 80)
-                       [ Primary (Master) Process ]
-                                     │
-             ┌───────────────────────┼───────────────────────┐
-             │ (Round-Robin Routing) │                       │
-             ▼                       ▼                       ▼
-     [ Worker 1 (CPU 0) ]    [ Worker 2 (CPU 1) ]    [ Worker 3 (CPU 2) ]
-     (Executes request)      (Executes request)      (Executes request)
+```mermaid
+graph TD
+    Req([Incoming HTTP Request]) -->|Port 80| Master["Primary (Master) Process"]
+    Master -->|Round-Robin Routing| W1["Worker 1 (CPU 0)<br/>Executes request"]
+    Master -->|Round-Robin Routing| W2["Worker 2 (CPU 1)<br/>Executes request"]
+    Master -->|Round-Robin Routing| W3["Worker 3 (CPU 2)<br/>Executes request"]
+
+    style Master fill:#cce5ff,stroke:#004085,stroke-width:2px
+    style W1 fill:#d4edda,stroke:#28a745
+    style W2 fill:#d4edda,stroke:#28a745
+    style W3 fill:#d4edda,stroke:#28a745
 ```
 
 ## Real-World Example

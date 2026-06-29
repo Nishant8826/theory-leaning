@@ -20,15 +20,20 @@ Docker executes Dockerfile commands sequentially, caching the output of each com
 ## Visual Explanation
 
 ### Docker Layer Cache Optimization
-```text
-Unoptimized Dockerfile (Slow - Runs npm install on every code change):
-COPY . .                   <-- Any code change invalidates this layer and ALL subsequent layers!
-RUN npm install            <-- Must download and rebuild all dependencies on every edit!
+```mermaid
+graph TD
+    subgraph Unoptimized ["Unoptimized Dockerfile (Slow)"]
+        U1["COPY . .<br/>Any file change invalidates cache"] --> U2["RUN npm install<br/>Downloads & rebuilds deps on every code edit"]
+    end
 
-Optimized Dockerfile (Fast - Reuses cached dependencies):
-COPY package*.json ./      <-- Cached layer (Only runs if dependencies change)
-RUN npm ci --only=production
-COPY . .                   <-- Re-runs only on code changes (Cached layers are skipped above)
+    subgraph Optimized ["Optimized Dockerfile (Fast)"]
+        O1["COPY package*.json ./<br/>Only invalidates if packages change"] --> O2["RUN npm ci --only=production<br/>Downloads once, cached thereafter"]
+        O2 --> O3["COPY . .<br/>Copies source code changes at the end"]
+    end
+
+    style U2 fill:#f8d7da,stroke:#dc3545
+    style O2 fill:#d4edda,stroke:#28a745
+    style O3 fill:#cce5ff,stroke:#004085
 ```
 
 ## Real-World Example

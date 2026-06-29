@@ -22,19 +22,20 @@ The default CSP configuration in Helmet is strict. If your Node.js application s
 ## Visual Explanation
 
 ### Clickjacking Vulnerability and X-Frame-Options Mitigation
-```text
-Clickjacking Attack Scenario:
-+-----------------------------------------------------------+
-| [ Attacker's Malicious Site ]                             |
-|   - Display: "Click here to win a free iPad!" (Button)    |
-|   - Layer: Transparent <iframe> loading your bank site    |
-|     (Positioned exactly over the button)                  |
-+-----------------------------------------------------------+
-  - User clicks "win iPad" ──> Clicks transparent bank iframe "Transfer money" button!
+```mermaid
+graph TD
+    subgraph Attack ["Clickjacking Attack Scenario"]
+        Site["Attacker's Malicious Site<br/>Display: 'Click here to win a free iPad!'"]
+        Iframe["Transparent iframe loading target bank site<br/>positioned over the win button"]
+        User([User clicks 'win iPad']) -->|Clicks through transparent layer| Trans[Clicks bank site 'Transfer Money' button]
+    end
 
-Mitigation using X-Frame-Options: SAMEORIGIN
-Browser inspects response header: X-Frame-Options: SAMEORIGIN
-  - Result: Browser blocks the iframe from rendering inside the attacker's site, securing the user.
+    subgraph Defense ["Mitigation using X-Frame-Options: SAMEORIGIN"]
+        Header["Browser inspects response header:<br/>X-Frame-Options: SAMEORIGIN"] --> Block["Browser blocks the iframe from rendering<br/>inside the attacker's site!"]
+    end
+
+    style Trans fill:#f8d7da,stroke:#dc3545,stroke-width:2px
+    style Block fill:#d4edda,stroke:#28a745,stroke-width:2px
 ```
 
 ## Real-World Example

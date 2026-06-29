@@ -23,21 +23,24 @@ A JWT is a string divided into three parts separated by dots (`.`):
 ## Visual Explanation
 
 ### JWT Layout and Signature Verification
-```text
-Encoded JWT:
-[ xxxxx.yyyyy.zzzzz ]
-   │     │     │
-   │     │     └── Signature: HMACSHA256(base64(Header) + "." + base64(Payload), Secret)
-   │     └──────── Payload: Contains claims { "sub": "12345", "role": "admin" }
-   └────────────── Header: Declares algorithm { "alg": "HS256", "typ": "JWT" }
+```mermaid
+graph TD
+    subgraph JWT ["JWT Structure (xxxxx.yyyyy.zzzzz)"]
+        Header["Header (xxxxx)<br/>{ 'alg': 'HS256', 'typ': 'JWT' }"]
+        Payload["Payload (yyyyy)<br/>{ 'sub': '12345', 'role': 'admin' }"]
+        Sig["Signature (zzzzz)<br/>HMACSHA256(base64(Header) + '.' + base64(Payload), Secret)"]
+    end
 
-Client Request Header:
-Authorization: Bearer xxxxx.yyyyy.zzzzz
+    subgraph Verification ["Server-Side Verification Process"]
+        ClientToken["Client Sends Token in Authorization Header"] --> Recompute["Re-compute Signature using local Secret"]
+        Recompute --> Check{"Do signatures match?"}
+        Check -->|Yes & not expired| Pass["Request Authorized"]
+        Check -->|No| Fail["Reject Request (401 Unauthorized)"]
+    end
 
-Verification Process (Server-Side):
-1. Re-compute Signature using local Secret.
-2. Compare re-computed signature with signature segment ('zzzzz') sent by client.
-3. If they match and the token has not expired ('exp'), the request is authorized.
+    style Sig fill:#f8d7da,stroke:#dc3545
+    style Pass fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style Fail fill:#fee2e2,stroke:#dc2626
 ```
 
 ## Real-World Example

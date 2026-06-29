@@ -37,23 +37,27 @@ Let's analyze how the Event Loop transitions between executions. The loop follow
 ## Visual Explanation
 
 ### Execution Flow: Stack vs. Microtask vs. Macrotask
-```text
-[ Call Stack ]  <--- (1. Runs synchronous JavaScript first)
-      │
-      ├── (Stack Empty?)
-      ▼
-[ Microtask Queue 1: process.nextTick ] <--- (2. Drains completely)
-      │
-      ├── (Empty?)
-      ▼
-[ Microtask Queue 2: Promises ]         <--- (3. Drains completely)
-      │
-      ├── (Empty?)
-      ▼
-[ Macrotask Queues (Event Loop Phases) ] <--- (4. Executes ONE task, then check Microtasks again)
-  ├── Timers (setTimeout)
-  ├── I/O Callbacks
-  └── Check (setImmediate)
+```mermaid
+graph TD
+    CallStack["Call Stack<br/>(1. Runs synchronous JS first)"] --> StackEmpty{Stack Empty?}
+    StackEmpty -- Yes --> NextTick["process.nextTick Queue<br/>(2. Drains completely)"]
+    NextTick --> NextTickEmpty{nextTick Empty?}
+    NextTickEmpty -- Yes --> Promises["Promise Microtask Queue<br/>(3. Drains completely)"]
+    Promises --> PromisesEmpty{Promises Empty?}
+    PromisesEmpty -- Yes --> Macrotasks["Macrotask Queues (Event Loop)<br/>(4. Executes ONE task)"]
+
+    subgraph "Macrotask Phases"
+        Macrotasks --> Timers["Timers<br/>(setTimeout)"]
+        Macrotasks --> IOCallbacks["I/O Callbacks"]
+        Macrotasks --> Check["Check<br/>(setImmediate)"]
+    end
+
+    Timers & IOCallbacks & Check --> CallStack
+
+    style CallStack fill:#fbecfd,stroke:#d946ef,stroke-width:2px
+    style NextTick fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style Promises fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style Macrotasks fill:#cce5ff,stroke:#004085,stroke-width:2px
 ```
 
 ## Real-World Example

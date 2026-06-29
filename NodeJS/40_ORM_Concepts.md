@@ -34,19 +34,25 @@ To resolve the N+1 problem, use **Eager Loading** (e.g. using SQL `JOIN` stateme
 ## Visual Explanation
 
 ### The N+1 Query Bottleneck
-```text
-N+1 Query Pattern (Inefficient - 5 database trips):
-Step 1: SELECT * FROM orders;
-        ├── Returns 4 order records: [O1, O2, O3, O4]
-Step 2: SELECT * FROM users WHERE id = O1.userId;
-Step 3: SELECT * FROM users WHERE id = O2.userId;
-Step 4: SELECT * FROM users WHERE id = O3.userId;
-Step 5: SELECT * FROM users WHERE id = O4.userId;
+```mermaid
+graph TD
+    subgraph N1 ["N+1 Query Pattern (Inefficient - 5 Database Trips)"]
+        N1_Start([Get Orders]) --> N1_Q1["SELECT * FROM orders;<br/>Returns 4 orders: [O1, O2, O3, O4]"]
+        N1_Q1 --> N1_Q2["SELECT * FROM users WHERE id = O1.userId;"]
+        N1_Q1 --> N1_Q3["SELECT * FROM users WHERE id = O2.userId;"]
+        N1_Q1 --> N1_Q4["SELECT * FROM users WHERE id = O3.userId;"]
+        N1_Q1 --> N1_Q5["SELECT * FROM users WHERE id = O4.userId;"]
+    end
 
-Eager Loaded Join Pattern (Efficient - 1 database trip):
-SELECT * FROM orders 
-LEFT JOIN users ON orders.user_id = users.id;
-  - Returns all orders and user details in a single query result block.
+    subgraph Eager ["Eager Loaded Join Pattern (Efficient - 1 Database Trip)"]
+        E_Start([Get Orders with Users]) --> E_Q1["SELECT * FROM orders LEFT JOIN users ON orders.user_id = users.id;<br/>Returns all orders and user details in one dataset"]
+    end
+
+    style N1_Q2 fill:#f8d7da,stroke:#dc3545
+    style N1_Q3 fill:#f8d7da,stroke:#dc3545
+    style N1_Q4 fill:#f8d7da,stroke:#dc3545
+    style N1_Q5 fill:#f8d7da,stroke:#dc3545
+    style E_Q1 fill:#d4edda,stroke:#28a745,stroke-width:2px
 ```
 
 ## Real-World Example

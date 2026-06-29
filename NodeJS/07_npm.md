@@ -38,20 +38,18 @@ Key properties in `package-lock.json`:
 ## Visual Explanation
 
 ### Dependency Resolution Path
-```text
-[ Developer runs: npm install ]
-               │
-               ▼
-   [ Does package-lock.json exist? ]
-         ├── YES ──> [ Install exact versions listed in lockfile ] ──> Validate integrity hashes
-         │
-         └── NO  ──> [ Read package.json dependency ranges ]
-                           │
-                           ▼
-                     [ Query npm Registry for matching versions ]
-                           │
-                           ▼
-                     [ Resolve dependency tree, download modules, write package-lock.json ]
+```mermaid
+graph TD
+    Start([Developer runs: npm install]) --> CheckLock{Does package-lock.json exist?}
+    CheckLock -- Yes --> InstallLock[Install exact versions listed in lockfile]
+    InstallLock --> Validate[Validate integrity hashes]
+    CheckLock -- No --> ReadPkg[Read package.json dependency ranges]
+    ReadPkg --> QueryRegistry[Query npm Registry for matching versions]
+    QueryRegistry --> Resolve[Resolve dependency tree, download modules, & write package-lock.json]
+
+    style CheckLock fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style InstallLock fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style Resolve fill:#cce5ff,stroke:#004085,stroke-width:2px
 ```
 
 ## Real-World Example

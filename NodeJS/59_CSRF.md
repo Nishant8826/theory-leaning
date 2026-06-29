@@ -24,21 +24,24 @@ Browsers prevent cross-origin scripts from sending requests with custom headers 
 ## Visual Explanation
 
 ### CSRF Attack and Anti-CSRF Token Defense
-```text
-Vulnerable Flow:
-[ Evil Site ] ── Auto-submit form ──> [ bank.com/transfer ] ──> Sends Session Cookie (Auto-attached)
-                                            │
-                                            ▼
-                                   [ Transfer Executed! ]
+```mermaid
+graph TD
+    subgraph Attack ["Vulnerable Flow (Successful CSRF)"]
+        Evil1["Evil Site<br/>Auto-submits form"] -->|Sends request| Bank1["bank.com/transfer"]
+        Cookies1["Browser auto-attaches Session Cookie"] --> Bank1
+        Bank1 --> Exec1["Transfer Executed!"]
+    end
 
-Defended Flow (Anti-CSRF Token):
-[ Evil Site ] ── Auto-submit form ──> [ bank.com/transfer ] ──> Sends Session Cookie (Auto-attached)
-                                            │
-                                            ├── Checks for X-CSRF-Token in headers/body
-                                            │     ├── Missing / Invalid? ──> Block! (403 Forbidden)
-                                            │     └── Valid? ──> Execute Transfer
-                                            ▼
-                                     [ Attack Blocked! ]
+    subgraph Defense ["Defended Flow (Anti-CSRF Token Active)"]
+        Evil2["Evil Site<br/>Auto-submits form"] -->|Sends request| Bank2["bank.com/transfer"]
+        Cookies2["Browser auto-attaches Session Cookie"] --> Bank2
+        Bank2 --> Check{Check for X-CSRF-Token in headers/body}
+        Check -->|Missing / Invalid| Block["Block! (403 Forbidden)<br/>Attack Blocked!"]
+        Check -->|Valid| Exec2["Execute Transfer"]
+    end
+
+    style Exec1 fill:#f8d7da,stroke:#dc3545,stroke-width:2px
+    style Block fill:#d4edda,stroke:#28a745,stroke-width:2px
 ```
 
 ## Real-World Example

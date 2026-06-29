@@ -31,17 +31,28 @@ A **Load Balancer** sits in front of your application cluster, distributing clie
 ## Visual Explanation
 
 ### Stateful vs. Stateless Horizontal Scaling
-```text
-Stateful Scaling (Broken: Local Session data isolated):
-Client ── Request (Session created) ──> [ Load Balancer ] ──> [ Server A (RAM: Session 1) ]
-Client ── Request (Next page reload) ─> [ Load Balancer ] ──> [ Server B (RAM: Empty) ] ──> Logged Out!
+```mermaid
+graph TD
+    subgraph Stateful ["Stateful Scaling (Broken: Local Session isolated)"]
+        C1([Client]) -->|1. Request: Session created| LB1[Load Balancer]
+        LB1 -->|Route| SA1["Server A<br/>RAM: Session 1"]
+        C1 -->|2. Next Request| LB1
+        LB1 -->|Route| SB1["Server B<br/>RAM: Empty"]
+        SB1 --> Fail1([Logged Out!])
+    end
 
-Stateless Scaling (Correct: Shared Session Store):
-Client ── Request ────────────────────> [ Load Balancer ] ──> [ Server A ] ── Query ─┐
-                                                                                     ▼
-                                                                           [ Redis Session Store ]
-                                                                                     ▲
-Client ── Request (Next page reload) ─> [ Load Balancer ] ──> [ Server B ] ── Query ─┘
+    subgraph Stateless ["Stateless Scaling (Correct: Shared Session Store)"]
+        C2([Client]) -->|1. Request| LB2[Load Balancer]
+        LB2 -->|Route| SA2["Server A"]
+        SA2 -->|Query session| Redis[(Redis Session Store)]
+
+        C2 -->|2. Next Request| LB2
+        LB2 -->|Route| SB2["Server B"]
+        SB2 -->|Query session| Redis
+    end
+
+    style Fail1 fill:#f8d7da,stroke:#dc3545,stroke-width:2px
+    style Redis fill:#d4edda,stroke:#28a745,stroke-width:2px
 ```
 
 ## Real-World Example

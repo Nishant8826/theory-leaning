@@ -29,19 +29,17 @@ Clinic.js is a suite of diagnostic tools developed by NearForm to analyze Node.j
 ## Visual Explanation
 
 ### Flamegraph CPU Analysis
-```text
-Visual Stack representation of CPU Execution Time:
-+-------------------------------------------------------------+
-| parseJsonPayload (takes 50% CPU time - wide block!)          | <-- Hotspot!
-+-------------------------------------------------------------+
-| routeController (takes 10% CPU time)                        |
-+-------------------------------------------------------------+
-| expressRouter (takes 5% CPU time)                           |
-+-------------------------------------------------------------+
-| eventLoopTick                                               |
-+-------------------------------------------------------------+
-*Note*: Flamegraphs represent the call stack vertically and execution duration horizontally. Wide blocks indicate functions that are blocking the CPU.
+```mermaid
+graph TD
+    parseJson["parseJsonPayload<br/>(Takes 50% CPU Time - Wide Block - Hotspot!)"] --> route["routeController<br/>(Takes 10% CPU Time)"]
+    route --> express["expressRouter<br/>(Takes 5% CPU Time)"]
+    express --> event["eventLoopTick"]
+
+    style parseJson fill:#f8d7da,stroke:#dc3545,stroke-width:2px
+    style route fill:#fff3cd,stroke:#ffc107
+    style express fill:#cce5ff,stroke:#004085
 ```
+*Note*: Flamegraphs represent the call stack vertically and execution duration horizontally. Wide blocks indicate functions that are blocking the CPU.
 
 ## Real-World Example
 Consider an API endpoint `/products` that returns a list of products. Under load testing, it only handles 200 requests per second. Using Clinic Flame, you identify that `JSON.stringify` on the products array is blocking the event loop. By refactoring the endpoint to use `fast-json-stringify` and applying database pagination, throughput increases to 1,500 requests per second.

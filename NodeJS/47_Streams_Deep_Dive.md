@@ -24,16 +24,18 @@ By default, streams only handle binary buffers or text strings. Setting **`objec
 ## Visual Explanation
 
 ### Backpressure Control Loop
-```text
-  [ Readable Stream ] ── push() ──> [ Internal Buffer (highWaterMark reached) ]
-                                                   │
-                                                   ▼ (returns false on write)
-  [ Paused Readable ] <── stop writing ────────────┘
-         │
-         ▼ (Writable processes chunks from buffer)
-  [ Writable Stream ] ── writes to disk ──> [ Buffer cleared ] ──> Emits 'drain' event
-                                                                        │
-  [ Readable Resumes ] <── resumes writing <────────────────────────────┘
+```mermaid
+graph TD
+    Readable["Readable Stream"] -->|push()| Buffer["Internal Buffer (highWaterMark reached)"]
+    Buffer -->|returns false on write()| Pause["Pause Readable Stream<br/>Stop writing"]
+    Pause -->|Writable processes chunks| Writable["Writable Stream<br/>Writes to disk"]
+    Writable -->|Buffer cleared below threshold| Drain["Emit 'drain' event"]
+    Drain -->|Resume writing| Resume["Resume Readable Stream"]
+    Resume --> Readable
+
+    style Buffer fill:#f8d7da,stroke:#dc3545,stroke-width:2px
+    style Pause fill:#fff3cd,stroke:#ffc107
+    style Drain fill:#d4edda,stroke:#28a745,stroke-width:2px
 ```
 
 ## Real-World Example

@@ -23,21 +23,23 @@ Secure applications use a two-layered authorization model:
 ## Visual Explanation
 
 ### Role-Based Route Gate vs. Resource-Level Ownership Gate
-```text
-Request: GET /api/v1/projects/505
-User: { id: 99, role: 'user' }
+```mermaid
+graph TD
+    Start([Request: GET /api/v1/projects/505<br/>User ID: 99, Role: 'user']) --> Step1{Step 1: Role Gate<br/>Middleware}
+    Step1 -->|Check role permissions| RoleCheck{Is 'user' allowed?}
+    RoleCheck -->|No| Fail403_1[Return 403 Forbidden]
+    RoleCheck -->|Yes: next()| Step2[Step 2: Ownership Gate<br/>Controller]
+    
+    Step2 -->|Query Project 505| QueryDB[(Database)]
+    QueryDB -->|Returns Project ownerId: 101| OwnerCheck{Does project.ownerId === req.user.id?}
+    OwnerCheck -->|Yes: 99 === 99| ReturnDetails[Return Project Details]
+    OwnerCheck -->|No: 101 === 99| Fail403_2[Return 403 Forbidden<br/>Prevent IDOR!]
 
-Step 1: Role Gate (Middleware)
-[ Path: /api/v1/projects/:id ] ── Check permissions for 'user' role ──> Match! Pass to next()
-                                                                              │
-                                                                              ▼
-Step 2: Ownership Gate (Controller)
-[ Query Project 505 ] ── returns ──> Project: { id: 505, ownerId: 101 }
-                                                      │
-                                                      ├── Does project.ownerId === req.user.id?
-                                                      │     ├── YES ──> Return Project Details
-                                                      │     └── NO  ──> return 403 Forbidden (Prevent IDOR!)
-                                                      ▼
+    style Step1 fill:#cce5ff,stroke:#004085
+    style Step2 fill:#fff3cd,stroke:#ffc107
+    style Fail403_1 fill:#f8d7da,stroke:#dc3545
+    style Fail403_2 fill:#f8d7da,stroke:#dc3545
+    style ReturnDetails fill:#d4edda,stroke:#28a745,stroke-width:2px
 ```
 
 ## Real-World Example

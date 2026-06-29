@@ -24,16 +24,16 @@ Writing large YAML or JSON configuration files manually can be tedious. A popula
 ## Visual Explanation
 
 ### Dynamic Swagger Generation Pipeline
-```text
-  [ Router JS Code + JSDoc Comments ]
-                 │
-                 ▼ (Parse on startup)
-          [ swagger-jsdoc ] ── compiles ──> [ OpenAPI JSON Schema ]
-                                                    │
-                                                    ▼ (Mount middleware)
-                                           [ swagger-ui-express ]
-                                                    │
-  [ Client Browser ] <── Interactive Swagger Web UI ┘  (Accessible at /api-docs)
+```mermaid
+graph TD
+    Code["Router JS Code & JSDoc Comments"] -->|Parse on startup| JSDoc["swagger-jsdoc"]
+    JSDoc -->|Compiles| Schema["OpenAPI JSON Schema"]
+    Schema -->|Mount middleware| UI["swagger-ui-express"]
+    UI -->|Render UI at /api-docs| Client["Client Browser<br/>(Interactive Swagger Web UI)"]
+
+    style JSDoc fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style Schema fill:#cce5ff,stroke:#004085,stroke-width:2px
+    style Client fill:#d4edda,stroke:#28a745,stroke-width:2px
 ```
 
 ## Real-World Example

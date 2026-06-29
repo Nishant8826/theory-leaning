@@ -30,30 +30,32 @@ In browsers, `this` in the global scope refers to the `window` object. In Node.j
 ### Call Stack and Closure Lifecycle
 
 #### 1. Execution Stack during Function Call
-```text
-Call Stack
-+-----------------------------------+
-| executeCallback Context           | <-- Currently executing
-+-----------------------------------+
-| fetchResource Context             |
-+-----------------------------------+
-| Global Execution Context          |
-+-----------------------------------+
+```mermaid
+graph TD
+    subgraph "Call Stack (LIFO)"
+        Top["executeCallback Context (Active)"]
+        Middle["fetchResource Context"]
+        Bottom["Global Execution Context"]
+        Top --> Middle --> Bottom
+    end
+    style Top fill:#f8d7da,stroke:#f5c6cb,stroke-width:2px
 ```
 
 #### 2. Closure Scope Retention (Heap Reference)
-```text
-Stack Frame (Popped)           Heap Memory Space
-+----------------------+       +------------------------------------+
-| fetchResource (done) | - - ->| Lexical Environment                |
-+----------------------+       |  - requestUrl: "https://api.db"     | <-- Still referenced by inner callback
-                               |  - largeBuffer: <BinaryData>       | <-- RETAINED! Memory leak vector
-                               +------------------------------------+
-                                                ^
-                                                |
-                               +------------------------------------+
-                               | callbackFunction ()                |
-                               +------------------------------------+
+```mermaid
+graph LR
+    subgraph Stack
+        Frame["fetchResource Context (Popped Frame)"]
+    end
+    subgraph Heap ["Heap Memory Space"]
+        LexicalEnv["Lexical Environment<br/>- requestUrl: 'https://api.db'<br/>- largeBuffer: &lt;BinaryData&gt; (RETAINED!)"]
+        Callback["callbackFunction()"]
+    end
+    Frame -.->|No Stack Reference| LexicalEnv
+    Callback -->|Holds Reference| LexicalEnv
+
+    style LexicalEnv fill:#f8d7da,stroke:#f5c6cb,stroke-width:2px
+    style Frame fill:#e2e3e5,stroke:#d6d8db,stroke-width:1px,stroke-dasharray: 5 5
 ```
 
 ## Real-World Example

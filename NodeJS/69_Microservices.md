@@ -27,16 +27,23 @@ In a monolithic application, you ensure data consistency using database transact
 ## Visual Explanation
 
 ### The Saga Pattern: Distributed Rollback Lifecycle
-```text
-Successful Order Flow:
-[ Order Service ] ── Creates Order (Pending) ──> [ Payment Service ] ── Debits Balance ──> [ Completed ]
+```mermaid
+graph TD
+    subgraph Success ["Successful Order Flow"]
+        OrderS1["Order Service<br/>Creates Order (Pending)"] -->|Publishes event| PayS1["Payment Service<br/>Debits Balance"]
+        PayS1 -->|Completed event| Complete1([Order Completed])
+    end
 
-Failed Payment Rollback Flow:
-[ Order Service ] ── Creates Order (Pending) ──> [ Payment Service ] (Fails: Insufficient Funds!)
-                                                        │
-                                                        ▼ (Publishes failure event)
-[ Order Service ] <── Run Compensating: Cancel Order <──┘
-  - Reverts order status to 'Cancelled', restoring database consistency without blocking locks.
+    subgraph Failure ["Failed Payment Rollback Flow"]
+        OrderS2["Order Service<br/>Creates Order (Pending)"] -->|Publishes event| PayS2{"Payment Service"}
+        PayS2 -->|Fails: Insufficient Funds| FailEvent["Publish Payment Failure Event"]
+        FailEvent -->|Consume failure event| Compensate["Order Service<br/>Run Compensating: Cancel Order"]
+        Compensate --> Revert([Order Status: Cancelled])
+    end
+
+    style Complete1 fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style PayS2 fill:#f8d7da,stroke:#dc3545
+    style Revert fill:#fee2e2,stroke:#dc2626,stroke-width:2px
 ```
 
 ## Real-World Example

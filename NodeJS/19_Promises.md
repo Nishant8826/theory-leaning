@@ -31,18 +31,22 @@ If a Promise is rejected and no `.catch()` handler is attached, Node.js emits an
 ## Visual Explanation
 
 ### Promise State Machine
-```text
-                  [ New Promise (Pending) ]
-                             │
-            ┌────────────────┴────────────────┐
-            ▼ (Resolve)                       ▼ (Reject)
-     [ Fulfilled ]                     [ Rejected ]
-            │                                 │
-     Executes: .then()                 Executes: .catch()
-            └────────────────┬────────────────┘
-                             ▼
-                    [ Settled State ]
-                    Executes: .finally() (Always runs)
+```mermaid
+graph TD
+    Pending["New Promise (Pending)"] -->|Resolve| Fulfilled["Fulfilled"]
+    Pending -->|Reject| Rejected["Rejected"]
+    
+    Fulfilled -->|Executes| Then[".then() callback"]
+    Rejected -->|Executes| Catch[".catch() callback"]
+    
+    Then --> Settled["Settled State"]
+    Catch --> Settled
+    
+    Settled -->|Executes| Finally[".finally() callback<br/>(Always runs)"]
+
+    style Pending fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style Fulfilled fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style Rejected fill:#f8d7da,stroke:#dc3545,stroke-width:2px
 ```
 
 ## Real-World Example

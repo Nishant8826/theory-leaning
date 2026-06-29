@@ -34,17 +34,19 @@ rewrite ^/api/v1/users/(.*)$ /$1 break;
 ## Visual Explanation
 
 ### Path-Based Microservices Routing and Rewrites
-```text
-  [ Client request: GET /api/v1/billing/invoice/42 ]
-                          │
-                          ▼
-             [ Nginx Gateway Proxy ]
-                          │
-                          ├── 1. Matches path prefix '/api/v1/billing/'
-                          ├── 2. Strips prefix, rewriting URL to '/invoice/42'
-                          ▼ (Route internally)
-       [ Billing Microservice (Port 3002) ]
-            - Receives request: GET /invoice/42
+```mermaid
+graph TD
+    Client([Client Request:<br/>GET /api/v1/billing/invoice/42]) --> Nginx["Nginx Gateway Proxy"]
+    
+    subgraph ProxyTasks ["Proxy Processing"]
+        Nginx --> Match["1. Matches path prefix '/api/v1/billing/'"]
+        Match --> Rewrite["2. Strips prefix, rewriting URL to '/invoice/42'"]
+    end
+
+    Rewrite -->|Route internally| Billing["Billing Microservice (Port 3002)<br/>Receives request: GET /invoice/42"]
+
+    style Nginx fill:#cce5ff,stroke:#004085,stroke-width:2px
+    style Billing fill:#d4edda,stroke:#28a745,stroke-width:2px
 ```
 
 ## Real-World Example

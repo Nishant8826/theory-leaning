@@ -5,17 +5,25 @@ To master backend engineering, you must understand the internal architecture of 
 ### The Architectural Layers of Node.js
 Node.js compiles and runs JavaScript code on the server by layering multiple technologies:
 
-```text
-+-------------------------------------------------------------+
-|               JavaScript Core Library (fs, http)            | <-- API Surface
-+-------------------------------------------------------------+
-|                     C++ Bindings (Glue Layer)               | <-- node::addon
-+-------------------------------------------------------------+
-|            V8 Engine           |           Libuv            | <-- Compiles & loops
-|    (JS Compilation/Heaps)      |   (Async I/O/Thread pool)  |
-+-------------------------------------------------------------+
-|                   Operating System Kernel                   | <-- epoll / kqueue
-+-------------------------------------------------------------+
+```mermaid
+graph TD
+    JS["JavaScript Core Library (fs, http)<br/>API Surface"]
+    Glue["C++ Bindings (Glue Layer)<br/>node::addon"]
+    V8["V8 Engine<br/>(JS Compilation & Heaps)"]
+    Libuv["Libuv<br/>(Async I/O & Thread Pool)"]
+    OS["Operating System Kernel<br/>epoll / kqueue / IOCP"]
+
+    JS --> Glue
+    Glue --> V8
+    Glue --> Libuv
+    V8 --> OS
+    Libuv --> OS
+
+    style JS fill:#ffdbec,stroke:#ff69b4,stroke-width:2px
+    style Glue fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style V8 fill:#d1fae5,stroke:#059669,stroke-width:2px
+    style Libuv fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style OS fill:#fee2e2,stroke:#dc2626,stroke-width:2px
 ```
 
 1. **JavaScript Core Library**: The public APIs (like `fs` or `http`) that developers call in their JavaScript code.
@@ -40,25 +48,19 @@ While the operating system kernel handles network I/O asynchronously (using `epo
 ## Visual Explanation
 
 ### Application Bootstrap Lifecycle
-```text
-1. Execute command: node app.js
-              │
-              ▼
-2. [ Initialize Node.js Environment ] ──> Load C++ Bindings, V8 Platform, and Libuv loop
-              │
-              ▼
-3. [ Bootstrap Main Context ]         ──> Load Native JS Modules (fs, path), inject global objects
-              │
-              ▼
-4. [ Execute Entrypoint script ]      ──> Run app.js synchronously, compile V8 bytecode
-              │
-              ▼
-5. [ Enter Libuv Event Loop ]         ──> Check for active handles (timers, servers)
-              ├── Active Handles exist?
-              │     ├── YES ──> Run Event Loop Tick (Poll I/O, execute callbacks)
-              │     └── NO  ──> Exit Process
-              ▼
-6. [ Stop Process / Clean up ]
+```mermaid
+graph TD
+    Start([1. Execute command: node app.js]) --> Init["2. Initialize Node.js Environment<br/>Load C++ Bindings, V8 Platform, and Libuv loop"]
+    Init --> Boot["3. Bootstrap Main Context<br/>Load Native JS Modules (fs, path), inject globals"]
+    Boot --> Exec["4. Execute Entrypoint script<br/>Run app.js synchronously, compile V8 bytecode"]
+    Exec --> Loop["5. Enter Libuv Event Loop<br/>Check for active handles (timers, servers)"]
+    Loop --> ActiveCheck{Active Handles exist?}
+    ActiveCheck -- Yes --> Tick["Run Event Loop Tick<br/>Poll I/O, execute callbacks"]
+    Tick --> ActiveCheck
+    ActiveCheck -- No --> Exit([6. Exit Process / Clean up])
+
+    style ActiveCheck fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style Exit fill:#f8d7da,stroke:#dc3545,stroke-width:2px
 ```
 
 ## Real-World Example

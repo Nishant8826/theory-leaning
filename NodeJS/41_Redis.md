@@ -23,23 +23,19 @@ To interact with Redis, Node.js applications use clients like `redis` (official 
 ## Visual Explanation
 
 ### Caching Strategy with Redis (Read-Aside)
-```text
-  [ Client Request: GET /api/users/42 ]
-                   │
-                   ▼
-     [ Check Cache: GET user:42 ] ── Redis lookup ──> [ Found in Redis? ]
-                                                            ├── YES ──> Return user JSON (Cache Hit - 1ms)
-                                                            │
-                                                            └── NO  ──> [ Cache Miss ]
-                                                                             │
-                                                                             ▼ (Fetch from DB)
-                                                                    [ PostgreSQL / MongoDB ]
-                                                                             │
-                                                                             ▼ (Save back to cache)
-                                                                    [ SETEX user:42 3600 ]
-                                                                             │
-                                                                             ▼
-                                                                    [ Return response ]
+```mermaid
+graph TD
+    Start([Client Request: GET /api/users/42]) --> CheckCache[Check Cache: GET user:42]
+    CheckCache --> RedisCheck{Found in Redis?}
+    RedisCheck -- Yes --> Hit([Return user JSON<br/>Cache Hit - 1ms])
+    RedisCheck -- No --> Miss[Cache Miss]
+    Miss --> FetchDB[Query database: PostgreSQL / MongoDB]
+    FetchDB --> SaveCache[Save back to cache: SETEX user:42 3600]
+    SaveCache --> ReturnResponse([Return Response])
+
+    style RedisCheck fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style Hit fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style Miss fill:#f8d7da,stroke:#dc3545,stroke-width:2px
 ```
 
 ## Real-World Example

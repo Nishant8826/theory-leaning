@@ -33,16 +33,24 @@ To prevent cache stampedes:
 ## Visual Explanation
 
 ### Cache Invalidation Patterns
-```text
-Read-Aside Pattern (Lazy Loading):
-[ Client GET ] ──> [ Check Cache ] ── Miss ──> [ Query Database ]
-                         ▲                           │
-                         │ (Write back to cache)     ▼
-                   [ SETEX key 3600 ] <────── [ Database returns data ]
+```mermaid
+graph TD
+    subgraph ReadAside ["Read-Aside Pattern (Lazy Loading)"]
+        R_Get([Client GET]) --> R_Check[Check Cache]
+        R_Check -->|Miss| R_DB[Query Database]
+        R_DB -->|Returns data| R_Return[Database returns data]
+        R_Return -->|SETEX key 3600| R_Set[Write back to cache]
+    end
 
-Explicit Invalidation (Write Event):
-[ Client PUT ] ──> [ Update Database ] ──> [ DEL key from Cache ] ──> [ OK ]
-  - The next GET request gets a Cache Miss and fetches the updated database record.
+    subgraph Explicit ["Explicit Invalidation (Write Event)"]
+        W_Put([Client PUT]) --> W_DB[Update Database]
+        W_DB --> W_Del[DEL key from Cache]
+        W_Del --> W_OK([OK])
+    end
+
+    style R_Check fill:#fff3cd,stroke:#ffc107
+    style R_Set fill:#d4edda,stroke:#28a745
+    style W_Del fill:#f8d7da,stroke:#dc3545,stroke-width:2px
 ```
 
 ## Real-World Example

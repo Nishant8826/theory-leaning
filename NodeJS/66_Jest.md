@@ -27,26 +27,22 @@ Jest executes hooks in a predictable sequence to manage setup and teardown:
 ## Visual Explanation
 
 ### Jest Lifecycle Execution Flow
-```text
-[ File Execution Starts ]
-           │
-           ▼
-     [ beforeAll ] (Runs once)
-           │
-     ┌─────┴─────────────────────────────────────┐
-     ▼                                           ▼
-[ Test Case 1 ]                             [ Test Case 2 ]
-  ├── beforeEach                              ├── beforeEach
-  ├── run test logic                          ├── run test logic
-  └── afterEach                               └── afterEach
-     ▲                                           ▲
-     └─────────────────────┬─────────────────────┘
-                           │
-                           ▼
-                      [ afterAll ] (Runs once)
-                           │
-                           ▼
-                [ File Execution Ends ]
+```mermaid
+graph TD
+    Start([File Execution Starts]) --> BeforeAll["beforeAll (Runs once)"]
+    BeforeAll --> BeforeEach1["beforeEach (Test 1)"]
+    BeforeEach1 --> Test1["Run Test Case 1 Logic"]
+    Test1 --> AfterEach1["afterEach (Test 1)"]
+    AfterEach1 --> BeforeEach2["beforeEach (Test 2)"]
+    BeforeEach2 --> Test2["Run Test Case 2 Logic"]
+    Test2 --> AfterEach2["afterEach (Test 2)"]
+    AfterEach2 --> AfterAll["afterAll (Runs once)"]
+    AfterAll --> End([File Execution Ends])
+
+    style BeforeAll fill:#cce5ff,stroke:#004085
+    style Test1 fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style Test2 fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style AfterAll fill:#f8d7da,stroke:#dc3545
 ```
 
 ## Real-World Example

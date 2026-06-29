@@ -23,19 +23,24 @@ To protect hashes from cracking attempts (like rainbow tables or brute-force att
 ## Visual Explanation
 
 ### Password Hashing and Verification Flow
-```text
-User Signup:
-[ Plain-text Password ] ──> Appends unique Salt ──> [ Argon2id Hash Function ] ──> [ Store Hash in DB ]
+```mermaid
+graph TD
+    subgraph Signup ["User Signup Flow"]
+        Pass1["Plain-text Password"] --> Salt1["Append Unique Salt"]
+        Salt1 --> HashFunc1["Argon2id Hash Function"]
+        HashFunc1 --> SaveDB["Store Hash & Salt in DB"]
+    end
 
-User Login:
-[ Login Password Input ] ────┐
-                             ▼
-[ Fetch Salt from DB ] ──> Combine ──> [ Argon2id Hash Function ] ──> [ Computed Hash ]
-                                                                             │
-                                                                             ├── Matches DB Hash?
-                                                                             │     ├── YES ──> Login Successful
-                                                                             │     └── NO  ──> return 401 Error
-                                                                             ▼
+    subgraph Login ["User Login Flow"]
+        InputPass["Login Password Input"] --> Verify{"Argon2id Verify"}
+        FetchDB["Fetch Hash & Salt from DB"] --> Verify
+        Verify -->|Matches| Success[Login Successful]
+        Verify -->|Does Not Match| Fail[Return 401 Unauthorized Error]
+    end
+
+    style SaveDB fill:#d4edda,stroke:#28a745
+    style Success fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style Fail fill:#f8d7da,stroke:#dc3545,stroke-width:2px
 ```
 
 ## Real-World Example

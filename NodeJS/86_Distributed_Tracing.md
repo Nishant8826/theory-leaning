@@ -28,14 +28,18 @@ Node.js's event loop executes callbacks in a non-sequential order. When a server
 
 To solve this, Node.js provides **`AsyncLocalStorage`** (from the `async_hooks` module). It creates a store that persists data across asynchronous execution boundaries (Promises, callbacks, timers). The OpenTelemetry SDK wraps its context management around `AsyncLocalStorage` to implicitly store the current "Active Span" without requiring developers to manually pass span variables through every function signature.
 
-```text
-Standard Monolith Context (Single Stack):
-[ Request Handler ] ──> [ DB Helper ] ──> [ Query Executor ] (Same thread execution stack)
+```mermaid
+graph TD
+    subgraph Monolith ["Standard Monolith Context (Single Stack)"]
+        Handler1["Request Handler"] --> DB1["DB Helper"] --> Query1["Query Executor"]
+    end
 
-Node.js Async Context (Event Loop Interleaved):
-[ Handler Request A ] ──(Await DB)──┐
-                                     ├─ V8 jumps context using AsyncLocalStorage
-[ Handler Request B ] ──(Await DB)──┘
+    subgraph Async ["Node.js Async Context (Event Loop Interleaved)"]
+        ReqA["Handler Request A"] -->|Await DB| Interleave["AsyncLocalStorage Context Switch"]
+        ReqB["Handler Request B"] -->|Await DB| Interleave
+    end
+
+    style Interleave fill:#fff3cd,stroke:#ffc107,stroke-width:2px
 ```
 
 ---
@@ -43,23 +47,23 @@ Node.js Async Context (Event Loop Interleaved):
 ## Visual Explanation
 
 ### Trace Propagation across HTTP boundaries
-```text
-[ Client ]
-   │
-   │ 1. GET /checkout
-   ▼
-[ API Gateway ] (Generates Trace ID: 4bf92f...)
-   │           (Creates Span 1: "http_receive")
-   │
-   │ 2. POST /payment
-   │    Header: traceparent: 00-4bf92f...-00f067aa...-01  <-- Context Propagation
-   ▼
-[ Payment Service ] (Reads Parent Span 1)
-   │                (Creates Child Span 2: "process_payment")
-   │
-   │ 3. Execute INSERT query
-   ▼
-[ PostgreSQL Database ] (Spans database execution under Span 2 context)
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Client as Client Browser
+    participant GW as API Gateway
+    participant Pay as Payment Service
+    participant DB as PostgreSQL Database
+
+    Client->>GW: 1. GET /checkout
+    Note over GW: Generates Trace ID: 4bf92f...<br/>Creates Span 1: "http_receive"
+    GW->>Pay: 2. POST /payment<br/>Header traceparent: 00-4bf92f...-00f067aa...-01
+    Note over Pay: Reads Parent Span 1 Context<br/>Creates Child Span 2: "process_payment"
+    Pay->>DB: 3. Execute INSERT query
+    Note over DB: Spans database execution under Span 2 context
+    DB-->>Pay: Query Result
+    Pay-->>GW: HTTP 200 OK
+    GW-->>Client: HTTP 200 OK
 ```
 
 ---

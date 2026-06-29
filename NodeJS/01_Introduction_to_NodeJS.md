@@ -33,20 +33,42 @@ Let's look at the architectural layers of Node.js:
 ### Thread-per-Connection vs Node.js Event Loop
 
 #### Multi-Threaded Sync (e.g., Apache/Java servlet model)
-```text
-Client 1 ----> [ Thread 1 ] ----> Blocks waiting for database query ... (Idle Memory)
-Client 2 ----> [ Thread 2 ] ----> Blocks waiting for disk file read ... (Idle Memory)
-Client 3 ----> [ Thread 3 ] ----> Blocks waiting for external API call ... (Idle Memory)
+```mermaid
+graph TD
+    Client1[Client 1] --> Thread1[Thread 1] --> Block1[Blocks waiting for DB query... <br/>Idle Memory]
+    Client2[Client 2] --> Thread2[Thread 2] --> Block2[Blocks waiting for disk read... <br/>Idle Memory]
+    Client3[Client 3] --> Thread3[Thread 3] --> Block3[Blocks waiting for external API... <br/>Idle Memory]
+
+    style Thread1 fill:#ffcccc,stroke:#333
+    style Thread2 fill:#ffcccc,stroke:#333
+    style Thread3 fill:#ffcccc,stroke:#333
+    style Block1 fill:#ff9999,stroke:#333
+    style Block2 fill:#ff9999,stroke:#333
+    style Block3 fill:#ff9999,stroke:#333
 ```
 
 #### Node.js Single-Thread Asynchronous Model
-```text
-Client 1 ----> [ Event Loop ] ----> Offloads DB query to Libuv/Kernel --------+
-Client 2 ----> [ (Main JS   ] ----> Offloads file read to Libuv/Kernel --------+--> [OS Kernel / Libuv Thread Pool]
-Client 3 ----> [  Thread)   ] ----> Offloads API call to Libuv/Kernel --------+
-                      ^
-                      | (When operations complete, callbacks queue up)
-                      +-- [ Callback Queue ] <----------------------------------+
+```mermaid
+graph TD
+    subgraph "Node.js Single-Threaded Runtime"
+        EventLoop["Event Loop<br/>(Main JS Thread)"]
+        CallbackQueue["Callback Queue"]
+    end
+
+    Client1[Client 1] --> EventLoop
+    Client2[Client 2] --> EventLoop
+    Client3[Client 3] --> EventLoop
+
+    EventLoop -->|Offloads DB query| Libuv["OS Kernel / Libuv Thread Pool"]
+    EventLoop -->|Offloads file read| Libuv
+    EventLoop -->|Offloads API call| Libuv
+
+    Libuv -->|When operations complete| CallbackQueue
+    CallbackQueue -->|Callbacks queue up| EventLoop
+
+    style EventLoop fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style CallbackQueue fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style Libuv fill:#cce5ff,stroke:#004085,stroke-width:2px
 ```
 
 ## Real-World Example

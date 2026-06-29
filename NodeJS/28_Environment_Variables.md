@@ -20,20 +20,17 @@ You can implement this validation using schema libraries like **Zod** or **Joi**
 ## Visual Explanation
 
 ### Environment Variable Parsing and Startup Validation
-```text
-  [ App Start command ]
-            │
-            ▼
-   [ Load dotenv config ] ── Reads local .env file ──> Writes values to 'process.env'
-            │
-            ▼
-   [ Startup Validation: Zod/Joi Schema Check ]
-            │
-            ├── (Validation fails? e.g. JWT_SECRET missing)
-            │     ├── YES ──> Print validation errors ──> Call: process.exit(1) (Crash Fast!)
-            │     └── NO  ──> Initialize DB pool connections
-            ▼
-   [ Express App listens on Port ]
+```mermaid
+graph TD
+    Start([App Start command]) --> Dotenv[Load dotenv config<br/>Reads local .env, writes to process.env]
+    Dotenv --> Validate{Startup Validation:<br/>Zod/Joi Schema Check}
+    Validate -->|Fails| Fail[Print validation errors & exit 1<br/>Crash Fast!]
+    Validate -->|Passes| Init[Initialize DB pool connections]
+    Init --> Listen[Express App listens on Port]
+
+    style Validate fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style Fail fill:#f8d7da,stroke:#dc3545,stroke-width:2px
+    style Listen fill:#d4edda,stroke:#28a745,stroke-width:2px
 ```
 
 ## Real-World Example

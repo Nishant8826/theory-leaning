@@ -22,19 +22,24 @@ You can adjust this limit using `emitter.setMaxListeners(n)`, but you should res
 ## Visual Explanation
 
 ### EventEmitter Lifecycle and Memory Leak Risk
-```text
-  [ Client Request ] ── Spawns short-lived ──> [ Request Context Handler ]
-                                                      │
-                                                      ├── Registers listener to long-lived Global Emitter
-                                                      ▼
-+---------------------------------------------------------------------------------+
-| [ Long-lived Global Emitter ]                                                   |
-|   - Event: 'systemConfigUpdate'                                                 |
-|     - Array of Listeners:                                                       |
-|       [ Listener 1 ] ── References ──> [ Handler 1 Context Memory ]             |
-|       [ Listener 2 ] ── References ──> [ Handler 2 Context Memory ]             |
-|       [ Listener 3 ] ── References ──> [ Handler 3 Context Memory ] <-- RETAINED!
-+---------------------------------------------------------------------------------+
+```mermaid
+graph TD
+    Client["Client Request"] -->|Spawns| Req["Request Context Handler"]
+    Req -->|Registers listener| GlobalEmitter
+
+    subgraph "Heap Space"
+        GlobalEmitter["Long-lived Global Emitter<br/>Event: 'systemConfigUpdate'"]
+        
+        subgraph Listeners ["Array of Listeners"]
+            L1["Listener 1"] -->|References| H1["Handler 1 Context Memory"]
+            L2["Listener 2"] -->|References| H2["Handler 2 Context Memory"]
+            L3["Listener 3"] -->|References| H3["Handler 3 Context Memory (RETAINED!)"]
+        end
+        GlobalEmitter --> Listeners
+    end
+
+    style H3 fill:#f8d7da,stroke:#dc3545,stroke-width:2px
+    style GlobalEmitter fill:#cce5ff,stroke:#004085,stroke-width:2px
 ```
 *Note*: When requests complete, the Request Context Handlers remain in memory because the Global Emitter's array still references their listener callbacks.
 

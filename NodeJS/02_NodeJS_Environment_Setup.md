@@ -23,17 +23,24 @@ The `.npmrc` file is an understated, yet critical, configuration file that dicta
 ## Visual Explanation
 
 ### PATH Variable Redirection
-```text
-Default System PATH:
-[ C:\Windows\System32 ] ---> [ C:\Program Files\nodejs\node.exe (v18.0.0) ]
+```mermaid
+graph TD
+    subgraph "Scenario A: Default System PATH"
+        PathA1["System Directories (e.g. C:\Windows\System32)"]
+        NodeA["Global Node.js (C:\Program Files\nodejs\node.exe v18.0.0)"]
+        PathA1 --> NodeA
+    end
 
-Executing: nvm use 20.11.0
+    subgraph "Scenario B: NVM Redirection (nvm use 20.11.0)"
+        PathB1["NVM Active Version (v20.11.0\\bin)"]
+        PathB2["System Directories (C:\Windows\System32)"]
+        NodeB["Resolved Node.js (nvm\\versions\\node\\v20.11.0\\bin\\node.exe)"]
+        PathB1 --> PathB2
+        PathB1 -->|Resolves first!| NodeB
+    end
 
-Modified PATH (Prepend active version folder):
-[ C:\Users\User\.nvm\versions\node\v20.11.0\bin ] ---> [ C:\Windows\System32 ] ---> ...
-                      |
-                      v
-          Executing 'node' resolves to v20.11.0 binary directory first!
+    style PathB1 fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style NodeB fill:#cce5ff,stroke:#004085,stroke-width:2px
 ```
 
 ## Real-World Example

@@ -26,18 +26,17 @@ If any of these fields fail validation, the middleware should halt the request a
 ## Visual Explanation
 
 ### Request Validation Middleware Pipeline
-```text
-Client Request ──> [ Express Router ]
-                         │
-                         ▼
-        [ Validation Middleware: Zod Schema ]
-                         │
-                         ├── (Validation fails?)
-                         │     ├── YES ──> Send 400 Bad Request Response (End)
-                         │     │             (Contains array of field-level error messages)
-                         │     └── NO  ──> Mutate req.body with sanitized data ──> next()
-                         ▼
-               [ Route Controller ] ──> Process database changes safely
+```mermaid
+graph TD
+    Client["Client Request"] --> Router["Express Router"]
+    Router --> Val["Validation Middleware: Zod Schema"]
+    Val -->|Fails| Bad["Send 400 Bad Request Response - End<br/>Contains field-level error messages"]
+    Val -->|Passes| Sanitize["Mutate req.body with sanitized data & next()"]
+    Sanitize --> Controller["Route Controller<br/>Process database changes safely"]
+
+    style Val fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style Bad fill:#f8d7da,stroke:#dc3545,stroke-width:2px
+    style Controller fill:#d4edda,stroke:#28a745,stroke-width:2px
 ```
 
 ## Real-World Example

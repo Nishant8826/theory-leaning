@@ -26,18 +26,22 @@ Using `express.Router()` groups related routes into sub-stacks, reducing the sea
 ## Visual Explanation
 
 ### Express Routing Resolution Stack
-```text
-Request Path: GET /api/v1/users/5
+```mermaid
+graph TD
+    Start([Request: GET /api/v1/users/5]) --> Stack1{Stack Item 1: express.static}
+    Stack1 -->|No match| Stack2[Stack Item 2: body-parser<br/>Runs middleware, parses body]
+    Stack2 --> Stack3{Stack Item 3: API Router<br/>Prefix: /api/v1/}
+    Stack3 -->|Match| SubRouter[ENTER Sub-Router stack]
+    
+    subgraph SubRouterStack ["Sub-Router Stack"]
+        SubRouter --> Sub1{Route: GET /health}
+        Sub1 -->|No match| Sub2{Route: GET /users/:id}
+        Sub2 -->|MATCH!| Exec[Execute controller callback]
+    end
 
-Main Router Stack Loop:
-[ Stack Item 1: express.static ] ── Check path '/api/v1/users/5' ──> No match, skip.
-[ Stack Item 2: body-parser ]     ── Runs middleware, modifies req.body.
-[ Stack Item 3: API Router ]      ── Matches path prefix '/api/v1/' ──> ENTER Sub-Router stack.
-                                          │
-                                          ▼
-                               [ Sub-Router Stack Loop ]
-                               ├── [ Route: GET /health ] ──> No match, skip.
-                               └── [ Route: GET /users/:id ] ──> MATCH! Execute controller callback.
+    style Stack3 fill:#fff3cd,stroke:#ffc107
+    style Sub2 fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style Exec fill:#cce5ff,stroke:#004085,stroke-width:2px
 ```
 
 ## Real-World Example

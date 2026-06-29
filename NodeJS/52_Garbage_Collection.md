@@ -41,18 +41,30 @@ To prevent long "Stop-The-World" pauses, the V8 team introduced the **Orinoco** 
 ## Visual Explanation
 
 ### Cheney's Scavenger Copying Algorithm (New Space)
-```text
-State 1: From-Space fills up
-From-Space: [ Obj 1 (Active) ] [ Obj 2 (Dead) ] [ Obj 3 (Active) ]
-To-Space:   [                ] [                ] [                ] (Empty)
+```mermaid
+graph TD
+    subgraph S1 ["State 1: From-Space fills up"]
+        F1["From-Space:<br/>[ Obj 1 (Active) ] [ Obj 2 (Dead) ] [ Obj 3 (Active) ]"]
+        T1["To-Space (Empty):<br/>[ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ] [ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ] [ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ]"]
+    end
 
-State 2: Scavenger runs (Copy active objects)
-From-Space: [ Obj 1 (Active) ] [ Obj 2 (Dead) ] [ Obj 3 (Active) ]
-To-Space:   [ Obj 1 (Active) ] [ Obj 3 (Active) ] [                ] (Compacted)
+    subgraph S2 ["State 2: Scavenger runs (Copy active objects)"]
+        F2["From-Space:<br/>[ Obj 1 (Active) ] [ Obj 2 (Dead) ] [ Obj 3 (Active) ]"]
+        T2["To-Space (Compacted):<br/>[ Obj 1 (Active) ] [ Obj 3 (Active) ] [ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ]"]
+        F2 -->|Copy surviving| T2
+    end
 
-State 3: Flip spaces & reclaim From-Space
-New From-Space (Old To-Space):   [ Obj 1 (Active) ] [ Obj 3 (Active) ]
-New To-Space (Old From-Space):   [                ] [                ] (Cleared & ready)
+    subgraph S3 ["State 3: Flip spaces & reclaim From-Space"]
+        F3["New From-Space (Old To-Space):<br/>[ Obj 1 (Active) ] [ Obj 3 (Active) ]"]
+        T3["New To-Space (Old From-Space, Cleared):<br/>[ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ] [ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ]"]
+    end
+
+    S1 --> S2 --> S3
+
+    style F1 fill:#fff3cd,stroke:#ffc107
+    style T2 fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style F3 fill:#d4edda,stroke:#28a745
+    style T3 fill:#f8f9fa,stroke:#333
 ```
 
 ## Real-World Example

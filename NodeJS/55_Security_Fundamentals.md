@@ -21,18 +21,22 @@ Attackers can exhaust server resources by sending large payloads or slow request
 ## Visual Explanation
 
 ### Principle of Least Privilege Isolation
-```text
-Insecure Execution:
-[ Node.js Process (Running as root) ] ── Exploit RCE ──> Gained Full OS root access!
-                                                               │
-                                                               ▼
-                                                      Can read/delete any file
+```mermaid
+graph TD
+    subgraph Insecure ["Insecure Execution (Running as Root)"]
+        InsecureRoot["Node.js Process (Running as root)"] -->|Exploit RCE| RootAccess["Gained Full OS root access!"]
+        RootAccess -->|Danger| Exploit["Can read/delete any file"]
+    end
 
-Secure Execution:
-[ Docker Container ] ──> [ Node.js Process (Running as user 'node') ] ── Exploit RCE ──> Trapped in sandbox!
-                                                                                           │
-                                                                                           ▼
-                                                                                   Access denied to root!
+    subgraph Secure ["Secure Execution (Least Privilege)"]
+        Docker["Docker Container"] --> NodeUser["Node.js Process (Running as user 'node')"]
+        NodeUser -->|Exploit RCE| Sandbox["Trapped in sandbox!"]
+        Sandbox -->|Defense| Denied["Access denied to host/root system"]
+    end
+
+    style RootAccess fill:#f8d7da,stroke:#dc3545,stroke-width:2px
+    style Sandbox fill:#fff3cd,stroke:#ffc107
+    style Denied fill:#d4edda,stroke:#28a745,stroke-width:2px
 ```
 
 ## Real-World Example

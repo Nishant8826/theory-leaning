@@ -23,15 +23,19 @@ Asynchronous code (Promises and `async/await`) must be tested carefully to preve
 ## Visual Explanation
 
 ### Mocking Module Boundaries
-```text
-Production Environment:
-[ controller.js ] ── imports ──> [ axios (Makes physical HTTP request to api.com) ]
+```mermaid
+graph TD
+    subgraph Production ["Production Environment"]
+        C1["controller.js"] -->|imports & calls| Axios["axios<br/>(Makes physical HTTP request to api.com)"]
+    end
 
-Unit Test Environment:
-[ controller.test.js ] ──> mock('axios') ──> Replaces Axios with Jest Mock Object
-                                                   │
-                                                   ▼ (Returns predefined mock data in RAM)
-[ controller.js ] ── imports ──> [ Axios Mock Object ] (Fast, zero network dependency)
+    subgraph Test ["Unit Test Environment"]
+        CTest["controller.test.js"] -->|mock('axios')| MockAxios["Axios Jest Mock Object<br/>(Predefined mock data in RAM)"]
+        C2["controller.js"] -->|imports| MockAxios
+    end
+
+    style Axios fill:#f8d7da,stroke:#dc3545
+    style MockAxios fill:#d4edda,stroke:#28a745,stroke-width:2px
 ```
 
 ## Real-World Example

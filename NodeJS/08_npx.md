@@ -25,23 +25,20 @@ Because npx executes code dynamically, running arbitrary commands (like `npx som
 ## Visual Explanation
 
 ### npx Command Resolution Algorithm
-```text
-                  [ User runs: npx <command> ]
-                               │
-                               ▼
-            [ Does <command> exist in local .bin? ]
-                       ├── YES ──> [ Execute local binary ] ──> DONE
-                       │
-                       └── NO  ──> [ Is <command> globally installed? ]
-                                             ├── YES ──> [ Execute global binary ] ──> DONE
-                                             │
-                                             └── NO  ──> [ Download <package> from Registry ]
-                                                                   │
-                                                                   ▼
-                                                            [ Write to npx Cache ]
-                                                                   │
-                                                                   ▼
-                                                            [ Execute binary ]
+```mermaid
+graph TD
+    Start([User runs: npx command]) --> CheckLocal{Does command exist in local .bin?}
+    CheckLocal -- Yes --> ExecLocal[Execute local binary] --> Done([DONE])
+    CheckLocal -- No --> CheckGlobal{Is command globally installed?}
+    CheckGlobal -- Yes --> ExecGlobal[Execute global binary] --> Done
+    CheckGlobal -- No --> Download[Download package from Registry]
+    Download --> WriteCache[Write to npx Cache]
+    WriteCache --> ExecCache[Execute binary] --> Done
+
+    style CheckLocal fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style CheckGlobal fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style ExecLocal fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style Download fill:#f8d7da,stroke:#dc3545,stroke-width:2px
 ```
 
 ## Real-World Example

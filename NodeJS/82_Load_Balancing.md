@@ -29,20 +29,22 @@ There are two primary ways to address this:
    * Authentication is handled via stateless tokens (JWTs) or a centralized, high-speed shared memory store like Redis for sessions.
    * **Benefit**: Any Node.js server can handle any incoming request, allowing you to easily add or remove instances on the fly.
 
-```text
-Sticky Sessions (Stateful):
-[ Client ] ──(Sticky Route)──> [ Load Balancer ] ──> [ Node Server A (Local Session RAM) ]
+```mermaid
+graph TD
+    subgraph Sticky ["Sticky Sessions (Stateful)"]
+        C1([Client]) -->|Sticky Route| LB1[Load Balancer]
+        LB1 --> SA1["Node Server A<br/>(Local Session RAM)"]
+    end
 
-Stateless Architecture (Shared State):
-[ Client ] ──────────────────> [ Load Balancer ]
-                                     │
-                             ┌───────┴───────┐
-                             ▼               ▼
-                      [ Node Server A ] [ Node Server B ]
-                             │               │
-                             └───────┬───────┘
-                                     ▼
-                          [ Central Redis Cache ]
+    subgraph Stateless ["Stateless Architecture (Shared State)"]
+        C2([Client]) --> LB2[Load Balancer]
+        LB2 --> SA2["Node Server A"]
+        LB2 --> SB2["Node Server B"]
+        SA2 & SB2 --> Redis[(Central Redis Cache)]
+    end
+
+    style SA1 fill:#f8d7da,stroke:#dc3545
+    style Redis fill:#d4edda,stroke:#28a745,stroke-width:2px
 ```
 
 ---
@@ -50,21 +52,19 @@ Stateless Architecture (Shared State):
 ## Visual Explanation
 
 ### Traffic Flow in a Load Balanced Cluster
-```text
-                       [ HTTP Request Client ]
-                                  │
-                                  ▼
-                        [ Nginx Load Balancer ]
-                                  │
-      ┌───────────────────────────┼───────────────────────────┐
-      │ (Round Robin / Least Conn)│                           │
-      ▼                           ▼                           ▼
-[ Node.js Instance 1 ]      [ Node.js Instance 2 ]      [ Node.js Instance 3 ]
-(Port 3001)                 (Port 3002)                 (Port 3003)
-      │                           │                           │
-      └───────────────────────────┼───────────────────────────┘
-                                  ▼
-                      [ Shared Database / Redis ]
+```mermaid
+graph TD
+    Client([HTTP Request Client]) --> LB["Nginx Load Balancer"]
+    LB -->|Round Robin / Least Conn| Node1["Node.js Instance 1<br/>Port 3001"]
+    LB -->|Round Robin / Least Conn| Node2["Node.js Instance 2<br/>Port 3002"]
+    LB -->|Round Robin / Least Conn| Node3["Node.js Instance 3<br/>Port 3003"]
+    Node1 & Node2 & Node3 --> DB[(Shared Database / Redis)]
+
+    style LB fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style Node1 fill:#cce5ff,stroke:#004085
+    style Node2 fill:#cce5ff,stroke:#004085
+    style Node3 fill:#cce5ff,stroke:#004085
+    style DB fill:#d4edda,stroke:#28a745,stroke-width:2px
 ```
 
 ---

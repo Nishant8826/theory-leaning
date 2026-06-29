@@ -27,18 +27,15 @@ Logs are classified by **Log Levels** to manage volume:
 ## Visual Explanation
 
 ### Log Shipping Architecture
-```text
-  [ Node.js Process ] ── Writes structured JSON to stdout ──> [ OS stdout stream ]
-                                                                      │
-                                                                      ▼ (Non-blocking redirect)
-                                                             [ Log Shipper Agent ]
-                                                            (Fluentd / Vector / Loki)
-                                                                      │
-                                                                      ▼ (Batch send)
-                                                             [ Search Database ]
-                                                          (Elasticsearch / Grafana)
-                                                                      │
-  [ Ops / Dev Engineers ] <── Queries metrics / dashboards ───────────┘
+```mermaid
+graph TD
+    Node["Node.js Process"] -->|Writes structured JSON| Stdout["OS stdout stream"]
+    Stdout -->|Non-blocking redirect| Agent["Log Shipper Agent<br/>(Fluentd / Vector / Loki)"]
+    Agent -->|Batch send| DB["Search Database<br/>(Elasticsearch / Grafana)"]
+    DB -->|Queries metrics / dashboards| Devs["Ops / Dev Engineers"]
+
+    style Node fill:#cce5ff,stroke:#004085,stroke-width:2px
+    style Devs fill:#d4edda,stroke:#28a745,stroke-width:2px
 ```
 
 ## Real-World Example

@@ -33,17 +33,22 @@ In distributed applications, in-memory rate limiting (storing counters in the No
 ## Visual Explanation
 
 ### Sliding Window vs. Fixed Window Boundary Spike
-```text
-Limit: 100 requests per minute.
+```mermaid
+graph TD
+    subgraph Fixed ["Fixed Window Counter (Spike Vulnerability)"]
+        F_Win1["Window A: [00:00 - 01:00]<br/>100 requests sent at 00:59"]
+        F_Win2["Window B: [01:00 - 02:00]<br/>100 requests sent at 01:01"]
+        F_Win1 --> F_Spike["200 requests executed within 2 seconds!<br/>(Rate limit bypassed)"]
+        F_Win2 --> F_Spike
+    end
 
-Fixed Window Counter (Spike Vulnerability):
-Window A: [00:00 - 01:00] (User sends 100 requests at 00:59)
-Window B: [01:00 - 02:00] (User sends 100 requests at 01:01)
-  - Result: User executes 200 requests within a 2-second window! This bypasses the rate limit.
+    subgraph Sliding ["Sliding Window Counter (Smooth Enforcement)"]
+        S_Track["User requests at 01:01"] --> S_Check["Query dynamic 60s sliding window:<br/>[00:01 - 01:01]"]
+        S_Check -->|Active requests: 100| S_Block["Request BLOCKED (429 Too Many Requests)"]
+    end
 
-Sliding Window Counter (Smooth Enforcement):
-Tracks request timestamps dynamically.
-User sends request at 01:01 ── Checks window: [00:01 - 01:01] ── Active requests: 100 ──> Blocked!
+    style F_Spike fill:#f8d7da,stroke:#dc3545,stroke-width:2px
+    style S_Block fill:#d4edda,stroke:#28a745,stroke-width:2px
 ```
 
 ## Real-World Example

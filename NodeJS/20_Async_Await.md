@@ -41,16 +41,26 @@ const [user, orders] = await Promise.all([fetchUser(), fetchOrders()]); // Total
 ## Visual Explanation
 
 ### Execution Flow: Sequential vs. Parallel Await
-```text
-Sequential Execution (200ms total):
-[ Main Thread ] ── Fetch User (100ms) ──> [ Suspended ] ── Fetch Orders (100ms) ──> [ Resumed ]
-Total Latency: |============================================================| (200ms)
+```mermaid
+graph TD
+    subgraph Sequential ["Sequential Execution (200ms total)"]
+        Seq_Start([Start]) --> Seq_User["Fetch User<br/>(100ms)"]
+        Seq_User --> Seq_Orders["Fetch Orders<br/>(100ms)"]
+        Seq_Orders --> Seq_End([Done])
+    end
 
-Parallel Execution (100ms total):
-[ Main Thread ] ── Initiates both requests concurrently (Promise.all)
-                ├── Fetch User (100ms) ────┐
-                └── Fetch Orders (100ms) ──┴──> [ Resumed when both resolve ]
-Total Latency: |==============================| (100ms)
+    subgraph Parallel ["Parallel Execution (100ms total)"]
+        Par_Start([Start]) --> Par_All["Promise.all"]
+        Par_All --> Par_User["Fetch User (100ms)"]
+        Par_All --> Par_Orders["Fetch Orders (100ms)"]
+        Par_User & Par_Orders --> Par_Join[Wait for both]
+        Par_Join --> Par_End([Done])
+    end
+
+    style Seq_User fill:#f8d7da,stroke:#dc3545
+    style Seq_Orders fill:#f8d7da,stroke:#dc3545
+    style Par_User fill:#d4edda,stroke:#28a745
+    style Par_Orders fill:#d4edda,stroke:#28a745
 ```
 
 ## Real-World Example

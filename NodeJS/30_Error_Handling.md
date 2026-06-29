@@ -23,20 +23,21 @@ This global handler processes the error in a single location:
 ## Visual Explanation
 
 ### Express Error Propagation Pipeline
-```text
-  [ Route Handler / Middleware ] ── Exception occurred! ──> Call: next(err)
-                                                                │
-                                                                ▼ (Routes down the stack)
-+-------------------------------------------------------------------------------+
-| [ Global Error Handling Middleware (err, req, res, next) ]                    |
-|   1. Log details to system stdout/files                                       |
-|   2. Check error type:                                                        |
-|      ├── Operational Error?                                                   |
-|      │     └── Send sanitized JSON (statusCode, message)                      |
-|      └── Programmer Error?                                                    |
-|            ├── Dev Mode  ──> Return full Stack Trace                          |
-|            └── Prod Mode ──> Return generic 500 error ──> Graceful Shutdown   |
-+-------------------------------------------------------------------------------+
+```mermaid
+graph TD
+    Handler["Route Handler / Middleware"] -->|Exception occurred: call next err| GlobalErr["Global Error Handling Middleware<br/>(err, req, res, next)"]
+    GlobalErr -->|1. Log Details| Log["Log to stdout / files"]
+    GlobalErr -->|2. Check Type| TypeCheck{Is Operational Error?}
+    TypeCheck -->|Yes: Operational| SendJSON["Send sanitized JSON<br/>(statusCode, message)"]
+    TypeCheck -->|No: Programmer| EnvCheck{Is Production?}
+    EnvCheck -->|No: Dev Mode| ReturnStack["Return full Stack Trace"]
+    EnvCheck -->|Yes: Prod Mode| Return500["Return generic 500 Error"]
+    Return500 --> Shutdown["Graceful Shutdown & Process Restart"]
+
+    style GlobalErr fill:#f8d7da,stroke:#dc3545,stroke-width:2px
+    style SendJSON fill:#d4edda,stroke:#28a745
+    style Return500 fill:#fee2e2,stroke:#dc2626
+    style Shutdown fill:#ffcccc,stroke:#333
 ```
 
 ## Real-World Example

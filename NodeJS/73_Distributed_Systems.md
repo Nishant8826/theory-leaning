@@ -21,25 +21,13 @@ A **Circuit Breaker** is a state machine placed around network calls:
 ## Visual Explanation
 
 ### Circuit Breaker State Machine
-```text
-      +-------------------------+
-      |         CLOSED          | <──────────────────┐
-      +-------------------------+                    │
-           │                                         │
-     (Failure count > threshold)                     │ (All test requests succeed)
-           ▼                                         │
-      +-------------------------+                    │
-      |          OPEN           |                    │
-      +-------------------------+                    │
-           │                                         │
-     (Cooldown timeout expires)                      │
-           ▼                                         │
-      +-------------------------+                    │
-      |        HALF-OPEN        | ───────────────────┘
-      +-------------------------+
-           │
-     (Any request fails)
-           └───────────────────────────> [ Trip back to OPEN ]
+```mermaid
+stateDiagram-v2
+    [*] --> CLOSED
+    CLOSED --> OPEN : Failure count > threshold
+    OPEN --> HALF_OPEN : Cooldown timeout expires
+    HALF_OPEN --> CLOSED : All test requests succeed
+    HALF_OPEN --> OPEN : Any request fails
 ```
 
 ## Real-World Example

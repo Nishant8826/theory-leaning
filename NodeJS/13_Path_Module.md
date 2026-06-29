@@ -25,26 +25,25 @@ The difference between `path.join()` and `path.resolve()` is a common source of 
 ## Visual Explanation
 
 ### Behavioral Execution: Join vs. Resolve
-```text
-Inputs: ('/foo', 'bar', 'baz')
-  - path.join: Joins segments.
-    Result: '/foo/bar/baz' (Absolute because it started with '/')
+```mermaid
+graph TD
+    subgraph Case1 ["Case 1: Inputs ('/foo', 'bar', 'baz')"]
+        C1_join["path.join('/foo', 'bar', 'baz')"] -->|Joins segments| C1_join_res["'/foo/bar/baz' (Absolute)"]
+    end
 
-Inputs: ('foo', 'bar', 'baz')
-  - path.join: Joins segments.
-    Result: 'foo/bar/baz' (Remains a Relative path)
-  - path.resolve: Treats segments as cd commands.
-    1. Start at current directory: /Users/username/project
-    2. Append relative path 'foo/bar/baz'
-    Result: '/Users/username/project/foo/bar/baz' (Ensures an Absolute path)
+    subgraph Case2 ["Case 2: Inputs ('foo', 'bar', 'baz')"]
+        C2_join["path.join('foo', 'bar', 'baz')"] -->|Joins segments| C2_join_res["'foo/bar/baz' (Relative)"]
+        C2_resolve["path.resolve('foo', 'bar', 'baz')"] -->|Prepends process.cwd| C2_resolve_res["'/Users/username/project/foo/bar/baz' (Absolute)"]
+    end
 
-Inputs: ('/foo', '/bar', 'baz')
-  - path.join: Joins segments.
-    Result: '/foo/bar/baz' (Treats '/bar' as a string component)
-  - path.resolve: Processes right-to-left.
-    1. 'baz' (relative)
-    2. '/bar' (absolute - stops here!)
-    Result: '/bar/baz' (Discards '/foo' because an absolute root '/bar' was reached)
+    subgraph Case3 ["Case 3: Inputs ('/foo', '/bar', 'baz')"]
+        C3_join["path.join('/foo', '/bar', 'baz')"] -->|Joins and normalizes separators| C3_join_res["'/foo/bar/baz'"]
+        C3_resolve["path.resolve('/foo', '/bar', 'baz')"] -->|Processes Right-to-Left| C3_resolve_res["'/bar/baz'<br/>(Stops at absolute /bar, discards /foo)"]
+    end
+
+    style C1_join_res fill:#d4edda,stroke:#28a745
+    style C2_resolve_res fill:#d4edda,stroke:#28a745
+    style C3_resolve_res fill:#cce5ff,stroke:#004085
 ```
 
 ## Real-World Example

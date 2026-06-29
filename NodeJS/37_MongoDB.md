@@ -27,19 +27,24 @@ Opening and closing database connections for every request adds network and CPU 
 ## Visual Explanation
 
 ### Connection Pool Lifecycle
-```text
-  [ Express App Bootstrap ] ── Instantiates ──> [ MongoClient ]
-                                                       │
-                                                       ▼ (Opens TCP Connections)
-+---------------------------------------------------------------------------------+
-| [ Connection Pool ]                                                             |
-|   ├── Connection 1  <── Active (Processing User A query)                        |
-|   ├── Connection 2  <── Idle (Waiting in pool)                                  |
-|   └── Connection 3  <── Idle (Waiting in pool)                                  |
-+---------------------------------------------------------------------------------+
-                                                       ▲
-                                                       │ (Borrow & Return)
-  [ HTTP Request Client ] ─── Triggers ───> [ runDatabaseQuery() ]
+```mermaid
+graph TD
+    Bootstrap([Express App Bootstrap]) -->|Instantiates| Client["MongoClient"]
+    Client -->|Opens TCP Connections| Pool
+    
+    subgraph Pool ["Connection Pool"]
+        C1["Connection 1 (Active: Processing Query)"]
+        C2["Connection 2 (Idle: Waiting in pool)"]
+        C3["Connection 3 (Idle: Waiting in pool)"]
+    end
+
+    Req([HTTP Request Client]) -->|Triggers| Query["runDatabaseQuery()"]
+    Query <-->|Borrow & Return| C2
+
+    style Pool fill:#cce5ff,stroke:#004085,stroke-width:2px
+    style C1 fill:#f8d7da,stroke:#dc3545
+    style C2 fill:#d4edda,stroke:#28a745
+    style C3 fill:#d4edda,stroke:#28a745
 ```
 
 ## Real-World Example

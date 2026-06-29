@@ -36,20 +36,22 @@ Memory leaks occur when objects are no longer needed but remain reachable from t
 ## Visual Explanation
 
 ### V8 Memory Footprint (Resident Set Size Layout)
-```text
-+-----------------------------------------------------------------------------+
-| Resident Set Size (RSS) - Total OS Process Memory                           |
-|                                                                             |
-|  +-----------------------------------------------------------------------+  |
-|  | V8 Heap Memory                                                        |  |
-|  |   ├── heapTotal (Allocated space)                                     |  |
-|  |   └── heapUsed  (Active JS Objects, Arrays, Closures)                 |  |
-|  +-----------------------------------------------------------------------+  |
-|                                                                             |
-|  +--------------------------------------+  +-----------------------------+  |
-|  | External Memory (C++ Buffers, Slabs) |  | C++ Code / Native Bindings  |  |
-|  +--------------------------------------+  +-----------------------------+  |
-+-----------------------------------------------------------------------------+
+```mermaid
+graph TD
+    subgraph RSS ["Resident Set Size (RSS) - Total OS Process Memory"]
+        subgraph Heap ["V8 Heap Memory"]
+            heapTotal["heapTotal (Allocated space)"]
+            heapUsed["heapUsed (Active JS Objects, Arrays, Closures)"]
+        end
+        
+        External["External Memory (C++ Buffers, Slabs)"]
+        Native["C++ Code / Native Bindings"]
+    end
+
+    style RSS fill:#f8f9fa,stroke:#333,stroke-width:2px
+    style Heap fill:#cce5ff,stroke:#004085
+    style External fill:#fff3cd,stroke:#ffc107
+    style Native fill:#fee2e2,stroke:#dc2626
 ```
 
 ## Real-World Example

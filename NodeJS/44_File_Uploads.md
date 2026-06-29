@@ -20,15 +20,22 @@ A common mistake is saving uploaded files to a temporary folder on the local ser
 ## Visual Explanation
 
 ### Streaming Upload Pipeline: Local Disk vs. Direct to Cloud (S3)
-```text
-Insecure/Slow (Local Temp Disk write):
-[ Client Upload ] ── TCP Sockets ──> [ Write Temp File to local disk ] ──> [ Upload to S3 ] ──> [ Delete Temp File ]
-                                          │
-                                          └── Danger: If disk fills up, server crashes!
+```mermaid
+graph TD
+    subgraph Disk ["Local Temp Disk Write (Slow & Risky)"]
+        D_Client([Client Upload]) -->|TCP Sockets| D_Temp["Write Temp File to local disk"]
+        D_Temp -->|Upload to| D_S3["AWS S3"]
+        D_S3 -->|Delete| D_Delete["Delete Temp File"]
+        D_Temp -.->|Disk Fills Up| D_Crash([Server Crashes!])
+    end
 
-Secure/Fast (Direct Streaming):
-[ Client Upload ] ── TCP Sockets ──> [ Express Router ] ── Memory Stream Pipe ──> [ AWS S3 Bucket ]
-  - Bytes are written directly to S3 as they arrive in chunks. RAM usage remains flat (~64KB).
+    subgraph Direct ["Direct Streaming (Fast & Flat Memory)"]
+        S_Client([Client Upload]) -->|TCP Sockets| S_Router["Express Router"]
+        S_Router -->|Memory Stream Pipe| S_S3["AWS S3 Bucket"]
+    end
+
+    style D_Crash fill:#f8d7da,stroke:#dc3545,stroke-width:2px
+    style S_S3 fill:#d4edda,stroke:#28a745,stroke-width:2px
 ```
 
 ## Real-World Example

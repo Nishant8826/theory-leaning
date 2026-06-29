@@ -27,16 +27,23 @@ readableStream.pipe(writableStream);
 ## Visual Explanation
 
 ### Processing Large Datasets: Buffer vs. Stream
-```text
-Buffer Approach (High Memory Cost):
-[ File on Disk (50MB) ] ── Loaded all at once ──> [ V8 Memory Heap (50MB) ] ── Send to ──> [ Client ]
+```mermaid
+graph TD
+    subgraph BufferApproach ["Buffer Approach (High Memory Cost)"]
+        Disk1["File on Disk (50MB)"] -->|Loaded all at once| Heap["V8 Memory Heap (50MB)"]
+        Heap -->|Send to| Client1["Client"]
+    end
 
-Stream Approach (Flat Memory Cost):
-[ File on Disk (50MB) ]
-   │
-   ├── [ Chunk 1 (64KB) ] ──> [ RAM (64KB) ] ──> [ Client ] ──> (Free memory)
-   ├── [ Chunk 2 (64KB) ] ──> [ RAM (64KB) ] ──> [ Client ] ──> (Free memory)
-   └── [ Chunk 3 (64KB) ] ──> [ RAM (64KB) ] ──> [ Client ] ──> (Free memory)
+    subgraph StreamApproach ["Stream Approach (Flat Memory Cost)"]
+        Disk2["File on Disk (50MB)"] -->|Chunk 1 (64KB)| RAM1["RAM (64KB)"] -->|Send to| Client2["Client"] -->|Free memory| Done1([RAM cleared])
+        Disk2 -->|Chunk 2 (64KB)| RAM2["RAM (64KB)"] -->|Send to| Client2 -->|Free memory| Done2([RAM cleared])
+        Disk2 -->|Chunk 3 (64KB)| RAM3["RAM (64KB)"] -->|Send to| Client2 -->|Free memory| Done3([RAM cleared])
+    end
+
+    style Heap fill:#f8d7da,stroke:#dc3545,stroke-width:2px
+    style RAM1 fill:#d4edda,stroke:#28a745
+    style RAM2 fill:#d4edda,stroke:#28a745
+    style RAM3 fill:#d4edda,stroke:#28a745
 ```
 
 ## Real-World Example

@@ -47,18 +47,22 @@ This nested structure makes code hard to read, difficult to test, and prone to e
 ## Visual Explanation
 
 ### Execution Flow: Callback Nested Indentation
-```text
-Synchronous Flow:
-[ Start ] ── Line 1 ──> Line 2 ──> Line 3 ──> [ End ]
+```mermaid
+graph TD
+    subgraph Sync ["Synchronous Flow"]
+        S_Start([Start]) --> S_L1[Line 1] --> S_L2[Line 2] --> S_L3[Line 3] --> S_End([End])
+    end
 
-Asynchronous Nested Callbacks:
-[ Line 1: fetchUser() ] ── Registers callback ──> (Offloaded)
-                              │
-                              ▼ (When resolved)
-                      [ Line 2: fetchOrders() ] ── Registers callback ──> (Offloaded)
-                                                    │
-                                                    ▼ (When resolved)
-                                            [ Line 3: fetchDetails() ] ──> Executes ...
+    subgraph Async ["Asynchronous Nested Callbacks (Pyramid of Doom)"]
+        A_L1["Line 1: fetchUser()"] -->|Registers callback & offloads| Offload1([Libuv / OS])
+        Offload1 -->|When resolved| A_L2["Line 2: fetchOrders()"]
+        A_L2 -->|Registers callback & offloads| Offload2([Libuv / OS])
+        Offload2 -->|When resolved| A_L3["Line 3: fetchDetails()"]
+        A_L3 --> A_Exec["Execute final business logic"]
+    end
+
+    style Sync fill:#f8f9fa,stroke:#e2e3e5
+    style Async fill:#fee2e2,stroke:#fca5a5
 ```
 
 ## Real-World Example

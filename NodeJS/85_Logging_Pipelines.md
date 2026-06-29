@@ -44,20 +44,22 @@ const logger = pino(pino.destination({ sync: false }));
 ### Modern Logging Pipeline Architecture
 Instead of having Node.js write to files or make network requests to log aggregators, the containerized standard is to write logs directly to `stdout`. A separate, lightweight daemon collects and ships those logs.
 
-```text
- [ Express App ] ──> Logs JSON to stdout (non-blocking)
-      │
-      ▼ (Container Runtime redirects stdout to log files)
- [ Host Log File (/var/log/pods/...) ]
-      │
-      ▼ (Lightweight Collector watches file changes)
- [ Log Shipper (Fluentbit / Vector) ] ── (Batches & Compresses) ──┐
-                                                                 │
-                                                                 ▼
-                                                    [ Loki / Elasticsearch ]
-                                                                 │
-                                                                 ▼
-                                                     [ Grafana / Kibana ]
+```mermaid
+graph TD
+    App["Express App"] -->|Logs JSON to stdout<br/>Non-blocking| Runtime["Container Runtime<br/>Redirects stdout to files"]
+    Runtime --> Host["Host Log File<br/>(/var/log/pods/...)"]
+    
+    subgraph Shipper ["Logging Pipeline"]
+        Host -->|Watches file changes| Collect["Log Shipper (Fluentbit / Vector)"]
+        Collect -->|Batches & Compresses| DB["Search DB (Loki / Elasticsearch)"]
+    end
+
+    DB -->|Query logs & build panels| UI["Grafana / Kibana Dashboard"]
+
+    style App fill:#cce5ff,stroke:#004085,stroke-width:2px
+    style Collect fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style DB fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style UI fill:#d4edda,stroke:#28a745,stroke-width:2px
 ```
 
 ---

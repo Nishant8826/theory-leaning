@@ -36,16 +36,19 @@ OpenTelemetry is a vendor-neutral, open-source standard for gathering telemetry 
 ### Distributed Request Tracing and Span Hierarchy
 When a client hits an API Gateway, a `Trace ID` is generated. This ID is passed to downstream services via HTTP headers (e.g., `W3C Trace Context`), stitching the entire request flow into a single logical timeline.
 
-```text
-Trace ID: 4bf92f3577b34da6a3ce929d0e0e4736
-
-[Span A: API Gateway (Parent)] ─────────────────────────────────────────────────────────┐
-    │                                                                                   │
-    ├── [Span B: User Auth Service (Child)] ──────────────┐                            │
-    │                                                     │                             │
-    └── [Span C: Checkout Service (Child)] ───────────────┼─────────────────────────────┘
-             │                                            │
-             └── [Span D: SQL DB Update (Grandchild)] ────┘
+```mermaid
+gantt
+    title Trace ID: 4bf92f3577b34da6a3ce929d0e0e4736
+    dateFormat X
+    axisFormat %s
+    section API Gateway
+    Span A: API Gateway (Parent) : active, a1, 0, 100
+    section Auth Service
+    Span B: User Auth Service (Child) : active, a2, 5, 30
+    section Checkout
+    Span C: Checkout Service (Child) : active, a3, 35, 95
+    section Database
+    Span D: SQL DB Update (Grandchild) : active, a4, 50, 90
 ```
 
 ---

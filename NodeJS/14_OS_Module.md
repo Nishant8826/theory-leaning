@@ -23,16 +23,16 @@ The `os.cpus()` method returns an array of objects, each representing an availab
 ## Visual Explanation
 
 ### Dynamic Worker Spawning via Core Count
-```text
-  [ Host OS Hardware Query: os.cpus().length ]
-                       │
-                       ├── Returns: 4 CPU Cores
-                       ▼
-       [ Master Node.js Process ]
-          ├── Spawns ──> [ Cluster Worker 1 (Core 0) ]
-          ├── Spawns ──> [ Cluster Worker 2 (Core 1) ]
-          ├── Spawns ──> [ Cluster Worker 3 (Core 2) ]
-          └── Spawns ──> [ Cluster Worker 4 (Core 3) ]
+```mermaid
+graph TD
+    Query["Host OS Hardware Query:<br/>os.cpus().length"] -->|Returns 4 Cores| Master["Master Node.js Process"]
+    Master -->|Spawns| W1["Cluster Worker 1 (Core 0)"]
+    Master -->|Spawns| W2["Cluster Worker 2 (Core 1)"]
+    Master -->|Spawns| W3["Cluster Worker 3 (Core 2)"]
+    Master -->|Spawns| W4["Cluster Worker 4 (Core 3)"]
+
+    style Query fill:#fff3cd,stroke:#ffc107
+    style Master fill:#cce5ff,stroke:#004085,stroke-width:2px
 ```
 
 ## Real-World Example

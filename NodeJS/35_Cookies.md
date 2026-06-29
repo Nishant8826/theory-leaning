@@ -33,18 +33,20 @@ To prevent tampering:
 ## Visual Explanation
 
 ### Cookie Security Flags Defense
-```text
-  [ Attacker launches XSS Script ] ── Attempts to read ──> [ document.cookie ]
-                                                                   │
-                                                                   ▼
-                                                       Returns EMPTY string!
-                                              (HttpOnly flag blocked script access)
+```mermaid
+graph TD
+    subgraph XSS ["XSS Attack Scenario"]
+        XSS_Script["Attacker launches XSS Script"] -->|Attempts to read| DocCookie["document.cookie"]
+        DocCookie -->|HttpOnly flag active| BlockXSS["Returns EMPTY string!<br/>(Access Blocked)"]
+    end
 
-  [ Attacker launches CSRF Link ] ── Cross-site Request ──> [ target.com/transfer ]
-                                                                   │
-                                                                   ▼
-                                                       Cookie is WITHHELD!
-                                              (SameSite=Strict flag blocked cookie payload)
+    subgraph CSRF ["CSRF Attack Scenario"]
+        CSRF_Link["Attacker launches CSRF Link"] -->|Cross-site Request to| Endpoint["target.com/transfer"]
+        Endpoint -->|SameSite=Strict active| BlockCSRF["Cookie is WITHHELD!<br/>(Request fails authentication)"]
+    end
+
+    style BlockXSS fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style BlockCSRF fill:#d4edda,stroke:#28a745,stroke-width:2px
 ```
 
 ## Real-World Example

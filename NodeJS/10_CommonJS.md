@@ -28,22 +28,27 @@ CommonJS modules export values using `module.exports`. The helper parameter `exp
 ## Visual Explanation
 
 ### The `require()` Resolution Flowchart
-```text
-           [ require(X) called ]
-                     │
-                     ├─────────── Is X a Core Module? ──> YES ──> Return Core Module
-                     │
-                     ▼ (NO)
-        [ Does X start with './', '/', '../'? ]
-           ├── YES ──> [ Resolve local path (checks extensions: .js, .json, .node) ]
-           │                 │
-           │                 └── Not found? ──> [ Check for folder/index.js ]
-           │
-           └── NO  ──> [ Search node_modules/X in current folder ]
-                             │
-                             ├── Not found? ──> [ Traverse UP directory tree ]
-                             │                        ├── Found? ──> Load package
-                             │                        └── Reached Root? ──> Throw MODULE_NOT_FOUND
+```mermaid
+graph TD
+    Start([require X called]) --> CheckCore{Is X a Core Module?}
+    CheckCore -- Yes --> ReturnCore[Return Core Module]
+    CheckCore -- No --> CheckPath{Does X start with './', '/', '../'?}
+    CheckPath -- Yes --> ResolvePath[Resolve local path<br/>checks: .js, .json, .node]
+    ResolvePath --> PathFound{File found?}
+    PathFound -- Yes --> LoadFile[Load File]
+    PathFound -- No --> CheckIndex[Check for folder/index.js]
+    CheckPath -- No --> SearchNodeModules[Search node_modules/X in current folder]
+    SearchNodeModules --> ModulesFound{Found?}
+    ModulesFound -- Yes --> LoadPkg[Load package]
+    ModulesFound -- No --> TraverseUp[Traverse UP directory tree]
+    TraverseUp --> RootReached{Reached Root?}
+    RootReached -- Yes --> ThrowError[Throw MODULE_NOT_FOUND]
+    RootReached -- No --> SearchNodeModules
+
+    style CheckCore fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style CheckPath fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style ModulesFound fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style RootReached fill:#fff3cd,stroke:#ffc107,stroke-width:2px
 ```
 
 ## Real-World Example

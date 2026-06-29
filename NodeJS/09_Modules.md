@@ -31,27 +31,27 @@ Because of this wrapper:
 
 ### Circular Dependencies
 A circular dependency occurs when Module A requires Module B, and Module B requires Module A:
-```text
-[ Module A ] ─── requires ───> [ Module B ]
-     ▲                             │
-     └───────── requires ──────────┘
+```mermaid
+graph LR
+    ModuleA["Module A"] -->|requires| ModuleB["Module B"]
+    ModuleB -->|requires (returns incomplete copy)| ModuleA
+
+    style ModuleA fill:#f8d7da,stroke:#dc3545,stroke-width:2px
+    style ModuleB fill:#f8d7da,stroke:#dc3545,stroke-width:2px
 ```
 In Node's module system, when Module B requires Module A, it receives an **incomplete copy** of Module A's exports because Module A has not finished executing. This can result in variables from Module A resolving to `undefined` inside Module B.
 
 ## Visual Explanation
 
 ### The Wrapping and Execution Flow
-```text
-  [ raw_code.js ]
-        │
-        ▼ (Wrap step)
-  [ (function(exports, require, module, __filename, __dirname) { ... raw_code ... }) ]
-        │
-        ▼ (Pass context parameters)
-  [ V8 Compiler compiles wrapping function ]
-        │
-        ▼ (Execute)
-  [ Run with parameters bound to active file details ]
+```mermaid
+graph TD
+    Raw["raw_code.js"] -->|Wrap step| Wrapped["Module Wrapper Function<br/>(function(exports, require, module, __filename, __dirname) { ... raw_code ... })"]
+    Wrapped -->|Pass context parameters| Compile["V8 Compiler compiles wrapping function"]
+    Compile -->|Execute| Execute["Run with parameters bound to active file details"]
+
+    style Wrapped fill:#cce5ff,stroke:#004085,stroke-width:2px
+    style Execute fill:#d4edda,stroke:#28a745,stroke-width:2px
 ```
 
 ## Real-World Example

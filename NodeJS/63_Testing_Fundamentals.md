@@ -5,15 +5,20 @@ Writing tests is not just about finding bugs. A comprehensive test suite acts as
 ### The Testing Pyramid
 The **Testing Pyramid** is a framework that describes the optimal distribution of test types in an application:
 
-```text
-       / \
-      /   \
-     / E2E \     <-- Focus on critical user flows (Slow, expensive, few)
-    /-------\
-   /  Integration \  <-- Verify database/API integrations (Medium speed, moderate count)
-  /-----------------\
- /      Unit         \ <-- Verify individual functions/modules (Fast, cheap, many)
-/---------------------\
+```mermaid
+graph TD
+    subgraph Pyramid ["Testing Pyramid"]
+        E2E["E2E Tests<br/>Focus on critical user flows<br/>(Slow, expensive, few)"]
+        Integration["Integration Tests<br/>Verify database/API integrations<br/>(Medium speed, moderate count)"]
+        Unit["Unit Tests<br/>Verify individual functions/modules<br/>(Fast, cheap, many)"]
+        
+        E2E --> Integration
+        Integration --> Unit
+    end
+
+    style E2E fill:#f8d7da,stroke:#dc3545,stroke-width:2px
+    style Integration fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style Unit fill:#d4edda,stroke:#28a745,stroke-width:2px
 ```
 
 1. **Unit Tests (Base)**: Test isolated code components (like a single function or helper module) in isolation, mocking all external dependencies. They are fast to run and cheap to write.
@@ -46,14 +51,20 @@ Code coverage measures how much of your codebase is executed during test runs:
 ## Visual Explanation
 
 ### Unit Test (Isolated) vs. Integration Test (Integrated)
-```text
-Unit Test Configuration (Fast, mocked):
-[ User Service Test ] ── calls ──> [ User Service ] ── queries ──> [ Mock Database Stub ]
-                                                                       (Returns fake object in RAM)
+```mermaid
+graph TD
+    subgraph Unit ["Unit Test Configuration (Fast, Mocked)"]
+        UTest["User Service Test"] -->|calls| UService["User Service"]
+        UService -->|queries| Stub["Mock Database Stub<br/>(Returns fake object in RAM)"]
+    end
 
-Integration Test Configuration (Slower, physical I/O):
-[ User Controller Test ] ── calls ──> [ User Controller ] ── queries ──> [ Test Database (Docker/Postgres) ]
-                                                                             (Writes table rows to disk)
+    subgraph Integration ["Integration Test Configuration (Slower, Physical I/O)"]
+        ITest["User Controller Test"] -->|calls| UController["User Controller"]
+        UController -->|queries| DB["Test Database<br/>(Docker / Postgres, writes to disk)"]
+    end
+
+    style Stub fill:#d4edda,stroke:#28a745
+    style DB fill:#f8d7da,stroke:#dc3545
 ```
 
 ## Real-World Example

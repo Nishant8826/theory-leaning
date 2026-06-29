@@ -29,20 +29,23 @@ Using an ODM like Mongoose provides a built-in defense layer. Mongoose casts val
 ## Visual Explanation
 
 ### Password Extraction using $regex
-```text
-Attack Goal: Extract the admin's password.
-Attack Query sent by Client:
-POST /api/login
-{
-  "username": "admin",
-  "password": { "$regex": "^a" }  (Checks if password starts with 'a')
-}
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Attacker as Attacker Client
+    participant Server as Express Server
+    participant DB as MongoDB Database
 
-Server execution path:
-1. Server queries: User.findOne({ username: "admin", password: { $regex: "^a" } })
-2. If the query returns a user record, the server returns 200 OK. The attacker learns the password starts with 'a'.
-3. If the query fails, the attacker tries "^b", "^c", and so on.
-4. By iterating through characters, the attacker extracts the complete password hash!
+    Attacker->>Server: POST /api/login {"username": "admin", "password": {"$regex": "^a"}}
+    Server->>DB: User.findOne({ username: "admin", password: { $regex: "^a" } })
+    alt Match Found
+        DB-->>Server: Return User Record
+        Server-->>Attacker: HTTP 200 OK (Attacker learns first char is 'a')
+    else No Match
+        DB-->>Server: Return Null
+        Server-->>Attacker: HTTP 401 Unauthorized
+    end
+    Note over Attacker, Server: Repeat with "^b", "^c", etc. to extract full hash
 ```
 
 ## Real-World Example

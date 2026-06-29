@@ -21,17 +21,24 @@ Do not hardcode HTML strings inside your JavaScript code. Use a template engine 
 ## Visual Explanation
 
 ### Asynchronous Email Queue Pipeline
-```text
-  [ Client Signup Request ]
-              │
-              ▼ (Fast Write - 2ms)
-   [ Express Controller ] ── Writes Task ──> [ Redis Queue (BullMQ / Bee-Queue) ]
-              │                                          │
-              ▼ (Instant Response)                       ▼ (Poll asynchronously)
-     [ Return 201 Created ]                     [ Background Job Worker ]
-                                                         │
-                                                         ▼ (Network Call - 3s)
-                                                [ Email Provider API ] ──> Sends Email
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Client as Client Browser
+    participant App as Express Controller
+    participant Redis as Redis Queue (BullMQ)
+    participant Worker as Background Job Worker
+    participant Provider as Email Provider API (SendGrid)
+
+    Client->>App: Client Signup Request
+    App->>Redis: Writes Task (Fast Write - 2ms)
+    App-->>Client: Return 201 Created (Instant Response)
+    Note over Worker, Redis: Asynchronous polling
+    Worker->>Redis: Polls next task
+    Redis-->>Worker: Return email task details
+    Worker->>Provider: Send HTTP POST (Network Call - 3s)
+    Provider-->>Worker: HTTP 200 OK
+    Note over Provider: Sends Email to User
 ```
 
 ## Real-World Example

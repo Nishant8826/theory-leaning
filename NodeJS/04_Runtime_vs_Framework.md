@@ -40,16 +40,21 @@ Let's analyze how these runtime architectures handle the bridge between JS and t
 ## Visual Explanation
 
 ### The Backend Stack: From OS to Framework
-```text
-+--------------------------------------------------------------+
-|                   Application Logic (Your Code)              |
-+--------------------------------------------------------------+
-|           Web Framework (Express / Nest.js / Fastify)        | <-- Routing, MVC, HTTP Helpers
-+--------------------------------------------------------------+
-|           Node.js Runtime Environment (V8 / Libuv / APIs)    | <-- Modules, Event Loop, Net, FS
-+--------------------------------------------------------------+
-|                     Operating System Kernel                  | <-- Sockets, File Descriptors, Threads
-+--------------------------------------------------------------+
+```mermaid
+graph TD
+    App["Application Logic (Your Code)"]
+    Framework["Web Framework (Express / Nest.js / Fastify)<br/>Routing, MVC, HTTP Helpers"]
+    Runtime["Node.js Runtime Environment (V8 / Libuv / APIs)<br/>Modules, Event Loop, Net, FS"]
+    OS["Operating System Kernel<br/>Sockets, File Descriptors, Threads"]
+
+    App --> Framework
+    Framework --> Runtime
+    Runtime --> OS
+
+    style App fill:#ffdbec,stroke:#ff69b4,stroke-width:2px
+    style Framework fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    style Runtime fill:#d1fae5,stroke:#059669,stroke-width:2px
+    style OS fill:#fee2e2,stroke:#dc2626,stroke-width:2px
 ```
 
 ## Real-World Example

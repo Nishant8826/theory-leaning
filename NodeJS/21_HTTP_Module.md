@@ -22,22 +22,16 @@ You write response status codes and headers using:
 ## Visual Explanation
 
 ### Request-Response Stream Architecture
-```text
-  [ Client Browser ] ─── TCP Text stream (GET / HTTP/1.1) ───> [ Node.js TCP Socket ]
-                                                                      │
-                                                                      ▼ (C++ Parser)
-                                                           [ http.IncomingMessage ]
-                                                               (Readable Stream)
-                                                                      │
-                                                                      ▼ (Trigger Callback)
-                                                           [ HTTP connection handler ]
-                                                               (Your JavaScript Code)
-                                                                      │
-                                                                      ▼ (Write output)
-                                                           [ http.ServerResponse ]
-                                                               (Writable Stream)
-                                                                      │
-  [ Client Browser ] <─── TCP Bytes (HTTP/1.1 200 OK) <───────────────┘
+```mermaid
+graph TD
+    Client["Client Browser"] -->|TCP Text stream: GET / HTTP/1.1| Socket["Node.js TCP Socket"]
+    Socket -->|C++ Parser| Incoming["http.IncomingMessage<br/>(Readable Stream)"]
+    Incoming -->|Trigger Callback| Handler["HTTP connection handler<br/>(Your JS Code)"]
+    Handler -->|Write output| Response["http.ServerResponse<br/>(Writable Stream)"]
+    Response -->|TCP Bytes: HTTP/1.1 200 OK| Client
+
+    style Incoming fill:#cce5ff,stroke:#004085
+    style Response fill:#d4edda,stroke:#28a745
 ```
 
 ## Real-World Example

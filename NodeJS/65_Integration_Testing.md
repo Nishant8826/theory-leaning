@@ -28,20 +28,22 @@ There are two main strategies to isolate database state in relational databases 
 ## Visual Explanation
 
 ### Integration Test Lifecycle Pipeline
-```text
-  [ Global Setup: Spawn Test Database & Apply Migrations ]
-                             │
-                             ▼
-  [ Test File starts: BeforeAll (Connect to Pool) ]
-                             │
-                             ▼
-  [ Test Case 1 ] ───────────┼───────────> [ Test Case 2 ]
-    ├── BeforeEach: Seed data              ├── BeforeEach: Seed data
-    ├── Run API Request & Query DB         ├── Run API Request & Query DB
-    └── AfterEach: Truncate tables         └── AfterEach: Truncate tables
-                             │
-                             ▼
-  [ Test File finishes: AfterAll (Close Pool & cleanup) ]
+```mermaid
+graph TD
+    Setup([Global Setup: Spawn Test Database & Apply Migrations]) --> FileStart[Test File starts: BeforeAll<br/>Connect to Pool]
+    FileStart --> Before1[BeforeEach: Seed data]
+    Before1 --> Case1["Test Case 1<br/>Run API Request & Query DB"]
+    Case1 --> After1[AfterEach: Truncate tables]
+    After1 --> Before2[BeforeEach: Seed data]
+    Before2 --> Case2["Test Case 2<br/>Run API Request & Query DB"]
+    Case2 --> After2[AfterEach: Truncate tables]
+    After2 --> FileEnd[Test File finishes: AfterAll<br/>Close Pool & cleanup]
+
+    style Setup fill:#cce5ff,stroke:#004085,stroke-width:2px
+    style FileStart fill:#fff3cd,stroke:#ffc107
+    style Case1 fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style Case2 fill:#d4edda,stroke:#28a745,stroke-width:2px
+    style FileEnd fill:#f8d7da,stroke:#dc3545,stroke-width:2px
 ```
 
 ## Real-World Example

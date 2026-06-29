@@ -42,16 +42,19 @@ If a message fails to process after multiple attempts, or is rejected with `requ
 ## Visual Explanation
 
 ### Topic Exchange Routing Pattern
-```text
-Exchange: topic_logs
-Queue A (Bound to: *.error)     <-- Receives: app1.error, db.error
-Queue B (Bound to: db.#)        <-- Receives: db.error, db.info, db.info.replica
+```mermaid
+graph TD
+    Msg1([Incoming Message:<br/>Routing Key = db.error]) --> Exchange{Topic Exchange:<br/>topic_logs}
+    Msg2([Incoming Message:<br/>Routing Key = app1.info]) --> Exchange
+    
+    Exchange -.->|Matches *.error & db.#| QA["Queue A (*.error)<br/>Receives copy"]
+    Exchange -.->|Matches db.#| QB["Queue B (db.#)<br/>Receives copy"]
+    Exchange -.->|No match for app1.info| Discard([Message Discarded])
 
-Incoming Message: Routing Key = db.error
-  - Result: Matches Queue A (*.error) and Queue B (db.#). Both queues receive a copy of the message!
-
-Incoming Message: Routing Key = app1.info
-  - Result: No match. The message is discarded.
+    style Exchange fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style QA fill:#d4edda,stroke:#28a745
+    style QB fill:#d4edda,stroke:#28a745
+    style Discard fill:#f8d7da,stroke:#dc3545,stroke-width:2px
 ```
 
 ## Real-World Example

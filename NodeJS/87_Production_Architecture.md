@@ -38,24 +38,38 @@ To run Node.js in an auto-scaling container environment, the application must be
 ## Visual Explanation
 
 ### Production-Grade Enterprise System Layout
-```text
-                         [ Client Request ]
-                                 │
-                                 ▼
-                     [ DNS / Cloudflare CDN ]
-                                 │
-                                 ▼
-                    [ Application Load Balancer ]
-                                 │
-       ┌─────────────────────────┴─────────────────────────┐
-       ▼ (Availability Zone A)                             ▼ (Availability Zone B)
-  [ Node.js Instance A1 ]                             [ Node.js Instance B1 ]
-  [ Node.js Instance A2 ]                             [ Node.js Instance B2 ]
-       │                                                   │
-       ├─────────────────────────┬─────────────────────────┤
-       ▼                         ▼                         ▼
- [ Redis Cache Master ]    [ PostgreSQL Primary ] ──> [ PostgreSQL Replica ]
-                              (All WRITE Queries)        (All READ Queries)
+```mermaid
+graph TD
+    Client([Client Request]) -->|HTTPS| CDN["DNS / Cloudflare CDN"]
+    CDN --> ALB["Application Load Balancer"]
+    
+    subgraph AZA ["Availability Zone A"]
+        NodeA1["Node.js Instance A1"]
+        NodeA2["Node.js Instance A2"]
+    end
+
+    subgraph AZB ["Availability Zone B"]
+        NodeB1["Node.js Instance B1"]
+        NodeB2["Node.js Instance B2"]
+    end
+
+    ALB --> NodeA1 & NodeA2
+    ALB --> NodeB1 & NodeB2
+
+    NodeA1 & NodeA2 & NodeB1 & NodeB2 -->|Read/Write| Redis[(Redis Cache Master)]
+    NodeA1 & NodeA2 & NodeB1 & NodeB2 -->|Writes| PGPrimary[(PostgreSQL Primary)]
+    NodeA1 & NodeA2 & NodeB1 & NodeB2 -->|Reads| PGReplica[(PostgreSQL Replica)]
+    
+    PGPrimary -->|Asynchronous Replication| PGReplica
+
+    style ALB fill:#fff3cd,stroke:#ffc107,stroke-width:2px
+    style NodeA1 fill:#cce5ff,stroke:#004085
+    style NodeA2 fill:#cce5ff,stroke:#004085
+    style NodeB1 fill:#cce5ff,stroke:#004085
+    style NodeB2 fill:#cce5ff,stroke:#004085
+    style PGPrimary fill:#f8d7da,stroke:#dc3545,stroke-width:2px
+    style PGReplica fill:#fee2e2,stroke:#dc2626
+    style Redis fill:#d4edda,stroke:#28a745,stroke-width:2px
 ```
 
 ---
