@@ -25,7 +25,7 @@ Node.js is an open-source, cross-platform runtime environment built on Chrome's 
 
 <hr/>
 
-### ❓ Q2. **What is V8 engine?**
+### ❓ Q2. **What is V8 engine? How Code is Executed in Node.js**
 
 <details>
 <summary><b>👀 Show Answer</b></summary>
@@ -33,26 +33,94 @@ Node.js is an open-source, cross-platform runtime environment built on Chrome's 
 **Answer:**
 V8 is Google's open-source, high-performance JavaScript and WebAssembly engine, written in C++. It is used in Chrome and Node.js. Its primary role is to compile JavaScript source code directly into native machine code. It does this using **Just-In-Time (JIT) Compilation**, a hybrid approach that provides fast startup times and highly optimized execution.
 
-**The V8 Pipeline (How it works):**
-1. **Ignition (Interpreter):** V8 parses the JavaScript and converts it into a lightweight, intermediate **Bytecode**. Ignition immediately interprets this bytecode, ensuring the application boots up incredibly fast without waiting for heavy compilation.
-2. **Profiling:** While Ignition runs the bytecode, it acts as a monitor, looking for "hot" code (functions that are executed repeatedly).
-3. **TurboFan (Optimizing Compiler):** Once code is identified as "hot", V8 passes it to TurboFan. TurboFan aggressively compiles the bytecode into pure **Native Machine Code** (CPU-specific 1s and 0s). The next time that code runs, it bypasses the interpreter completely and executes the lightning-fast machine code.
-4. **Deoptimization:** If TurboFan's assumptions about the code break (e.g., a function suddenly receives a `String` instead of a `Number`), V8 discards the machine code and deoptimizes back down to the Ignition interpreter to handle the data safely.
+### 🔄 How Code is Executed in Node.js (Start to End)
+When you run a JavaScript file (e.g., `node app.js`), Node.js goes through the following lifecycle to execute your code:
 
-**Detailed Explanation:**
-V8 engine basically acts as a translator written in C++. Both Google Chrome and Node.js rely on this engine. Its primary role is to compile human-readable JavaScript source code directly into native machine code (1s and 0s) to achieve super-fast execution speeds.
+```mermaid
+graph TD
+    Start([Run: node app.js]) --> Init[1. Init Node.js Environment - C++ Layer]
+    Init --> BootEngine[Boot up V8 and Libuv Engines]
+    BootEngine --> Wrap[2. Module Wrapping - IIFE wraps app.js]
+    Wrap --> PassV8[3. Pass code string to V8]
+    PassV8 --> Execute[4. V8 Parses, JIT Compiles and Executes]
+    Execute --> AsyncCheck{5. Is Async Operation?}
+    AsyncCheck -- Yes --> Delegate[Delegate to Libuv - OS Kernel or Thread Pool]
+    AsyncCheck -- No --> SyncExec[Execute Synchronously on Call Stack]
+    Delegate --> Complete[Task Completes]
+    Complete --> CBQueue[6. Callback pushed to Queue]
+    CBQueue --> LoopCheck{7. Is Call Stack Empty?}
+    LoopCheck -- Yes --> EventLoop[Event Loop pushes callback to Call Stack]
+    LoopCheck -- No --> LoopCheck
+    EventLoop --> ExecCB[Execute Callback in V8]
+    ExecCB --> TermCheck{8. More Active Tasks or Timers?}
+    SyncExec --> TermCheck
+    TermCheck -- Yes --> LoopCheck
+    TermCheck -- No --> End([Terminate Node.js Process])
+```
 
-This process is handled via **Just-In-Time (JIT) Compilation**, which consists of 4 main phases:
-1. **Ignition (Interpreter):** As soon as a program runs, Ignition immediately translates the JavaScript source code into **Bytecode** (an intermediate-level language) and begins executing it. This ensures that application startup is instant, with virtually zero boot delay.
-2. **Profiling:** While the code runs, V8's Profiler continuously monitors execution to identify "hot code"—frequently invoked functions or loops.
-3. **TurboFan (Optimizing Compiler):** TurboFan compiles that hot code into optimized **Native Machine Code** (pure binary instructions). The next time this code is executed, the engine completely bypasses the interpreter, running the pre-compiled machine code directly at hardware speed.
-4. **Deoptimization:** Since JavaScript is dynamically typed, variable types can change at runtime. If a function that was previously optimized for `Number` inputs suddenly receives a `String`, the compiler's structural assumptions are violated. When this happens, V8 discards the optimized machine code and safely reverts back to the standard Ignition interpreter (a process called deoptimization).
+1. **Initialization:** Node.js (written in C++) starts up, initializes its environment, and boots up both the **V8 Engine** and **Libuv** (which handles asynchronous events, threading, and the event loop).
+2. **Module Wrapping:** Node.js reads the `app.js` file from disk and wraps the code inside a module wrapper IIFE (Immediately Invoked Function Expression) to provide module-level scoping (so variables don't leak globally):
+   ```javascript
+   (function(exports, require, module, __filename, __dirname) {
+     // Your app.js code actually lives here!
+   });
+   ```
+3. **Passing to V8:** Node.js hands over this wrapped JavaScript source code string to the V8 engine for parsing and compilation.
+4. **V8 JIT Compilation & Execution:** V8 compiles the JavaScript code on-the-fly and executes it line-by-line (using the V8 pipeline detailed below).
+5. **Delegating Asynchronous Tasks:** If V8 encounters asynchronous operations (like reading a file via `fs.readFile` or a network request), it hands them off to the Node.js C++ bindings, which offloads them to **Libuv**.
+6. **Event Loop Callback Queue:** Once Libuv completes an asynchronous task (using the OS kernel or worker threads), it places the callback into the event loop queue.
+7. **Execution of Callbacks:** When V8's call stack is empty, the Event Loop takes the callback from the queue and pushes it onto V8's call stack to be executed.
+8. **Program Termination:** Once all microtasks, event loop queues, and active handles (sockets, timers) are empty, the Node.js process terminates.
 
+---
+
+### ⚙️ The Role of V8 in Node.js
+V8 is the **brain** of Node.js. Node.js itself is just a runtime environment (a wrapper) that provides APIs (like the file system, network access, or path manipulation) that aren't natively part of the JavaScript language. V8 is the actual engine that parses, compiles, optimizes, and executes the JavaScript code.
+
+---
+
+### 🚀 The V8 JIT Compilation Pipeline (The 4 Core Steps)
+V8 achieves high performance by combining an interpreter and an optimizing compiler in a **Just-In-Time (JIT)** pipeline. Here are the 4 key steps from start to end (resolved from the previous duplicate overview):
+
+```mermaid
+graph TD
+    JS["JavaScript Source Code"] --> Parse[Parser]
+    Parse --> AST["Abstract Syntax Tree (AST)"]
+    AST --> Ignition[1. Ignition Interpreter]
+    Ignition --> Bytecode[Generate Bytecode]
+    Bytecode --> Run[Execute Bytecode]
+    Run --> Profiler{2. Profiler: Is Code Hot?}
+    Profiler -- No --> Run
+    Profiler -- Yes --> TurboFan[3. TurboFan Optimizing Compiler]
+    TurboFan --> MachineCode["Highly Optimized Native Machine Code"]
+    MachineCode --> RunMachine[Execute Machine Code at Hardware Speed]
+    RunMachine --> TypeCheck{Type assumptions still valid?}
+    TypeCheck -- Yes --> RunMachine
+    TypeCheck -- No (Type changed) --> Deopt[4. Deoptimization]
+    Deopt --> Ignition
+```
+
+1. **Ignition (Interpreter):** 
+   - **What it does:** V8 parses the JavaScript code into an Abstract Syntax Tree (AST), and then Ignition translates it into an intermediate **Bytecode**.
+   - **Why:** Bytecode is quick to generate. This allows the application to start instantly with virtually zero boot delay. Ignition begins executing this bytecode immediately.
+   
+2. **Profiling (Monitor):** 
+   - **What it does:** As Ignition runs the bytecode, a built-in profiler monitors the program execution.
+   - **Why:** It looks for "hot code"—frequently executed functions, loops, or paths that are run repeatedly.
+
+3. **TurboFan (Optimizing Compiler):** 
+   - **What it does:** Once a block of code is flagged as "hot," V8 passes its bytecode to TurboFan. TurboFan aggressively compiles it directly into highly optimized **Native Machine Code** (CPU-specific binary instructions).
+   - **Why:** Subsequent executions of this hot function completely bypass the interpreter and run directly on the CPU at hardware speed, dramatically improving execution performance.
+
+4. **Deoptimization (Failsafe):** 
+   - **What it does:** JavaScript is dynamically typed. TurboFan optimizes machine code based on *assumptions* about type consistency (e.g., assuming a function only receives `Numbers`). If those assumptions are violated at runtime (e.g., the function suddenly receives a `String`), V8 discards the optimized machine code.
+   - **Why:** It safely rolls back (deoptimizes) execution to the **Ignition interpreter** to handle the new type dynamically and safely, before potentially profiling it again.
 
 > 💡 **Interviewer Focus:**
-- Emphasize JIT compilation (the balance between fast startup via Ignition and peak performance via TurboFan).
-- Mention the transition from Bytecode to Native Machine Code based on "hot" paths.
-- Mention that Deoptimization acts as the failsafe for dynamic types.
+- **End-to-End Execution Flow:** Be ready to describe how Node.js starts up, wraps the code, and utilizes V8 for execution and Libuv for async tasks.
+- **JIT Compilation:** Explain how V8 balances fast startup (via Ignition interpreter/bytecode) and maximum execution speed (via TurboFan optimizer/machine code).
+- **Deoptimization:** Explain how V8 recovers from type changes in a dynamic language.
+
 
 </details>
 
