@@ -20,6 +20,7 @@
 | 10 | **AWS** | [View Prep Material](./10_AWS.md) | ✅ Completed |
 | 11 | **DevOps** | [View Prep Material](./11_DevOps.md) | ✅ Completed |
 | 12 | **JS Output Questions** | [View Prep Material](./12_JS_Output_Questions.md) | ✅ Completed |
+| 13 | **Eminence Mohali Prep** | [View Prep Material](./eminance_mohali.md) | ✅ Completed |
 
 ---
 

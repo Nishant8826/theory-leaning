@@ -256,10 +256,103 @@ In a **Multi-tenant SaaS Platform (like Slack or Jira)**, users can select a "Da
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-- `useMemo` returns a **memoized value**. It only recalculates the value when one of the dependencies has changed.
-- `useCallback` returns a **memoized callback function**. It is useful when passing callbacks to optimized child components that rely on reference equality to prevent unnecessary renders.
+**Answer:**
+Both hooks are used for performance optimization in React by caching values between renders, but they serve different purposes:
+*   **`useMemo`** caches the **result of a calculation** (a value).
+*   **`useCallback`** caches the **function definition itself** (a function reference).
 
-> 💡 **Interviewer Focus:** `useMemo` is for values, `useCallback` is for functions. Both are for optimization.
+In fact, `useCallback(fn, deps)` is just syntactic sugar for `useMemo(() => fn, deps)`.
+
+---
+
+### 1. `useMemo` (Caching Values)
+Used to avoid running expensive CPU-heavy computations on every single render.
+
+#### **Code Example:**
+```javascript
+import { useMemo } from 'react';
+
+function ProductList({ products, filterTerm }) {
+  // Expensive calculation: filtering and sorting thousands of items
+  const filteredProducts = useMemo(() => {
+    console.log("Filtering products..."); // Only logs when products or filterTerm changes
+    return products
+      .filter(p => p.name.includes(filterTerm))
+      .sort((a, b) => a.price - b.price);
+  }, [products, filterTerm]); // Recalculates only when these change
+
+  return (
+    <ul>
+      {filteredProducts.map(p => <li key={p.id}>{p.name} - ${p.price}</li>)}
+    </ul>
+  );
+}
+```
+
+---
+
+### 2. `useCallback` (Caching Function References)
+Used to maintain **reference equality** of callback functions passed down as props to optimized child components.
+
+#### **The Reference Problem in React:**
+In JavaScript, functions are objects, and objects are compared by reference. In React, a function defined inside a component is recreated on every render:
+```javascript
+const handleSave = () => { ... }; // New function instance on every single render!
+```
+If you pass `handleSave` as a prop to a child component, the child will re-render on every parent render—**even if** the child is wrapped in `React.memo`—because the function reference changed. `useCallback` preserves the reference.
+
+#### **Code Example:**
+```javascript
+import { useState, useCallback, memo } from 'react';
+
+// Optimized Child Component
+const HeavyButton = memo(({ onClick, label }) => {
+  console.log(`Rendering button: ${label}`); // Only renders once, doesn't re-render on parent changes
+  return <button onClick={onClick}>{label}</button>;
+});
+
+function ParentComponent() {
+  const [count, setCount] = useState(0);
+
+  // useCallback keeps the exact same function reference between renders
+  const handleClick = useCallback(() => {
+    console.log("Button clicked!");
+  }, []); // Empty dependencies = function reference never changes
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>Increment Count</button>
+      
+      {/* HeavyButton will NOT re-render when count updates */}
+      <HeavyButton onClick={handleClick} label="Submit Form" />
+    </div>
+  );
+}
+```
+
+---
+
+### 📊 Comparison at a Glance
+
+| Feature | `useMemo` | `useCallback` |
+| :--- | :--- | :--- |
+| **What it caches** | The **value returned** by a function. | The **function instance** itself. |
+| **What it returns** | Whatever the callback computes (objects, arrays, strings). | The exact callback function passed in. |
+| **Primary Use Case** | Skipping expensive, heavy recalculations. | Maintaining reference equality for props passed to `React.memo` children. |
+| **Syntax** | `useMemo(() => value, [deps])` | `useCallback(() => { ... }, [deps])` |
+
+---
+
+### ⚠️ Common Interviewer Trap: Over-Optimization
+**"Should we wrap every function and value in `useCallback`/`useMemo`?"**
+*   **No.** Caching has an overhead cost. React must allocate memory to store the previous values/functions and run a dependency array reference comparison (`===`) on every single render.
+*   Wrapping a cheap calculation (like `1 + 1` or a simple click event handler on a standard `<button>`) makes your application **slower** due to this overhead.
+*   **Only use them when:**
+    1.  Performing heavy, complex calculations (e.g. loops, filters, data parses).
+    2.  Passing callback functions to child components wrapped in `React.memo`.
+    3.  A function or value is used as a dependency in another hook (like `useEffect`).
+
 </details>
 <hr/>
 
@@ -378,10 +471,37 @@ class ErrorBoundary extends React.Component {
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-Middleware provides a third-party extension point between dispatching an action and the moment it reaches the reducer. It is used for logging, crash reporting, talking to an asynchronous API, routing, etc.
-**Examples:** Redux Thunk, Redux Saga.
+**Answer:**
+**Redux Middleware** is an interceptor that sits between dispatching an action and the moment it reaches the reducer. 
 
-> 💡 **Interviewer Focus:** Understanding that middleware intercepts actions.
+#### **📦 The Post Office Analogy:**
+*   **Action:** You mail a package.
+*   **Reducer:** The destination sorting facility.
+*   **Middleware:** The post office clerk checking the package. The clerk intercepts the package before it travels, inspects it (logging), adds insurance (modifying data), or redirects/blocks it (asynchronous actions/security).
+
+Whenever an action is dispatched, it runs through the middleware first. The middleware can inspect, modify, cancel, or delay the action, or run asynchronous code.
+
+#### **💻 Simple Code Example (Custom Logger Middleware):**
+Every middleware in Redux has access to the `store` (which has `dispatch` and `getState`) and follows a triple-nested function pattern:
+```javascript
+const loggerMiddleware = (store) => (next) => (action) => {
+  console.log('1. Action Dispatched:', action.type);
+  console.log('2. Current State:', store.getState());
+  
+  // 'next(action)' passes the action to the next middleware, or finally the reducer
+  const result = next(action); 
+  
+  console.log('3. New State:', store.getState());
+  return result;
+};
+```
+
+---
+
+> 💡 **Interviewer Focus:**
+- Explain that middleware **intercepts actions** before they update the state.
+- Give common examples of middleware usage: logging (`redux-logger`), handling async APIs (`redux-thunk`, `redux-saga`), and crash reporting.
+
 </details>
 <hr/>
 
@@ -389,9 +509,46 @@ Middleware provides a third-party extension point between dispatching an action 
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-Redux Thunk is a middleware that allows you to write action creators that return a function instead of an action. The thunk can be used to delay the dispatch of an action, or to dispatch only if a certain condition is met. This is ideal for async operations like fetching data.
+**Answer:**
+**Redux Thunk** is a middleware that allows you to write action creators that return a **function** instead of a plain action object.
 
-> 💡 **Interviewer Focus:** Essential for handling side effects in Redux without Saga.
+#### **❌ The Problem with Basic Redux:**
+By default, Redux only understands actions that are plain JavaScript objects (e.g., `{ type: 'ADD_TODO', payload: 'Buy Milk' }`). Because objects are synchronous, you **cannot** put asynchronous logic (like `fetch` API calls) directly inside an action.
+
+#### **✅ The Solution (Redux Thunk):**
+Redux Thunk intercepts dispatched items. 
+*   If you dispatch a **plain object**, Thunk does nothing and passes it to the reducer.
+*   If you dispatch a **function**, Thunk catches it, calls the function, and passes the `dispatch` and `getState` methods into it. You can then run your async code inside that function and dispatch a standard action once the data arrives.
+
+#### **💻 Simple Code Example (Fetching User Data Async):**
+```javascript
+// A Thunk Action Creator (returns a function instead of a plain object)
+const fetchUser = (userId) => {
+  return async (dispatch, getState) => {
+    // 1. Dispatch a sync action to show a loading spinner in UI
+    dispatch({ type: 'FETCH_USER_START' });
+
+    try {
+      // 2. Perform the async API request
+      const response = await fetch(`/api/users/${userId}`);
+      const data = await response.json();
+
+      // 3. Dispatch a sync action with the data once it resolves
+      dispatch({ type: 'FETCH_USER_SUCCESS', payload: data });
+    } catch (error) {
+      // 4. Dispatch a sync action if the request fails
+      dispatch({ type: 'FETCH_USER_FAILURE', error: error.message });
+    }
+  };
+};
+```
+
+---
+
+> 💡 **Interviewer Focus:**
+- Emphasize that Thunk is "syntactic sugar" for writing async logic in Redux.
+- Make sure to outline the flow: Dispatch a function $\to$ Thunk interceptor runs it $\to$ Run async task $\to$ Dispatch final standard action object.
+
 </details>
 <hr/>
 
@@ -2741,6 +2898,245 @@ render(
 Generates unique, stable ID strings that are consistent across server and client renders, preventing hydration mismatch errors on accessibility elements.
 
 > 💡 **Interviewer Focus:** Accessibility hydration optimization.
+</details>
+<hr/>
+
+### ❓ Q101. **What is Redux Toolkit (RTK) and how does it solve classic Redux boilerplate issues?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+**Answer:**
+**Redux Toolkit (RTK)** is the official, recommended way to write Redux logic. It was created to address the three common complaints about classic Redux:
+1. "Configuring a Redux store is too complicated."
+2. "I have to add a lot of packages to get Redux to do anything useful."
+3. "Redux requires too much boilerplate code."
+
+---
+
+### 🛠️ Classic Redux vs. Redux Toolkit
+
+#### 1. Store Configuration
+*   **Classic Redux:** Required manually configuring middleware, enhancers, compose tools, and setting up Redux DevTools extension bindings.
+*   **Redux Toolkit:** `configureStore()` automatically combines your slice reducers, adds default middlewares (like `redux-thunk` for async operations, and dev checks for state mutation/non-serializable values), and turns on Redux DevTools out of the box.
+
+#### 2. Writing Reducer Logic (Immer Integration)
+*   **Classic Redux:** Reducers had to be pure functions that did not mutate state. Developers had to write complex nested object copies using the spread operator (`...`).
+*   **Redux Toolkit:** `createSlice()` integrates **Immer** under the hood. This allows you to write code that looks like it is "mutating" state directly (e.g. `state.push()`), but Immer automatically translates it into safe, immutable state updates.
+
+**Classic Redux (Manual nesting copy):**
+```javascript
+case ADD_TODO:
+  return {
+    ...state,
+    todos: [
+      ...state.todos,
+      { id: action.id, text: action.text, completed: false }
+    ]
+  };
+```
+
+**Redux Toolkit (Mutative-looking syntax with Immer):**
+```javascript
+const todoSlice = createSlice({
+  name: 'todos',
+  initialState: [],
+  reducers: {
+    addTodo: (state, action) => {
+      // Immer automatically handles immutable copy operations behind the scenes!
+      state.push({ id: action.payload.id, text: action.payload.text, completed: false });
+    }
+  }
+});
+```
+
+#### 3. Action Creators and Action Types
+*   **Classic Redux:** Required manually defining string action constants (e.g. `const ADD_TODO = 'ADD_TODO'`) and writing separate Action Creator functions.
+*   **Redux Toolkit:** `createSlice()` automatically generates corresponding action creators and action types behind the scenes based on your reducer names.
+
+---
+
+> 💡 **Interviewer Focus:**
+- Emphasize **Immer** and how it simplifies reducer logic without violating state immutability.
+- Explain that **Redux Toolkit is still Redux** under the hood; it is just a set of tools and best practices wrapper.
+- Highlight `createSlice` and `configureStore` as the core APIs.
+
+</details>
+<hr/>
+
+### ❓ Q102. **What is "Hydration" in React, and how do you resolve a "Hydration Mismatch" error?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+**Answer:**
+**Hydration** is the process where client-side JavaScript reads the static pre-rendered HTML sent by the server, matches it with the React component structure, and attaches event listeners (like click handlers) to make the page interactive.
+
+---
+
+### 🚨 What is a Hydration Mismatch?
+A **Hydration Mismatch** occurs when the HTML rendered on the server is different from the HTML rendered during the first paint on the client. When React runs the hydration phase, it detects this difference and throws an error (e.g., *"Text content did not match..."* or *"Expected server HTML to contain a `<div>` in `<a>`"*).
+
+#### **Common Causes:**
+1.  **Directly using client-only variables during SSR:** Using values like `window`, `localStorage`, `document`, or client-specific screen width/height, which are `undefined` on the Node server but defined in the browser.
+2.  **Date/Time Stamps:** Using `new Date()` or random values (like `Math.random()`) during rendering. The server renders the date at `12:00:00`, but the client loads the JS and renders it at `12:00:01`, causing a discrepancy.
+3.  **Invalid HTML Nesting:** Browsers auto-correct malformed HTML. For example, if you render a `<div>` inside a `<p>` tag (which is invalid HTML), the browser parses it into separate blocks, while React's virtual DOM structure still expects them nested.
+
+---
+
+### 🛠️ Solutions to Resolve Mismatches
+
+#### 1. Use `useEffect` for Client-Side Only Data (Recommended)
+Force the client-only rendering to occur *after* the initial hydration has completed:
+
+```javascript
+import { useState, useEffect } from 'react';
+
+function MyComponent() {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true); // Runs only in the browser after hydration
+  }, []);
+
+  // Server renders the loading state, client renders the client-only value post-hydration
+  return (
+    <div>
+      {isClient ? localStorage.getItem('theme') : 'Loading theme...'}
+    </div>
+  );
+}
+```
+
+#### 2. Suppress Warnings (For unavoidable discrepancies)
+If a mismatch cannot be avoided (e.g., rendering timestamps), you can suppress the React warning by adding the `suppressHydrationWarning` prop:
+```javascript
+<span suppressHydrationWarning>
+  {new Date().toLocaleTimeString()}
+</span>
+```
+*Note: This only works one level deep, and does not fix underlying layout mismatches.*
+
+#### 3. Disable SSR for Specific Components (Next.js Dynamic Imports)
+If a component relies heavily on browser APIs, you can import it dynamically and disable Server-Side Rendering:
+```javascript
+import dynamic from 'next/dynamic';
+
+const MapComponent = dynamic(() => import('./MapComponent'), {
+  ssr: false, // Disables server-side pre-rendering for this component
+});
+```
+
+---
+
+> 💡 **Interviewer Focus:**
+- Define **Hydration** clearly (attaching event listeners to server HTML).
+- Discuss the dangers of using client APIs (`window`/`localStorage`) during initial render.
+- Explain the role of `useEffect` to safely shift browser-specific rendering to the client.
+
+</details>
+<hr/>
+
+### ❓ Q103. **What are the new hooks and features introduced in React 19?**
+<details>
+<summary><b>👀 Show Answer</b></summary>
+
+**Answer:**
+React 19 introduces several enhancements focused on simplifying asynchronous states, forms, and performance optimization:
+
+---
+
+### 1. Actions (Asynchronous State Management)
+React 19 introduces native support for **Actions**—functions that execute async operations (like API calls) inside event handlers. React automatically handles pending states, errors, and sequential execution.
+
+```javascript
+// Before React 19: Manual isLoading state tracking
+const [isPending, setIsPending] = useState(false);
+const handleClick = async () => {
+  setIsPending(true);
+  await updateData();
+  setIsPending(false);
+};
+
+// React 19: Using transitions for automatic pending state tracking
+const [isPending, startTransition] = useTransition();
+const handleClick = () => {
+  startTransition(async () => {
+    await updateData(); // React tracks this async lifecycle automatically
+  });
+};
+```
+
+---
+
+### 2. New Hooks in React 19
+
+#### A. `useActionState` (Formerly `useFormState`)
+Designed specifically for handling HTML form actions. It takes a form submission function and returns the state (response) and a form dispatch trigger. It automatically tracks `isPending`.
+```javascript
+const [state, formAction, isPending] = useActionState(
+  async (prevState, formData) => {
+    const error = await updateProfile(formData.get("username"));
+    if (error) return error;
+    return "Profile updated successfully!";
+  },
+  null
+);
+
+return (
+  <form action={formAction}>
+    <input type="text" name="username" />
+    <button type="submit" disabled={isPending}>Update</button>
+    {state && <p>{state}</p>}
+  </form>
+);
+```
+
+#### B. `useFormStatus`
+Eliminates passing props manually to deep child elements inside forms. It behaves like a Context reader, accessing parent form status (like `pending`).
+```javascript
+import { useFormStatus } from 'react-dom';
+
+function SubmitButton() {
+  const { pending } = useFormStatus(); // Reads status of parent form element
+  return <button type="submit" disabled={pending}>Submit</button>;
+}
+```
+
+#### C. `useOptimistic`
+Used to render optimistic UI updates during asynchronous actions, making the interface feel faster. If the request fails, React rolls back the state automatically.
+```javascript
+// Returns optimisticState and a function to trigger the optimistic update
+const [optimisticTodos, addOptimisticTodo] = useOptimistic(
+  todos,
+  (state, newTodo) => [...state, { text: newTodo, pending: true }]
+);
+```
+
+#### D. The `use` API
+A new API that allows reading Promises or Context inline. Unlike React hooks, `use` can be called inside conditional statements and loops.
+```javascript
+import { use } from 'react';
+
+function WeatherWidget({ weatherPromise }) {
+  // Suspends component until the promise resolves
+  const weather = use(weatherPromise); 
+  return <p>Temperature: {weather.temp}°C</p>;
+}
+```
+
+---
+
+### 3. The React Compiler (React Forget)
+Perhaps the biggest architectural change: React 19 introduces a build-time **React Compiler**.
+*   **What it does:** Automatically memoizes components, props, and dependencies.
+*   **Why it matters:** It renders manually caching values/callbacks with `useMemo` and `useCallback` largely obsolete. React automatically optimizes rendering performance.
+
+---
+
+> 💡 **Interviewer Focus:**
+- Contrast React 19's **Actions** with manual loading state boilerplate.
+- Detail the purpose of `useActionState`, `useFormStatus`, and `useOptimistic` in modern form designs.
+- Highlight the **React Compiler** as the future of automatic rendering performance optimizations.
+
 </details>
 <hr/>
 
