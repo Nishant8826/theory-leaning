@@ -526,7 +526,7 @@ rawFile.pipe(zipMachine).pipe(zippedFile);
 <summary><b>👀 Show Answer</b></summary>
 
 **Answer:**
-A callback is a function passed as an argument to another function, which is then invoked inside the outer function to complete some kind of routine or action. In Node.js, callbacks are heavily used to manage asynchronous operations, allowing the single-threaded event loop to continue running while waiting for I/O operations (like reading a file) to finish.
+A callback is a function passed to another function as an argument, to complete some kind of asynchronous operation. In Node.js, callbacks are heavily used to manage asynchronous operations, allowing the single-threaded event loop to continue running while waiting for I/O operations (like reading a file) to finish.
 
 **Example (Error-First Callback):**
 ```javascript
@@ -701,16 +701,91 @@ server.listen(3000, () => {
 
 <hr/>
 
-### ❓ Q21. **What is middleware in the context of Express.js?**
+### ❓ Q21. **What is middleware in the context of Express.js? Explain the different types.**
 
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
 **Answer:**
-Middleware functions are functions that have access to the request object (`req`), the response object (`res`), and the next middleware function in the application’s request-response cycle (usually denoted by `next`). They can execute code, modify the request/response objects, end the response cycle, or call `next()` to pass control to the subsequent middleware.
+Express middleware is a function that executes during the request-response cycle, with access to `req`, `res`, and `next()`. It is used to execute code, modify request/response objects, end requests, or call `next()` to pass control to the subsequent middleware (otherwise, the request hangs).
+
+---
+
+### 🧱 The 5 Types of Middleware in Express
+
+#### 1. Application-Level Middleware
+Bound directly to the main `app` instance using `app.use()` or `app.METHOD()` (like `app.get`, `app.post`). It runs for all routes or specific routes on the app.
+```javascript
+const app = express();
+
+// Runs for every single request
+app.use((req, res, next) => {
+  console.log(`${req.method} request received at ${new Date().toISOString()}`);
+  next(); // Pass control to the next function
+});
+
+// Runs only for /user/:id routes
+app.get('/user/:id', (req, res, next) => {
+  if (req.params.id === '0') return res.status(400).send('Invalid User ID');
+  next();
+}, (req, res) => {
+  res.send('User Dashboard');
+});
+```
+
+#### 2. Router-Level Middleware
+Works exactly like Application-Level middleware, except it is bound to an instance of `express.Router()`. It is used to modularize routes.
+```javascript
+const router = express.Router();
+
+// Bound only to this router's sub-routes
+router.use((req, res, next) => {
+  console.log('Router-specific authentication check...');
+  next();
+});
+
+router.get('/profile', (req, res) => {
+  res.send('Profile Page');
+});
+
+app.use('/admin', router); // Mount the router on app
+```
+
+#### 3. Error-Handling Middleware
+Defined with **exactly 4 arguments** instead of 3: `(err, req, res, next)`. Even if you don't use `next`, you must include it in the signature for Express to recognize it as an error-handling middleware.
+```javascript
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Something went wrong!' });
+});
+```
+
+#### 4. Built-in Middleware
+Express has built-in middleware functions that handle common tasks without needing external npm modules:
+*   **`express.json()`**: Parses incoming requests with JSON payloads (available in Express 4.16.0+).
+*   **`express.urlencoded()`**: Parses incoming requests with URL-encoded payloads.
+*   **`express.static()`**: Serves static assets such as HTML files, images, and CSS.
+```javascript
+app.use(express.json());
+app.use(express.static('public')); // Serves files from "public" directory
+```
+
+#### 5. Third-Party Middleware
+Packages installed via npm to add extra functionality to the request-response pipeline.
+```javascript
+const cookieParser = require('cookie-parser');
+const cors = require('cors');
+
+app.use(cors());          // Enables Cross-Origin Resource Sharing
+app.use(cookieParser());  // Parses HTTP cookie headers into req.cookies
+```
+
+---
 
 > 💡 **Interviewer Focus:**
-- Common use cases: authentication, logging, body parsing (e.g., JSON), and error handling.
+- Emphasize the vital role of the `next()` function (preventing request hanging).
+- Be clear about the 4-parameter signature for error-handling middleware (`err, req, res, next`).
+- Discuss middleware execution order (sequential in the order they are defined/registered via `app.use`).
 
 </details>
 
@@ -930,9 +1005,102 @@ When Node.js downloads a massive 1GB video, it doesn't load 1GB into memory at o
 
 **Answer:**
 File uploads are usually handled by using multipart form data. Since Express cannot parse `multipart/form-data` out of the box, libraries like **Multer** or **Busboy** are used as middleware. They parse the incoming stream of file data, save it to a temporary directory, and attach metadata to the `req.file` object for further processing.
+---
+
+### 🌊 Understanding the "Incoming Stream"
+When a client uploads a file:
+1. **The HTTP Request as a Stream:** In Node.js, the incoming HTTP request (`req`) is a **Readable Stream**.
+2. **Chunk-by-Chunk Processing:** As the file data travels over the network, it arrives in small buffers (chunks). 
+3. **Piping to Destination:** A parser (like `busboy` or `multer`) intercepts the incoming request stream, parses the `multipart/form-data` boundaries on-the-fly, and pipes the binary stream of the file directly to its final destination (e.g., local disk via `fs.createWriteStream` or cloud storage like AWS S3).
+4. **Why this matters:** If a user uploads a 5GB video, Node.js does **not** load 5GB into RAM. It only keeps a tiny buffer (typically ~64KB) in memory at any given millisecond. This prevents the server from running Out of Memory (OOM) and crashing.
+
+---
+
+### 💻 Code Example: File Upload using Express & Multer
+
+**Multer** is the standard middleware for Express that wraps `busboy` (an event-driven stream parser) for ease of use.
+
+```javascript
+const express = require('express');
+const multer  = require('multer');
+const path = require('path');
+const app = express();
+
+// 1. Configure Storage Engine (Pipes the stream directly to Disk)
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/'); // Directory where files will be stored
+  },
+  filename: (req, file, cb) => {
+    // Retain original extension but rename to avoid naming conflicts
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+// 2. Initialize Multer with Storage Config & Limits
+const upload = multer({ 
+  storage: storage,
+  limits: { fileSize: 10 * 1024 * 1024 } // Limit: 10MB
+});
+
+// 3. Define Upload Route (Single File)
+app.post('/upload', upload.single('avatar'), (req, res) => {
+  // Access file metadata attached by Multer
+  if (!req.file) {
+    return res.status(400).send('No file uploaded.');
+  }
+  
+  res.json({
+    message: 'File uploaded successfully!',
+    filename: req.file.filename,
+    size: req.file.size
+  });
+});
+
+app.listen(3000, () => console.log('Server started on port 3000'));
+```
+
+---
+
+### 🔄 Under the Hood: Event-Driven Stream Parsing (Busboy)
+If you were to handle it without Multer, you would listen directly to the request stream:
+
+```javascript
+const http = require('http');
+const Busboy = require('busboy');
+const fs = require('fs');
+
+http.createServer((req, res) => {
+  if (req.method === 'POST' && req.headers['content-type'].includes('multipart/form-data')) {
+    const busboy = Busboy({ headers: req.headers });
+
+    // Triggered when a file stream is detected in the request body
+    busboy.on('file', (name, fileStream, info) => {
+      const { filename } = info;
+      const saveTo = fs.createWriteStream(`./uploads/${filename}`);
+      
+      // Pipe the incoming file stream directly to the disk write stream
+      fileStream.pipe(saveTo);
+    });
+
+    busboy.on('close', () => {
+      res.writeHead(200, { 'Connection': 'close' });
+      res.end('Upload complete!');
+    });
+
+    // Pipe the raw request stream into the busboy parser stream
+    req.pipe(busboy);
+  }
+}).listen(3000);
+```
+
+---
 
 > 💡 **Interviewer Focus:**
-- Mention `multipart/form-data` and a library like Multer.
+- Explain that **`req` is a Readable Stream**, and file upload parsers must use **piping** to forward chunks directly to disk/S3.
+- Emphasize **memory safety**: Streaming prevents loading entire files into RAM.
+- Explain the role of `multipart/form-data` boundaries in distinguishing multiple files and fields in a single HTTP request body.
 
 </details>
 
@@ -1021,7 +1189,7 @@ A session is a way to persist data (like user identity) across multiple HTTP req
 
 **Traditional Sessions (Stateful):**
 Sessions are managed by creating a unique **Session ID** (a random string) for the user upon login. 
-1. The server saves this ID in a server-side database (like Redis) alongside the user's data.
+1. The server saves this ID in a server-side database alongside the user's data.
 2. The server sends the ID to the client's browser as a Cookie.
 3. On every subsequent request, the browser sends the Cookie, and the server does a database lookup to see who the ID belongs to. The server has to *remember* the state.
 
@@ -1069,7 +1237,10 @@ Prefixing with **`Bearer`** is crucial because:
 1. **Identifies the Schema**: It tells the server what type of authentication is being used. Common schemas include `Basic` (for raw credentials), `Digest`, and `Bearer` (for token-based OAuth2/JWT). Without it, the server wouldn't know whether to parse the credentials as a Base64 username/password, an API key, or a JWT.
 2. **The "Bearer" Concept**: "Bearer" literally means "the holder". Similar to a "bearer bond" or "bearer cheque" in finance, whoever presents the token is granted access. The server doesn't need to perform extra checks to prove ownership of the token.
 
-
+#### 🔍 Comparison of Key Schemes:
+*   **`Basic`**: Credentials are sent as a simple Base64-encoded string of `username:password` (e.g., `Authorization: Basic dXNlcm5hbWU6cGFzc3dvcmQ=`). It is stateless and simple, but highly insecure without HTTPS because it can easily be decoded back to plaintext.
+*   **`Digest`**: An older, more secure alternative to Basic. Instead of sending the password directly, the client sends a cryptographic hash of the username, password, and server-provided challenge parameters (such as a *nonce*). This prevents simple eavesdropping but is complex to implement and has been largely replaced by token-based systems.
+*   **`Bearer`**: The client sends a cryptographically signed token (like a JWT) that was generated upon login. The server validates the token's signature to authenticate the request, meaning raw credentials (like username and password) only travel over the network once during the initial login step.
 
 ---
 
@@ -1247,10 +1418,66 @@ These are settings that change based on where the code is running (e.g., local d
 <summary><b>👀 Show Answer</b></summary>
 
 **Answer:**
-The `crypto` module is a core Node.js module providing cryptographic functionality (OpenSSL wrappers). It is used for hashing passwords, creating random tokens, encrypting sensitive data, and verifying digital signatures.
+The `crypto` module is a core Node.js module providing cryptographic functionality (OpenSSL wrappers). It is used for hashing data, creating random secure tokens, encrypting sensitive data (symmetric/asymmetric), and verifying signatures.
+
+#### 💻 Code Examples:
+
+**1. Generating a Secure Random Token (e.g., for password resets):**
+```javascript
+const crypto = require('crypto');
+
+// Generates 32 cryptographically strong random bytes and converts to hex string
+const resetToken = crypto.randomBytes(32).toString('hex');
+console.log(resetToken); 
+// Output: '5f9c9b...'
+```
+
+**2. Generating a SHA-256 Hash (e.g., for verifying file integrity):**
+```javascript
+const crypto = require('crypto');
+
+const data = 'importantSecretData';
+const hash = crypto.createHash('sha256').update(data).digest('hex');
+console.log(hash); 
+// Output: '4c3e8a...' (One-way hash, cannot be reversed)
+```
+
+**3. Symmetric Encryption and Decryption (using `aes-256-gcm`):**
+```javascript
+const crypto = require('crypto');
+
+const algorithm = 'aes-256-gcm';
+const secretKey = crypto.randomBytes(32); // Must be stored securely in env
+const iv = crypto.randomBytes(16);        // Initialization Vector (unique per message)
+
+// Encrypt function
+function encrypt(text) {
+  const cipher = crypto.createCipheriv(algorithm, secretKey, iv);
+  let encrypted = cipher.update(text, 'utf8', 'hex');
+  encrypted += cipher.final('hex');
+  const authTag = cipher.getAuthTag().toString('hex'); // Auth tag prevents tampering (GCM mode)
+  return { encrypted, iv: iv.toString('hex'), authTag };
+}
+
+// Decrypt function
+function decrypt(encryptedText, ivHex, authTagHex) {
+  const decipher = crypto.createDecipheriv(algorithm, secretKey, Buffer.from(ivHex, 'hex'));
+  decipher.setAuthTag(Buffer.from(authTagHex, 'hex'));
+  let decrypted = decipher.update(encryptedText, 'hex', 'utf8');
+  decrypted += decipher.final('utf8');
+  return decrypted;
+}
+
+const payload = encrypt('Sensitive credit card data');
+console.log('Encrypted payload:', payload);
+
+const original = decrypt(payload.encrypted, payload.iv, payload.authTag);
+console.log('Decrypted message:', original); // 'Sensitive credit card data'
+```
 
 > 💡 **Interviewer Focus:**
-- Modern libraries like `bcrypt` or `argon2` are preferred for passwords over raw `crypto`.
+- Emphasize that **passwords should NOT be hashed using raw `crypto` hashing** (like SHA-256) because they are vulnerable to brute-force and rainbow table attacks. Instead, use specialized slow hashing libraries like `bcrypt` or `argon2` which include built-in salt and work-factor tuning.
+- Explain the role of the **Initialization Vector (IV)** and **Authentication Tag** (in authenticated encryption modes like GCM) to prevent replay and ciphertext modification attacks.
 
 </details>
 
@@ -1262,13 +1489,63 @@ The `crypto` module is a core Node.js module providing cryptographic functionali
 <summary><b>👀 Show Answer</b></summary>
 
 **Answer:**
-`console.log` is synchronous and lacks features for production. To implement proper logging, use specialized libraries like **Winston**, **Pino**, or **Morgan** (for HTTP requests). These libraries support:
-- Log levels (info, warn, error, debug).
-- Formatting (JSON output for log aggregators).
-- Multiple transports (saving to a file, database, or sending to Datadog/CloudWatch).
+While `console.log` is convenient for local development, it is **unsuitable for production applications**. Instead, professional Node.js systems use structured logging libraries like **Winston**, **Pino**, or **Morgan**.
+
+---
+
+### ⚠️ Why `console.log` is bad in production:
+1. **Performance (Blocking):** In Node.js, writing to `process.stdout` (which `console.log` uses) is **synchronous** when writing to terminals or files. This blocks the single-threaded event loop, degrading server performance under high loads.
+2. **No Log Levels:** You cannot dynamically turn off debug logs or isolate error logs.
+3. **Unstructured Data:** Simple strings are hard to parse. Log aggregation tools (like Elasticsearch, Datadog, or AWS CloudWatch) require structured data (like JSON) to index and search logs efficiently.
+
+---
+
+### 💻 Code Examples:
+
+**1. Enterprise Logging with Winston (JSON & Transports):**
+```javascript
+const winston = require('winston');
+
+const logger = winston.createLogger({
+  level: 'info', // Minimum log level to display
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json() // Formats log as a JSON object
+  ),
+  transports: [
+    new winston.transports.Console(), // Log to stdout/terminal
+    new winston.transports.File({ filename: 'logs/error.log', level: 'error' }), // Log errors only
+    new winston.transports.File({ filename: 'logs/combined.log' }) // Log all logs
+  ]
+});
+
+// Usage
+logger.info('Database connection established successfully');
+logger.warn('Redis connection lost. Retrying...');
+logger.error('Unhandled request exception', { error: err.message, stack: err.stack });
+```
+
+**2. HTTP Request Logger Middleware with Morgan (Express):**
+```javascript
+const express = require('express');
+const morgan = require('morgan');
+const app = express();
+
+// Standard Apache format request logger
+app.use(morgan('combined')); 
+
+app.get('/', (req, res) => {
+  res.send('Hello World');
+});
+```
+
+---
 
 > 💡 **Interviewer Focus:**
-- Explain why `console.log` is bad in production (blocks the thread, difficult to search).
+- **Performance:** Highlight that `console.log` blocks the event loop thread.
+- **Structured Logs:** Emphasize JSON-formatted logs as the industry standard for production aggregation (ELK Stack, Datadog).
+- **Log Levels:** Discuss standard levels (`error`, `warn`, `info`, `http`, `debug`) and when to use them.
+- **High-Performance Alternates:** Mention **Pino** as a modern, extremely fast alternative to Winston that prints logs in raw JSON format to stdout with near-zero overhead.
 
 </details>
 
@@ -1622,13 +1899,99 @@ readable.on('end', () => {
 <summary><b>👀 Show Answer</b></summary>
 
 **Answer:**
-- **Loading:** CJS (`require`) is synchronous and blocking. ESM (`import`) is asynchronous and loads modules in parallel.
-- **Resolution:** CJS resolves paths at runtime (dynamic). ESM resolves modules statically at parse time.
-- **`this` Keyword:** In CJS, top-level `this` is `module.exports`. In ESM, it is `undefined`.
-- **Top-level await:** Only supported natively in ESM.
+CommonJS (CJS) and ES Modules (ESM) have fundamental differences in how they resolve, load, and execute code at runtime. 
+
+---
+
+### 🔍 Clarification on Module Resolution
+*   **In CommonJS (CJS):** Modules are loaded **synchronously** and **dynamically** when `require()` is called. 
+    *   *Correction to common misconception:* Node.js does **not** scan your entire project's code. Instead, when `require()` is called, Node.js resolves the path to the specific file, reads and compiles it, runs the module code once, and caches the exports in `require.cache`. Subsequent `require()` calls to the same path return the cached object instantly.
+*   **In ES Modules (ESM):** Modules are resolved in a **static, three-phase process** (Parsing $\to$ Instantiation $\to$ Evaluation) before a single line of execution code runs:
+    1.  **Parsing/Construction:** The engine parses the main file, scans `import` statements, fetches referenced files, and builds a dependency tree.
+    2.  **Instantiation:** The engine creates "Live Bindings" (references pointing to the same memory slots).
+    3.  **Evaluation:** The engine finally executes the code of the modules.
+
+---
+
+### ⚖️ Detailed Runtime Differences
+
+#### 1. Dynamic vs Static Loading
+*   **CommonJS:** You can call `require()` dynamically inside loops, functions, or `if/else` statements.
+*   **ES Modules:** Static `import` statements must be declared at the top-level. For dynamic loading in ESM, you must use the dynamic `import()` function, which returns a Promise.
+
+**CJS (Dynamic require):**
+```javascript
+if (process.env.NODE_ENV === 'development') {
+  const devLogger = require('./devLogger');
+  devLogger.log('Dev mode active');
+}
+```
+
+**ESM (Static & Dynamic):**
+```javascript
+// Static import (must be at the top level)
+import logger from './logger.js'; 
+
+// Dynamic import (returns a Promise)
+if (process.env.NODE_ENV === 'development') {
+  import('./devLogger.js')
+    .then((devLogger) => devLogger.log('Dev mode active'))
+    .catch((err) => console.error(err));
+}
+```
+
+#### 2. Live Bindings (ESM) vs Value Copies (CJS)
+*   **CommonJS:** When a module exports a primitive value, it exports a **copy** of that value. If the module changes that variable later, the importer will *not* see the update.
+*   **ES Modules:** Employs **Live Bindings**. The importer gets a pointer to the original memory slot. If the exporter updates the variable, the importer sees the change instantly.
+
+**CJS (Values are copied):**
+```javascript
+// counter.js
+let count = 1;
+function increment() { count++; }
+module.exports = { count, increment };
+
+// app.js
+const { count, increment } = require('./counter');
+console.log(count); // 1
+increment();
+console.log(count); // 1 (unchanged because primitive value was copied!)
+```
+
+**ESM (Live Bindings):**
+```javascript
+// counter.js
+export let count = 1;
+export function increment() { count++; }
+
+// app.js
+import { count, increment } from './counter.js';
+console.log(count); // 1
+increment();
+console.log(count); // 2 (reflects the live update!)
+```
+
+#### 3. Circular Dependencies Handling
+*   **CommonJS:** Evaluates code line-by-line during resolution. If a circular dependency occurs, a module might receive a partially evaluated, incomplete `exports` object, which can lead to `undefined` property errors.
+*   **ES Modules:** Instantiation happens before evaluation. The bindings are connected first, so circular references will resolve correctly as long as they aren't accessed immediately before initialization.
+
+---
+
+### 📊 Runtime Summary Table
+
+| Feature | CommonJS (CJS) | ES Modules (ESM) |
+| :--- | :--- | :--- |
+| **Parsing & Execution** | Combined (happens at runtime, line-by-line) | Split (Static parsing/wiring $\to$ Execution) |
+| **Syntax** | `require()` / `module.exports` | `import` / `export` |
+| **Imports resolution** | Synchronous & Blocking | Asynchronous & Non-blocking |
+| **Evaluation mode** | Execution on load (evaluation happens instantly) | Post-instantiation (wiring finishes first) |
+| **Live Bindings** | No (exports are copied objects/primitives) | Yes (direct reference links in memory) |
+| **Top-Level `this`** | Points to `module.exports` | `undefined` |
 
 > 💡 **Interviewer Focus:**
-- Understanding the strict static nature of ESM which allows static analysis tools to work properly.
+- Emphasize **Live Bindings** vs **Value Copies**.
+- Discuss **Static Analysis** (parse-time imports enable bundlers to perform dead code elimination / Tree-Shaking, which is impossible with dynamic `require()`).
+- Explain the role of dynamic `import()` in ESM when conditional loading is required.
 
 </details>
 
@@ -2505,10 +2868,94 @@ In Node.js, you execute this using `redisClient.eval()`.
 <summary><b>👀 Show Answer</b></summary>
 
 **Answer:**
-True parallelism is achieved using `worker_threads`. Unlike `cluster` (memory-isolated processes), worker threads share the same process but have their own V8 instance and Event Loop. Essential for heavy CPU tasks like image processing or AI.
+The `worker_threads` module is a core Node.js module that enables the execution of JavaScript in parallel on multiple threads.
+
+Because Node.js runs your JavaScript code on a **single thread**, performing CPU-intensive tasks (like image resizing, cryptographic operations, parsing massive JSONs, or mathematical calculations) on the main thread will block the Event Loop, causing the entire server to freeze for all users. The `worker_threads` module solves this by offloading heavy CPU-bound tasks to separate threads.
+
+---
+
+### ⚙️ How Worker Threads work
+Unlike `child_process` or `cluster` which spawn entirely separate OS processes with isolated memory spaces, **Worker Threads run inside the same process**.
+*   **Isolated Execution:** Each worker thread has its own isolated **V8 engine instance** and **Event Loop**.
+*   **Shared Memory:** Workers share the same system process and can share memory directly using `SharedArrayBuffer` or transfer binary data using `ArrayBuffer` without copy overhead.
+*   **Communication:** The main thread and worker threads communicate by passing messages via message ports (`parentPort.postMessage()`).
+
+---
+
+### 💻 Code Example: Calculating Fibonacci in a Worker Thread
+
+This example demonstrates how to spawn a worker thread to run a heavy CPU-bound Fibonacci computation in the background, keeping the main thread free.
+
+```javascript
+const { Worker, isMainThread, parentPort, workerData } = require('worker_threads');
+
+if (isMainThread) {
+  // ==========================================
+  // --- MAIN THREAD ---
+  // ==========================================
+  console.log('Main thread: Spawning worker thread...');
+
+  // Spawn a worker running this same file in a new thread
+  const worker = new Worker(__filename, {
+    workerData: { num: 40 } // Pass input data to the worker
+  });
+
+  // Listen for the result from the worker
+  worker.on('message', (result) => {
+    console.log(`Main thread: Received result from worker: ${result}`);
+  });
+
+  worker.on('error', (err) => {
+    console.error('Main thread: Worker encountered an error:', err);
+  });
+
+  worker.on('exit', (code) => {
+    if (code !== 0) {
+      console.error(`Main thread: Worker stopped with exit code ${code}`);
+    } else {
+      console.log('Main thread: Worker completed and exited cleanly.');
+    }
+  });
+
+  console.log('Main thread: Not blocked! Continuing to handle other tasks...');
+
+} else {
+  // ==========================================
+  // --- WORKER THREAD ---
+  // ==========================================
+  
+  // CPU-heavy recursive Fibonacci function
+  function fibonacci(n) {
+    if (n < 2) return n;
+    return fibonacci(n - 1) + fibonacci(n - 2);
+  }
+
+  // Access the passed data
+  const { num } = workerData;
+  const result = fibonacci(num);
+
+  // Send the result back to the main thread
+  parentPort.postMessage(result);
+}
+```
+
+---
+
+### ⚖️ Worker Threads vs Cluster vs Child Process
+
+| Feature | Worker Threads | Cluster | Child Process |
+| :--- | :--- | :--- | :--- |
+| **Execution** | Runs in separate **threads** of the same process. | Runs in separate OS **processes**. | Runs in separate OS **processes**. |
+| **Memory** | Shared memory space (via `SharedArrayBuffer`). | Completely isolated memory. | Completely isolated memory. |
+| **Communication** | Fast (MessagePort / Shared Memory). | Slow (IPC pipe serialization). | Slow (IPC pipe serialization). |
+| **Primary Use Case** | **CPU-bound tasks** (e.g., encryption, compression, calculations). | **Scaling I/O throughput** (running duplicate web server instances across CPU cores). | Running external system commands or independent scripts. |
+
+---
 
 > 💡 **Interviewer Focus:**
-- Differentiate between Concurrency (Event loop) and Parallelism (Worker Threads).
+- Explain the difference between **I/O-bound concurrency** (handled efficiently by the Event Loop/Libuv) and **CPU-bound parallelism** (handled by Worker Threads).
+- Highlight that workers share memory, making data transmission faster than Process IPC.
+- Explain the role of `isMainThread` and `workerData`.
 
 </details>
 
@@ -2520,10 +2967,114 @@ True parallelism is achieved using `worker_threads`. Unlike `cluster` (memory-is
 <summary><b>👀 Show Answer</b></summary>
 
 **Answer:**
-Separate metadata from binary blobs. Node.js receives the stream and pipes it to Object Storage (S3). Metadata is saved in a DB. For downloads, Node.js generates a Pre-Signed URL, offloading the heavy downloading work directly to the CDN or S3.
+Designing a scalable file storage system requires **decoupling** the storage layer from your application servers and offloading heavy network I/O tasks. 
+
+---
+
+### 🏗️ Core Architecture Design
+
+#### 1. Never Store Files on Local Application Servers
+*   **The Problem:** Local storage (disk) is ephemeral, has limited capacity, and breaks scaling. If you run multiple Node.js instances behind a load balancer, a file uploaded to Server A will be inaccessible when a client requests it from Server B.
+*   **The Solution:** Use an independent **Object Storage Service** (like AWS S3, Google Cloud Storage, or Azure Blob Storage).
+
+#### 2. Separate Metadata from Binary Blobs
+*   **Metadata (Database):** Store filenames, sizes, upload timestamps, MIME types, owner IDs, and the S3 URI/Key in your database (e.g., PostgreSQL or MongoDB).
+*   **Binary Data (Object Storage):** Store the raw file payload in S3 under a unique key (e.g., UUID-based keys) to avoid naming collisions.
+
+#### 3. Offload Heavy I/O Using Pre-Signed URLs (The Scalability Secret)
+Having your Node.js server receive a file from a user and upload it to S3, or download a file from S3 and send it to a user, makes Node.js a bottleneck because it consumes CPU cycles, RAM buffers, and network bandwidth.
+*   **For Uploads:** The Node.js server generates a **Pre-Signed Upload URL** (via S3 PUT or POST policy) and returns it to the client. The client uploads the file directly to S3 from the browser, bypassing Node.js completely.
+*   **For Downloads:** The Node.js server generates a **Pre-Signed Download URL**. The client downloads the file directly from S3 or an edge CDN (like CloudFront).
+
+---
+
+### 💻 Code Examples (AWS SDK v3)
+
+#### 1. Generating a Pre-Signed Download URL (Offloading Downloads)
+Instead of streaming files through your server, generate a secure, temporary link directly to the object:
+
+```javascript
+const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
+
+const s3Client = new S3Client({ region: "us-east-1" });
+
+async function getPresignedDownloadLink(bucketName, fileKey) {
+  const command = new GetObjectCommand({
+    Bucket: bucketName,
+    Key: fileKey,
+  });
+
+  // URL will expire and become invalid after 1 hour (3600 seconds)
+  const url = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
+  return url;
+}
+```
+
+#### 2. Streaming Multipart Uploads to S3 (Server-Mediated Fallback)
+If you *must* route file uploads through your server (e.g., to process them on-the-fly), you must stream the chunks directly to S3 using a multipart upload tool to prevent RAM spikes.
+
+```javascript
+const { S3Client } = require("@aws-sdk/client-s3");
+const { Upload } = require("@aws-sdk/lib-storage");
+const fs = require("fs");
+
+const s3Client = new S3Client({ region: "us-east-1" });
+
+async function streamUploadToS3(localFilePath, bucketName, s3FileKey) {
+  const fileStream = fs.createReadStream(localFilePath); // Readable stream
+
+  const upload = new Upload({
+    client: s3Client,
+    params: {
+      Bucket: bucketName,
+      Key: s3FileKey,
+      Body: fileStream, // Pipes the stream directly to S3
+    },
+    queueSize: 4, // Number of concurrent part uploads
+    partSize: 5 * 1024 * 1024, // Size of each uploaded chunk (min 5MB for S3)
+  });
+
+  upload.on("httpUploadProgress", (progress) => {
+    console.log(`Uploaded ${progress.loaded} out of ${progress.total} bytes`);
+  });
+
+  await upload.done();
+  console.log("Upload completed successfully!");
+}
+```
+
+---
+
+### 📊 Scalable Storage Workflow
+
+```mermaid
+sequenceDiagram
+    participant Client as Client Browser
+    participant API as Node.js API Server
+    participant DB as Metadata Database
+    participant S3 as AWS S3 Storage
+    
+    rect rgb(240, 248, 255)
+    Note over Client, S3: Upload Flow (Pre-Signed)
+    Client->>API: 1. Request upload URL (filename, size)
+    API->>DB: 2. Save metadata (status: 'pending')
+    API->>S3: 3. Request Pre-Signed POST URL
+    S3-->>API: 4. Return Pre-Signed URL
+    API-->>Client: 5. Send Pre-Signed URL to browser
+    Client->>S3: 6. Upload file directly to S3
+    S3-->>Client: 7. Upload successful (201 Created)
+    Client->>API: 8. Confirm upload complete
+    API->>DB: 9. Update status to 'ready'
+    end
+```
+
+---
 
 > 💡 **Interviewer Focus:**
-- Piping streams directly and using Pre-Signed URLs.
+- Emphasize **statelessness**: App servers cannot save state/files locally if they need to scale out.
+- Deeply explain the benefit of **Pre-Signed URLs** (reduces CPU, RAM, and bandwidth bottlenecks on Node.js).
+- Highlight the use of **CDNs** (like CloudFront) in front of S3 to cache files at edge locations globally.
 
 </details>
 
@@ -2876,11 +3427,131 @@ Data without alerts is useless. You should set up alerts in **Prometheus AlertMa
 <summary><b>👀 Show Answer</b></summary>
 
 **Answer:**
-An idempotent API is an API where calling it once has the exact same effect as calling it 100 times. It prevents catastrophic bugs like duplicate credit card charges if a client's network drops and they automatically retry a `POST` request.
-Design: The client generates a unique UUID (Idempotency Key) and sends it in the header. The Node.js server checks Redis to see if that key was processed. If yes, it returns the cached successful response. If no, it processes the payment and saves the key.
+An **idempotent API** is one where making multiple identical requests has the exact same effect on the server state as making a single request. 
+
+---
+
+### 🚨 Why is it important?
+In distributed systems, networks are unreliable. Idempotency prevents catastrophic server bugs caused by **retries**:
+1. **Network Drops:** A client makes a `POST /payments` request. The server successfully charges the user's card but the connection drops before the server can return a `200 OK` response. The client's browser/app times out and retries the request. Without idempotency, the customer is charged twice.
+2. **Double Submissions:** A user clicks a "Submit Order" button multiple times.
+3. **Queue Retries:** Message brokers (like RabbitMQ/Kafka) guarantee *at-least-once* delivery. If a consumer crashes after handling a message but before acknowledging it, the message broker will resend it, causing duplicate processing.
+
+---
+
+### ⚖️ HTTP Method Idempotency Standards
+According to the HTTP specification:
+*   **Idempotent Methods (`GET`, `PUT`, `DELETE`, `HEAD`):** Calling them repeatedly should not change the state of the database after the first call. (e.g., deleting resource `123` once or 10 times results in it being gone).
+*   **Non-Idempotent Methods (`POST`, `PATCH`):** Submitting them multiple times creates a new resource or modifies it cumulatively (e.g., `POST` adds new orders, `PATCH` increments balances). We must manually design these to be idempotent.
+
+---
+
+### 🏗️ The Idempotency Key Design Pattern
+We enforce idempotency for non-idempotent endpoints using the **Idempotency-Key Pattern**:
+1. **Client Action:** The client generates a unique UUID (the `Idempotency-Key`) and sends it in the request header.
+2. **Atomic Lock:** When the request hits the server, the server attempts to save the key to a centralized cache (like Redis) with a status of `"processing"` and an expiry time (e.g., 24 hours) using an atomic `SETNX` (Set-If-Not-Exists) command.
+3. **Collision Check:**
+    *   **Case A (New Key):** The server processes the transaction, updates the Redis key to `"completed"`, saves the resulting HTTP response payload, and returns the response.
+    *   **Case B (Completed Key):** If Redis returns that the key already exists with `"completed"` status, the server completely skips the database/payment logic and immediately returns the cached response.
+    *   **Case C (Active Key):** If the key exists with `"processing"` status, the server returns a `409 Conflict`, indicating that a duplicate request is already in progress.
+
+---
+
+### 💻 Code Example: Express & Redis Idempotency Middleware
+
+```javascript
+const express = require('express');
+const { createClient } = require('redis');
+const { v4: uuidv4 } = require('uuid');
+
+const app = express();
+app.use(express.json());
+const redisClient = createClient();
+
+async function startApp() {
+  await redisClient.connect();
+
+  // 1. Centralized Idempotency Middleware
+  const enforceIdempotency = async (req, res, next) => {
+    const key = req.headers['idempotency-key'];
+    if (!key) {
+      return res.status(400).json({ error: 'Idempotency-Key header is required' });
+    }
+
+    const redisKey = `idempotency:${key}`;
+
+    try {
+      // Try to atomically reserve the key (setting a temporary 60-second lock)
+      const isNewRequest = await redisClient.set(redisKey, JSON.stringify({ status: 'processing' }), {
+        NX: true, // Only set if key does not exist
+        PX: 60000 // Expire after 60 seconds (prevents deadlocks if server crashes)
+      });
+
+      if (!isNewRequest) {
+        // Key already exists. Fetch the record.
+        const record = JSON.parse(await redisClient.get(redisKey));
+
+        if (record.status === 'processing') {
+          return res.status(409).json({ error: 'Duplicate request in progress. Please wait.' });
+        }
+
+        if (record.status === 'completed') {
+          // Serve the cached response directly
+          return res.status(record.statusCode).json(record.responseBody);
+        }
+      }
+
+      // Intercept res.json to capture and save the response on success
+      const originalJson = res.json;
+      res.json = async (body) => {
+        // Save to Redis with a 24-hour expiration
+        await redisClient.set(redisKey, JSON.stringify({
+          status: 'completed',
+          statusCode: res.statusCode,
+          responseBody: body
+        }), {
+          EX: 24 * 60 * 60 // 24 hours TTL
+        });
+
+        // Execute original response sender
+        return originalJson.call(res, body);
+      };
+
+      next();
+    } catch (error) {
+      console.error('Idempotency error:', error);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
+
+  // 2. Sample POST Endpoint enforcing Idempotency
+  app.post('/payments/charge', enforceIdempotency, async (req, res) => {
+    const { amount, userId } = req.body;
+
+    // Simulate complex payment processing (e.g. Stripe API call)
+    console.log(`Processing payment of $${amount} for user ${userId}...`);
+    await new Promise((resolve) => setTimeout(resolve, 2000)); // Sleep 2s
+
+    return res.status(200).json({
+      success: true,
+      transactionId: `txn_${uuidv4().substring(0, 8)}`,
+      amount,
+      timestamp: new Date()
+    });
+  });
+
+  app.listen(3000, () => console.log('Idempotent Server running on port 3000'));
+}
+
+startApp();
+```
+
+---
 
 > 💡 **Interviewer Focus:**
-- It is a fundamental requirement for payment gateways and distributed retries.
+- Explain the role of the `Idempotency-Key` header and **atomic locking** (`SETNX`) to prevent race conditions when two duplicate requests hit the server at the exact same millisecond.
+- Discuss how you handle request failures (e.g., if a payment fails, do you cache the failure, or let the user retry? Generally, allow retry by deleting the key).
+- Highlight the use of HTTP Status `409 Conflict` to safely reject overlapping identical requests.
 
 </details>
 
