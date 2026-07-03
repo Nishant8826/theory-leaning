@@ -156,9 +156,68 @@ HAVING COUNT(*) > 5; -- Aggregate group filter
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-The `GROUP BY` clause groups rows that have the same values in specified columns into summary rows (e.g., finding the total sales per region). It is used alongside aggregate functions like `COUNT()`, `MAX()`, `MIN()`, `SUM()`, and `AVG()`.
+The `GROUP BY` clause is used to **collaborate with aggregate functions** (like `COUNT()`, `SUM()`, `AVG()`, `MIN()`, and `MAX()`) to group rows that share the same values in specified columns into summary rows.
 
-> 💡 **Interviewer Focus:** Point out that columns in the `SELECT` list that are not inside aggregate functions must be declared in the `GROUP BY` clause.
+Without `GROUP BY`, aggregate functions operate on the *entire* table as a single group. With `GROUP BY`, they operate on each group independently.
+
+---
+
+### 💡 The Core Mental Model (Split-Apply-Combine)
+
+When SQL runs a query with `GROUP BY`, it performs three distinct steps:
+1. **Split**: Rows are separated into distinct groups based on the columns specified in `GROUP BY`.
+2. **Apply**: The aggregate function (e.g., `SUM()`, `COUNT()`) is calculated independently for *each* group.
+3. **Combine**: The result groups are combined into a single output table containing one row per unique group.
+
+#### 📊 Step-by-Step Example
+
+Suppose we have a table named `sales`:
+
+| product | quantity |
+| :--- | :--- |
+| Apples | 10 |
+| Bananas | 5 |
+| Apples | 15 |
+| Oranges | 8 |
+| Bananas | 12 |
+
+If we execute:
+```sql
+SELECT product, SUM(quantity) AS total_sold
+FROM sales
+GROUP BY product;
+```
+
+Here is how the database processes it:
+
+1. **Split (Grouping by `product`):**
+   * **Apples group:** `[10, 15]`
+   * **Bananas group:** `[5, 12]`
+   * **Oranges group:** `[8]`
+
+2. **Apply (Calculating `SUM(quantity)`):**
+   * **Apples:** $10 + 15 = 25$
+   * **Bananas:** $5 + 12 = 17$
+   * **Oranges:** $8 = 8$
+
+3. **Combine (Final Output):**
+
+   | product | total_sold |
+   | :--- | :--- |
+   | Apples | 25 |
+   | Bananas | 17 |
+   | Oranges | 8 |
+
+---
+
+### ⚠️ Crucial Rules & Gotchas
+
+1. **The SELECT Rule:** Any non-aggregated column in the `SELECT` clause **must** be listed in the `GROUP BY` clause.
+   * *Invalid:* `SELECT product, region, SUM(quantity) FROM sales GROUP BY product;` (The database doesn't know which `region` to show for the Apples group, as there could be multiple different regions).
+   * *Valid:* `SELECT product, region, SUM(quantity) FROM sales GROUP BY product, region;` (Groups by unique product-region combinations).
+2. **Filtering Groups:** To filter the results of a `GROUP BY` clause, you must use the `HAVING` clause, not `WHERE`. `WHERE` filters individual rows before grouping; `HAVING` filters the groups after aggregation.
+
+> 💡 **Interviewer Focus:** Ensure candidate understands the logical query processing phases (FROM $\rightarrow$ WHERE $\rightarrow$ GROUP BY $\rightarrow$ HAVING $\rightarrow$ SELECT $\rightarrow$ ORDER BY) and explains why non-aggregated SELECT columns are disallowed in strict SQL modes.
 
 </details>
 
@@ -281,14 +340,77 @@ SELECT * FROM products WHERE name LIKE '%cat%';-- Contains "cat" anywhere
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-The `AS` keyword is used to temporarily rename a column or a table with an **alias** for the duration of the query. It improves readability and is useful when joining tables or when columns are named via aggregates.
+The `AS` keyword is used to assign a temporary name—an **alias**—to a column or a table for the duration of a query. It makes query results more readable and simplifies complex queries.
 
 ```sql
 SELECT first_name AS fname, last_name AS lname 
 FROM employees AS emp;
 ```
 
-> 💡 **Interviewer Focus:** Essential when referencing subquery outputs or joining self-referential tables.
+---
+
+### ❓ Is the `AS` keyword mandatory?
+
+**No, the `AS` keyword is optional** in most SQL dialects. You can create an alias simply by placing the alias name after the column or table name separated by a space:
+```sql
+SELECT first_name fname, last_name lname 
+FROM employees emp;
+```
+*(Note: Using `AS` is highly recommended for columns to make queries readable and prevent accidental column omissions from looking like aliases).*
+
+---
+
+### ❓ Will the SQL engine throw an error if we don't use aliases?
+
+It depends on the context:
+
+#### 1. Column Aliases: ❌ No error
+If you don't alias a column (or an expression like `SUM(amount)`), the database will **not** throw an error. It will automatically generate a column header in the result set, which might be:
+* The original column name (e.g., `first_name`).
+* The exact expression string (e.g., `SUM(amount)` or `COUNT(*)`).
+* A system-generated name like `?column?` or `col0`.
+
+#### 2. Subqueries in the `FROM` clause: ⚠️ YES, throws an error
+Most SQL databases (like MySQL, PostgreSQL, and SQL Server) **require** you to name subqueries in the `FROM` clause.
+* **❌ Will fail:**
+  ```sql
+  SELECT * FROM (SELECT * FROM employees WHERE salary > 50000);
+  -- Error: Every derived table must have its own alias (or subquery in FROM must have an alias)
+  ```
+* **✔️ Correct:**
+  ```sql
+  SELECT * FROM (SELECT * FROM employees WHERE salary > 50000) AS high_earners;
+  ```
+
+#### 3. Self-Joins: ⚠️ YES, throws an error
+If you join a table to itself, you must alias the tables to resolve ambiguity.
+* **❌ Will fail:**
+  ```sql
+  SELECT employees.name, employees.name 
+  FROM employees 
+  JOIN employees ON employees.manager_id = employees.id;
+  -- Error: Table/alias 'employees' is not unique or column references are ambiguous
+  ```
+* **✔️ Correct:**
+  ```sql
+  SELECT emp.name AS employee_name, mgr.name AS manager_name 
+  FROM employees AS emp
+  JOIN employees AS mgr ON emp.manager_id = mgr.id;
+  ```
+
+#### 4. Joining two tables with duplicate column names: ❌ No syntax error, but causes application-level bugs
+If you join two different tables that contain columns with the same name (e.g., both tables have `id` or `name` columns) and select them:
+* If you refer to them without the table prefix (e.g., just `id`), the database throws an **ambiguous column reference** error.
+* If you qualify them (e.g., `employees.id`, `departments.id`) but **don't** alias them with `AS`, the SQL engine will **not** throw an error. It returns a result set with identical column headers.
+* **The danger:** When backend application code (Node.js, Python, Java, etc.) reads the rows, it often maps them into JSON/objects. Since object keys must be unique, one column's value will silently overwrite the other.
+* **✔️ Solution:** Use `AS` to rename the overlapping column headers:
+  ```sql
+  SELECT emp.name AS employee_name, dept.name AS department_name 
+  FROM employees emp 
+  JOIN departments dept ON emp.dept_id = dept.id;
+  ```
+
+> 💡 **Interviewer Focus:** Ensure candidate knows that while the `AS` keyword is optional syntactic sugar, **aliasing** itself is grammatically mandatory for subqueries/derived tables and self-joins to resolve structural ambiguity, and practically essential for avoiding key collisions in joined query results.
 
 </details>
 
@@ -358,10 +480,50 @@ A database schema is the skeleton structure that represents the logical configur
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-- **Table:** A physical database object that stores data values directly on disk.
-- **View:** A virtual table defined by a SQL query. It does not store physical data; instead, it executes its query definition on the fly whenever referenced.
+- **Table:** A physical folder containing actual data values stored on disk.
+- **View:** A saved SQL query (a virtual table). It does not store any data itself; it just reads from the base tables in real-time.
 
-> 💡 **Interviewer Focus:** Security advantages of views (exposing a subset of columns to users without sharing access to the underlying table).
+```sql
+-- 1. Create the view in the database
+CREATE VIEW active_users AS
+SELECT id, name, email 
+FROM users 
+WHERE status = 'Active';
+
+-- 2. Query it like a normal table (e.g., from your Node.js app)
+SELECT * FROM active_users;
+```
+
+---
+
+### 💡 Analogy: Notebook vs. Magnifying Glass
+* **Table (Notebook):** Where you write physical pages of data. It takes up real shelf space.
+* **View (Magnifying Glass):** A magnifying glass configured to filter what you see (e.g., *"only show pages with active users"*). It has no pages of its own; it just filters the notebook dynamically.
+
+---
+
+### 📊 Key Differences
+
+| Feature | Table | View |
+| :--- | :--- | :--- |
+| **Storage** | Occupies physical disk space. | Occupies zero data space (only stores the query text). |
+| **Data** | Stores actual records. | Dynamically runs query to fetch records. |
+| **Real-time** | Holds static records until updated. | Always displays real-time data from the base table. |
+| **Indexes** | Supported directly. | Not supported directly (except for *Materialized Views*). |
+
+---
+
+### 🛠️ Why use a View?
+1. **Security:** Hide sensitive columns (like salary or passwords) from certain users by only exposing a view of safe columns.
+2. **Simplicity:** Save complex, multi-table joins as a view so you can query them using simple `SELECT * FROM view_name`.
+3. **Consistency:** Centralize business logic (e.g., definition of an "active account") in one place so that if the rule changes, you only update it once.
+
+---
+
+### 🌟 Bonus: What is a Materialized View?
+A standard view runs its query every time you call it. A **Materialized View** runs the query once and **physically saves the results to disk** (like a table). This makes reading heavy data much faster, though it can become outdated (stale) until refreshed.
+
+> 💡 **Interviewer Focus:** Standard views store zero data and are recalculated on the fly, making them perfect for security and code simplification. Materialized views cache results on disk for speed.
 
 </details>
 
@@ -405,9 +567,57 @@ Referential integrity is a database state where all foreign key values are valid
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-It prevents any insert or update operation from writing a row where the `salary` column is less than or equal to `0`. If violated, the database throws a constraint violation error and rolls back the operation.
+It prevents any insert or update operation from writing a row where the `salary` column is less than or equal to `0`. If violated, the database throws a constraint violation error, rolls back the operation, and prevents the bad data from entering the database.
 
-> 💡 **Interviewer Focus:** Validating basic domain rules at the database level for consistency.
+---
+
+### 💻 Node.js & Express Code Example
+
+Here is how you handle a check constraint error in an Express API route when attempting to insert an employee with an invalid salary.
+
+#### 1. SQL Table Schema Setup
+```sql
+CREATE TABLE employees (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  salary DECIMAL(10, 2) NOT NULL,
+  CONSTRAINT check_positive_salary CHECK (salary > 0)
+);
+```
+
+#### 2. Express Route Handler (Node.js using PostgreSQL `pg` client)
+```javascript
+const express = require('express');
+const { Pool } = require('pg');
+
+const app = express();
+app.use(express.json());
+
+const db = new Pool({ /* DB connection config */ });
+
+app.post('/employees', async (req, res) => {
+  const { name, salary } = req.body;
+
+  try {
+    const query = 'INSERT INTO employees (name, salary) VALUES ($1, $2) RETURNING *';
+    const result = await db.query(query, [name, salary]);
+    
+    return res.status(201).json(result.rows[0]);
+  } catch (error) {
+    // Catch PostgreSQL Check Constraint Violation (Error Code: 23514)
+    if (error.code === '23514') {
+      return res.status(400).json({ 
+        error: 'Validation failed: Salary must be greater than 0.' 
+      });
+    }
+
+    console.error('Database error:', error);
+    return res.status(500).json({ error: 'Internal server error.' });
+  }
+});
+```
+
+> 💡 **Interviewer Focus:** Validating basic domain rules at the database layer (for absolute consistency) versus handling errors gracefully in the application layer (Node.js/Express) by catching constraint codes (like Postgres state `23514`) and returning appropriate HTTP status codes (like `400 Bad Request`).
 
 </details>
 
@@ -418,18 +628,60 @@ It prevents any insert or update operation from writing a row where the `salary`
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-A primary key consisting of two or more columns. It guarantees that the *combination* of values across these columns is unique for every row, even if individual columns contain duplicates.
+A **Composite Primary Key** is a primary key that consists of **two or more columns** instead of just one. 
+
+While individual columns in a composite key can contain duplicate values, the **combination of values** across all key columns must be completely unique for every row.
+
+---
+
+### 🛠️ Real-World Use Cases
+
+#### 1. Junction Tables (Many-to-Many Relationships) — *Most Common*
+Imagine a system with **Students** and **Courses**. A student can enroll in multiple courses, and a course has multiple students. We use a middle table `student_courses` to track this:
 
 ```sql
-CREATE TABLE order_items (
-  order_id INT,
-  item_id INT,
-  quantity INT,
-  PRIMARY KEY (order_id, item_id)
+CREATE TABLE student_courses (
+  student_id INT,
+  course_id INT,
+  enrollment_date DATE,
+  PRIMARY KEY (student_id, course_id) -- COMPOSITE PRIMARY KEY
 );
 ```
+* **Why it works:** 
+  * Student `1` can enroll in Course `101` $\rightarrow$ `(1, 101)` is valid.
+  * Student `2` can enroll in Course `101` $\rightarrow$ `(2, 101)` is valid (duplicate course ID is allowed).
+  * Student `1` can enroll in Course `102` $\rightarrow$ `(1, 102)` is valid (duplicate student ID is allowed).
+  * Student `1` tries to enroll in Course `101` again $\rightarrow$ `(1, 101)` **fails** with a duplicate primary key error. The composite key naturally blocks duplicate enrollments.
 
-> 💡 **Interviewer Focus:** When to use composite keys (e.g., junction tables resolving many-to-many relationships) vs auto-incrementing IDs.
+#### 2. Multi-Tenant SaaS Databases
+In software-as-a-service (SaaS) apps, different companies (tenants) share the same tables. Every table includes a `tenant_id`. If orders start at `1` for each company:
+* Company A has Order `1`, `2`, `3`
+* Company B has Order `1`, `2`, `3`
+
+```sql
+CREATE TABLE orders (
+  tenant_id INT,
+  order_id INT,
+  amount DECIMAL(10,2),
+  PRIMARY KEY (tenant_id, order_id) -- COMPOSITE PRIMARY KEY
+);
+```
+This ensures order numbers are unique *per company*, but can be repeated across different companies.
+
+#### 3. Version Control / Audit History
+If you are designing a document system (like Google Docs or Wiki pages) that saves document revision histories:
+
+```sql
+CREATE TABLE document_versions (
+  document_id INT,
+  version_number INT,
+  content TEXT,
+  PRIMARY KEY (document_id, version_number) -- COMPOSITE PRIMARY KEY
+);
+```
+This allows Document `5` to have version `1`, `2`, and `3` $\rightarrow$ `(5, 1)`, `(5, 2)`, `(5, 3)`. However, it strictly prevents having two row records for Document `5`, version `2`.
+
+> 💡 **Interviewer Focus:** Know when to use a composite primary key (e.g., junction tables) vs. introducing a surrogate primary key (an auto-incrementing `id` or `UUID` column) plus a unique constraint. Surrogate keys are generally preferred in modern ORMs (like Hibernate/Prisma) because mapping composite keys can require complex configuration.
 
 </details>
 
@@ -490,7 +742,35 @@ JOINs combine rows from two or more tables based on a related column.
 - **`CROSS JOIN`:** Returns the Cartesian product of both tables (combinations of all rows).
 - **`SELF JOIN`:** A regular join where a table is joined with itself (useful for hierarchical structures).
 
-> 💡 **Interviewer Focus:** Ask about performance characteristics (INNER is faster than OUTER) and how to handle `NULL` values generated by outer joins.
+---
+
+### ⚠️ Column Name Collisions in JOINs
+
+If two joined tables have columns with the same name (e.g., both have an `id` or `name` column):
+
+#### 1. In `SELECT`, `WHERE`, or `ON` clauses: ⚠️ YES, throws an error if unqualified
+If you refer to a column name like `id` without specifying which table it belongs to, the database engine will throw an **ambiguous column reference** error.
+* **❌ Will fail:** 
+  ```sql
+  SELECT id FROM employees JOIN departments ON dept_id = id;
+  -- Error: Column 'id' in field list is ambiguous
+  ```
+* **✔️ Correct:**
+  ```sql
+  SELECT employees.id, departments.id FROM employees JOIN departments ON employees.dept_id = departments.id;
+  ```
+
+#### 2. In the final result set: ❌ No error, but causes application bugs
+If you successfully qualify the fields (e.g., `SELECT employees.name, departments.name`), the SQL engine itself will **not** throw an error and will execute the query. However, the final result set will have two columns with the exact same header (`name` and `name`).
+* **The danger:** When backend application code (Node.js, Python, Java, etc.) reads the rows, it often parses them into a hash map or JSON object. Since dictionary/object keys must be unique, **one column's value will overwrite the other**, leading to silent bugs.
+* **✔️ Solution:** Use `AS` to rename the overlapping column headers:
+  ```sql
+  SELECT emp.name AS employee_name, dept.name AS department_name 
+  FROM employees emp 
+  JOIN departments dept ON emp.dept_id = dept.id;
+  ```
+
+> 💡 **Interviewer Focus:** Ask about performance characteristics (INNER is faster than OUTER), handling `NULL` values in outer joins, and resolving column namespace collisions using table prefixes and column aliases.
 
 </details>
 
@@ -1078,17 +1358,68 @@ A deadlock occurs when Transaction 1 holds a lock that Transaction 2 needs, whil
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-Both split data to improve performance but operate at different architectural layers.
-- **Partitioning (Vertical/Horizontal at Table Level):**
-  - Split tables into smaller, manageable chunks *within a single database instance*.
-  - Example: Splitting an `orders` table by year (2024 partitions, 2025 partitions).
-  - Transparent to the application layer.
-- **Sharding (Horizontal Partitioning across Instances):**
-  - Distributes data across *multiple separate database servers/instances*.
-  - Example: Users with IDs 1-1M reside on Server A, IDs 1M-2M reside on Server B.
-  - Requires routing logic in the application layer or a proxy database middleware.
+Both sharding and partitioning split large datasets into smaller, more manageable parts to prevent performance degradation. However, they operate on completely different **architectural levels**.
 
-> 💡 **Interviewer Focus:** Infrastructure complexity scaling. Sharding requires resolving cross-shard joins and distributed transactions.
+---
+
+### 🗂️ 1. Database Partitioning (Local / Single-Server)
+
+Partitioning divides a large table into smaller, distinct logical subsets, but **keeps all of them on the same database server**.
+
+#### Types of Partitioning:
+* **Horizontal Partitioning:** Splitting rows of a table into multiple sub-tables.
+  * *Range Partitioning:* Splitting by date or values (e.g., `orders_2024` for 2024 orders, `orders_2025` for 2025).
+  * *List Partitioning:* Splitting by specific values (e.g., `customers_us` for US region, `customers_eu` for Europe).
+  * *Hash Partitioning:* Using a hash function on a column (e.g., `id % 4`) to distribute rows evenly across 4 partitions.
+* **Vertical Partitioning:** Splitting columns of a table. For example, moving large text or blob columns (like `profile_picture` or `bio`) to a separate table, keeping only frequently read fields (like `username`, `email`) in the main table.
+
+#### ⚡ How it speeds up queries: "Partition Pruning"
+If your query is `SELECT * FROM orders WHERE order_date >= '2025-01-01'`, the database optimizer is smart enough to **only scan the `orders_2025` partition** and skip all others entirely. This is called **Partition Pruning**.
+
+---
+
+### 🌐 2. Database Sharding (Distributed / Multi-Server)
+
+Sharding is **horizontal partitioning across multiple physically separate database servers (instances)**. Each server is called a **Shard**.
+
+```mermaid
+graph TD
+    App[Application Node.js/Go] --> Router{Router / Proxy}
+    Router -->|User ID: 1 - 1M| ShardA[(Shard A - Database Server 1)]
+    Router -->|User ID: 1M - 2M| ShardB[(Shard B - Database Server 2)]
+    Router -->|User ID: 2M - 3M| ShardC[(Shard C - Database Server 3)]
+```
+
+#### Why do we shard?
+A single database server has hardware limits (CPU, RAM, Disk I/O). Partitioning helps with query logic, but it doesn't give you more hardware power. Sharding allows **horizontal scaling (scaling out)** by dividing the load among multiple machines.
+
+#### How it works:
+* A **Shard Key** (e.g., `user_id` or `tenant_id`) is chosen to determine where a record will live.
+* A router or database middleware (like Vitess for MySQL or Citus for PostgreSQL) calculates the hash of the shard key and routes the query to the correct server.
+
+---
+
+### 📊 Side-by-Side Comparison
+
+| Feature | Partitioning | Sharding |
+| :--- | :--- | :--- |
+| **Physical Location** | Single database server (on the same disk/RAM). | Multiple database servers (different hardware/IPs). |
+| **Scaling Type** | **Vertical Scaling** (requires a bigger single machine). | **Horizontal Scaling** (can add cheap, smaller machines). |
+| **Application Layer** | Transparent. Code treats it as a single table. | Complex. Application or middleware must route queries to the right machine. |
+| **Joins** | Joins are fast and standard. | Cross-shard joins are extremely slow or unsupported. |
+| **Transactions** | Standard ACID transactions. | Requires complex **Distributed Transactions** (2-Phase Commit). |
+| **Rebalancing** | Easy to manage. | Very difficult (moving massive data across servers over the network). |
+
+---
+
+### ⚠️ The Great Challenges of Sharding
+
+Before sharding, engineers try indexing, replica databases (read replicas), caching, and partitioning. Sharding is usually a **last resort** because it introduces major complexities:
+1. **The Join Problem:** If you need to join a table on Shard A with a table on Shard B, you cannot do it using standard SQL. You have to write custom application-level code to fetch from both and merge, which is slow.
+2. **The Hotspot Problem:** If one shard key (e.g., a celebrity user account) receives $99\%$ of the traffic, that single shard server will crash while other servers remain idle.
+3. **Operational Overhead:** Backups, schema migrations, and monitoring must be orchestrated across dozens of database instances.
+
+> 💡 **Interviewer Focus:** Ensure the candidate highlights the difference in hardware scaling (partitioning is single-machine, sharding is multi-machine) and understands the architectural complexities introduced by sharding (broken foreign keys, distributed transactions, rebalancing).
 
 </details>
 

@@ -34,6 +34,9 @@ Use this directory to jump directly to any topic or tutorial file.
 | ⚖️ **[20. SQL vs. NoSQL](./20_SQL_Vs_NoSQL.md)** | Expert | CAP Theorem, vertical vs horizontal scaling, Polyglot Persistence implementation. |
 | 🛒 **[21. Final Project](./21_Final_Project.md)** | Expert | Structuring a complete normalized production database for an e-commerce API. |
 | 🌐 **[22. Deployment On EC2](./22_Deployment_On_EC2.md)** | Expert | Setting up PM2, Nginx reverse proxies, SSL/Certbot, AWS RDS, and daily backups. |
+| 🔀 **[23. Database Sharding & Partitioning](./23_Sharding_And_Partitioning.md)** | Expert | Single-server horizontal & vertical partitioning, partition pruning, multi-server database sharding. |
+| 🪵 **[24. CTEs & Recursive Queries](./24_CTEs_And_Recursive_Queries.md)** | Advanced | Common Table Expressions (CTEs) to flatten subqueries, recursive queries for hierarchy trees. |
+| 🪟 **[25. Window Functions](./25_Window_Functions.md)** | Advanced | Performing analytic calculations across rows (rank, lag, lead, running totals) using `OVER`. |
 
 ---
 
@@ -365,3 +368,35 @@ This revision guide is designed for high-density, fast review, focusing on exact
   mysqldump -u root -p ecommerce_db > /backups/backup_$(date +%F).sql
   ```
   * Scheduled to run automatically using system `cron` utility jobs.
+
+---
+
+### 🔀 [23. Database Sharding & Partitioning](./23_Sharding_And_Partitioning.md)
+* **Partitioning (Local Scaling):**
+  * Splitting a table horizontally (by rows using Range, List, or Hash) or vertically (by columns) while keeping it on the same database server.
+  * **Partition Pruning:** The database engine scans only the matching partition and ignores all others, yielding dramatic speedups.
+* **Sharding (Distributed Scaling):**
+  * Splitting a table horizontally across multiple separate physical databases (shards).
+  * Requires a **Shard Key** (like `user_id` or `tenant_id`) to route queries.
+  * **Trade-offs:** Breaks native relationships (no cross-shard joins) and ACID properties (requires two-phase commit distributed transactions).
+
+---
+
+### 🪵 [24. CTEs & Recursive Queries](./24_CTEs_And_Recursive_Queries.md)
+* **Common Table Expressions (CTEs):**
+  * Temporary named result sets declared at the top of a query via `WITH cte_name AS (...)`. Excellent for flattening nested subqueries.
+* **Recursive CTEs:**
+  * Self-referential queries that join back to themselves. Perfect for querying hierarchical tree structures like org charts or categories.
+  * Uses an **Anchor Member** (base case) and a **Recursive Member** (joins recursive logic until empty set returned).
+
+---
+
+### 🪟 [25. Window Functions](./25_Window_Functions.md)
+* **Window Functions (`OVER`):**
+  * Perform analytic calculations across rows related to the current row, **without collapsing them** (unlike `GROUP BY`).
+* **Ranking Functions:**
+  * `ROW_NUMBER()` (sequential, no duplicates), `RANK()` (duplicates allowed, skips next rank index), and `DENSE_RANK()` (duplicates allowed, does not skip ranks).
+* **LAG & LEAD:**
+  * Access preceding (`LAG`) or succeeding (`LEAD`) row values. Perfect for trend analytics (e.g., month-over-month growth).
+* **Filtering constraint:**
+  * Cannot use window functions directly inside a `WHERE` clause because `WHERE` runs before window projections. Must wrap in a CTE to filter.
