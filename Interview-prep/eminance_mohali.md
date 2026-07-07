@@ -1,25 +1,5 @@
 # Eminence Mohali Technical Interview Prep Guide
 
-This guide compiles in-depth explanations and answers for the topics and questions raised during the technical interview at **Eminence Mohali**. It covers system design (rate limiting, WebSocket scaling, database sharding/partitioning, API optimization), infrastructure (VMs vs. Docker, GitHub Actions CI/CD), and frontend development (React hook lifecycles, memoization, Redux Toolkit).
-
-All answers are wrapped in `<details>` tags to enable active recall. Try to answer the question yourself before expanding the accordion!
-
----
-
-## Table of Contents
-1. [API Optimization & Performance](#1-api-optimization--performance)
-2. [Rate Limiting Timing Mechanics](#2-rate-limiting-timing-mechanics)
-3. [Infrastructure: VMs vs. Containers](#3-infrastructure-vms-vs-containers)
-4. [CI/CD & GitHub Actions Workflow](#4-cicd--github-actions-workflow)
-5. [Database Scaling: Sharding vs. Partitioning](#5-database-scaling-sharding-vs-partitioning)
-6. [React Hook Timing & Lifecycles](#6-react-hook-timing--lifecycles)
-7. [React Memoization Techniques](#7-react-memoization-techniques)
-8. [Scaling Sockets in Real-Time Applications](#8-scaling-sockets-in-real-time-applications)
-9. [Redux Store Setup (RTK vs. Legacy)](#9-redux-store-setup-rtk-vs-legacy)
-
----
-
-## 1. API Optimization & Performance
 
 ### ❓ Q1. What roadmap would you follow to optimize an API that takes 45–50 seconds to respond, exceeding a 30-second timeout?
 <details>
@@ -45,15 +25,20 @@ An API taking 45-50 seconds is a major bottleneck, often caused by inefficient d
 1. **Avoid `SELECT *`:**
    * Selecting all columns increases disk I/O, network overhead, and memory usage. Explicitly fetch only the columns required.
 2. **Optimize Joins:**
-   * Ensure that foreign keys used in joins (`JOIN user_profiles ON users.id = user_profiles.user_id`) are indexed.
-   * Select only necessary columns from joined tables instead of returning full schemas.
+   *   **Index Foreign Keys:** Every column used in a `JOIN` condition (e.g., `ON users.id = orders.user_id`) **must** be indexed on both sides. Joining tables on unindexed columns forces the database engine to perform slow **full table scans** for every single comparison.
+   *   **Avoid the N+1 Query Problem (Select-in-Loop):** 
+       *   *The Problem:* Fetching a list of 100 orders, and then running a separate query in a loop to fetch the customer details for each order (`100 + 1 = 101` database round trips).
+       *   *The Solution:* Use a single `INNER JOIN` or `LEFT JOIN` query (or Sequelize `include` / Mongoose `populate`) to fetch all orders and their customer details in **one single database call**.
+   *   **Select Only Needed Columns:** Avoid `SELECT *` across joined tables. If you join `users` with `orders` and `profiles`, specify exactly which columns you need (e.g. `SELECT users.username, orders.total`). This minimizes network payload transfer and database memory usage.
+   *   **Filter Before Joining (Early Filtering):** Apply filter conditions (`WHERE` clauses) as early as possible so that the database engine joins only the matching subset of rows instead of joining the entire tables first and filtering them afterwards.
+   *   **Use Subqueries / Common Table Expressions (CTEs) for Aggregates:** If you need to join a table to calculate aggregate statistics (e.g. counting the number of comments per post), calculate the counts in a subquery or CTE first, and then perform the join on the aggregated results to avoid large, temporary join tables.
 3. **Indexing:**
    * Add B-Tree indexes on fields frequently used in `WHERE`, `ORDER BY`, or `JOIN` clauses.
    * Use **Composite Indexes** for queries filtering on multiple columns (e.g., `WHERE status = 'active' AND created_at > ...`). *Note: Always respect the leftmost prefix rule.*
 4. **Use Stored Procedures (Where Appropriate):**
    * Stored procedures execute directly on the database engine. By wrapping multiple query steps in a single stored procedure, you eliminate network round trips between the application server and the database server.
 5. **Database Connection Pooling:**
-   * Ensure the application reuse connections instead of establishing a new connection on every single request.
+   * Ensure the application reuses connections instead of establishing a new connection on every single request.
 
 #### Phase 4: Database Scale Out
 * Read/Write splitting (send write operations to the primary DB instance, and read operations to read-replicas).
@@ -62,7 +47,6 @@ An API taking 45-50 seconds is a major bottleneck, often caused by inefficient d
 
 ---
 
-## 2. Rate Limiting Timing Mechanics
 
 ### ❓ Q2. How do you implement IP-based rate limiting with a rolling time window (e.g., 15 minutes) in Node.js, and how do you use the express-rate-limit package?
 <details>
@@ -174,7 +158,6 @@ app.use('/api/', limiter);
 
 ---
 
-## 3. Infrastructure: VMs vs. Containers
 
 ### ❓ Q3. What is the basic difference between a Virtual Machine (VM) and a Docker container?
 <details>
@@ -210,15 +193,16 @@ The fundamental difference lies in their **architecture** and the level at which
 
 ---
 
-## 4. CI/CD & GitHub Actions Workflow
 
-### ❓ Q4. Can you write a GitHub Actions workflow to deploy a React/React Native project and walk through it?
+### ❓ Q4. Can you write a CI/CD pipeline configuration (using GitHub Actions and Jenkinsfile) to deploy a React Web / Mobile application and walk through it?
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-Here are syntax-correct workflows for both **React (Web)** and **React Native (Mobile)**.
+Here are syntax-correct workflows for **GitHub Actions** (React Web and React Native) and **Jenkins** (React Web).
 
-### Option A: React Web Deployment (Deploying to AWS S3 + CloudFront)
+---
+
+### Option A: React Web Deployment using GitHub Actions (AWS S3 + CloudFront)
 Create this file under `.github/workflows/deploy-react-web.yml`:
 
 ```yaml
@@ -319,18 +303,98 @@ jobs:
         run: eas build --platform all --profile production --local=false --non-interactive
 ```
 
-#### Workflow Walkthrough:
-1. **Trigger (`on`):** Defines when the workflow executes (e.g., pushes to `main` or specific release tags).
-2. **Runner (`runs-on`):** Specifies the environment host (here, standard Linux `ubuntu-latest`).
-3. **Checkout (`actions/checkout`):** Fetches the repository code onto the runner.
-4. **Caching (`cache: 'npm'`):** Caches `node_modules` configurations to drastically reduce build times.
-5. **Secrets (`${{ secrets.SECRET_NAME }}`):** Retrieves sensitive keys (AWS API keys, Expo tokens) securely configured in the GitHub repository settings.
+---
+
+### Option C: React Web Deployment using Jenkins (Declarative Jenkinsfile)
+Create this file under `Jenkinsfile` in the project root:
+
+```groovy
+// Jenkinsfile - Defines the deployment pipeline executed by the Jenkins Server
+pipeline {
+    agent any // Executes the build on any available worker node
+    
+    environment {
+        AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+        S3_BUCKET             = 's3://my-react-production-bucket'
+        CLOUDFRONT_DIST_ID    = 'E1A2B3C4D5E6F7'
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout code from Git SCM configured in Jenkins job settings
+                checkout scm
+            }
+        }
+        
+        stage('Install Dependencies') {
+            steps {
+                // Install dependencies exactly matching package-lock.json
+                sh 'npm ci'
+            }
+        }
+        
+        stage('Run Tests') {
+            steps {
+                // Run tests in non-interactive watch-free mode
+                sh 'npm test -- --watchAll=false'
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                // Compile React production build assets to dist/
+                sh 'npm run build'
+            }
+        }
+        
+        stage('Deploy to AWS S3') {
+            steps {
+                // Sync dist/ build assets with S3 bucket and delete removed assets
+                sh "aws s3 sync dist/ ${S3_BUCKET} --delete"
+            }
+        }
+        
+        stage('Invalidate CloudFront Cache') {
+            steps {
+                // Clear CDN cache index so edge servers load new index.html immediately
+                sh "aws cloudfront create-invalidation --distribution-id ${CLOUDFRONT_DIST_ID} --paths '/*'"
+            }
+        }
+    }
+    
+    post {
+        success {
+            echo 'MERN application deployed successfully!'
+        }
+        failure {
+            echo 'Build failed. Check execution console logs.'
+        }
+    }
+}
+```
+
+---
+
+#### Pipeline Walkthrough & Mechanics:
+
+1.  **Triggers:**
+    *   **GitHub Actions:** Uses `on: push` configurations (triggers on branches like `main` or specific tags like `v*`).
+    *   **Jenkins:** Typically triggered via **Git Webhooks** (GitHub pushes trigger a push notification to `/github-webhook/` on the Jenkins server) or **SCM Polling**.
+2.  **Environment Credentials Security:**
+    *   **GitHub Actions:** Uses `${{ secrets.NAME }}` loaded from GitHub Repo Secrets settings.
+    *   **Jenkins:** Uses the `credentials()` helper, mapping secure credentials stored in the Jenkins Global Credentials Store directly to pipeline environment variables securely.
+3.  **Deployment Steps (S3 + CloudFront):**
+    *   **`aws s3 sync --delete`:** Minimizes updates by comparing hashes and uploading only changed files, and deletes deleted files from the S3 bucket.
+    *   **`aws cloudfront create-invalidation`:** Invalidates the cache on CloudFront edge nodes (specifically `index.html`) so users download the new build index script immediately, bypassing old cache entries.
+
+> 💡 **Interviewer Focus:** Pipeline configuration syntax, securing secrets in build environments, optimizing build caching, and understanding the role of CloudFront cache invalidations post-S3 deployment.
 
 </details>
 
 ---
 
-## 5. Database Scaling: Sharding vs. Partitioning
 
 ### ❓ Q5. What is the difference between database sharding and database partitioning, and when do we use each?
 <details>
@@ -349,7 +413,7 @@ Here is the direct comparison between database partitioning and sharding:
 
 *   **Database Sharding (Database/Server-Level Scaling)**
     *   **What it is:** Distributing a database's records across **multiple separate database servers (instances)**.
-    *   **How it works:** The dataset is split horizontally (e.g., users with IDs 1-1M go to Server A, IDs 1M-2M go to Server B). The application layer or a routing middleware directs database operations to the correct server.
+    *   **How it works:** The dataset is split horizontally (e.g., users with IDs 0-1M go to Server A, IDs 1M-2M go to Server B). The application layer or a routing middleware directs database operations to the correct server.
     *   **Primary Goal:** To scale write throughput, memory consumption, connections, and storage capacity when a single server hits its hardware limits.
 
 ---
@@ -434,44 +498,62 @@ async function getUserOrderDetails(userId, userRegion) {
 
 ---
 
-## 6. React Hook Timing & Lifecycles
 
 ### ❓ Q6. Which React hook runs first, and how do React functional hooks map to class-based lifecycle methods?
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
 #### Which Hook Runs First?
-Among the side-effect hooks (`useEffect` and `useLayoutEffect`), **`useLayoutEffect` runs first**.
+Among the side-effect hooks in React, **`useInsertionEffect` runs first**, followed by **`useLayoutEffect`**, and finally **`useEffect`**.
 
-*   **Render Phase:** The component code itself is evaluated. React computes the virtual DOM diff. State initializations and hooks like `useMemo` or `useState`'s callback initializers execute during this phase.
-*   **Commit Phase (Pre-paint):** React updates the actual DOM. Right after the DOM is mutated but **before the browser paints the screen**, **`useLayoutEffect`** fires synchronously. This is ideal for measuring DOM layout or making UI adjustments to avoid flickering.
-*   **Paint Phase:** The browser paints the pixels onto the screen.
-*   **Post-paint Phase:** **`useEffect`** fires asynchronously. This prevents blocking the UI thread and is ideal for API requests, event listeners, or logging.
+Here is the exact execution lifecycle in React 18:
+1.  **Render Phase:** The functional component runs. React evaluates the JSX and computes the virtual DOM diff.
+2.  **`useInsertionEffect` (Pre-DOM Mutations):** Introduced in React 18 for CSS-in-JS libraries. It fires synchronously *before* React mutates the actual DOM, allowing dynamic `<style>` tags to be injected.
+3.  **DOM Mutation:** React updates the real DOM nodes.
+4.  **`useLayoutEffect` (Post-DOM Mutation, Pre-Paint):** Fires synchronously *after* DOM mutations but *before the browser paints* the screen. This allows you to read layout dimensions and make DOM alterations synchronously to prevent visual flickering.
+5.  **Paint Phase:** The browser draws the layout pixels on the screen.
+6.  **`useEffect` (Post-Paint):** Fires asynchronously *after* the paint phase. This ensures that heavy side-effects (like APIs or event listeners) do not block visual rendering.
 
 ---
 
 #### Mapping Class-Based Lifecycles to Functional Hooks:
+Functional components do not have lifecycle methods; instead, they synchronize side-effects with state and props using hooks.
 
-Functional components do not have lifecycles; they use hooks to synchronize side effects with state and prop values. The mapping behaves as follows:
+| Class Lifecycle Method | Hook Equivalent in Functional Components | Key Difference / Detail |
+| :--- | :--- | :--- |
+| **`componentDidMount`** | ```javascript useEffect(() => { /* mount code */ }, []) ``` | Runs exactly once after the initial render. |
+| **`componentDidUpdate`** | ```javascript useEffect(() => { /* update code */ }, [count]) ``` | **Note:** Unlike `componentDidUpdate` (which *only* runs on updates), `useEffect` also fires on the initial mount. To replicate `componentDidUpdate` exactly, you must use a `useRef` to skip the first execution. |
+| **`componentWillUnmount`** | ```javascript useEffect(() => { return () => { /* cleanup */ } }, []) ``` | The returned cleanup function runs when the component is unmounting. |
+| **`shouldComponentUpdate`** | Wrapped in **`React.memo()`** | Bypasses re-rendering the component if its props did not change (performs a shallow comparison). |
 
-| Class Lifecycle Method | Hook Equivalent in Functional Components |
-| :--- | :--- |
-| `componentDidMount` | Run once after the initial render by providing an empty dependency array:<br>```javascript useEffect(() => { /* mount code */ }, []) ``` |
-| `componentDidUpdate` | Triggers when specific state or props change by passing variables into the dependency array:<br>```javascript useEffect(() => { /* update code */ }, [count, user]) ``` |
-| `componentWillUnmount` | Handled by returning a cleanup function from the `useEffect` callback:<br>```javascript useEffect(() => { return () => { /* cleanup code */ } }, []) ``` |
-| `shouldComponentUpdate` | Handled using the Higher-Order Component **`React.memo`** or by memoizing specific computation outputs. |
+##### **Pro-Tip: Replicating `componentDidUpdate` Exactly (Skipping Mount)**
+If you want a hook to run only on state changes and *never* on the initial render:
+```javascript
+import { useEffect, useRef } from 'react';
+
+function useCustomEffect(callback, dependencies) {
+  const isFirstRender = useRef(true);
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return; // Skip the first execution (mount)
+    }
+    return callback();
+  }, dependencies);
+}
+```
 
 </details>
 
 ---
 
-## 7. React Memoization Techniques
 
 ### ❓ Q7. What are the roles of useMemo, useCallback, and React.memo in React memoization?
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-Memoization is a optimization technique used to prevent unnecessary computations and re-renders by caching outputs. React provides three primary tools:
+Memoization is an optimization technique used to prevent unnecessary computations and re-renders by caching outputs. React provides three primary tools:
 
 #### 1. `useMemo`
 *   **Purpose:** Caches the **returned value** of an expensive function.
@@ -509,7 +591,7 @@ Memoization is a optimization technique used to prevent unnecessary computations
 
 #### 3. `React.memo`
 *   **Purpose:** A **Higher-Order Component (HOC)** that prevents an entire component from re-rendering if its props haven't changed.
-*   **Mechanism:** Performs a shallow comparison of props. If props are unchanged, React skips re-rendering the component and reuse the last rendered result.
+*   **Mechanism:** Performs a shallow comparison of props. If props are unchanged, React skips re-rendering the component and reuses the last rendered result.
 *   **Example:**
     ```javascript
     const ChildComponent = React.memo(function Child({ onIncrement }) {
@@ -522,7 +604,6 @@ Memoization is a optimization technique used to prevent unnecessary computations
 
 ---
 
-## 8. Scaling Sockets in Real-Time Applications
 
 ### ❓ Q8. How can sockets be scaled in a real-time chat application?
 <details>
@@ -556,16 +637,19 @@ Scaling real-time socket connections (like WebSockets) involves handling persist
 
 #### 3. Load Balancing with Sticky Sessions
 *   **Problem:** A WebSocket connection starts with an HTTP Handshake (upgrade request). If a standard Round-Robin load balancer routes the upgrade handshake to a different server instance than the initial HTTP polling attempt, the connection will fail.
-*   **Solution:** Configure the load balancer (NGINX, AWS Application Load Balancer) to use **Sticky Sessions (Session Affinity)**, ensuring a client always hits the same server instance during handshakes and reconnects.
+*   **Solution:** Configure the load balancer (Nginx, AWS Application Load Balancer) to use **Sticky Sessions (Session Affinity)**, ensuring a client always hits the same server instance during handshakes and reconnects.
 
-#### 4. System-Level Tune-ups
+#### 4. Distributed State Management (Tracking Online Users)
+*   **Problem:** Storing active user states (e.g., "who is online") in the application memory of Server 1 makes it inaccessible to Server 2, preventing features like real-time user online indicators.
+*   **Solution:** Store active connection metadata in a centralized **Redis** database (e.g., using a Redis Set or Hash). When a client connects, the handling server registers their status in Redis; when they disconnect, the record is removed. Any backend instance can check Redis to verify user presence.
+
+#### 5. System-Level Tune-ups
 *   **Increase File Descriptor Limits (`ulimit`):** By default, Linux OS limits open file descriptors (connections are treated as files). Raise this limit (e.g., to 65535 or higher) on host machines.
 
 </details>
 
 ---
 
-## 9. Redux Store Setup (RTK vs. Legacy)
 
 ### ❓ Q9. How do you set up a Redux store using Redux Toolkit (RTK) vs legacy Redux?
 <details>
@@ -704,5 +788,5 @@ export default store;
 *   **Interview Feedback:** The interviewer concluded the session without any follow-ups and provided positive oral feedback, indicating the session was complete and satisfactory.
 *   **Resolved Open Items:**
     *   **Rate Limiting Timing Mechanics:** Detailed the in-memory rolling window mechanism using a global object tracking arrays of timestamps, and compared it with a production-grade Redis Sorted Set (`zset`) approach.
-    *   **GitHub Actions Workflow Syntax:** Provided syntax-complete CI/CD workflows for both React Web deployment (AWS S3 & CloudFront) and React Native builds (via Expo/EAS CLI).
+    *   **CI/CD Pipeline Configurations:** Provided syntax-complete CI/CD workflows for both React Web deployment (using GitHub Actions and declarative Jenkinsfile to S3/CloudFront) and React Native builds (via Expo/EAS CLI).
 

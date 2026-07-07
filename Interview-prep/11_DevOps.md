@@ -640,29 +640,230 @@ Here is a direct technical comparison:
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-Multi-stage builds allow developers to use multiple `FROM` statements in a single Dockerfile, creating separate temporary build stages to compile code, and copying only the final output binary to a minimal runner stage.
-- **Why it is useful:** It keeps the final production Docker image extremely small by excluding build-time tools, compiler engines, and dependencies (like SDKs, compiler utilities, or source code files).
-- **MERN Stack Production Frontend (React + Nginx) Template:**
-  ```dockerfile
-  # Stage 1: Build React application
-  FROM node:20-alpine AS build-stage
-  WORKDIR /app
-  COPY package*.json ./
-  RUN npm ci
-  COPY . .
-  RUN npm run build
-  
-  # Stage 2: Final runner to serve build via Nginx
-  FROM nginx:stable-alpine
-  # Copy compiled static assets from build-stage to Nginx public html folder
-  COPY --from=build-stage /app/dist /usr/share/nginx/html
-  # Copy custom nginx configuration for client-side routing
-  COPY nginx.conf /etc/nginx/conf.d/default.conf
-  EXPOSE 80
-  CMD ["nginx", "-g", "daemon off;"]
-  ```
+Multi-stage builds allow developers to use multiple `FROM` statements in a single Dockerfile. Each `FROM` instruction begins a new temporary build stage. You can compile code, build assets, and run tests in early stages, and then selectively copy only the final compiled outputs (like static files or binaries) to a minimal, lightweight runner stage.
 
-> 💡 **Interviewer Focus:** Image optimization, separating build environments from runtime environments, and reducing the container's security attack surface.
+- **Why it is useful:** 
+  1. **Minimal Image Size:** Excludes build-time compilers, SDKs, devDependencies, and raw source code from the final production runtime.
+  2. **Reduced Security Attack Surface:** The final container lacks package managers (like npm/yarn) and terminal utilities (like curl or git), reducing vulnerability vectors.
+  3. **Leverages Cache:** Stages can be cached independently, speeding up subsequent CI/CD pipeline builds.
+
+---
+
+#### 🛠️ Production 3-Tier Stack Application Example
+In a standard 3-tier application consisting of a **React/Next.js Frontend**, **Node.js Backend (Express/TS)**, and a **MySQL Database**, we build multi-stage Dockerfiles for the compute layers and orchestrate them together.
+
+##### 1. Tier 1: Next.js Frontend (`frontend/Dockerfile`)
+This utilizes Next.js's native `standalone` output mode to bundle only the necessary files for production, drastically reducing image size from >1GB to ~100MB.
+
+```dockerfile
+# Stage 1: Dependencies install
+FROM node:20-alpine AS deps
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+
+# Stage 2: Build stage
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+# Set environment to production during build (required for Next.js optimizations)
+ENV NODE_ENV=production
+RUN npm run build
+
+# Stage 3: Runner stage (Production)
+FROM node:20-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+# Run as non-root user for security
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+# Copy standalone build bundle, static assets, and public files
+COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+USER nextjs
+EXPOSE 3000
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+
+CMD ["node", "server.js"]
+```
+
+###### 📝 Line-by-Line Explanation:
+* **`FROM node:20-alpine AS deps`**: Uses a lightweight Node.js base image on Alpine Linux for installing dependencies, designated as the `deps` stage.
+* **`WORKDIR /app`**: Creates and sets the active working directory inside the container to `/app`.
+* **`COPY package*.json ./`**: Copies the package description files. Copying these first ensures that dependency installation steps can use Docker cache if dependencies are unchanged.
+* **`RUN npm ci`**: Installs dependencies cleanly and deterministically directly from the lockfile, which is faster and safer for pipelines.
+* **`FROM node:20-alpine AS builder`**: Starts a fresh build stage named `builder` to perform compilation without bloating the final image with dependencies tools.
+* **`COPY --from=deps /app/node_modules ./node_modules`**: Copies the pre-installed `node_modules` from the `deps` stage directly, avoiding repeating the download.
+* **`COPY . .`**: Copies the rest of the application files to the builder directory.
+* **`ENV NODE_ENV=production`**: Sets the build-time environment variable to production (which tells Next.js to enable tree-shaking, minification, and output standalone optimizations).
+* **`RUN npm run build`**: Builds the application, outputting static files and the optimized Next.js server engine.
+* **`FROM node:20-alpine AS runner`**: Starts the third, final production runtime stage. This is the only stage included in the final pushed image.
+* **`WORKDIR /app`** & **`ENV NODE_ENV=production`**: Configures runtime work directory and forces the Node process to execute in production mode.
+* **`RUN addgroup --system --gid 1001 nodejs`**: Creates a low-privilege system group named `nodejs` for the container runtime process.
+* **`RUN adduser --system --uid 1001 nextjs`**: Creates a restricted system user named `nextjs` associated with that group.
+* **`COPY --from=builder /app/public ./public`**: Copies public static files (images, icons) directly from the `builder` stage.
+* **`COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./`**: Copies Next.js's optimized node-server bundle. The `--chown` flag assigns user permissions to our restricted non-root user.
+* **`COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static`**: Copies the compiled front-end JS chunks/CSS.
+* **`USER nextjs`**: Discards root access and forces the container's execution steps to run under the restricted user (`nextjs`) to mitigate security risks.
+* **`EXPOSE 3000`**: Informs the container runtime that the container intends to use network port 3000.
+* **`ENV PORT=3000`** & **`ENV HOSTNAME="0.0.0.0"`**: Configures default port variables and binds host networking endpoints.
+* **`CMD ["node", "server.js"]`**: The runtime command that starts up the standalone Next.js production server.
+
+---
+
+##### 2. Tier 2: Node.js Backend API Server (`backend/Dockerfile`)
+Compiles TypeScript, drops devDependencies, and runs in a minimal environment.
+
+```dockerfile
+# Stage 1: Build & compile TypeScript
+FROM node:20-alpine AS builder
+WORKDIR /usr/src/app
+COPY package*.json tsconfig.json ./
+RUN npm ci
+COPY ./src ./src
+RUN npm run build # Compiles TS to JS inside /dist
+
+# Stage 2: Clean install production dependencies only
+FROM node:20-alpine AS production-deps
+WORKDIR /usr/src/app
+COPY package*.json ./
+RUN npm ci --only=production
+
+# Stage 3: Minimal runtime execution
+FROM node:20-alpine AS runner
+WORKDIR /usr/src/app
+ENV NODE_ENV=production
+# Copy compiled Javascript from builder
+COPY --from=builder /usr/src/app/dist ./dist
+# Copy production node_modules from production-deps
+COPY --from=production-deps /usr/src/app/node_modules ./node_modules
+COPY package*.json ./
+
+USER node
+EXPOSE 5000
+CMD ["node", "dist/server.js"]
+```
+
+###### 📝 Line-by-Line Explanation:
+* **`FROM node:20-alpine AS builder`**: Begins the build stage to compile TypeScript code.
+* **`WORKDIR /usr/src/app`**: Sets the default internal workspace folder.
+* **`COPY package*.json tsconfig.json ./`**: Copies configuration dependencies and TypeScript config specifications.
+* **`RUN npm ci`**: Installs all dependencies, including development tools (like `typescript` and compiler CLI libraries).
+* **`COPY ./src ./src`**: Copies typescript source files.
+* **`RUN npm run build`**: Runs compiler scripts (`tsc`) to convert TS source into runnable Javascript inside `/dist`.
+* **`FROM node:20-alpine AS production-deps`**: Starts a separate temporary stage to acquire a clean, production-only `node_modules` folder.
+* **`RUN npm ci --only=production`**: Runs dependencies downloads, skipping heavy devDependencies (like linters, compilers, and test suites) to save space.
+* **`FROM node:20-alpine AS runner`**: Starts the final runtime image stage.
+* **`COPY --from=builder /usr/src/app/dist ./dist`**: Pulls the compiled production JS files from the `builder` stage.
+* **`COPY --from=production-deps /usr/src/app/node_modules ./node_modules`**: Copies production-only dependencies from the `production-deps` stage.
+* **`USER node`**: Switches to the built-in non-root user `node` for security hardening.
+* **`EXPOSE 5000`**: Tells Docker the backend API server will listen on port 5000.
+* **`CMD ["node", "dist/server.js"]`**: Boots the application by executing the compiled entrypoint JS file.
+
+---
+
+##### 3. Tier 3 & Orchestration: Multi-Container Setup (`docker-compose.yml`)
+Connects the React/Next.js frontend, Node.js backend, and Tier 3 (MySQL database) securely.
+
+```yaml
+version: '3.8'
+
+services:
+  # Tier 3: Database layer
+  db:
+    image: mysql:8.0
+    container_name: mysql_db
+    restart: always
+    environment:
+      MYSQL_DATABASE: app_db
+      MYSQL_ROOT_PASSWORD: root_secure_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - app_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Tier 2: Backend API layer
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: node_backend
+    restart: always
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: root_secure_password
+      DB_NAME: app_db
+      PORT: 5000
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "5000:5000"
+    networks:
+      - app_network
+
+  # Tier 1: Frontend layout layer
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: nextjs_frontend
+    restart: always
+    environment:
+      NEXT_PUBLIC_API_URL: http://backend:5000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - app_network
+
+volumes:
+  mysql_data:
+
+networks:
+  app_network:
+    driver: bridge
+```
+
+###### 📝 Block-by-Block Explanation:
+* **`version: '3.8'`**: Defines the Docker Compose syntax version for compatibility parsing.
+* **`services:`**: Initiates the block detailing each container configuration in the stack.
+* **`db:`**: Defines the database service container.
+  * **`image: mysql:8.0`**: Uses the official, pre-compiled MySQL 8.0 database image.
+  * **`restart: always`**: Sets the policy to automatically reboot the database if it crashes or host restarts.
+  * **`environment:`**: Passes environment configs initializing the database name and root password.
+  * **`ports: - "3306:3306"`**: Maps standard MySQL port 3306 on the host VM to container port 3306.
+  * **`volumes: - mysql_data:/var/lib/mysql`**: Mounts a named volume to ensure database files are preserved on the host disk even if the container is destroyed/rebuilt.
+  * **`healthcheck:`**: Periodically tests container health. `mysqladmin ping` checks if the SQL daemon is fully ready to accept sockets connection.
+* **`backend:`**: Configures the API server container.
+  * **`build:`**: Instructs Compose to compile the container image locally pointing to `/backend` directory.
+  * **`environment:`**: Supplies environmental variables detailing DB host credentials (passing the database service name `db` as host endpoint).
+  * **`depends_on: db: condition: service_healthy`**: Crucial coordination step. The backend will delay its startup sequence until the database container reports its health check as healthy.
+  * **`ports: - "5000:5000"`**: Maps backend routing ports.
+  * **`networks: - app_network`**: Attaches container to the shared bridge network.
+* **`frontend:`**: Defines the user layout tier.
+  * **`environment: NEXT_PUBLIC_API_URL`**: Passes API connection strings.
+  * **`depends_on: - backend`**: Ensures the backend exists before launching frontend.
+* **`volumes: mysql_data:`**: Declares the persistent, named volume storage schema.
+* **`networks: app_network: driver: bridge`**: Defines an isolated, software-defined bridge network so container microservices can securely communicate using local hostname resolution (e.g. `backend` routes directly to the API server).
+
+---
+
+> 💡 **Interviewer Focus:** Image optimization (Next.js standalone build sizes), separating build compilation (TypeScript/webpack compilation) from runner containers, secure non-root user permissions, container dependencies coordination (using `depends_on` healthchecks), and configuration injections.
 
 </details>
 
@@ -753,46 +954,164 @@ In the real industry, organizations use different deployment strategies (types) 
 <details>
 <summary><b>👀 Show Answer</b></summary>
 
-*   **Pod:** The smallest deployable unit in Kubernetes. Represents a wrapper containing one or more containers sharing network and storage resources.
-*   **Deployment:** Declares the desired state of pods (e.g., "run exactly 3 replicas of the Node.js API container"). It manages creating, updating, and deleting pods automatically to maintain this state.
-*   **Service:** An abstraction that defines a logical set of pods and a policy to access them. Since pods are ephemeral and their IPs change constantly, a Service provides a stable, permanent IP address and DNS name.
-*   **Manifest Example (Express API Deployment & Service):**
-    ```yaml
-    apiVersion: apps/v1
-    kind: Deployment
+Kubernetes does not run containers directly. Instead, it manages containers through abstraction objects to provide scaling, durability, networking, and discovery. The core architecture relies on three primary resources: **Pods**, **Deployments**, and **Services**.
+
+---
+
+#### 1. Pods: The Atomic Unit of Execution
+A **Pod** is the smallest deployable unit in Kubernetes. It acts as a logical wrapper for your containers.
+* **Shared Environment:** All containers inside a single Pod share the same **Network Namespace** (same IP address, port space, and local loopback interface) and **Storage Volumes**.
+* **Co-location:** Containers in a Pod are scheduled onto the same physical worker node and started/stopped together.
+* **Single vs. Multi-Container:** The standard pattern is **one container per Pod**. Multi-container Pods are reserved for tight coupling patterns, such as the *Sidecar Pattern* (e.g., a main Node.js app container sharing a volume with a log-shipping container).
+* **Life Cycle:** Pods are **ephemeral** and disposable. When a node crashes, the Pods on it are destroyed and not resurrected. Instead, a controller creates new ones from scratch with new IP addresses.
+
+---
+
+#### 2. Deployments: Managing State & Scale
+A **Deployment** is a declarative controller that manages the lifecycle of your Pods.
+* **Reconciliation Loop:** You declare your desired state (e.g., "I want exactly 3 replicas of my API container running"), and the Deployment Controller runs a continuous control loop (actual state vs. desired state) to ensure that exact count is maintained. If a container crashes, the controller spawns a replacement.
+* **ReplicaSets:** Behind the scenes, a Deployment creates and manages a **ReplicaSet**, which directly handles creating and terminating pods.
+* **Release Orchestration:** Deployments handle updates seamlessly without downtime using strategies like:
+  * **RollingUpdate (Default):** Spawns new version pods (v2) incrementally, waits for health checks to pass, and terminates old pods (v1) one by one.
+  * **Recreate:** Terminates all v1 pods first, then spawns all v2 pods (causes brief downtime, but avoids running two versions concurrently).
+* **Rollbacks:** Keeps a revision history. You can roll back to a previous stable build instantly with a single command (`kubectl rollout undo deployment/api`).
+
+---
+
+#### 3. Services: Reliable Networking & Service Discovery
+Since Pods are constantly created and destroyed, their IP addresses change frequently. A **Service** provides a stable, permanent IP address and DNS name to route traffic to a dynamic group of Pods.
+* **Decoupling:** Frontend code doesn't need to know the IPs of backend pods; it simply calls the Service name (e.g., `http://express-api-service`).
+* **Load Balancing:** When traffic hits the service, it automatically load-balances requests across all healthy target Pods in the backend pool.
+* **Service Types:**
+  * **ClusterIP (Default):** Exposes the Service on a cluster-internal IP. Accessible only within the Kubernetes cluster.
+  * **NodePort:** Exposes the Service on each node's IP at a static port (usually `30000-32767`). Allows external traffic access.
+  * **LoadBalancer:** Requests a physical load balancer (like AWS NLB/ALB) from your cloud provider to route external traffic to your service.
+  * **ExternalName:** Maps the service to an external DNS domain name.
+
+---
+
+#### 🔗 The Glue: Labels and Selectors
+Kubernetes uses **Labels** (key-value pairs attached to objects) and **Selectors** (queries to search for labels) to link resources together dynamically.
+
+```
+ [Client Traffic] ──> [Service: Selector (app=express-api)]
+                               │
+               ┌───────────────┼───────────────┐
+               ▼               ▼               ▼
+           [Pod v1.0]      [Pod v1.0]      [Pod v1.0]
+         (label: app=express-api)
+```
+
+* The **Service** queries for `app: express-api` to build its list of target endpoints.
+* The **Deployment** uses a selector for `app: express-api` to monitor and manage the lifecycle of those Pods.
+
+---
+
+#### 📄 Manifest Example (Express API Deployment & Service)
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: express-api-deployment       # Name of the deployment resource
+spec:
+  replicas: 3                        # Desired state: maintain exactly 3 running pods
+  selector:
+    matchLabels:
+      app: express-api               # Deployment manages pods that have this label
+  template:                          # Template for creating new pods
     metadata:
-      name: express-api-deployment
+      labels:
+        app: express-api             # Label attached to every pod spawned by this template
     spec:
-      replicas: 3
-      selector:
-        matchLabels:
-          app: express-api
-      template:
-        metadata:
-          labels:
-            app: express-api
-        spec:
-          containers:
-          - name: express-api
-            image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/express-api:v1.0
-            ports:
-            - containerPort: 5000
-    ---
-    apiVersion: v1
-    kind: Service
-    metadata:
-      name: express-api-service
-    spec:
-      selector:
-        app: express-api
-      ports:
-      - protocol: TCP
-        port: 80
-        targetPort: 5000
-      type: ClusterIP
+      containers:
+      - name: express-api
+        image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/express-api:v1.0
+        ports:
+        - containerPort: 5000        # The port inside the pod the container listens on
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: express-api-service          # The stable internal DNS name: express-api-service
+spec:
+  selector:
+    app: express-api                 # Route traffic to pods matching this label
+  ports:
+  - protocol: TCP
+    port: 80                         # Port client calls on the service (internal cluster port)
+    targetPort: 5000                 # Target port on the container to route traffic to
+  type: ClusterIP                    # Cluster-internal routing only
+```
+
+---
+
+#### 🛠️ Essential Kubernetes Commands (`kubectl` CLI)
+Here are the key commands used in real-world scenarios to deploy, scale, and debug Pods, Deployments, and Services:
+
+##### 1. Creation & Deletion
+*   **Apply Manifests:** Creates or updates resources defined in a YAML file.
+    ```bash
+    kubectl apply -f manifest.yaml
+    ```
+*   **Delete Resources:** Gracefully destroys resources defined in a YAML file.
+    ```bash
+    kubectl delete -f manifest.yaml
     ```
 
-> 💡 **Interviewer Focus:** Understanding that Pods are ephemeral, and Services act as internal load balancers to route traffic to them, and explaining how deployment selectors link to pod labels.
+##### 2. Inspection & Observability
+*   **Check Resource Status:** Lists resources in the current namespace (e.g. pods, deployments, services).
+    ```bash
+    kubectl get pods
+    kubectl get deployments
+    kubectl get services -o wide
+    # Get all resources at once
+    kubectl get all
+    ```
+*   **Describe Details:** Inspects specific resource details, state transitions, and scheduling event histories (highly useful for diagnosing scheduler errors, port conflicts, or pull failures).
+    ```bash
+    kubectl describe pod <pod-name>
+    kubectl describe deployment/express-api-deployment
+    ```
+*   **Fetch Container Logs:** Streams standard output and standard error logs from running containers.
+    ```bash
+    kubectl logs <pod-name>
+    # Stream/follow live logs
+    kubectl logs -f <pod-name>
+    # If the pod runs multiple containers, specify the container name:
+    kubectl logs <pod-name> -c express-api
+    ```
+*   **Execute Shell (SSH substitute):** Spawns an interactive terminal shell inside a running container to troubleshoot configuration or database connections.
+    ```bash
+    kubectl exec -it <pod-name> -- sh
+    ```
+
+##### 3. Management & Scaling
+*   **Manual Scaling:** Dynamically adjusts the replica numbers without editing the raw template file.
+    ```bash
+    kubectl scale deployment/express-api-deployment --replicas=5
+    ```
+*   **Port-Forwarding (Local Tunneling):** Tunnels network connections from a local port directly to a pod or service port within the cluster network.
+    ```bash
+    kubectl port-forward service/express-api-service 8080:80
+    # Accessible locally at http://localhost:8080
+    ```
+
+##### 4. Rollouts & Rollbacks
+*   **Monitor Rollout Progress:** Shows status steps of rolling updates.
+    ```bash
+    kubectl rollout status deployment/express-api-deployment
+    ```
+*   **View Revision History:** Lists past deployment configurations.
+    ```bash
+    kubectl rollout history deployment/express-api-deployment
+    ```
+*   **Undo/Rollback Release:** Reverts the deployment back to the previous deployment revision.
+    ```bash
+    kubectl rollout undo deployment/express-api-deployment
+    ```
+
+> 💡 **Interviewer Focus:** Explain how labels act as the dynamic registry linking Services to Pods, contrast the lifecycle of ephemeral Pods with persistent Services, and describe the self-healing role of the Deployment reconciliation loop.
 
 </details>
 
