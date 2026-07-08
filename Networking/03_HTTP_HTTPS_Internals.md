@@ -1,6 +1,6 @@
 # HTTP/HTTPS Internals
 
-> 📌 **File:** 07_HTTP_HTTPS_Internals.md | **Level:** Full-Stack Dev → Networking Expert
+> 📌 **File:** 03_HTTP_HTTPS_Internals.md | **Level:** Full-Stack Dev → Networking Expert
 
 ---
 
@@ -186,4 +186,4 @@ Measure the size of a 1000-row JSON response in Chrome DevTools Network Tab with
 
 ---
 
-Prev : [06 DNS Deep Dive](./06_DNS_Deep_Dive.md) | Index: [00 Index](./00_Index.md) | Next : [08 TCP Deep Dive](./08_TCP_Deep_Dive.md)
+Prev : [02 How The Internet Actually Works](./02_How_The_Internet_Actually_Works.md) | Index: [00 Index](./00_Index.md) | Next : [04 DNS Deep Dive](./04_DNS_Deep_Dive.md)

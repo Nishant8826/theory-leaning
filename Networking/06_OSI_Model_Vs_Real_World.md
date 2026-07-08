@@ -1,6 +1,6 @@
 # OSI Model Vs Real World
 
-> 📌 **File:** 03_OSI_Model_Vs_Real_World.md | **Level:** Full-Stack Dev → Networking Expert
+> 📌 **File:** 06_OSI_Model_Vs_Real_World.md | **Level:** Full-Stack Dev → Networking Expert
 
 ---
 
@@ -169,4 +169,4 @@ For each event, specify the OSI Layer it belongs to:
 
 ---
 
-Prev : [02 How The Internet Actually Works](./02_How_The_Internet_Actually_Works.md) | Index: [00 Index](./00_Index.md) | Next : [04 TCP IP Model](./04_TCP_IP_Model.md)
+Prev : [05 WebSockets & Real-Time](./05_WebSockets_And_Real_Time.md) | Index: [00 Index](./00_Index.md) | Next : [07 TCP IP Model](./07_TCP_IP_Model.md)

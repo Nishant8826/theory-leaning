@@ -256,4 +256,4 @@ Run `nc -l 3000` (starts a simple TCP listener in terminal). Send a message from
 
 ---
 
-Prev : [07 HTTP HTTPS Internals](./07_HTTP_HTTPS_Internals.md) | Index: [00 Index](./00_Index.md) | Next : [09 UDP And When To Use It](./09_UDP_And_When_To_Use_It.md)
+Prev : [07 TCP IP Model](./07_TCP_IP_Model.md) | Index: [00 Index](./00_Index.md) | Next : [09 UDP And When To Use It](./09_UDP_And_When_To_Use_It.md)

@@ -1,6 +1,6 @@
 # IP Addressing & Subnetting
 
-> 📌 **File:** 05_IP_Addressing_And_Subnetting.md | **Level:** Full-Stack Dev → Networking Expert
+> 📌 **File:** 11_IP_Addressing_And_Subnetting.md | **Level:** Full-Stack Dev → Networking Expert
 
 ---
 
@@ -177,4 +177,4 @@ Find your laptop's current IP address and subnet mask. Identify your local route
 
 ---
 
-Prev : [04 TCP IP Model](./04_TCP_IP_Model.md) | Index: [00 Index](./00_Index.md) | Next : [06 DNS Deep Dive](./06_DNS_Deep_Dive.md)
+Prev : [10 TLS SSL Handshake](./10_TLS_SSL_Handshake.md) | Index: [00 Index](./00_Index.md) | Next : [12 Routing And NAT](./12_Routing_And_NAT.md)

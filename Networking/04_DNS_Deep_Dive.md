@@ -1,6 +1,6 @@
 # DNS Deep Dive
 
-> 📌 **File:** 06_DNS_Deep_Dive.md | **Level:** Full-Stack Dev → Networking Expert
+> 📌 **File:** 04_DNS_Deep_Dive.md | **Level:** Full-Stack Dev → Networking Expert
 
 ---
 
@@ -79,7 +79,7 @@ DNS resolution is visually exactly like finding a book in a library:
 │              │ (www.myapp.com)│ (myapp.com)   │ to another host  │
 │              │                │               │                  │
 │  MX          │ Domain Name    │ Mail Server   │ Email routing    │
-│              │                │ (gmail-smtp)  │ (GSuite)         │
+│              │ (gmail-smtp)   │ (GSuite)         │                  │
 │              │                │               │                  │
 │  TXT         │ Domain Name    │ Text String   │ Domain verification│
 │              │                │               │ (SSL, Google)    │
@@ -199,4 +199,4 @@ Modify your local hosts file (`/etc/hosts` or `C:\Windows\System32\drivers\etc\h
 
 ---
 
-Prev : [05 IP Addressing And Subnetting](./05_IP_Addressing_And_Subnetting.md) | Index: [00 Index](./00_Index.md) | Next : [07 HTTP HTTPS Internals](./07_HTTP_HTTPS_Internals.md)
+Prev : [03 HTTP HTTPS Internals](./03_HTTP_HTTPS_Internals.md) | Index: [00 Index](./00_Index.md) | Next : [05 WebSockets & Real-Time](./05_WebSockets_And_Real_Time.md)

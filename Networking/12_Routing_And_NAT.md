@@ -1,6 +1,6 @@
 # Routing & NAT
 
-> 📌 **File:** 11_Routing_And_NAT.md | **Level:** Full-Stack Dev → Networking Expert
+> 📌 **File:** 12_Routing_And_NAT.md | **Level:** Full-Stack Dev → Networking Expert
 
 ---
 
@@ -83,24 +83,13 @@ One-Way Security:
 NAT is structurally identical to a corporate mailroom secretary:
 - **Sending Out:** An employee in cubicle 12 (`10.0.10.15`) wants to mail Stripe. They write the letter, but they aren't allowed to put their private desk location on the envelope. They hand it to the secretary. The secretary crosses out the private desk name, stamps the corporate headquarters address (`203.0.113.80`) and a tracking number (`55000`) on it, and mails it out.
 - **Receiving In:** Stripe replies to the corporate headquarters address with tracking number `55000`. The secretary checks their ledger logbook, sees tracking number `55000` belongs to cubicle 12, and privately walks the mail directly to the employee's desk.
-If a random solicitor walks up to the headquarters front door and asks to speak to "whoever is at tracking number 99999", the secretary denies entry because no such active tracking session exists!
+If a solicitor walks up to the front door and asks to speak to "whoever is at tracking number 99999", the secretary denies entry because no such active tracking session exists!
 
 ---
 
 ## NAT Gateway vs NAT Instance vs Internet Gateway
 
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│  Component     │ Type     │ High Availability │ AWS Managed?     │
-├────────────────┼──────────┼───────────────────┼──────────────────┤
-│  Internet      │ Gateway  │ Yes (built-in)    │ Yes              │
-│  Gateway (IGW) │          │                   │                  │
-│                │          │                   │                  │
-│  NAT Gateway   │ Gateway  │ Yes (per AZ)      │ Yes              │
-│                │          │                   │                  │
-│  NAT Instance  │ EC2 VM   │ No (single VM)    │ No (you manage)  │
-└────────────────┴──────────┴───────────────────┴──────────────────┘
-
 Internet Gateway (IGW):
   - Bi-directional translation (Inbound + Outbound)
   - Connects Public subnets to the internet
@@ -130,13 +119,9 @@ conntrack -L
 
 # Test path to external resource (shows gateways)
 traceroute google.com
-# Look for your local gateway as the first hop (e.g. 192.168.1.1 or 10.0.0.1)
 
 # Check your public IP from terminal
 curl ifconfig.me
-curl icanhazip.com
-# If run from private EC2: returns NAT Gateway's Elastic IP
-# If run from public EC2: returns EC2's own public IP
 ```
 
 ---
@@ -176,9 +161,6 @@ Run `traceroute` (or `tracert` on Windows) to a public website. Document how man
 ### Exercise 2: AWS Route Verification
 Inspect an AWS VPC configuration. Locate the Route Tables. Identify the target for `10.0.0.0/16` and `0.0.0.0/0`.
 
-### Exercise 3: NAT Setup (Docker)
-Configure a Docker container as a NAT router using `iptables` IP forwarding rules. Verify a second container can access the web through it.
-
 ---
 
 ## Interview Q&A
@@ -200,4 +182,4 @@ Configure a Docker container as a NAT router using `iptables` IP forwarding rule
 
 ---
 
-Prev : [10 TLS SSL Handshake](./10_TLS_SSL_Handshake.md) | Index: [00 Index](./00_Index.md) | Next : [12 Load Balancing](./12_Load_Balancing.md)
+Prev : [11 IP Addressing And Subnetting](./11_IP_Addressing_And_Subnetting.md) | Index: [00 Index](./00_Index.md) | Next : [13 Load Balancing](./13_Load_Balancing.md)

@@ -18,37 +18,25 @@ Without API Gateway:
   React → /api/orders → Order Service (:3002)
   React → /api/products → Product Service (:3003)
   Each service handles its own: auth, rate limiting, CORS, logging
-  Client knows about every service ❌
 
 With API Gateway:
   React → API Gateway → /api/users → User Service
                        → /api/orders → Order Service
                        → /api/products → Product Service
-  Gateway handles: auth, rate limiting, CORS, logging centrally ✅
-  Client only knows one URL ✅
+  Gateway handles: auth, rate limiting, CORS, logging centrally
+  Client only knows one URL
 ```
 
 ### AWS API Gateway Types
 
 ```
-┌────────────────────────────────────────────────────────────────────┐
-│  Type            │ Protocol │ Use Case                            │
-├──────────────────┼──────────┼─────────────────────────────────────┤
-│  HTTP API        │ HTTP     │ REST APIs, simple proxy to Lambda  │
-│  (v2, cheaper)   │          │ or ALB. Low latency. ← USE THIS   │
-│                  │          │                                     │
-│  REST API        │ HTTP     │ Full-featured: caching, request    │
-│  (v1, more       │          │ validation, API keys, usage plans  │
-│   features)      │          │ WAF integration. More expensive.   │
-│                  │          │                                     │
-│  WebSocket API   │ WS       │ Real-time: chat, notifications     │
-│                  │          │ Routes by message content           │
-├──────────────────┴──────────┴─────────────────────────────────────┤
-│  Pricing:                                                         │
-│  HTTP API: $1.00/million requests + data transfer                │
-│  REST API: $3.50/million requests + data transfer + cache        │
-│  For most apps: HTTP API is sufficient and 3.5x cheaper.        │
-└────────────────────────────────────────────────────────────────────┘
+HTTP API (v2, cheaper):
+  - REST APIs, simple proxy to Lambda or ALB. Low latency.
+  - Pricing: $1.00/million requests + data transfer
+
+REST API (v1, more features):
+  - Full-featured: caching, request validation, API keys, usage plans, WAF integration.
+  - Pricing: $3.50/million requests + data transfer + cache
 ```
 
 ---
@@ -59,21 +47,11 @@ With API Gateway:
 
 ```
 React ──► API Gateway ──► Lambda ──► MongoDB Atlas / RDS
-                                    
-No EC2, no Nginx, no PM2, no scaling config.
-API Gateway handles: routing, auth, throttling, CORS
-Lambda handles: business logic
-Scales automatically from 0 to thousands of concurrent requests.
-
-Cost: Pay per request. Free tier: 1M requests/month.
-Latency: +30-100ms (Lambda cold start)
 ```
 
 ```javascript
-// Lambda handler (serverless Node.js)
 exports.handler = async (event) => {
-  const { httpMethod, path, body, headers } = event;
-  
+  const { httpMethod, path } = event;
   if (httpMethod === 'GET' && path === '/api/products') {
     const products = await db.collection('products').find({}).toArray();
     return {
@@ -82,7 +60,6 @@ exports.handler = async (event) => {
       body: JSON.stringify({ products })
     };
   }
-  
   return { statusCode: 404, body: 'Not found' };
 };
 ```
@@ -91,12 +68,6 @@ exports.handler = async (event) => {
 
 ```
 React ──► API Gateway ──► ALB ──► EC2 (Node.js)
-
-API Gateway adds: auth, rate limiting, API keys, caching
-ALB adds: load balancing, health checks
-EC2 adds: your Express application
-
-More control, lower latency (no cold start), higher base cost.
 ```
 
 ### Pattern 3: Custom API Gateway with Express
@@ -109,26 +80,15 @@ const jwt = require('jsonwebtoken');
 
 const app = express();
 
-// ──── Cross-cutting: Rate Limiting ────
-app.use(rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100
-}));
+app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }));
 
-// ──── Cross-cutting: Authentication ────
 const authMiddleware = (req, res, next) => {
-  // Skip auth for public endpoints
   if (req.path.startsWith('/api/public/')) return next();
-  
   const token = req.headers.authorization?.replace('Bearer ', '');
   if (!token) return res.status(401).json({ error: 'No token' });
-  
   try {
     req.user = jwt.verify(token, process.env.JWT_SECRET);
-    // Forward user info to downstream services
     req.headers['x-user-id'] = req.user.id;
-    req.headers['x-user-email'] = req.user.email;
-    req.headers['x-user-roles'] = req.user.roles.join(',');
     next();
   } catch {
     res.status(401).json({ error: 'Invalid token' });
@@ -137,42 +97,11 @@ const authMiddleware = (req, res, next) => {
 
 app.use('/api/', authMiddleware);
 
-// ──── Cross-cutting: Request Logging ────
-app.use((req, res, next) => {
-  const start = Date.now();
-  res.on('finish', () => {
-    console.log(JSON.stringify({
-      method: req.method,
-      path: req.path,
-      status: res.statusCode,
-      duration: Date.now() - start,
-      userId: req.user?.id,
-      ip: req.ip
-    }));
-  });
-  next();
-});
+app.use('/api/users', createProxyMiddleware({ target: 'http://user-service:3001', changeOrigin: true }));
+app.use('/api/orders', createProxyMiddleware({ target: 'http://order-service:3002', changeOrigin: true }));
+app.use('/api/products', createProxyMiddleware({ target: 'http://product-service:3003', changeOrigin: true }));
 
-// ──── Route to Microservices ────
-app.use('/api/users', createProxyMiddleware({
-  target: 'http://user-service:3001',
-  pathRewrite: { '^/api/users': '/users' },
-  changeOrigin: true
-}));
-
-app.use('/api/orders', createProxyMiddleware({
-  target: 'http://order-service:3002',
-  pathRewrite: { '^/api/orders': '/orders' },
-  changeOrigin: true
-}));
-
-app.use('/api/products', createProxyMiddleware({
-  target: 'http://product-service:3003',
-  pathRewrite: { '^/api/products': '/products' },
-  changeOrigin: true
-}));
-
-app.listen(8080, () => console.log('API Gateway on :8080'));
+app.listen(8080);
 ```
 
 ---
@@ -180,36 +109,17 @@ app.listen(8080, () => console.log('API Gateway on :8080'));
 ## Visual Diagram — API Gateway Architecture
 
 ```
-               Mobile App       React Web App       Third-party
-                   │                 │                   │
-                   └────────┬────────┘                   │
-                             │                            │
-                     ┌───────▼────────┐                   │
-                     │  CloudFront    │◄──────────────────┘
-                     │  (CDN + Edge)  │
-                     └───────┬────────┘
-                             │
-                     ┌───────▼────────┐
-                     │  API Gateway   │  ← auth, rate limit, throttle
-                     │  (AWS or custom)│     CORS, API keys, logging
-                     └───┬───┬───┬───┘
-                         │   │   │
-               ┌─────────┘   │   └─────────┐
-               │             │             │
-         ┌─────▼─────┐ ┌────▼────┐ ┌──────▼────┐
-         │ User Svc  │ │Order Svc│ │Product Svc│
-         │ (Lambda)  │ │ (EC2)   │ │ (Lambda)  │
-         └─────┬─────┘ └────┬────┘ └──────┬────┘
-               │            │              │
-         ┌─────▼────┐ ┌────▼────┐ ┌───────▼───┐
-         │PostgreSQL│ │MongoDB  │ │ElastiCache│
-         └──────────┘ └─────────┘ └───────────┘
+Mobile/Web Apps ──► CloudFront (CDN Edge)
+                 ──► API Gateway (Auth, Rate limit)
+                 ├──► User Service (Lambda)
+                 ├──► Order Service (EC2)
+                 └──► Product Service (Lambda)
 ```
 
 #### Diagram Explanation (The Single Front Desk)
-Imagine your microservice architecture as a massive hospital with dozens of specialized departments.
-- **Without an API Gateway:** Every single patient (the Client apps) has to figure out exactly which building to go to, wait in a separate security line at every single building (authentication), and find the exact doctor's room. 
-- **With an API Gateway:** There is one massive, centralized Front Desk at the front of the entire hospital! The patient walks up, shows their ID *once* (centralized Auth), the receptionist checks to make sure they aren't spamming visits (Rate Limiting), and then the receptionist internally routes the patient directly to the correct department (`/api/users` vs `/api/orders`).
+Imagine your microservice architecture as a hospital with specialized departments:
+- **Without an API Gateway:** Every client has to figure out exactly which department to visit, pass a separate security check at every building (authentication), and locate the doctor's room.
+- **With an API Gateway:** One centralized Front Desk handles check-in, authentication, rate limits, and routes patients to the correct internal department (`/api/users` vs `/api/orders`).
 
 ---
 
@@ -223,68 +133,10 @@ Imagine your microservice architecture as a massive hospital with dozens of spec
 │  Rate limiting        │ ✅ Built-in          │ ❌ App handles      │
 │  API key management   │ ✅ Built-in          │ ❌ Not available    │
 │  Request validation   │ ✅ Schema validation │ ❌ Not available    │
-│  Response caching     │ ✅ Built-in          │ ❌ Not available    │
-│  WebSocket            │ ✅ WebSocket API     │ ✅ HTTP upgrade     │
 │  Lambda integration   │ ✅ Native            │ ✅ Supported        │
-│  Cost (1M reqs/mo)    │ $1-3.50              │ ~$16 + LCU         │
-│  Latency overhead     │ 10-30ms              │ 1-5ms              │
 │  Max payload          │ 10MB                 │ Unlimited          │
 │  Max timeout          │ 30s (REST), 29s(HTTP)│ 4000s              │
-├───────────────────────┴──────────────────────┴─────────────────────┤
-│  Use API Gateway: Serverless, need auth/rate-limit/API-keys      │
-│  Use ALB: Long-running requests, large payloads, EC2 backend     │
-│  Use Both: API Gateway → ALB → EC2 (full feature set)           │
-└────────────────────────────────────────────────────────────────────┘
-```
-
----
-
-## API Gateway Latency Concern
-
-```
-┌──────────────────────────────────────────────────────────────────┐
-│  API Gateway adds 10-30ms per request                           │
-│                                                                  │
-│  For most APIs (100-500ms total): 10ms is negligible (2-10%)   │
-│  For ultra-low-latency APIs (<50ms): 10ms is significant (20%+)│
-│                                                                  │
-│  If latency matters more than managed features:                  │
-│  Skip API Gateway → use ALB directly                            │
-│  Implement auth/rate-limit in Express middleware                 │
-│                                                                  │
-│  Lambda cold start adds another 100-500ms (first request)       │
-│  Provisioned concurrency fixes cold starts ($$$)                │
-└──────────────────────────────────────────────────────────────────┘
-```
-
----
-
-## Common Mistakes
-
-### ❌ Lambda + API Gateway Timeout Mismatch
-
-```
-API Gateway REST API max timeout: 29 seconds
-Lambda max execution: 15 minutes
-
-If your Lambda takes 35 seconds:
-  Lambda: still running...
-  API Gateway: 504 Gateway Timeout (at 29s)
-  User: sees error
-  Lambda: finishes, response has nowhere to go
-
-Fix: Keep Lambda functions fast (< 10s for API responses)
-For long tasks: return 202 Accepted immediately, process async with SQS
-```
-
-### ❌ Not Using Custom Domain
-
-```
-Default: https://abc123xyz.execute-api.us-east-1.amazonaws.com/prod/api/users
-
-    Custom domain: https://api.myapp.com/users
-Setup: Route 53 ALIAS record → API Gateway custom domain
-Certificate: ACM (same region as API Gateway, or us-east-1 for edge)
+└──────────────────────┴──────────────────────┴─────────────────────┘
 ```
 
 ---
@@ -297,9 +149,6 @@ Create a simple CRUD API using API Gateway HTTP API + Lambda. Deploy with AWS CL
 ### Exercise 2: Custom Gateway
 Build a custom API gateway with Express that proxies to 2 microservices with shared authentication and request logging.
 
-### Exercise 3: Rate Limiting
-Configure API Gateway throttling: 100 requests/second steady, 200 burst. Test with `wrk` or `autocannon` and verify 429 responses.
-
 ---
 
 ## Interview Q&A
@@ -308,17 +157,17 @@ Configure API Gateway throttling: 100 requests/second steady, 200 burst. Test wi
 > A single entry point that handles cross-cutting concerns: authentication, rate limiting, CORS, logging, request routing, and response caching. Decouples clients from backend services. Clients know one URL; the gateway routes to the right service.
 
 **Q2: API Gateway vs reverse proxy — what's the difference?**
-> A reverse proxy (Nginx) forwards requests with minimal logic. An API Gateway adds intelligence: auth validation, rate limiting, request/response transformation, API versioning, analytics, and developer portal. An API Gateway IS a reverse proxy with added business logic.
+> A reverse proxy (Nginx) forwards requests with minimal logic. An API Gateway adds intelligence: auth validation, rate limiting, request/response transformation, API versioning, analytics, and developer portal.
 
 **Q3: When would you NOT use AWS API Gateway?**
-> When you need: response times < 10ms (API GW adds 10-30ms), payloads > 10MB, requests longer than 29 seconds, WebSocket with complex routing, or cost optimization at high volume (ALB can be cheaper). Use ALB directly with Express middleware instead.
+> When you need: response times < 10ms (API GW adds 10-30ms), payloads > 10MB, requests longer than 29 seconds, WebSocket with complex routing, or cost optimization at high volume.
 
 **Q4: How do you handle API versioning through a gateway?**
-> Path-based: `/v1/users`, `/v2/users` → different target groups or Lambda versions. Header-based: `Accept-Version: 2` → gateway routes accordingly. Query param: `?version=2`. Path-based is most common and CDN-friendly.
+> Path-based: `/v1/users`, `/v2/users` → different target groups or Lambda versions. Header-based: `Accept-Version: 2`. Path-based is most common and CDN-friendly.
 
 **Q5: What is the cold start problem with Lambda behind API Gateway?**
-> First request to an idle Lambda takes 100-500ms to provision a container. Subsequent requests reuse the warm container (~1ms overhead). Solutions: provisioned concurrency (keeps containers warm, costs more), regular pings to keep warm, or accept cold starts for non-critical paths.
+> First request to an idle Lambda takes 100-500ms to provision a container. Subsequent requests reuse the warm container (~1ms overhead). Solutions: provisioned concurrency (keeps containers warm), regular pings, or accept cold starts for non-critical paths.
 
 ---
 
-Prev : [16 WebSockets And Real Time](./16_WebSockets_And_Real_Time.md) | Index: [00 Index](./00_Index.md) | Next : [18 Microservices Networking](./18_Microservices_Networking.md)
+Prev : [16 Firewalls And Security](./16_Firewalls_And_Security.md) | Index: [00 Index](./00_Index.md) | Next : [18 Microservices Networking](./18_Microservices_Networking.md)

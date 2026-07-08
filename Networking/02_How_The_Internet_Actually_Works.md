@@ -15,9 +15,9 @@ The internet is not a cloud — it is a collection of physical cables buried und
 ```
 Your React App (Frontend)
    │
-   │  1. Resolves IP of your API using DNS (Lesson 06)
+   │  1. Resolves IP of your API using DNS (Lesson 04)
    │  2. Opens a TCP connection to that IP (Lesson 08)
-   │  3. Sends HTTP GET request (Lesson 07)
+   │  3. Sends HTTP GET request (Lesson 03)
    ▼
 Your Node.js API (Backend)
 
@@ -156,4 +156,4 @@ Visit [submarinecablemap.com](https://www.submarinecablemap.com/). Find the name
 
 ---
 
-Prev : [01 Introduction And Setup](./01_Introduction_And_Setup.md) | Index: [00 Index](./00_Index.md) | Next : [03 OSI Model Vs Real World](./03_OSI_Model_Vs_Real_World.md)
+Prev : [01 Introduction And Setup](./01_Introduction_And_Setup.md) | Index: [00 Index](./00_Index.md) | Next : [03 HTTP HTTPS Internals](./03_HTTP_HTTPS_Internals.md)

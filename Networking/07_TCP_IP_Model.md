@@ -1,6 +1,6 @@
 # TCP/IP Model
 
-> 📌 **File:** 04_TCP_IP_Model.md | **Level:** Full-Stack Dev → Networking Expert
+> 📌 **File:** 07_TCP_IP_Model.md | **Level:** Full-Stack Dev → Networking Expert
 
 ---
 
@@ -146,4 +146,4 @@ Draw a step-by-step diagram showing how a standard GET request changes from a ra
 
 ---
 
-Prev : [03 OSI Model Vs Real World](./03_OSI_Model_Vs_Real_World.md) | Index: [00 Index](./00_Index.md) | Next : [05 IP Addressing And Subnetting](./05_IP_Addressing_And_Subnetting.md)
+Prev : [06 OSI Model Vs Real World](./06_OSI_Model_Vs_Real_World.md) | Index: [00 Index](./00_Index.md) | Next : [08 TCP Deep Dive](./08_TCP_Deep_Dive.md)
