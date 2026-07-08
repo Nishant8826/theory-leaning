@@ -1,6 +1,6 @@
 # API Gateways
 
-> 📌 **File:** 16_API_Gateways.md | **Level:** Full-Stack Dev → Networking Expert
+> 📌 **File:** 17_API_Gateways.md | **Level:** Full-Stack Dev → Networking Expert
 
 ---
 
@@ -183,27 +183,27 @@ app.listen(8080, () => console.log('API Gateway on :8080'));
                Mobile App       React Web App       Third-party
                    │                 │                   │
                    └────────┬────────┘                   │
-                            │                            │
-                    ┌───────▼────────┐                   │
-                    │  CloudFront    │◄──────────────────┘
-                    │  (CDN + Edge)  │
-                    └───────┬────────┘
-                            │
-                    ┌───────▼────────┐
-                    │  API Gateway   │  ← auth, rate limit, throttle
-                    │  (AWS or custom)│     CORS, API keys, logging
-                    └───┬───┬───┬───┘
-                        │   │   │
-              ┌─────────┘   │   └─────────┐
-              │             │             │
-        ┌─────▼─────┐ ┌────▼────┐ ┌──────▼────┐
-        │ User Svc  │ │Order Svc│ │Product Svc│
-        │ (Lambda)  │ │ (EC2)   │ │ (Lambda)  │
-        └─────┬─────┘ └────┬────┘ └──────┬────┘
-              │            │              │
-        ┌─────▼────┐ ┌────▼────┐ ┌───────▼───┐
-        │PostgreSQL│ │MongoDB  │ │ElastiCache│
-        └──────────┘ └─────────┘ └───────────┘
+                             │                            │
+                     ┌───────▼────────┐                   │
+                     │  CloudFront    │◄──────────────────┘
+                     │  (CDN + Edge)  │
+                     └───────┬────────┘
+                             │
+                     ┌───────▼────────┐
+                     │  API Gateway   │  ← auth, rate limit, throttle
+                     │  (AWS or custom)│     CORS, API keys, logging
+                     └───┬───┬───┬───┘
+                         │   │   │
+               ┌─────────┘   │   └─────────┐
+               │             │             │
+         ┌─────▼─────┐ ┌────▼────┐ ┌──────▼────┐
+         │ User Svc  │ │Order Svc│ │Product Svc│
+         │ (Lambda)  │ │ (EC2)   │ │ (Lambda)  │
+         └─────┬─────┘ └────┬────┘ └──────┬────┘
+               │            │              │
+         ┌─────▼────┐ ┌────▼────┐ ┌───────▼───┐
+         │PostgreSQL│ │MongoDB  │ │ElastiCache│
+         └──────────┘ └─────────┘ └───────────┘
 ```
 
 #### Diagram Explanation (The Single Front Desk)
@@ -282,7 +282,7 @@ For long tasks: return 202 Accepted immediately, process async with SQS
 ```
 Default: https://abc123xyz.execute-api.us-east-1.amazonaws.com/prod/api/users
 
-✅ Custom domain: https://api.myapp.com/users
+    Custom domain: https://api.myapp.com/users
 Setup: Route 53 ALIAS record → API Gateway custom domain
 Certificate: ACM (same region as API Gateway, or us-east-1 for edge)
 ```
@@ -319,5 +319,6 @@ Configure API Gateway throttling: 100 requests/second steady, 200 burst. Test wi
 **Q5: What is the cold start problem with Lambda behind API Gateway?**
 > First request to an idle Lambda takes 100-500ms to provision a container. Subsequent requests reuse the warm container (~1ms overhead). Solutions: provisioned concurrency (keeps containers warm, costs more), regular pings to keep warm, or accept cold starts for non-critical paths.
 
+---
 
-Prev : [15 WebSockets And Real Time](./15_WebSockets_And_Real_Time.md) | Index: [0 Index](./0_Index.md) | Next : [17 Microservices Networking](./17_Microservices_Networking.md)
+Prev : [16 WebSockets And Real Time](./16_WebSockets_And_Real_Time.md) | Index: [00 Index](./00_Index.md) | Next : [18 Microservices Networking](./18_Microservices_Networking.md)

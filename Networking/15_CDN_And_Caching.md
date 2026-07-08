@@ -1,6 +1,6 @@
 # CDN & Caching
 
-> 📌 **File:** 14_CDN_And_Caching.md | **Level:** Full-Stack Dev → Networking Expert
+> 📌 **File:** 15_CDN_And_Caching.md | **Level:** Full-Stack Dev → Networking Expert
 
 ---
 
@@ -45,30 +45,30 @@ A CDN (Content Delivery Network) caches your content at edge locations worldwide
                    │CloudFront│  Edge server in Tokyo
                    │  (CDN)  │  
                    └────┬────┘
-                        │
-              ┌─────────┼─────────┐
-              │         │         │
-         Cache HIT  Cache MISS  Cache MISS
-         (static)   (API)       (first time)
-              │         │         │
-         Return      ┌──▼──┐     │
-         instantly   │ ALB │     │
-                     └──┬──┘     │
-                        │        │
-                   ┌────▼────┐   │
-                   │ Node.js │   │
-                   └────┬────┘   │
-                        │        │
-              ┌─────────┼────┐   │
-              │              │   │
-         ┌────▼────┐   ┌────▼┐  │
-         │  Redis  │   │Mongo│  │
-         │ (cache) │   │ DB  │  │
-         └─────────┘   └─────┘  │
-                                │
-                           ┌────▼────┐
-                           │   S3    │  Static assets origin
-                           └─────────┘
+                         │
+               ┌─────────┼─────────┐
+               │         │         │
+          Cache HIT  Cache MISS  Cache MISS
+          (static)   (API)       (first time)
+               │         │         │
+          Return      ┌──▼──┐     │
+          instantly   │ ALB │     │
+                      └──┬──┘     │
+                         │        │
+                    ┌────▼────┐   │
+                    │ Node.js │   │
+                    └────┬────┘   │
+                         │        │
+               ┌─────────┼────┐   │
+               │              │   │
+          ┌────▼────┐   ┌────▼┐  │
+          │  Redis  │   │Mongo│  │
+          │ (cache) │   │ DB  │  │
+          └─────────┘   └─────┘  │
+                                 │
+                            ┌────▼────┐
+                            │   S3    │  Static assets origin
+                            └─────────┘
 ```
 
 #### Diagram Explanation (The Memory Game)
@@ -251,8 +251,6 @@ app.get('/api/products/:id',
 app.get('/api/products', (req, res, next) => {
   // Tell CloudFront to cache this response
   res.set('Cache-Control', 'public, max-age=60, s-maxage=300');
-  // max-age: browser caches for 60s
-  // s-maxage: CDN caches for 300s (overrides max-age for CDN)
   next();
 });
 
@@ -265,9 +263,6 @@ app.put('/api/products/:id', async (req, res) => {
     `cache:products:${req.params.id}`,
     'cache:products:list'
   ]);
-  
-  // Invalidate CloudFront cache (optional — for critical updates)
-  // aws cloudfront create-invalidation --distribution-id EXXXXX --paths "/api/products/*"
   
   res.json(product);
 });
@@ -298,7 +293,7 @@ app.get('/api/profile', auth, (req, res) => {
 │  (lazy loading)    │ then DB if miss  │ Most common pattern      │
 │                    │                  │                          │
 │  Write-through     │ Update cache AND │ Write-heavy, read-heavy  │
-│                    │ DB on every write│ Real-time dashboards     │
+│  (dynamic updates) │ DB on every write│ Real-time dashboards     │
 │                    │                  │                          │
 │  Cache versioning  │ Include version  │ When TTL is long         │
 │  (hash in filename)│ in cache key     │ JS bundles, images       │
@@ -338,8 +333,6 @@ aws cloudfront create-invalidation \
 
 # Monitor cache hit rate
 redis-cli INFO stats | grep -E "keyspace_hits|keyspace_misses"
-# Hit rate = hits / (hits + misses)
-# Target: > 80% hit rate
 ```
 
 ---
@@ -367,7 +360,7 @@ redis-cli INFO stats | grep -E "keyspace_hits|keyspace_misses"
 │  Redis DEL: < 1ms                                                │
 │  CloudFront invalidation: 60-300 seconds (async)                │
 │  Browser cache: Can't invalidate! (only TTL expiry)             │
-│  → Use hashed filenames for deployable assets (/bundle.abc.js) │
+│  → Use hashed filenames for deployable assets (/bundle.abc.js)   │
 └──────────────────────────────────────────────────────────────────┘
 ```
 
@@ -398,7 +391,6 @@ app.get('/api/profile', (req, res) => {
 app.put('/api/products/:id', async (req, res) => {
   await Product.findByIdAndUpdate(req.params.id, req.body);
   res.json({ success: true });
-  // Cache still has old data!
 });
 
 // ✅ Invalidate cache on update
@@ -442,5 +434,6 @@ Add X-Cache-Status headers to your API responses. Monitor hit rate over 1 hour. 
 **Q5: How do you cache API responses correctly with CloudFront?**
 > Set `Cache-Control: public, s-maxage=300` for cacheable responses. Use `Vary: Accept-Encoding` for compressed responses. Forward only needed headers (Authorization bypasses cache). Don't cache authenticated endpoints. Use `private, no-store` for user-specific data.
 
+---
 
-Prev : [13 Proxies And Reverse Proxies](./13_Proxies_And_Reverse_Proxies.md) | Index: [0 Index](./0_Index.md) | Next : [15 WebSockets And Real Time](./15_WebSockets_And_Real_Time.md)
+Prev : [14 Proxies And Reverse Proxies](./14_Proxies_And_Reverse_Proxies.md) | Index: [00 Index](./00_Index.md) | Next : [16 WebSockets And Real Time](./16_WebSockets_And_Real_Time.md)

@@ -1,6 +1,6 @@
 # Performance Optimization
 
-> 📌 **File:** 21_Performance_Optimization.md | **Level:** Full-Stack Dev → Networking Expert
+> 📌 **File:** 22_Performance_Optimization.md | **Level:** Full-Stack Dev → Networking Expert
 
 ---
 
@@ -169,9 +169,6 @@ app.get('/api/products', async (req, res) => {
   
   res.json({ products, page, limit });
 });
-
-// Without optimization: 500KB response (all fields, all records)
-// With optimization: 10KB response (needed fields, 20 records, cached)
 ```
 
 ### 6. Parallel Requests
@@ -229,10 +226,6 @@ async function getProductsWithCache(category) {
   
   return products;
 }
-
-// Cache hit: 1ms response
-// Cache miss: 200ms response (but next 100 requests = 1ms each)
-// If 100 req/min: 99% served from cache = avg 3ms instead of 200ms
 ```
 
 ---
@@ -275,7 +268,6 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true'
 });
 module.exports = withBundleAnalyzer({ /* config */ });
-// Run: ANALYZE=true npm run build
 ```
 
 ---
@@ -339,7 +331,6 @@ const products = await fetch('/api/products').then(r => r.json());
 for (const p of products) {
   p.reviews = await fetch(`/api/products/${p.id}/reviews`).then(r => r.json());
 }
-// 20 products = 21 HTTP requests = 21 × RTT!
 
 // ✅ Backend aggregation endpoint
 app.get('/api/products-with-reviews', async (req, res) => {
@@ -349,7 +340,6 @@ app.get('/api/products-with-reviews', async (req, res) => {
   ]);
   res.json(products);
 });
-// 1 request, 1 RTT, all data included
 ```
 
 ### ❌ Not Using CDN for Static Assets
@@ -402,5 +392,6 @@ Add Redis caching to your slowest endpoint. Measure response time before and aft
 **Q5: How do you handle the thundering herd problem?**
 > When a cache key expires, hundreds of concurrent requests hit the DB. Solutions: cache lock (only first request queries DB, others wait), stale-while-revalidate (serve stale data while refreshing in background), random TTL jitter (prevent simultaneous expiry), pre-warming before expiry.
 
+---
 
-Prev : [20 Debugging Network Issues](./20_Debugging_Network_Issues.md) | Index: [0 Index](./0_Index.md) | Next : [22 Database Networking](./22_Database_Networking.md)
+Prev : [21 Debugging Network Issues](./21_Debugging_Network_Issues.md) | Index: [00 Index](./00_Index.md) | Next : [23 Database Networking](./23_Database_Networking.md)

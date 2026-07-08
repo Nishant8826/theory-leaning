@@ -1,6 +1,6 @@
 # Deployment & Production Infrastructure
 
-> 📌 **File:** 25_Deployment_And_Production_Infrastructure.md | **Level:** Full-Stack Dev → Networking Expert
+> 📌 **File:** 26_Deployment_And_Production_Infrastructure.md | **Level:** Full-Stack Dev → Networking Expert
 
 ---
 
@@ -56,12 +56,12 @@ This is the capstone — putting everything together for a production deployment
 │  │  └────────────────────────────────────────────────────────┘ │  │
 │  │                                                               │  │
 │  │  VPC Endpoints: S3 (Gateway), ECR (Interface)               │  │
-│  └───────────────────────────────────────────────────────────────┘  │
-│                                                                        │
-│  External: MongoDB Atlas (VPC Peering or PrivateLink)                 │
-│  CI/CD: GitHub Actions → ECR → CodeDeploy / ECS                      │
-│  Monitoring: CloudWatch, X-Ray, Prometheus                            │
-└────────────────────────────────────────────────────────────────────────┘
+│  │  └───────────────────────────────────────────────────────────────┘  │
+│  │                                                                        │
+│  │  External: MongoDB Atlas (VPC Peering or PrivateLink)                 │
+│  │  CI/CD: GitHub Actions → ECR → CodeDeploy / ECS                      │
+│  │  Monitoring: CloudWatch, X-Ray, Prometheus                            │
+│  └────────────────────────────────────────────────────────────────────────┘
 ```
 
 #### Diagram Explanation (The Corporate Headquarters)
@@ -254,9 +254,8 @@ app.set('trust proxy', true);
 ```
 ┌──────────────────────────────────────────────────────────────────┐
 │  Cost Breakdown (typical full-stack app)                        │
-├───────────────────────┬────────────────┬────────────────────────┤
+│                                                                  │
 │  Resource             │ Monthly Cost   │ Optimization           │
-├───────────────────────┼────────────────┼────────────────────────┤
 │  EC2 (3× t3.medium)  │ ~$90           │ Reserved Instances -40%│
 │  ALB                  │ ~$25           │ Cannot reduce          │
 │  RDS (db.t3.medium)  │ ~$65           │ Reserved Instance -40% │
@@ -267,9 +266,7 @@ app.set('trust proxy', true);
 │  S3                   │ ~$5           │ Lifecycle policies     │
 │  CloudWatch           │ ~$10          │ Log retention policies │
 │  Data Transfer         │ ~$10-50      │ CDN, compression       │
-├───────────────────────┼────────────────┼────────────────────────┤
 │  Total                │ ~$270-380     │ ~$180-250 optimized    │
-├───────────────────────┴────────────────┴────────────────────────┤
 │                                                                  │
 │  Quick wins:                                                     │
 │  1. S3 VPC endpoint: Save $0.045/GB on S3 traffic (free!)      │
@@ -289,7 +286,6 @@ app.set('trust proxy', true);
 ```
 ┌──────────────────────────────────────────────────────────────────┐
 │  DR Strategy         │ RPO/RTO        │ Cost                    │
-├──────────────────────┼────────────────┼─────────────────────────┤
 │  Backup & Restore    │ Hours/Hours    │ $ (cheapest)            │
 │  (S3 backups, AMIs)  │                │ Only backup costs       │
 │                      │                │                         │
@@ -305,7 +301,7 @@ app.set('trust proxy', true);
 │  (Full stack in 2    │                │ Highest availability    │
 │   regions, Route 53  │                │                         │
 │   failover routing)  │                │                         │
-├──────────────────────┴────────────────┴─────────────────────────┤
+│                                                                  │
 │  For most apps: Pilot Light (DB read replica in second region) │
 │  RPO: time since last replication                               │
 │  RTO: time to promote replica + deploy app in new region        │
@@ -319,7 +315,6 @@ app.set('trust proxy', true);
 ```
 ┌──────────────────────────────────────────────────────────────────┐
 │  ✅ Production Readiness Checklist                               │
-├──────────────────────────────────────────────────────────────────┤
 │                                                                  │
 │  DNS & Domain:                                                   │
 │  □ Custom domain with Route 53                                  │
@@ -398,5 +393,6 @@ app.set('trust proxy', true);
 **Q5: How do you design for high availability?**
 > Multi-AZ: EC2 ASG across 2+ AZs, RDS Multi-AZ, ElastiCache Multi-AZ. Multi-region for global apps: Route 53 latency-based routing, read replicas in secondary region, CloudFront global edge. No single points of failure: every component has redundancy. Auto-scaling handles load spikes. Health checks detect and route around failures automatically.
 
+---
 
-Prev : [24 Network Monitoring And Observability](./24_Network_Monitoring_And_Observability.md) | Index: [0 Index](./0_Index.md) | Next : N/A
+Prev : [25 Network Monitoring And Observability](./25_Network_Monitoring_And_Observability.md) | Index: [00 Index](./00_Index.md) | Next : N/A

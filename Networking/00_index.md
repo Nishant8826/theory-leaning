@@ -6,38 +6,38 @@ Welcome to the Complete Networking & Internet Architecture Revision Guide. This 
 
 ## 📌 Module Navigation
 
-* [00. Introduction & Setup](#00-introduction--setup)
-* [01. How The Internet Actually Works](#01-how-the-internet-actually-works)
-* [02. OSI Model Vs Real World](#02-osi-model-vs-real-world)
-* [03. TCP/IP Model](#03-tcpip-model)
-* [04. IP Addressing & Subnetting](#04-ip-addressing--subnetting)
-* [05. DNS Deep Dive](#05-dns-deep-dive)
-* [06. HTTP/HTTPS Internals](#06-httphttps-internals)
-* [07. TCP Deep Dive](#07-tcp-deep-dive)
-* [08. UDP & When To Use It](#08-udp--when-to-use-it)
-* [09. TLS/SSL Handshake](#09-tlsssl-handshake)
-* [10. Routing & NAT](#10-routing--nat)
-* [11. Load Balancing](#11-load-balancing)
-* [12. Firewalls & Security](#12-firewalls--security)
-* [13. Proxies & Reverse Proxies](#13-proxies--reverse-proxies)
-* [14. CDN & Caching](#14-cdn--caching)
-* [15. WebSockets & Real-Time](#15-websockets--real-time)
-* [16. API Gateways](#16-api-gateways)
-* [17. Microservices Networking](#17-microservices-networking)
-* [18. Containers & Networking](#18-containers--networking)
-* [19. Kubernetes Networking](#19-kubernetes-networking)
-* [20. Debugging Network Issues](#20-debugging-network-issues)
-* [21. Performance Optimization](#21-performance-optimization)
-* [22. Database Networking](#22-database-networking)
-* [23. VPC Architecture & Design](#23-vpc-architecture--design)
-* [24. Network Monitoring & Observability](#24-network-monitoring--observability)
-* [25. Deployment & Production Infrastructure](#25-deployment--production-infrastructure)
+* [01. Introduction & Setup](#01-introduction--setup)
+* [02. How The Internet Actually Works](#02-how-the-internet-actually-works)
+* [03. OSI Model Vs Real World](#03-osi-model-vs-real-world)
+* [04. TCP/IP Model](#04-tcpip-model)
+* [05. IP Addressing & Subnetting](#05-ip-addressing--subnetting)
+* [06. DNS Deep Dive](#06-dns-deep-dive)
+* [07. HTTP/HTTPS Internals](#07-httphttps-internals)
+* [08. TCP Deep Dive](#08-tcp-deep-dive)
+* [09. UDP & When To Use It](#09-udp--when-to-use-it)
+* [10. TLS/SSL Handshake](#10-tlsssl-handshake)
+* [11. Routing & NAT](#11-routing--nat)
+* [12. Load Balancing](#12-load-balancing)
+* [13. Firewalls & Security](#13-firewalls--security)
+* [14. Proxies & Reverse Proxies](#14-proxies--reverse-proxies)
+* [15. CDN & Caching](#15-cdn--caching)
+* [16. WebSockets & Real-Time](#16-websockets--real-time)
+* [17. API Gateways](#17-api-gateways)
+* [18. Microservices Networking](#18-microservices-networking)
+* [19. Containers & Networking](#19-containers--networking)
+* [20. Kubernetes Networking](#20-kubernetes-networking)
+* [21. Debugging Network Issues](#21-debugging-network-issues)
+* [22. Performance Optimization](#22-performance-optimization)
+* [23. Database Networking](#23-database-networking)
+* [24. VPC Architecture & Design](#24-vpc-architecture--design)
+* [25. Network Monitoring & Observability](#25-network-monitoring--observability)
+* [26. Deployment & Production Infrastructure](#26-deployment--production-infrastructure)
 
 ---
 
-## 00. Introduction & Setup
+## 01. Introduction & Setup
 
-🔗 **Full Lesson:** [00_Introduction_And_Setup.md](./00_Introduction_And_Setup.md)
+🔗 **Full Lesson:** [01_Introduction_And_Setup.md](./01_Introduction_And_Setup.md)
 
 * **What**: Guides developers in setting up network inspection and troubleshooting tools (Wireshark, curl, netstat, nmap, nslookup, etc.) and building a test project (Express API + WebSocket Server) to visualize real-world networking traffic.
 * **Why It Exists**: High-level application code hides the underlying layers (DNS, TCP, TLS, HTTP/WS, IP/routing), making it hard to debug latency, dropped connections, or caching issues. This setup provides hands-on tools to observe what's actually happening beneath application code.
@@ -76,14 +76,14 @@ nc -zv google.com 443
 
 ---
 
-## 01. How The Internet Actually Works
+## 02. How The Internet Actually Works
 
-🔗 **Full Lesson:** [01_How_The_Internet_Actually_Works.md](./01_How_The_Internet_Actually_Works.md)
+🔗 **Full Lesson:** [02_How_The_Internet_Actually_Works.md](./02_How_The_Internet_Actually_Works.md)
 
 * **What**: Traces the physical and conceptual journey of data packets over fiber cables, routers, and DNS servers, detailing the complete lifecycle of a web request.
 * **Why It Exists**: Information is bound by physics; data must be fragmented into packets and travel across physical distances, introducing latency. Understanding these components is critical for diagnosing performance, websocket drops, and timeout mismatches.
 * **Key Concepts**:
-  * **The Request Lifecycle**: Traces the steps of typing `https://myapp.com` (DNS resolution -> TCP 3-way handshake -> TLS handshake -> HTTP request/response -> browser rendering -> API calls).
+  * **The Request Lifecycle**: Traces the steps of typing `https://myapp.com` (DNS resolution (Lesson 06) -> TCP 3-way handshake -> TLS handshake -> HTTP request/response -> browser rendering -> API calls).
   * **Undersea Cables & Light Speed**: Latency is physically limited by the speed of light in fiber (~200,000 km/s). NYC to Mumbai theoretical minimum is ~130ms; real RTT is ~160-200ms due to routing/processing.
   * **Websocket Drops**: Mid-route gateways (NATs/ALBs) drop idle connections after a timeout (AWS ALB: 60s, NAT Gateway: 350s). Solved with regular client-server heartbeats (Socket.IO default: 25s).
   * **Timeout mismatches**: If backend timeouts are not aligned (Node.js timeout > ALB idle timeout of 60s > MongoDB query timeout of 30s), a slow database query causes a 504 error while backend resources remain blocked.
@@ -110,9 +110,9 @@ await client.connect(); // Establish once at startup
 
 ---
 
-## 02. OSI Model Vs Real World
+## 03. OSI Model Vs Real World
 
-🔗 **Full Lesson:** [02_OSI_Model_Vs_Real_World.md](./02_OSI_Model_Vs_Real_World.md)
+🔗 **Full Lesson:** [03_OSI_Model_Vs_Real_World.md](./03_OSI_Model_Vs_Real_World.md)
 
 * **What**: Compares the academic 7-layer OSI model to the real-world 4-5 layer TCP/IP stack, mapping cloud services and code variables to their respective layers.
 * **Why It Exists**: Systematically troubleshooting "slowness" or "connection dropped" requires isolating which layer is failing (e.g., routing at Layer 3, port conflicts at Layer 4, encryption at Layer 5/6, or code at Layer 7).
@@ -146,9 +146,9 @@ curl -I https://example.com
 
 ---
 
-## 03. TCP/IP Model
+## 04. TCP/IP Model
 
-🔗 **Full Lesson:** [03_TCP_IP_Model.md](./03_TCP_IP_Model.md)
+🔗 **Full Lesson:** [04_TCP_IP_Model.md](./04_TCP_IP_Model.md)
 
 * **What**: Focuses on the pragmatics of the 4-layer TCP/IP model (Application, Transport, Internet, Network Access) that powers the internet.
 * **Why It Exists**: Shows how all web applications run on a unified TCP/IP foundation. Port allocation, Dynamic/Ephemeral ports, and handshake costs dictate connection scale and reuse.
@@ -174,9 +174,9 @@ socket.setKeepAlive(true, 60000);
 
 ---
 
-## 04. IP Addressing & Subnetting
+## 05. IP Addressing & Subnetting
 
-🔗 **Full Lesson:** [04_IP_Addressing_And_Subnetting.md](./04_IP_Addressing_And_Subnetting.md)
+🔗 **Full Lesson:** [05_IP_Addressing_And_Subnetting.md](./05_IP_Addressing_And_Subnetting.md)
 
 * **What**: Explains how IPv4 addresses are structured, private vs. public IP ranges, CIDR block math, and how they apply to AWS VPCs and Security Groups.
 * **Why It Exists**: Properly segmenting networks prevents security breaches. Databases and internal caches must reside in private subnets, while load balancers live in public subnets with routes to the internet.
@@ -209,9 +209,9 @@ console.log(isIPInCIDR('10.0.1.50', '10.0.1.0/24')); // true
 
 ---
 
-## 05. DNS Deep Dive
+## 06. DNS Deep Dive
 
-🔗 **Full Lesson:** [05_DNS_Deep_Dive.md](./05_DNS_Deep_Dive.md)
+🔗 **Full Lesson:** [06_DNS_Deep_Dive.md](./06_DNS_Deep_Dive.md)
 
 * **What**: Demystifies domain name resolution (Resolvers, TLDs, Root servers, Authoritative nameservers) and Route 53 policies.
 * **Why It Exists**: DNS failures stall connection setups, causing slow page loads or downtime. Caching DNS lookups correctly in Node.js prevents per-request resolution latency.
@@ -239,9 +239,9 @@ dig @8.8.8.8 api.myapp.com A
 
 ---
 
-## 06. HTTP/HTTPS Internals
+## 07. HTTP/HTTPS Internals
 
-🔗 **Full Lesson:** [06_HTTP_HTTPS_Internals.md](./06_HTTP_HTTPS_Internals.md)
+🔗 **Full Lesson:** [07_HTTP_HTTPS_Internals.md](./07_HTTP_HTTPS_Internals.md)
 
 * **What**: Explains HTTP structure (Request/Response anatomy), differences between HTTP versions, and CORS.
 * **Why It Exists**: Efficient API design requires managing headers, compression, caching (ETags), and properly configuring CORS policies to avoid browser blocker issues.
@@ -278,9 +278,9 @@ app.use(cors({
 
 ---
 
-## 07. TCP Deep Dive
+## 08. TCP Deep Dive
 
-🔗 **Full Lesson:** [07_TCP_Deep_Dive.md](./07_TCP_Deep_Dive.md)
+🔗 **Full Lesson:** [08_TCP_Deep_Dive.md](./08_TCP_Deep_Dive.md)
 
 * **What**: Explores TCP handshake mechanics, connection teardowns, congestion control, and keep-alive timeout matching.
 * **Why It Exists**: Incorrect keep-alive alignments between Node.js and load balancers trigger intermittent 502 Bad Gateway errors. Stale socket connections behind NATs cause EPIPE/ECONNRESET.
@@ -289,7 +289,7 @@ app.use(cors({
   * **Connection Teardown**: 4-way handshake (FIN -> ACK -> FIN -> ACK). Sockets enter `TIME_WAIT` for 2 minutes to clear late packets.
   * **TCP States**: `LISTEN` (waiting), `SYN_SENT`, `ESTABLISHED` (active), `TIME_WAIT` (cleanup), `CLOSE_WAIT` (half-closed, potential app leak).
   * **Congestion Control**: Slow Start. Starts with a small window (cwnd ≈ 14KB) and doubles each RTT until packet loss occurs, then halves the window. Connection pooling prevents starting at slow-start speed.
-  * **Keep-Alive & NAT Timeout**: AWS NAT Gateway drops idle TCP streams after 350s. If pool connections are idle without probes, they go stale, triggering `ECONNRESET`. Fix by sending keep-alive probes every 120s.
+  * **Keep-Alive & NAT Gateway**: AWS NAT Gateway drops idle TCP streams after 350s. If pool connections are idle without probes, they go stale, triggering `ECONNRESET`. Fix by sending keep-alive probes every 120s.
 
 ### Key Commands / Code Example:
 
@@ -306,9 +306,9 @@ sudo tcpdump -i any port 3000 -nn
 
 ---
 
-## 08. UDP & When To Use It
+## 09. UDP & When To Use It
 
-🔗 **Full Lesson:** [08_UDP_And_When_To_Use_It.md](./08_UDP_And_When_To_Use_It.md)
+🔗 **Full Lesson:** [09_UDP_And_When_To_Use_It.md](./09_UDP_And_When_To_Use_It.md)
 
 * **What**: Focuses on UDP mechanics, datagram size constraints, and its integration in modern protocols like HTTP/3 (QUIC) and WebRTC.
 * **Why It Exists**: UDP eliminates handshake and overhead costs (header is only 8 bytes vs. 20-60 bytes for TCP). Perfect for latency-sensitive, loss-tolerant streams.
@@ -336,9 +336,9 @@ client.send(metric, 8125, 'statsd-server', (err) => {
 
 ---
 
-## 09. TLS/SSL Handshake
+## 10. TLS/SSL Handshake
 
-🔗 **Full Lesson:** [09_TLS_SSL_Handshake.md](./09_TLS_SSL_Handshake.md)
+🔗 **Full Lesson:** [10_TLS_SSL_Handshake.md](./10_TLS_SSL_Handshake.md)
 
 * **What**: Details Transport Layer Security (TLS 1.2 vs. 1.3), certificate validation, revocation, and security practices.
 * **Why It Exists**: TLS protects client-server communication from sniffing, interception, and spoofing. Misconfigured certificate chains or disabling verification leaves applications open to Man-in-the-Middle (MITM) attacks.
@@ -367,9 +367,9 @@ echo | openssl s_client -connect api.myapp.com:443 2>/dev/null | openssl x509 -n
 
 ---
 
-## 10. Routing & NAT
+## 11. Routing & NAT
 
-🔗 **Full Lesson:** [10_Routing_And_NAT.md](./10_Routing_And_NAT.md)
+🔗 **Full Lesson:** [11_Routing_And_NAT.md](./11_Routing_And_NAT.md)
 
 * **What**: Covers VPC routing rules, CIDR specificity, and NAT (Network Address Translation) gateways.
 * **Why It Exists**: Instances in private subnets require a NAT Gateway to fetch external updates or connect to public APIs, while remaining unreachable from the public internet.
@@ -394,9 +394,9 @@ aws ec2 describe-subnets --filters "Name=vpc-id,Values=vpc-xxxxx"
 
 ---
 
-## 11. Load Balancing
+## 12. Load Balancing
 
-🔗 **Full Lesson:** [11_Load_Balancing.md](./11_Load_Balancing.md)
+🔗 **Full Lesson:** [12_Load_Balancing.md](./12_Load_Balancing.md)
 
 * **What**: Explores load balancer types, load distribution algorithms, sticky sessions, and graceful shutdowns.
 * **Why It Exists**: Achieving high availability and zero-downtime deployments requires distributing load and smoothly draining traffic before stopping Node.js servers.
@@ -426,9 +426,9 @@ process.on('SIGTERM', () => {
 
 ---
 
-## 12. Firewalls & Security
+## 13. Firewalls & Security
 
-🔗 **Full Lesson:** [12_Firewalls_And_Security.md](./12_Firewalls_And_Security.md)
+🔗 **Full Lesson:** [13_Firewalls_And_Security.md](./13_Firewalls_And_Security.md)
 
 * **What**: Explains Security Groups (stateful), NACLs (stateless), WAF (Layer 7 filtering), and DDoS protections.
 * **Why It Exists**: A secure infrastructure uses multiple firewall layers (Defense in Depth) to filter traffic by port, IP, and payload content.
@@ -461,9 +461,9 @@ app.use(rateLimit({
 
 ---
 
-## 13. Proxies & Reverse Proxies
+## 14. Proxies & Reverse Proxies
 
-🔗 **Full Lesson:** [13_Proxies_And_Reverse_Proxies.md](./13_Proxies_And_Reverse_Proxies.md)
+🔗 **Full Lesson:** [14_Proxies_And_Reverse_Proxies.md](./14_Proxies_And_Reverse_Proxies.md)
 
 * **What**: Compares forward and reverse proxies, focusing on Nginx reverse proxy configurations.
 * **Why It Exists**: Running Node.js directly on the public internet is slow for static files, lacks gzip/brotli out of the box, and poses security risks. Reverse proxies protect Node.js.
@@ -493,9 +493,9 @@ location /socket.io/ {
 
 ---
 
-## 14. CDN & Caching
+## 15. CDN & Caching
 
-🔗 **Full Lesson:** [14_CDN_And_Caching.md](./14_CDN_And_Caching.md)
+🔗 **Full Lesson:** [15_CDN_And_Caching.md](./15_CDN_And_Caching.md)
 
 * **What**: Explores CDN edge caching (CloudFront) and application memory caching (Redis).
 * **Why It Exists**: Serving content from edge servers reduces geographical latency. Multi-layer caching speeds up reads but requires invalidation planning.
@@ -526,9 +526,9 @@ app.get('/api/products/:id', async (req, res) => {
 
 ---
 
-## 15. WebSockets & Real-Time
+## 16. WebSockets & Real-Time
 
-🔗 **Full Lesson:** [15_WebSockets_And_Real_Time.md](./15_WebSockets_And_Real_Time.md)
+🔗 **Full Lesson:** [16_WebSockets_And_Real_Time.md](./16_WebSockets_And_Real_Time.md)
 
 * **What**: Covers full-duplex WebSocket connections, scaling with Redis, and timeout mitigations.
 * **Why It Exists**: Real-time communication requires open, low-overhead sockets. Scaling stateful connections requires Pub/Sub broker coordination.
@@ -559,9 +559,9 @@ Promise.all([pubClient.connect(), subClient.connect()]).then(() => {
 
 ---
 
-## 16. API Gateways
+## 17. API Gateways
 
-🔗 **Full Lesson:** [16_API_Gateways.md](./16_API_Gateways.md)
+🔗 **Full Lesson:** [17_API_Gateways.md](./17_API_Gateways.md)
 
 * **What**: Covers centralized API Gateways (AWS API Gateway vs. custom Express gateways) and pattern designs.
 * **Why It Exists**: Moving cross-cutting concerns (auth, rate limiting, CORS) to the gateway layer simplifies microservices.
@@ -591,9 +591,9 @@ app.use('/api/orders', createProxyMiddleware({
 
 ---
 
-## 17. Microservices Networking
+## 18. Microservices Networking
 
-🔗 **Full Lesson:** [17_Microservices_Networking.md](./17_Microservices_Networking.md)
+🔗 **Full Lesson:** [18_Microservices_Networking.md](./18_Microservices_Networking.md)
 
 * **What**: Discusses microservices communication patterns, service discovery, and circuit breakers.
 * **Why It Exists**: Distributed architectures introduce latency and new failure modes. Circuit breakers and async queues prevent cascading service failures.
@@ -633,9 +633,9 @@ class CircuitBreaker {
 
 ---
 
-## 18. Containers & Networking
+## 19. Containers & Networking
 
-🔗 **Full Lesson:** [18_Containers_And_Networking.md](./18_Containers_And_Networking.md)
+🔗 **Full Lesson:** [19_Containers_And_Networking.md](./19_Containers_And_Networking.md)
 
 * **What**: Covers Docker networking modes, Compose setups, and ECS Fargate awsvpc integrations.
 * **Why It Exists**: Running containers requires isolating their networking interfaces while allowing dynamic service discovery by name.
@@ -662,9 +662,9 @@ services:
 
 ---
 
-## 19. Kubernetes Networking
+## 20. Kubernetes Networking
 
-🔗 **Full Lesson:** [19_Kubernetes_Networking.md](./19_Kubernetes_Networking.md)
+🔗 **Full Lesson:** [20_Kubernetes_Networking.md](./20_Kubernetes_Networking.md)
 
 * **What**: Explores Kubernetes flat network designs, ClusterIP services, Ingress controllers, and network policies.
 * **Why It Exists**: K8s routes traffic dynamically across multiple nodes. Services decouple pods from stable DNS endpoints.
@@ -698,9 +698,9 @@ spec:
 
 ---
 
-## 20. Debugging Network Issues
+## 21. Debugging Network Issues
 
-🔗 **Full Lesson:** [20_Debugging_Network_Issues.md](./20_Debugging_Network_Issues.md)
+🔗 **Full Lesson:** [21_Debugging_Network_Issues.md](./21_Debugging_Network_Issues.md)
 
 * **What**: Provides a methodology and tools for troubleshooting network issues.
 * **Why It Exists**: Diagnosing production issues requires systematically verifying the network stack from the bottom up to save time.
@@ -728,9 +728,9 @@ curl -w "DNS: %{time_namelookup}s TCP: %{time_connect}s TLS: %{time_appconnect}s
 
 ---
 
-## 21. Performance Optimization
+## 22. Performance Optimization
 
-🔗 **Full Lesson:** [21_Performance_Optimization.md](./21_Performance_Optimization.md)
+🔗 **Full Lesson:** [22_Performance_Optimization.md](./22_Performance_Optimization.md)
 
 * **What**: Focuses on performance budgets, keep-alive connections, compression, and payload optimization.
 * **Why It Exists**: Latency is a critical performance metric. Minimizing connection overhead and payload sizes speeds up page loads.
@@ -756,9 +756,9 @@ const agent = new https.Agent({
 
 ---
 
-## 22. Database Networking
+## 23. Database Networking
 
-🔗 **Full Lesson:** [22_Database_Networking.md](./22_Database_Networking.md)
+🔗 **Full Lesson:** [23_Database_Networking.md](./23_Database_Networking.md)
 
 * **What**: Covers database connection pools, read replicas, and NAT gateway timeouts.
 * **Why It Exists**: Database queries run over TCP. Reusing connections in a pool prevents connection overhead from slowing down queries.
@@ -771,6 +771,7 @@ const agent = new https.Agent({
 
 ```javascript
 // Mongoose connection pool configuration
+const mongoose = require('mongoose');
 mongoose.connect(process.env.MONGO_URI, {
   maxPoolSize: 10,
   minPoolSize: 2,
@@ -784,9 +785,9 @@ mongoose.connect(process.env.MONGO_URI, {
 
 ---
 
-## 23. VPC Architecture & Design
+## 24. VPC Architecture & Design
 
-🔗 **Full Lesson:** [23_VPC_Architecture_And_Design.md](./23_VPC_Architecture_And_Design.md)
+🔗 **Full Lesson:** [24_VPC_Architecture_And_Design.md](./24_VPC_Architecture_And_Design.md)
 
 * **What**: Details VPC layouts, three-tier subnets, peering, and VPC endpoints.
 * **Why It Exists**: Designing VPCs with separate public, private, and isolated tiers isolates critical workloads and prevents unauthorized access.
@@ -810,9 +811,9 @@ aws ec2 create-vpc-endpoint \
 
 ---
 
-## 24. Network Monitoring & Observability
+## 25. Network Monitoring & Observability
 
-🔗 **Full Lesson:** [24_Network_Monitoring_And_Observability.md](./24_Network_Monitoring_And_Observability.md)
+🔗 **Full Lesson:** [25_Network_Monitoring_And_Observability.md](./25_Network_Monitoring_And_Observability.md)
 
 * **What**: Explores metrics, logs, traces, CloudWatch alarms, and VPC Flow Logs.
 * **Why It Exists**: Observability tools alert you to errors and latency spikes before they affect users.
@@ -842,9 +843,9 @@ aws cloudwatch put-metric-alarm \
 
 ---
 
-## 25. Deployment & Production Infrastructure
+## 26. Deployment & Production Infrastructure
 
-🔗 **Full Lesson:** [25_Deployment_And_Production_Infrastructure.md](./25_Deployment_And_Production_Infrastructure.md)
+🔗 **Full Lesson:** [26_Deployment_And_Production_Infrastructure.md](./26_Deployment_And_Production_Infrastructure.md)
 
 * **What**: Synthesizes the architecture (DNS, CDN, ALB, EC2, RDS, Redis, CI/CD) for deploying production-grade applications.
 * **Why It Exists**: Deploying full-stack applications with high availability and security requires integrating all layers of the networking stack.
@@ -871,4 +872,4 @@ aws cloudwatch put-metric-alarm \
 
 ---
 
-Previous : [00_index.md](./00_index.md) | Index : [00_index.md](./00_index.md) | Next : [00_Introduction_And_Setup.md](./00_Introduction_And_Setup.md)
+Previous : [00_Index.md](./00_Index.md) | Index : [00_Index.md](./00_Index.md) | Next : [01_Introduction_And_Setup.md](./01_Introduction_And_Setup.md)

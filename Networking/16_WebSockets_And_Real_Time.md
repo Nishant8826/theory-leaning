@@ -1,6 +1,6 @@
 # WebSockets & Real-Time
 
-> 📌 **File:** 15_WebSockets_And_Real_Time.md | **Level:** Full-Stack Dev → Networking Expert
+> 📌 **File:** 16_WebSockets_And_Real_Time.md | **Level:** Full-Stack Dev → Networking Expert
 
 ---
 
@@ -255,14 +255,10 @@ function useSocket(url, token) {
     socket.on('disconnect', (reason) => {
       setConnected(false);
       console.log('WebSocket disconnected:', reason);
-      // reason = 'io server disconnect' | 'transport close' | 'ping timeout'
     });
 
     socket.on('connect_error', (err) => {
       console.error('Connection error:', err.message);
-      if (err.message === 'Invalid token') {
-        // Redirect to login
-      }
     });
 
     socketRef.current = socket;
@@ -357,7 +353,7 @@ All servers share state through Redis.
 
 #### Diagram Explanation (The Megaphone)
 WebSockets are inherently incredibly tricky to scale purely because they are "Stateful" (the server memorizes exactly who is currently connected to it).
-If you have 3 different servers perfectly load balanced, User A might connect to Server 1. User B connects to Server 2. If User A logs into the app and sends a chat message directly to User B, Server 1 has *no clue* who User B is or where they are, so the message drops!
+If you have 3 different servers load balanced, User A might connect to Server 1. User B connects to Server 2. If User A logs into the app and sends a chat message directly to User B, Server 1 has *no clue* who User B is or where they are, so the message drops!
 The solution is a **Redis Pub/Sub Adapter**. This acts like a giant megaphone. When User A messages User B, Server 1 yells into the Redis megaphone: "Hey, does ANY server have User B currently connected?!" Server 2 hears this from the megaphone, says "Yep, I do!", grabs the payload, and instantly pushes the message down to User B.
 
 ---
@@ -368,7 +364,7 @@ The solution is a **Redis Pub/Sub Adapter**. This acts like a giant megaphone. W
 ┌──────────────────────────────────────────────────────────────────┐
 │  Cause                          │ Fix                            │
 ├─────────────────────────────────┼────────────────────────────────┤
-│  ALB idle timeout (60s)         │ Socket.IO ping interval < 60s │
+│  ALB idle timeout (60s)         │ Socket.IO ping interval < 60s  │
 │  NAT Gateway timeout (350s)    │ TCP keep-alive < 350s          │
 │  Nginx proxy_read_timeout      │ Set to 86400s for WS           │
 │  Client goes to sleep (mobile) │ Reconnection logic in client   │
@@ -493,5 +489,6 @@ Display WebSocket connection status, transport type, and latency in your React a
 **Q5: How do you handle WebSocket authentication?**
 > Pass JWT token in the `auth` object during Socket.IO handshake. Verify in server-side middleware before allowing connection. Don't pass tokens in query strings (logged in URLs). Implement token refresh: if token expires, disconnect → refresh token → reconnect with new token.
 
+---
 
-Prev : [14 CDN And Caching](./14_CDN_And_Caching.md) | Index: [0 Index](./0_Index.md) | Next : [16 API Gateways](./16_API_Gateways.md)
+Prev : [15 CDN And Caching](./15_CDN_And_Caching.md) | Index: [00 Index](./00_Index.md) | Next : [17 API Gateways](./17_API_Gateways.md)

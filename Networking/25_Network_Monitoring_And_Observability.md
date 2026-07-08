@@ -1,6 +1,6 @@
 # Network Monitoring & Observability
 
-> 📌 **File:** 24_Network_Monitoring_And_Observability.md | **Level:** Full-Stack Dev → Networking Expert
+> 📌 **File:** 25_Network_Monitoring_And_Observability.md | **Level:** Full-Stack Dev → Networking Expert
 
 ---
 
@@ -186,7 +186,6 @@ app.use((req, res, next) => {
 ```
 ┌──────────────────────────────────────────────────────────────────┐
 │  Critical Alarms (page on-call)                                 │
-├─────────────────────────────────────────────────────────────────┤
 │  ALB 5xx error rate > 5%         → Backend is failing          │
 │  ALB healthy targets < 2         → Servers are down            │
 │  ALB target response time > 5s   → Backend is slow             │
@@ -196,7 +195,6 @@ app.use((req, res, next) => {
 │  Redis memory > 80%              → Eviction starting           │
 │                                                                 │
 │  Warning Alarms (Slack notification)                            │
-├─────────────────────────────────────────────────────────────────┤
 │  ALB 4xx error rate > 10%        → Bad client requests         │
 │  EC2 memory > 70%                → Memory leak possible        │
 │  NAT Gateway bytes > threshold   → Cost alert                  │
@@ -384,8 +382,7 @@ async function measureEventLoopLag() {
 ❌ User emails: "Your site is down"
    You check: Oh, EC2 crashed 2 hours ago. Nobody noticed.
    
-✅ CloudWatch Alarm → SNS → PagerDuty/Slack within 5 minutes
-   Automatic notification when health check fails.
+   Automatically notification when health check fails.
    Alert BEFORE users are affected.
 ```
 
@@ -439,5 +436,6 @@ Propagate X-Request-ID across two services. Search CloudWatch Logs by request ID
 **Q5: How do VPC Flow Logs help with security and debugging?**
 > Flow Logs capture metadata for all VPC traffic (source, destination, port, action). For security: detect port scanning, unauthorized access attempts, data exfiltration. For debugging: verify security group rules are correct, identify rejected connections, track traffic patterns between services.
 
+---
 
-Prev : [23 VPC Architecture And Design](./23_VPC_Architecture_And_Design.md) | Index: [0 Index](./0_Index.md) | Next : [25 Deployment And Production Infrastructure](./25_Deployment_And_Production_Infrastructure.md)
+Prev : [24 VPC Architecture And Design](./24_VPC_Architecture_And_Design.md) | Index: [00 Index](./00_Index.md) | Next : [26 Deployment And Production Infrastructure](./26_Deployment_And_Production_Infrastructure.md)

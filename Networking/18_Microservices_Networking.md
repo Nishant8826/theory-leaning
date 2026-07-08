@@ -1,6 +1,6 @@
 # Microservices Networking
 
-> 📌 **File:** 17_Microservices_Networking.md | **Level:** Full-Stack Dev → Networking Expert
+> 📌 **File:** 18_Microservices_Networking.md | **Level:** Full-Stack Dev → Networking Expert
 
 ---
 
@@ -14,14 +14,12 @@ Microservices architecture splits your monolith into independent services that c
 
 ```
 Monolith (what you probably have now):
-┌─────────────────────────────────────┐
-│  Express App (:3000)                │
-│  ├── /api/users     → User logic   │
-│  ├── /api/orders    → Order logic  │
-│  ├── /api/products  → Product logic│
-│  ├── /api/payments  → Payment logic│
-│  └── All share ONE MongoDB         │
-└─────────────────────────────────────┘
+  Express App (:3000)
+  ├── /api/users     → User logic
+  ├── /api/orders    → Order logic
+  ├── /api/products  → Product logic
+  ├── /api/payments  → Payment logic
+  └── All share ONE MongoDB
 
 Microservices:
 ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐
@@ -48,8 +46,8 @@ Microservices:
 │  Async Messages    │ SQS/SNS/   │ Fire-and-forget operations      │
 │  (Queue)           │ RabbitMQ    │ Order processing, email sending │
 │                    │             │                                 │
-│  Async Events      │ SNS/Kafka/ │ Event-driven architecture       │
-│  (Pub/Sub)         │ EventBridge│ "Order created" → notify, update│
+│  Async Events      │ SNS/Kafka/   │ Event-driven architecture       │
+│  (Pub/Sub)         │ EventBridge │ "Order created" → notify, update│
 │                    │             │ inventory, send email            │
 └────────────────────┴─────────────┴─────────────────────────────────┘
 ```
@@ -188,10 +186,6 @@ async function processNotificationQueue() {
     }
   }
 }
-
-// Inventory Service: Listens for order events → decrements stock
-// Payment Service: Listens for order events → charges customer
-// Analytics Service: Listens for order events → updates dashboard
 ```
 
 ---
@@ -201,7 +195,7 @@ async function processNotificationQueue() {
 ```
                      ┌──────────────┐
     User Request ───►│ API Gateway  │
-                     └──────┬───────┘
+                     └──────+───────┘
                             │
                      ┌──────▼───────┐
                      │ Order Service│ ← Creates order
@@ -257,7 +251,7 @@ Problem: How does Service A find Service B's IP/port?
 │  Container platform  │ Built-in DNS          │ ECS Service Disc. │
 └──────────────────────┴───────────────────────┴───────────────────┘
 
-Simplest for your stack:
+Shorthand for your stack:
   Option A: ALB with path routing (all services behind one ALB)
   Option B: One ALB per service (more isolation, more cost)
   Option C: ECS service discovery (if using containers)
@@ -405,9 +399,9 @@ Total: 400ms just for network overhead!
 ### ❌ Shared Database Across Services
 
 ```
-❌ Order Service and Product Service both write to the same MongoDB
-   → Tight coupling (can't change schema independently)
-   → Scaling one affects the other
+Order Service and Product Service both write to the same MongoDB
+  Tight coupling (can't change schema independently)
+  Scaling one affects the other
 
 ✅ Each service owns its database
    Order Service → orders_db (MongoDB)
@@ -434,5 +428,6 @@ Total: 400ms just for network overhead!
 **Q5: When should you NOT use microservices?**
 > Small teams (< 10 people), simple domains, early-stage startups, tight deadlines. The networking overhead (latency, retries, tracing, discovery) and operational complexity (more deployments, more monitoring, more failure modes) outweigh benefits for small projects.
 
+---
 
-Prev : [16 API Gateways](./16_API_Gateways.md) | Index: [0 Index](./0_Index.md) | Next : [18 Containers And Networking](./18_Containers_And_Networking.md)
+Prev : [17 API Gateways](./17_API_Gateways.md) | Index: [00 Index](./00_Index.md) | Next : [19 Containers And Networking](./19_Containers_And_Networking.md)

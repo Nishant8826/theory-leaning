@@ -1,6 +1,6 @@
 # TLS/SSL Handshake
 
-> 📌 **File:** 09_TLS_SSL_Handshake.md | **Level:** Full-Stack Dev → Networking Expert
+> 📌 **File:** 10_TLS_SSL_Handshake.md | **Level:** Full-Stack Dev → Networking Expert
 
 ---
 
@@ -293,7 +293,7 @@ Browser verifies:
     │
     └── Is the domain correct?
         └── api.myapp.com matches the certificate's CN/SAN ✅
-
+    
     └── Is it expired?
         └── Not Before: 2024-01-01, Not After: 2024-03-31 ✅
 
@@ -636,9 +636,9 @@ verify return:1
 ---
 Certificate chain
  0 s:CN = *.google.com                         ← Your cert (depth 0)
-   i:C = US, O = Google Trust Services LLC, CN = GTS CA 1C3  ← Signed by
+    i:C = US, O = Google Trust Services LLC, CN = GTS CA 1C3  ← Signed by
  1 s:C = US, O = Google Trust Services LLC, CN = GTS CA 1C3  ← Intermediate
-   i:C = US, O = Google Trust Services LLC, CN = GTS Root R1  ← Signed by
+    i:C = US, O = Google Trust Services LLC, CN = GTS Root R1  ← Signed by
 ---
 Server certificate
 -----BEGIN CERTIFICATE-----
@@ -648,7 +648,7 @@ Server certificate
 No client certificate CA names sent
 ---
 SSL handshake has read 4915 bytes and written 317 bytes
-Verification: OK                       ← Chain verified successfully
+Verification: OK                       <!-- Chain verified successfully -->
 ---
 New, TLSv1.3, Cipher is TLS_AES_256_GCM_SHA384   ← TLS version and cipher
 Server public key is 256 bit           ← EC key (256 bit = strong, small)
@@ -763,40 +763,19 @@ For POST requests that transfer money or submit forms: replay is catastrophic.
 
 ### EC Keys vs RSA Keys
 
-Elliptic Curve (EC) keys at 256-bit provide equivalent security to RSA at 3072-bit. This means:
-- **Smaller certificates** — faster to transmit, less overhead in the handshake
-- **Faster signing/verification** — EC operations are cheaper than RSA for equivalent security
-- **Better forward secrecy performance** — ECDH is faster than DHE at equivalent security levels
+Elliptic Curve (EC) keys at 256-bit provide equivalent security to RSA at 3072-bit but are much smaller.
+Small keys mean:
+- Smaller TLS packets (fits in a single TCP packet, avoids fragmentation)
+- Less bandwidth used in handshake
+- Faster computation/less CPU overhead on both client and server
 
-The standard EC curve for TLS is **P-256** (secp256r1) or **X25519**. X25519 is slightly faster and has better security properties (designed to avoid potential backdoors in NIST curves). TLS 1.3 supports both.
+Prefer EC certificates (also called ECDSA) over RSA. Let's Encrypt and AWS ACM both support EC certificates.
 
 ---
 
 ## Common Mistakes
 
-### ❌ Disabling Certificate Verification
-
-```javascript
-// ❌ NEVER do this in production
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-// Disables ALL certificate checking
-// Vulnerable to man-in-the-middle attacks
-
-// ❌ Also bad
-const pool = new Pool({
-  ssl: { rejectUnauthorized: false }  // Accepts any certificate
-});
-
-// ✅ Proper way — specify the CA
-const pool = new Pool({
-  ssl: {
-    rejectUnauthorized: true,
-    ca: fs.readFileSync('./rds-combined-ca-bundle.pem')
-  }
-});
-```
-
-#### Why `NODE_TLS_REJECT_UNAUTHORIZED = '0'` Is So Dangerous
+### ❌ Setting `rejectUnauthorized: false` in Production
 
 Setting this environment variable makes Node.js accept *any* certificate — expired, self-signed, for the wrong domain, signed by a random unknown CA. This means if an attacker is in a position to intercept traffic (man-in-the-middle), they can present any certificate and Node.js will happily proceed, encrypting all data for the attacker.
 
@@ -823,9 +802,9 @@ Another common scenario is development against localhost. Use `mkcert` (describe
 Here's what a man-in-the-middle attack looks like when certificate verification is disabled:
 
 ```
-                                   Eve (attacker)
-                                   ┌─────────────┐
-                                   │             │
+                                    Eve (attacker)
+                                    ┌─────────────┐
+                                    │             │
 Browser ──── TLS ──────────────► Eve ──── TLS ──►  Real Server
              (uses Eve's cert)         (uses real cert)
 
@@ -969,4 +948,4 @@ In a controlled local environment, use `mitmproxy` to intercept HTTPS traffic. O
 
 ---
 
-Prev : [08 UDP And When To Use It](./08_UDP_And_When_To_Use_It.md) | Index: [0 Index](./0_Index.md) | Next : [10 Routing And NAT](./10_Routing_And_NAT.md)
+Prev : [09 UDP And When To Use It](./09_UDP_And_When_To_Use_It.md) | Index: [00 Index](./00_Index.md) | Next : [11 Routing And NAT](./11_Routing_And_NAT.md)

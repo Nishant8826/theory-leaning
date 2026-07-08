@@ -1,6 +1,6 @@
 # Containers & Networking
 
-> 📌 **File:** 18_Containers_And_Networking.md | **Level:** Full-Stack Dev → Networking Expert
+> 📌 **File:** 19_Containers_And_Networking.md | **Level:** Full-Stack Dev → Networking Expert
 
 ---
 
@@ -73,7 +73,7 @@ AWS ECS production:
 │  awsvpc      │ Each container gets its    │ AWS ECS Fargate.    │
 │  (ECS only)  │ own ENI + VPC IP.         │ Native VPC          │
 │              │ Direct VPC connectivity.   │ networking.         │
-└──────────────┴────────────────────────────┴─────────────────────┘
+└────────────────┴────────────────────────────┴─────────────────────┘
 ```
 
 ---
@@ -411,5 +411,6 @@ Deploy your Dockerized app to ECS Fargate. Configure ALB, security groups, and v
 **Q5: How do you handle secrets in Docker containers?**
 > Never in Dockerfiles or environment variables in docker-compose.yml (visible in logs). Use: AWS Secrets Manager (ECS integrates natively), Docker secrets (Swarm), or mounted volumes. ECS can inject secrets from Secrets Manager/SSM Parameter Store directly into container environment.
 
+---
 
-Prev : [17 Microservices Networking](./17_Microservices_Networking.md) | Index: [0 Index](./0_Index.md) | Next : [19 Kubernetes Networking](./19_Kubernetes_Networking.md)
+Prev : [18 Microservices Networking](./18_Microservices_Networking.md) | Index: [00 Index](./00_Index.md) | Next : [20 Kubernetes Networking](./20_Kubernetes_Networking.md)

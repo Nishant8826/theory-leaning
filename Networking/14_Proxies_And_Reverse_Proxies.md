@@ -1,12 +1,12 @@
 # Proxies & Reverse Proxies
 
-> 📌 **File:** 13_Proxies_And_Reverse_Proxies.md | **Level:** Full-Stack Dev → Networking Expert
+> 📌 **File:** 14_Proxies_And_Reverse_Proxies.md | **Level:** Full-Stack Dev → Networking Expert
 
 ---
 
 ## What is it?
 
-A **proxy** sits between a client and a server, forwarding requests. A **forward proxy** acts on behalf of the client (hides the client). A **reverse proxy** acts on behalf of the server (hides the server). Nginx is the most common reverse proxy in your stack — it sits in front of Node.js handling TLS, compression, caching, and static files.
+A proxy sits between a client and a server, forwarding requests. A forward proxy acts on behalf of the client (hides the client). A reverse proxy acts on behalf of the server (hides the server). Nginx is the most common reverse proxy in your stack — it sits in front of Node.js handling TLS, compression, caching, and static files.
 
 ---
 
@@ -244,8 +244,8 @@ Headers Node.js receives:
 
 #### Diagram Explanation (The Corporate Hierarchy)
 Think of a Reverse Proxy Chain like the structural hierarchy of a large corporation handling incoming customer requests:
-- **CloudFront (The International Receptionist):** Located all over the world, they intercept international requests immediately. If the customer just wants a standard brochure (Static Files), the receptionist hands it to them instantly and ends the interaction.
-- **ALB (The Regional Manager):** If the customer needs custom account help, they are explicitly routed to the central AWS region. The ALB decides which department they need (`/api/*` vs `/ws/*`) and passes them to whichever employee currently has the least amount of work.
+- **CloudFront (The International Receptionist):** Located all over the world, they intercept international requests immediately. If the customer just wants a standard public company brochure (Static Files), the receptionist hands it to them instantly and ends the interaction.
+- **ALB (The Regional Manager):** If the customer needs custom account help, they are routed to the central AWS region. The ALB decides which department they need (`/api/*` vs `/ws/*`) and passes them to whichever employee currently has the least amount of work.
 - **Nginx (The Department Secretary):** Before the backend developer even sees the request, Nginx checks their ID card, squishes the data down to save space (gzip), and acts as a buffer so the developer doesn't get overwhelmed with slow talkers.
 - **Node.js (The Worker):** Finally, Node executes the core business logic and builds the response, blissfully unaware of the immense sophisticated infrastructure flawlessly shielding and scaling it!
 
@@ -277,8 +277,6 @@ app.use((req, res, next) => {
 
 // ──── HTTPS redirect (when behind proxy) ────
 app.use((req, res, next) => {
-  // Don't check req.protocol directly (it's always 'http' behind Nginx)
-  // Check the forwarded protocol instead
   if (req.headers['x-forwarded-proto'] !== 'https') {
     return res.redirect(301, `https://${req.hostname}${req.url}`);
   }
@@ -291,7 +289,6 @@ const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
   keyGenerator: (req) => {
-    // req.ip already returns real client IP because trust proxy is set
     return req.ip;
   }
 });
@@ -316,9 +313,6 @@ location /api/products {
     proxy_cache_bypass $http_authorization;  # Don't cache auth'd requests
     
     add_header X-Cache-Status $upstream_cache_status;
-    # HIT = served from cache
-    # MISS = forwarded to Node.js
-    # EXPIRED = cache expired, forwarded
 }
 ```
 
@@ -332,7 +326,6 @@ location /api/products {
 # ❌ Missing Upgrade headers — WebSocket won't work through Nginx
 location /socket.io/ {
     proxy_pass http://node_api;
-    # WebSocket never establishes — falls back to polling
 }
 
 # ✅ Must include Connection upgrade headers
@@ -341,6 +334,8 @@ location /socket.io/ {
     proxy_http_version 1.1;
     proxy_set_header Upgrade $http_upgrade;
     proxy_set_header Connection "upgrade";
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
 }
 ```
 
@@ -404,5 +399,6 @@ Configure Nginx to proxy WebSocket connections to your Socket.IO server. Verify 
 **Q5: How do you handle WebSocket connections through a reverse proxy?**
 > The reverse proxy must forward the `Upgrade` and `Connection` headers for the HTTP→WebSocket upgrade. In Nginx: `proxy_set_header Upgrade $http_upgrade; proxy_set_header Connection "upgrade"`. Also set `proxy_read_timeout` high enough for long-lived connections.
 
+---
 
-Prev : [12 Firewalls And Security](./12_Firewalls_And_Security.md) | Index: [0 Index](./0_Index.md) | Next : [14 CDN And Caching](./14_CDN_And_Caching.md)
+Prev : [13 Firewalls And Security](./13_Firewalls_And_Security.md) | Index: [00 Index](./00_Index.md) | Next : [15 CDN And Caching](./15_CDN_And_Caching.md)

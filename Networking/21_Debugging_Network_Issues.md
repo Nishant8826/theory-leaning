@@ -1,6 +1,6 @@
 # Debugging Network Issues
 
-> 📌 **File:** 20_Debugging_Network_Issues.md | **Level:** Full-Stack Dev → Networking Expert
+> 📌 **File:** 21_Debugging_Network_Issues.md | **Level:** Full-Stack Dev → Networking Expert
 
 ---
 
@@ -418,7 +418,7 @@ app.get('/debug/diagnostics', (req, res) => {
 Intentionally break your API (stop MongoDB) and use the layer-by-layer debugging method to identify the problem without looking at the app logs first.
 
 ### Exercise 2: Timing Analysis
-Use `curl -w` to measure timing for 5 different websites. Create a comparison table of DNS, TCP, TLS, and TTFB times. Explain the differences.
+Use `curl -w` to measure your API's DNS, TCP, TLS, and TTFB times. Create a comparison table of DNS, TCP, TLS, and TTFB times. Explain the differences.
 
 ### Exercise 3: Connection State Audit
 Run your Express server under load (use `autocannon`). Monitor connection states with `ss`. Identify TIME_WAIT, CLOSE_WAIT, and ESTABLISHED counts. Are any problematic?
@@ -442,5 +442,6 @@ Run your Express server under load (use `autocannon`). Monitor connection states
 **Q5: What tools do you use for network debugging in production?**
 > `curl -v`/`curl -w` (HTTP debugging + timing), `tcpdump`/Wireshark (packet capture), `ss`/`netstat` (connection states), `dig`/`nslookup` (DNS), `traceroute`/`mtr` (path analysis), CloudWatch/Datadog (metrics + logs), and application-level logging with request IDs for distributed tracing.
 
+---
 
-Prev : [19 Kubernetes Networking](./19_Kubernetes_Networking.md) | Index: [0 Index](./0_Index.md) | Next : [21 Performance Optimization](./21_Performance_Optimization.md)
+Prev : [20 Kubernetes Networking](./20_Kubernetes_Networking.md) | Index: [00 Index](./00_Index.md) | Next : [22 Performance Optimization](./22_Performance_Optimization.md)
