@@ -6,120 +6,193 @@
 
 ## What is it?
 
-TCP (Transmission Control Protocol) is the reliable transport protocol at Layer 4. Every HTTP request, database connection, and API call runs over a TCP connection. TCP guarantees three things: packets arrive, they arrive in order, and they aren't damaged. It does this through connection states, handshakes, sequence numbers, and window sizing.
+TCP (Transmission Control Protocol) is the reliable transport layer beneath HTTP, WebSocket, MongoDB, Redis, and PostgreSQL. It guarantees delivery, ordering, and flow control. Every API call, every database query, every WebSocket message rides on TCP. Understanding TCP explains why connections timeout, why keep-alive matters, and why your app behaves differently under load.
 
 ---
 
 ## Map it to MY STACK (CRITICAL)
 
 ```
-Your Node.js API:
-  const app = require('express')();
-  app.listen(3000);  // Creates a TCP socket listening on port 3000
-
-When a browser connects:
-  1. Browser OS initiates TCP Handshake with Server OS.
-  2. Handshake completes in OS kernel (Node.js doesn't see this yet).
-  3. Server OS puts connection in "Accept Queue".
-  4. Node.js event loop calls "accept()" -> grabs connection.
-  5. Your Express routes can now receive HTTP data over this TCP pipe.
-
-If Node.js event loop is blocked:
-  - OS still completes TCP handshakes (up to "backlog" limit).
-  - But Node.js doesn't call accept(). Accept queue fills up.
-  - New clients get "connection refused" or timeouts, even though
-    the server process is running!
+┌──────────────────────────────────────────────────────────────────────┐
+│  Your Code                       │ TCP Reality                      │
+├──────────────────────────────────┼──────────────────────────────────┤
+│  fetch() → response             │ TCP 3-way handshake → data →ACK │
+│  mongoose.connect()              │ TCP connection to port 27017     │
+│  redis.get()                     │ TCP send command, await reply    │
+│  socket.io connection            │ TCP handshake→HTTP upgrade→data │
+│  ECONNREFUSED error              │ TCP RST (port not listening)     │
+│  ETIMEDOUT error                 │ TCP SYN sent, no SYN-ACK back   │
+│  ECONNRESET error                │ TCP RST (connection killed)      │
+│  Connection pool maxSize: 10     │ 10 TCP sockets maintained        │
+│  Keep-alive                      │ TCP connection reused            │
+│  ALB idle timeout: 60s           │ Closes TCP after 60s no data    │
+│  Slow API under load             │ TCP congestion window shrinking  │
+└──────────────────────────────────┴──────────────────────────────────┘
 ```
 
 ---
 
-## TCP Connection Lifecycle
+## How does it actually work?
+
+### 3-Way Handshake (Connection Setup)
 
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│  TCP Three-Way Handshake (Establishing connection)               │
-│                                                                  │
-│  Client (Browser)                      Server (Node.js)          │
-│    │                                          │                  │
-│    │  SYN (Synchronize)                       │                  │
-│    │  Seq=X                                   │                  │
-│    │ ───────────────────────────────────────► │                  │
-│    │                                          │                  │
-│    │  SYN-ACK (Sync-Acknowledge)              │                  │
-│    │  Seq=Y, Ack=X+1                          │                  │
-│    │ ◄─────────────────────────────────────── │                  │
-│    │                                          │                  │
-│    │  ACK (Acknowledge)                       │                  │
-│    │  Seq=X+1, Ack=Y+1                        │                  │
-│    │ ───────────────────────────────────────► │                  │
-│    │                                          │                  │
-│    ═══ Connection ESTABLISHED (Data can flow) ═══                │
-└──────────────────────────────────────────────────────────────────┘
+Client                          Server
+  │                                │
+  │  SYN (seq=100)                │   "I want to connect"
+  │ ──────────────────────────►   │
+  │                                │
+  │  SYN-ACK (seq=300, ack=101)   │   "OK, I'm ready too"
+  │ ◄──────────────────────────   │
+  │                                │
+  │  ACK (ack=301)                │   "Great, let's talk"
+  │ ──────────────────────────►   │
+  │                                │
+  │  ═══ Connection ESTABLISHED ══│
+  │                                │
+  Cost: 1.5 RTT (round-trip times)
+  Same region: 1.5 × 1ms = 1.5ms
+  Cross-continent: 1.5 × 200ms = 300ms ← THIS IS WHY LATENCY MATTERS
 ```
 
-#### Diagram Explanation (The Phone Call)
-Think of the 3-way handshake exactly like starting a phone call:
-- **SYN (Client):** "Hello? Can you hear me?" (Sends initial Sequence number X).
-- **SYN-ACK (Server):** "Yes, I hear you! Can you hear me?" (Acknowledges client, sends own Sequence Y).
-- **ACK (Client):** "Yep, I can hear you clearly! Let's talk." (Connection established).
+#### What Do These Flags Actually Mean?
+- **SYN (Synchronize):** A 1-bit flag inside the TCP header. The client sends this to *synchronize* its initial sequence number (a randomly generated starting number, e.g., 100) with the server. It formally asks: "I want to start a conversation, are you open and listening on this port?"
+- **SYN-ACK (Synchronize-Acknowledge):** A response from the server containing two flags. **SYN:** "I also want to synchronize my own initial sequence number (e.g., 300) with you." **ACK:** "I explicitly *acknowledge* receiving your SYN request (and I expect packet #101 next)." 
+- **ACK (Acknowledge):** A 1-bit flag from the client. It formally tells the server: "I *acknowledge* receiving your connection sequence number (and expect packet #301 next)." The connection is now 100% open and ESTABLISHED.
+
+#### Diagram Explanation (The Formal Introduction)
+Think of the 3-Way Handshake like calling a business partner entirely through a slow postal service:
+- **SYN (Hi!):** You send the first letter saying "I'd like to initiate a conversation, and my starting reference number is 100."
+- **SYN-ACK (Hi! I acknowledge!):** The server sends a letter back: "I acknowledge your #100 (so I know you exist), and I also want to talk! My reference number is 300."
+- **ACK (I acknowledge your Hi!):** You reply: "I acknowledge your #300. We are now officially talking."
+Because every one of these "letters" involves a physical trip over the internet (a Round-Trip Time or RTT), setting up a new TCP connection is *expensive*. This is exactly why you want connection pooling!
+
+### Data Transfer
 
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│  TCP Four-Way Teardown (Closing connection)                      │
-│                                                                  │
-│  Client                                Server                    │
-│    │                                          │                  │
-│    │  FIN (Finished)                          │                  │
-│    │ ───────────────────────────────────────► │                  │
-│    │                                          │                  │
-│    │  ACK                                     │                  │
-│    │ ◄─────────────────────────────────────── │                  │
-│    │                                          │ (Server finishes │
-│    │                                          │  sending data)   │
-│    │  FIN                                     │                  │
-│    │ ◄─────────────────────────────────────── │                  │
-│    │                                          │                  │
-│    │  ACK                                     │                  │
-│    │ ───────────────────────────────────────► │                  │
-│    │                                          │                  │
-│    │  (Client enters TIME_WAIT: 2MSL)         │                  │
-│    ═══ Socket closed (Resources freed) ══════                 │
-└──────────────────────────────────────────────────────────────────┘
+Client                          Server
+  │                                │
+  │  DATA (seq=101, 500 bytes)    │
+  │ ──────────────────────────►   │
+  │                                │
+  │  ACK (ack=601)                │   "Got bytes 101-600"
+  │ ◄──────────────────────────   │
+  │                                │
+  │  DATA (seq=601, 500 bytes)    │
+  │ ──────────────────────────►   │
+  │                                │
+  │  ACK (ack=1101)               │   "Got bytes 601-1100"
+  │ ◄──────────────────────────   │
+
+  TCP guarantees:
+  ✅ Every byte is delivered (retransmits on loss)
+  ✅ Bytes arrive in order (reassembles if out of order)
+  ✅ No duplicates (sequence numbers detect dupes)
+  ✅ Flow control (receiver tells sender how fast to go)
+  ✅ Congestion control (adapts to network capacity)
 ```
 
-#### Diagram Explanation (Saying Goodbye)
-Closing a TCP connection is like two polite people saying goodbye:
-- **FIN (Client):** "I'm done speaking, I have nothing more to say."
-- **ACK (Server):** "Got it. Let me finish my sentence..." (Server keeps sending trailing data).
-- **FIN (Server):** "Okay, I'm also done speaking now. Goodbye."
-- **ACK (Client):** "Goodbye!" (Client enters `TIME_WAIT` state to catch any late packets).
+### Connection Teardown (4-Way Handshake)
+
+```
+Client                          Server
+  │                                │
+  │  FIN                           │   "I'm done sending"
+  │ ──────────────────────────►   │
+  │                                │
+  │  ACK                           │   "OK, noted"
+  │ ◄──────────────────────────   │
+  │                                │
+  │  FIN                           │   "I'm done too"
+  │ ◄──────────────────────────   │
+  │                                │
+  │  ACK                           │   "OK, goodbye"
+  │ ──────────────────────────►   │
+  │                                │
+  │  ═══ TIME_WAIT (2 min) ═══   │   Client waits to handle late packets
+```
+
+#### What Do These Flags Actually Mean?
+- **FIN (Finish):** A 1-bit flag inside the TCP header indicating that the sender has officially entirely finished sending data. Unlike simply shutting off power, it politely notifies the other side: "I will not send any more data, but I will keep listening until you are also finished."
+- **ACK (Acknowledge):** Just like in the setup phase, the other side acknowledges receiving the Finish packet.
+*(Note: It's a 4-way handshake because TCP connections are "full-duplex" / bi-directional. Both the Client and the Server must independently say "I am finished" and receive a corresponding "I acknowledge you are finished".)*
+
+### TCP States You'll See
+
+```
+┌────────────────┬────────────────────────────────────────────────────┐
+│ State          │ What It Means                                      │
+├────────────────┼────────────────────────────────────────────────────┤
+│ LISTEN         │ Server waiting for connections (your Express app) │
+│ SYN_SENT       │ Client sent SYN, waiting for SYN-ACK              │
+│ SYN_RECEIVED   │ Server got SYN, sent SYN-ACK, waiting for ACK    │
+│ ESTABLISHED    │ Connection active — data flowing                  │
+│ FIN_WAIT_1     │ Sent FIN, waiting for ACK                         │
+│ FIN_WAIT_2     │ Got ACK for our FIN, waiting for their FIN       │
+│ TIME_WAIT      │ Connection closed, waiting 2 min (prevents dupes) │
+│ CLOSE_WAIT     │ Remote side closed, we haven't closed yet ⚠️     │
+│ LAST_ACK       │ Sent FIN, waiting for final ACK                   │
+│ CLOSED         │ Connection fully terminated                        │
+├────────────────┴────────────────────────────────────────────────────┤
+│ CLOSE_WAIT accumulation = your app isn't closing connections!      │
+│ TIME_WAIT accumulation = too many short-lived connections (normal) │
+│ SYN_SENT stuck = server unreachable (firewall, wrong IP)          │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+#### Diagram Explanation (The Relationship Status)
+TCP states perfectly track the "relationship status" of a connection you can view using terminal commands like `netstat`:
+- `LISTEN`: Single and looking. Your server is actively waiting for users to reach out.
+- `ESTABLISHED`: Married. Data flows back and forth happily.
+- `CLOSE_WAIT`: "It's complicated." The client has hung up, but your backend code hasn't officially cleaned up and closed the connection yet. If you have thousands of connections stuck in this state, you have a memory leak!
+- `TIME_WAIT`: Divorced, but waiting around for a couple of minutes to make sure the paperwork clears so you don't accidentally receive your ex's delayed mail (preventing cross-connection bugs).
 
 ---
 
-## Important TCP States to Monitor
+## Why this matters in real systems
+
+### Scenario: "Why does my app slow down under load?"
 
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│  State       │ What it Means              │ Production Impact    │
-├──────────────┼────────────────────────────┼──────────────────────┤
-│  LISTEN      │ Server is waiting for      │ Normal state for     │
-│              │ connections on port X      │ Node.js/DB           │
-│              │                            │                      │
-│  ESTABLISHED │ Active connection, data    │ Normal active        │
-│              │ flowing                    │ traffic              │
-│              │                            │                      │
-│  TIME_WAIT   │ Connection closed by client│ Normal, socket held  │
-│              │ Waiting for late packets   │ for 60-120 seconds   │
-│              │                            │                      │
-│  CLOSE_WAIT  │ Connection closed by server│ DANGER! Server forgot│
-│              │ Client waiting for server  │ to call socket.close()│
-│              │ to close its end           │ Memory/socket leak   │
-└──────────────┴────────────────────────────┴──────────────────────┘
+TCP Congestion Control (Slow Start):
 
-DANGER: Too many TIME_WAIT connections can exhaust server ports!
-Each port is a resource. If you have 65,000 connections in TIME_WAIT,
-new connections fail with "cannot assign requested address".
-Fix: Enable TCP keep-alive, reuse connections.
+New connection starts with small congestion window (cwnd = ~14KB)
+Gradually increases as ACKs come back:
+  RTT 1: cwnd = 14KB  → can send 14KB unacknowledged
+  RTT 2: cwnd = 28KB  → doubles
+  RTT 3: cwnd = 56KB  → doubles again
+  RTT 4: cwnd = 112KB → getting fast now
+  ...
+  RTT 10: cwnd = 7MB+ → full speed
+
+If a packet is lost (congestion detected):
+  cwnd drops by HALF → speed crashes → slow recovery
+
+For a 500KB API response on a NEW connection:
+  HTTP/1.1: Need ~5 RTTs to transfer (slow start limits throughput)
+  Keep-alive: Already at full speed → 1-2 RTTs
+
+This is why CONNECTION REUSE is critical.
+```
+
+### Scenario: "MongoDB/Redis connections going stale"
+
+```
+TCP Keep-Alive:
+  After a connection is idle, TCP sends probe packets to check if
+  the other side is still alive.
+
+  Linux defaults:
+    tcp_keepalive_time = 7200s (2 hours before first probe!)
+    tcp_keepalive_intvl = 75s (between probes)
+    tcp_keepalive_probes = 9 (give up after 9 failed probes)
+
+  Problem: AWS NAT Gateway has a 350-second idle timeout.
+  If your MongoDB connection is idle for 350s → NAT drops it.
+  Next query → ECONNRESET (connection was silently killed).
+
+  Fix: Set TCP keep-alive shorter than NAT timeout:
+    socket.setKeepAlive(true, 120000); // 120 seconds
 ```
 
 ---
@@ -129,130 +202,246 @@ Fix: Enable TCP keep-alive, reuse connections.
 ```javascript
 const net = require('net');
 
-// ──── Low-Level TCP Server ────
+// ──── TCP Server (see raw TCP) ────
 const server = net.createServer((socket) => {
-  console.log(`Client connected: ${socket.remoteAddress}:${socket.remotePort}`);
+  console.log('New connection:', {
+    remote: `${socket.remoteAddress}:${socket.remotePort}`,
+    local: `${socket.localAddress}:${socket.localPort}`,
+    bufferSize: socket.bufferSize,
+    bytesRead: socket.bytesRead
+  });
   
-  // Keep connection alive
-  socket.setKeepAlive(true, 60000); // 60s idle timeout
+  // TCP Keep-Alive (critical for long-lived connections)
+  socket.setKeepAlive(true, 120000);  // Probe every 120s
+  socket.setNoDelay(true);            // Disable Nagle (send immediately)
+  socket.setTimeout(30000);           // 30s idle timeout
   
   socket.on('data', (data) => {
-    console.log(`Received: ${data.length} bytes`);
-    
-    // Echo back (Simple protocol)
+    console.log(`Received: ${data.length} bytes, total: ${socket.bytesRead}`);
     socket.write(`Echo: ${data}`);
   });
   
-  socket.on('close', () => {
-    console.log('Client disconnected');
+  socket.on('timeout', () => {
+    console.log('Socket timeout — closing');
+    socket.end();
   });
   
   socket.on('error', (err) => {
-    console.error('Socket error:', err);
+    console.log(`Socket error: ${err.code} — ${err.message}`);
+    // ECONNRESET: remote side killed connection
+    // EPIPE: writing to closed connection
+    // ETIMEDOUT: connection timed out
+  });
+  
+  socket.on('close', (hadError) => {
+    console.log(`Connection closed (error: ${hadError})`);
   });
 });
 
-// Listen on TCP port 3000
-server.listen(3000, '0.0.0.0', () => {
-  console.log('TCP server listening on port 3000');
+server.maxConnections = 1000;  // Limit concurrent connections
+server.listen(8080);
+
+// ──── TCP Client with Connection Pool ────
+class TCPPool {
+  constructor(host, port, maxSize = 10) {
+    this.host = host;
+    this.port = port;
+    this.maxSize = maxSize;
+    this.pool = [];
+    this.waiting = [];
+  }
+  
+  async getConnection() {
+    // Reuse existing idle connection
+    const idle = this.pool.find(c => !c.inUse && !c.destroyed);
+    if (idle) {
+      idle.inUse = true;
+      return idle;
+    }
+    
+    // Create new if under limit
+    if (this.pool.length < this.maxSize) {
+      return this._createConnection();
+    }
+    
+    // Wait for a connection to become available
+    return new Promise((resolve) => this.waiting.push(resolve));
+  }
+  
+  _createConnection() {
+    return new Promise((resolve, reject) => {
+      const socket = net.createConnection(this.port, this.host);
+      socket.setKeepAlive(true, 120000);
+      socket.inUse = true;
+      
+      socket.on('connect', () => {
+        this.pool.push(socket);
+        resolve(socket);
+      });
+      
+      socket.on('error', reject);
+    });
+  }
+  
+  release(socket) {
+    socket.inUse = false;
+    if (this.waiting.length > 0) {
+      socket.inUse = true;
+      this.waiting.shift()(socket);
+    }
+  }
+}
+```
+
+### Express Keep-Alive Configuration
+
+```javascript
+const http = require('http');
+const express = require('express');
+const app = express();
+
+const server = http.createServer(app);
+
+// TCP-level settings
+server.keepAliveTimeout = 65000;          // Keep TCP alive for 65s (> ALB's 60s)
+server.headersTimeout = 66000;            // Slightly more than keepAliveTimeout
+server.maxHeadersCount = 100;             // Limit header count
+server.timeout = 120000;                  // Max request processing time (2 min)
+
+// Track connections
+let connectionCount = 0;
+server.on('connection', (socket) => {
+  connectionCount++;
+  console.log(`Connections: ${connectionCount}`);
+  socket.on('close', () => {
+    connectionCount--;
+  });
 });
 
-// ──── Low-Level TCP Client ────
-const client = new net.Socket();
-
-client.connect(3000, 'localhost', () => {
-  console.log('Connected to server');
-  client.write('Hello, Server!');
-});
-
-client.on('data', (data) => {
-  console.log(`Server says: ${data}`);
-  client.destroy(); // Kill connection
-});
+server.listen(3000);
 ```
 
 ---
 
-## Commands & Diagnostics
+## Commands & Debugging Tools
 
 ```bash
-# View all listening and established TCP connections
-ss -t -a                       # Modern Linux (fast)
-netstat -tna                   # Legacy (works on Mac)
-netstat -ano                   # Windows PowerShell
+# See TCP connections
+netstat -an | grep ESTABLISHED    # All active connections
+netstat -an | grep :3000          # Connections to your server
+ss -s                             # Connection summary stats
+ss -tlnp                          # Listening TCP ports with PIDs
 
-# Count connections by state
-ss -t -a | awk '{print $1}' | sort | uniq -c
+# TCP connection states count
+netstat -an | awk '/tcp/ {print $6}' | sort | uniq -c | sort -rn
 
-# Check what process is listening on port 3000
-lsof -i :3000                  # Mac/Linux
-ss -tlpn | grep :3000          # Linux only (requires root)
-netstat -ano | findstr 3000    # Windows
+# Capture TCP packets
+sudo tcpdump -i any port 3000 -nn
+# Flags: S=SYN, .=ACK, F=FIN, R=RST, P=PUSH
 
-# Connect to raw TCP port to test connection (replaces curl for raw ports)
-nc -zv api.myapp.com 3000      # Netcat test: check if port is open
-telnet localhost 3000          # Telnet test (exit with Ctrl+])
+# Detailed packet capture
+sudo tcpdump -i any port 3000 -A    # Show ASCII content
+sudo tcpdump -i any port 3000 -X    # Show hex + ASCII
+
+# Test TCP connectivity
+nc -zv api.myapp.com 443           # Test if port is open
+nc -zv 10.0.10.5 5432              # Test PostgreSQL port
+nc -zv 10.0.10.15 6379             # Test Redis port
+```
+
+---
+
+## Performance Insight
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│  TCP Performance Tips                                           │
+├──────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  1. Connection pooling (MongoDB, Redis, PostgreSQL)             │
+│     New conn: 1.5 RTT overhead. Pooled: 0 RTT.                 │
+│                                                                  │
+│  2. Keep-alive (HTTP connections)                               │
+│     server.keepAliveTimeout = 65000 (> ALB timeout)             │
+│     Avoids TCP+TLS handshake on every request                   │
+│                                                                  │
+│  3. Nagle's algorithm (setNoDelay)                              │
+│     Default: buffers small packets to send together (good for   │
+│     throughput, bad for latency).                                │
+│     Interactive apps: socket.setNoDelay(true)                   │
+│                                                                  │
+│  4. SO_REUSEADDR                                                │
+│     Allows quick server restart without waiting for TIME_WAIT.  │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
 ## Common Mistakes
 
-### ❌ Node.js Event Loop Blocked
+### ❌ Keep-Alive Timeout Mismatch
 
 ```
-Node.js runs on a single thread.
-If you run a heavy CPU task (like parsing 50MB JSON):
-  - Event loop blocks.
-  - OS queue fills up with completed TCP handshakes.
-  - Clients get connection timeouts.
-  - To the user: server looks completely dead.
+ALB idle timeout: 60 seconds
+Node.js keepAliveTimeout: 5 seconds (default prior to Node 19!)
+
+What happens:
+  1. Browser → ALB → Node.js (TCP established)
+  2. 5 seconds silence → Node.js closes the socket
+  3. 10 seconds later → ALB sends a request on the "alive" connection
+  4. Node.js: ECONNRESET → ALB: 502 Bad Gateway
   
-Fix: Never block the event loop. Move heavy computation to worker threads.
+Fix: server.keepAliveTimeout = 65000 (always > ALB timeout)
 ```
 
-### ❌ CLOSE_WAIT accumulation (Socket leak)
+### ❌ Not Handling ECONNRESET
 
-```
-Your code receives a connection, but fails to close it on error.
-The database socket stays open forever.
-Over time: CLOSE_WAIT count rises. Server runs out of file descriptors.
-Then: "EMFILE: too many open files" error -> server crashes.
+```javascript
+// ❌ Unhandled ECONNRESET crashes Node.js
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught:', err); // ECONNRESET
+  process.exit(1);
+});
 
-Fix: Always close sockets in try...finally or use auto-closing pools.
+// ✅ Handle connection errors gracefully
+app.use((err, req, res, next) => {
+  if (err.code === 'ECONNRESET') {
+    console.warn('Client disconnected');
+    return; // Don't send response — client is gone
+  }
+  next(err);
+});
 ```
 
 ---
 
 ## Practice Exercises
 
-### Exercise 1: Port Scanner
-Write a Node.js script that attempts to open a TCP connection to ports 80, 443, 3000, and 27017 on `localhost`. Print which are open and closed.
+### Exercise 1: Observe the Handshake
+Use `tcpdump` or Wireshark to capture a `curl http://localhost:3000` request. Identify the SYN, SYN-ACK, ACK packets.
 
-### Exercise 2: State Tracking
-Start your Node app. Run `ss -t -a` and identify the state of the socket listening on port 3000. Connect via browser and run the command again. Locate the active client connection.
-
-### Exercise 3: Netcat Server
-Run `nc -l 3000` (starts a simple TCP listener in terminal). Send a message from a second terminal using `nc localhost 3000`. Observe the output.
+### Exercise 2: Connection State Analysis
+Run your Express server, make 20 requests, then run `netstat`. Count connections in each state.
 
 ---
 
 ## Interview Q&A
 
-**Q1: Walk me through the TCP 3-way handshake.**
-> Client sends SYN (sync) packet. Server responds with SYN-ACK (sync-ack). Client responds with ACK (ack). Connection is now established.
+**Q1: Why does TCP use a 3-way handshake?**
+> Both sides need to exchange and acknowledge initial sequence numbers. SYN establishes client→server direction, SYN-ACK establishes server→client and acknowledges client's SYN, ACK confirms server's SYN. Two-way wouldn't confirm the server's sequence number was received.
 
-**Q2: What is the TIME_WAIT state and why is it necessary?**
-> The state a socket enters after closing a connection. It lasts 1-2 minutes. It prevents late, delayed packets from a previous connection from being confused with data on a new connection using the same port.
+**Q2: What is TCP's congestion control and how does it affect your app?**
+> TCP starts with a small window (~14KB) and doubles it each RTT until packet loss occurs (slow start). On loss, the window halves. Connection reuse avoids slow start. This is why keep-alive and connection pooling matter.
 
-**Q3: How do you identify a socket leak on a production server?**
-> Run `ss -t -a` and check the count of sockets in `CLOSE_WAIT` state. If this count is continuously rising and never drops, you have a socket leak (app is not closing sockets).
+**Q3: What does TIME_WAIT mean and why does it exist?**
+> After closing a TCP connection, the socket stays in TIME_WAIT for ~2 minutes to handle late-arriving packets and prevent old packets from being confused with new connections using the same ports. High TIME_WAIT counts indicate many short-lived connections.
 
-**Q4: What happens if the Node.js accept queue is full?**
-> The OS kernel continues to complete TCP handshakes up to the backlog limit. Once the limit is reached, the OS starts dropping new SYN packets, causing clients to experience connection timeouts.
+**Q4: What causes ECONNRESET in Node.js?**
+> The remote side sent a TCP RST packet, forcefully closing the connection. Causes: client navigated away, load balancer closed idle connection, firewall killed the connection, server process crashed.
 
-**Q5: What is TCP Keep-Alive and why is it important for cloud databases?**
-> A mechanism that sends periodic empty packets to verify the connection is still alive. Necessary because cloud firewalls (like AWS NAT Gateways) silently drop idle TCP connections after 350 seconds. Keep-Alive prevents this by keeping the channel active.
+**Q5: How does TCP keep-alive work and why is it important for database connections?**
+> TCP keep-alive sends probe packets on idle connections to detect dead peers. Default Linux timer is 2 hours — too long for NAT gateways (AWS: 350s timeout). Set keep-alive interval shorter than NAT timeout to prevent silent connection drops.
 
 ---
 

@@ -6,183 +6,311 @@
 
 ## What is it?
 
-HTTP (Hypertext Transfer Protocol) is the application-layer protocol for the web. Every REST API endpoint, JSON payload, and page load is an HTTP transaction. HTTPS is HTTP running over TLS encryption. Understanding headers, methods, status codes, and HTTP/1.1 vs HTTP/2 vs HTTP/3 is critical for API design and performance.
+HTTP (HyperText Transfer Protocol) is the application-layer protocol your entire stack runs on. Every `fetch()`, every API call, every page load, every S3 operation — all HTTP. HTTPS is HTTP encrypted with TLS. Understanding HTTP internals means understanding why your API is slow, why CORS errors happen, and how caching works.
 
 ---
 
 ## Map it to MY STACK (CRITICAL)
 
 ```
-Browser (React) ──► HTTPS ──► CloudFront/ALB ──► HTTP ──► Node.js (Express)
+┌──────────────────────────────────────────────────────────────────────┐
+│  Your Code                    │ HTTP Reality                        │
+├───────────────────────────────┼─────────────────────────────────────┤
+│  fetch('/api/users')          │ GET /api/users HTTP/1.1             │
+│  axios.post('/api/orders', d) │ POST /api/orders HTTP/1.1 + body   │
+│  res.json({...})              │ 200 OK + Content-Type: app/json    │
+│  res.status(404)              │ 404 Not Found                       │
+│  next/image (Next.js)         │ GET /image.webp + Accept: image/*  │
+│  Express static middleware    │ GET /bundle.js + ETag caching       │
+│  AWS S3 getObject             │ GET /bucket/file + Auth signature   │
+└───────────────────────────────┴──────────────────────────────────────┘
+```
 
-CORS (browser restriction):
-  Browser checks headers: Access-Control-Allow-Origin
-  Managed in Express: app.use(cors())
+### The difference between HTTP/1.1 and HTTP/2
+The difference between HTTP/1.1 and HTTP/2 is like the difference between a grocery store checkout line:
+- **HTTP/1.1:** You are allowed to have a maximum of 6 checkout lines (TCP connections) open at once. If you need 10 items (images, CSS, JS), item 7 has to wait in line until the first few are finished checking out. This is called "Head-of-Line Blocking," and it's why old websites loaded images sequentially!
+- **HTTP/2 (Multiplexing):** You only have ONE checkout line, but the cashier is superhuman and scans all 10 items concurrently. All data is sliced up and sent simultaneously over a single TCP connection. This dramatically speeds up modern React/Next.js architectures.
 
-HTTP Headers you must use:
-  - Authorization: Bearer <JWT>   (Auth token)
-  - Content-Type: application/json (JSON payload)
-  - Cache-Control: max-age=3600    (Browser caching)
-  - X-Request-ID: <UUID>           (Distributed tracing)
+---
+
+## CORS — The Error Every Dev Hits
+
+```javascript
+// Browser error:
+// Access to fetch at 'https://api.myapp.com' from origin 'https://myapp.com'
+// has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header
+
+// WHY: Same-Origin Policy prevents cross-origin requests by default
+// React (localhost:3000) → API (localhost:8080) = DIFFERENT origin = blocked
+
+// CORS flow:
+// 1. Browser sends OPTIONS preflight (for POST/PUT/DELETE):
+//    OPTIONS /api/orders
+//    Origin: https://myapp.com
+//    Access-Control-Request-Method: POST
+//    Access-Control-Request-Headers: Content-Type, Authorization
+
+// 2. Server responds with allowed origins:
+//    Access-Control-Allow-Origin: https://myapp.com
+//    Access-Control-Allow-Methods: GET, POST, PUT, DELETE
+//    Access-Control-Allow-Headers: Content-Type, Authorization
+//    Access-Control-Max-Age: 86400  (cache preflight for 24h)
+
+// 3. Browser sends actual request (if preflight passed)
+
+// Express CORS setup:
+const cors = require('cors');
+
+// ❌ Too permissive (allows everything)
+app.use(cors());
+
+// ✅ Production CORS
+app.use(cors({
+  origin: ['https://myapp.com', 'https://admin.myapp.com'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,  // Allow cookies
+  maxAge: 86400       // Cache preflight for 24 hours
+}));
 ```
 
 ---
 
-## HTTP Protocol Versions
+## HTTP Caching
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
-│  HTTP Version History & Evolution                                │
-├──────────────────────────────────────────────────────────────────┤
-│  HTTP/1.1 (1997)                                                 │
-│  ├── Simple text-based protocol                                  │
-│  ├── Keep-Alive: Reuses single TCP connection for multiple reqs  │
-│  └── Head-of-line blocking (requests must be processed in order) │
-│                                                                  │
-│  HTTP/2 (2015)                                                   │
-│  ├── Binary-based (not text)                                     │
-│  ├── Multiplexing: Multiple requests/responses over one TCP conn │
-│  └── Header compression (HPACK)                                  │
-│                                                                  │
-│  HTTP/3 (2022)                                                   │
-│  ├── Runs over UDP (using QUIC protocol)                         │
-│  ├── Bypasses TCP handshakes, faster start                       │
-│  └── Stream-level multiplexing (no TCP head-of-line blocking)    │
-└──────────────────────────────────────────────────────────────────┘
+│  Header                │ What it does                            │
+├────────────────────────┼────────────────────────────────────────┤
+│  Cache-Control:        │                                         │
+│    no-store            │ Never cache (sensitive data)            │
+│    no-cache            │ Cache but revalidate every time         │
+│    public, max-age=300 │ Cache for 5 min (CDN + browser)        │
+│    private, max-age=60 │ Cache for 60s (browser only, not CDN)  │
+│    immutable           │ Never changes (versioned JS bundles)   │
+│                        │                                         │
+│  ETag: "abc123"        │ Content fingerprint (like a hash)      │
+│                        │ Browser sends If-None-Match: "abc123"  │
+│                        │ Server returns 304 if unchanged        │
+│                        │                                         │
+│  Last-Modified: date   │ When content last changed              │
+│                        │ Browser sends If-Modified-Since: date  │
+│                        │ Server returns 304 if unchanged         │
+└────────────────────────┴────────────────────────────────────────┘
 ```
 
-#### Diagram Explanation (The Highway Traffic)
-- **HTTP/1.1 (Single-lane road):** One car (request) must drive to the end and return before the next car can leave. If a slow truck (large image query) gets stuck, all traffic stops (`Head-of-Line Blocking`).
-- **HTTP/2 (Multi-lane highway):** Multiple cars can drive side-by-side on the same road (TCP connection). But if the highway bridge collapses (TCP packet drop), all traffic on all lanes stops.
-- **HTTP/3 (Flying cars over UDP):** Each request flies independently. If one car crashes, it has zero impact on the others. No bridge collapses, no traffic jams!
+### Caching Strategy for Your Stack
+
+```javascript
+// Static assets (Next.js build output) — immutable, long cache
+app.use('/static', express.static('public', {
+  maxAge: '1y',            // Cache for 1 year
+  immutable: true,         // Never revalidate
+  etag: false              // Not needed with immutable
+}));
+// URL: /static/bundle.abc123.js (hash in filename = cache busting)
+
+// API responses — short cache or no cache
+app.get('/api/products', (req, res) => {
+  res.set('Cache-Control', 'public, max-age=60');  // CDN + browser: 60s
+  res.set('Vary', 'Accept-Encoding');               // Different cache per encoding
+  res.json(products);
+});
+
+// User-specific data — private cache only
+app.get('/api/profile', auth, (req, res) => {
+  res.set('Cache-Control', 'private, max-age=0');  // Don't cache in CDN
+  res.json(req.user);
+});
+
+// Sensitive data — never cache
+app.get('/api/payments', auth, (req, res) => {
+  res.set('Cache-Control', 'no-store');  // Never cache anywhere
+  res.json(payments);
+});
+```
 
 ---
 
-## Node.js Implementation
+## Node.js Implementation — Custom HTTP Insights
 
 ```javascript
 const express = require('express');
 const app = express();
 
-// Parse JSON body (handles Content-Type: application/json)
-app.use(express.json());
-
-// ──── CORS Setup ────
+// ──── Request/Response Timing Middleware ────
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://myapp.com');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  req.startTime = Date.now();
   
-  // Handle OPTIONS preflight request
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
-  }
+  // Log request details
+  console.log(`→ ${req.method} ${req.url}`);
+  console.log(`  Host: ${req.headers.host}`);
+  console.log(`  Content-Type: ${req.headers['content-type'] || 'none'}`);
+  console.log(`  Connection: ${req.headers.connection}`);
+  console.log(`  Accept-Encoding: ${req.headers['accept-encoding']}`);
+  
+  // Capture response
+  const originalEnd = res.end;
+  res.end = function(...args) {
+    const duration = Date.now() - req.startTime;
+    res.set('X-Response-Time', `${duration}ms`);
+    res.set('X-Request-ID', req.headers['x-request-id'] || crypto.randomUUID());
+    console.log(`← ${res.statusCode} (${duration}ms, ${res.get('Content-Length') || '?'} bytes)\n`);
+    originalEnd.apply(res, args);
+  };
+  
   next();
 });
 
-// ──── Routes ────
-app.get('/api/users/profile', (req, res) => {
-  // Read custom header (X-Request-ID)
-  const requestId = req.header('X-Request-ID');
-  
-  // Set cache control headers
-  res.setHeader('Cache-Control', 'private, no-store, must-revalidate');
-  res.setHeader('X-Response-Time', '5ms');
-  
-  res.json({
-    id: 123,
-    email: 'john@example.com',
-    requestId
+// ──── Compression ────
+const compression = require('compression');
+app.use(compression({
+  threshold: 1024,        // Only compress responses > 1KB
+  filter: (req, res) => { // Don't compress SSE or WebSocket
+    if (req.headers['accept'] === 'text/event-stream') return false;
+    return compression.filter(req, res);
+  }
+}));
+
+// ──── Security Headers ────
+app.use((req, res, next) => {
+  res.set({
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': 'DENY',
+    'X-XSS-Protection': '1; mode=block',
+    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+    'Referrer-Policy': 'strict-origin-when-cross-origin'
   });
+  next();
 });
 
-app.listen(3000, () => console.log('HTTP Server listening on port 3000'));
+app.listen(3000);
 ```
 
 ---
 
-## Commands & Diagnostics
+## Commands & Debugging Tools
 
 ```bash
-# Inspect raw HTTP response headers
-curl -I https://api.github.com
+# Full HTTP request/response
+curl -v https://api.myapp.com/api/health
+# Shows: > (request), < (response), * (connection info)
 
-# Fetch and print headers + body
-curl -v https://api.github.com/users/octocat
+# Only response headers
+curl -I https://api.myapp.com/api/health
 
-# Post JSON to API
-curl -X POST https://api.myapp.com/api/login \
+# Send POST with JSON
+curl -X POST https://api.myapp.com/api/orders \
   -H "Content-Type: application/json" \
-  -d '{"email":"john@example.com","password":"securePassword"}'
+  -H "Authorization: Bearer <token>" \
+  -d '{"productId": "123", "quantity": 1}'
 
-# Test OPTIONS preflight request (CORS test)
-curl -X OPTIONS https://api.myapp.com/api/users \
-  -H "Origin: https://another-origin.com" \
-  -H "Access-Control-Request-Method: GET" -i
+# Check HTTP/2 support
+curl --http2 -I https://api.myapp.com
+
+# Check compression
+curl -H "Accept-Encoding: gzip" -I https://api.myapp.com/api/products
+# Look for: Content-Encoding: gzip
+
+# Check caching headers
+curl -I https://api.myapp.com/api/products
+# Look for: Cache-Control, ETag, Last-Modified
+
+# Test CORS preflight
+curl -X OPTIONS https://api.myapp.com/api/products \
+  -H "Origin: https://myapp.com" \
+  -H "Access-Control-Request-Method: POST" -v
+```
+
+---
+
+## Performance Insight
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│  HTTP Optimization Checklist                                     │
+├──────────────────────────────────────────────────────────────────┤
+│  1. Enable HTTP/2 on Nginx/ALB (multiplexing)                  │
+│  2. Enable gzip/brotli compression (60-80% size reduction)     │
+│  3. Set Cache-Control headers (reduce requests)                 │
+│  4. Use ETags for conditional requests (save bandwidth)         │
+│  5. Keep-alive connections (avoid TCP handshake per request)    │
+│  6. Minimize cookies (sent on EVERY request to that domain)    │
+│  7. Use CDN for static assets (reduce latency)                  │
+│  8. Batch API calls (reduce round trips)                        │
+│  9. Use 204 for DELETE (no body = faster)                       │
+│ 10. Prefetch/preconnect for known external APIs                 │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
 ## Common Mistakes
 
-### ❌ Caching Dynamic API Responses
+### ❌ Not Enabling Compression
 
 ```javascript
-// ❌ Browser caches profile data. User logs out, another logs in:
-// Browser shows OLD user profile!
-app.get('/api/profile', (req, res) => {
-  res.json(req.user); // Express default is no caching, but proxies might cache it!
-});
+// Without compression: 500KB JSON response
+// With gzip: ~100KB (80% reduction!)
+// With brotli: ~80KB (84% reduction!)
 
-// ✅ Explicitly disable caching for dynamic endpoints
-app.get('/api/profile', (req, res) => {
-  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
-  res.json(req.user);
-});
+// ✅ Always use compression middleware
+const compression = require('compression');
+app.use(compression());
 ```
 
-### ❌ Sending Large payloads without Compression
+### ❌ CORS Wildcard in Production
 
 ```javascript
-// ❌ 500KB JSON response sent raw (slows down mobile networks)
+// ❌ Allows ANY website to call your API
+app.use(cors({ origin: '*' }));
 
-// ✅ Enable Gzip/Brotli compression in Nginx or Express middleware
-const compression = require('compression');
-app.use(compression()); // Compress all responses > 1KB
+// ✅ Whitelist your domains
+app.use(cors({ origin: ['https://myapp.com'] }));
+```
+
+### ❌ Not Setting Proper Status Codes
+
+```javascript
+// ❌ Everything returns 200
+app.post('/api/users', (req, res) => {
+  res.json({ error: 'Email already exists' }); // 200 with error message
+});
+
+// ✅ Use proper status codes
+app.post('/api/users', (req, res) => {
+  res.status(409).json({ error: 'Email already exists' }); // 409 Conflict
+});
 ```
 
 ---
 
 ## Practice Exercises
 
-### Exercise 1: CORS Failure
-Write an Express server that rejects calls from origins other than `localhost`. Create a local HTML page that attempts to fetch from it, and observe the CORS error in Chrome Console.
+### Exercise 1: Trace a Request
+Use `curl -v` to make a request to `https://google.com`. Identify the headers, protocol version, and status code.
 
-### Exercise 2: Timing Audit
-Use `curl -v` on three different websites. Document: HTTP protocol version used (HTTP/1.1 vs HTTP/2 vs HTTP/3), response size, and timing headers.
-
-### Exercise 3: Compression Test
-Measure the size of a 1000-row JSON response in Chrome DevTools Network Tab with Gzip enabled vs disabled. Record the bandwidth savings.
+### Exercise 2: CORS Preflight
+Configure CORS headers in your local server and verify the OPTIONS request payload using a REST client or `curl`.
 
 ---
 
 ## Interview Q&A
 
-**Q1: What is a preflight request in CORS?**
-> An HTTP OPTIONS request sent by the browser before the main request. It checks if the server allows the origin and method of the planned request. If the server approves, the browser sends the actual request (GET, POST).
+**Q1: What's the difference between HTTP/1.1 and HTTP/2?**
+> HTTP/2 multiplexes multiple requests over a single TCP connection (vs 6 parallel connections in HTTP/1.1). It compresses headers with HPACK, supports server push, and uses binary framing. Result: 30-50% faster page loads for resource-heavy pages.
 
-**Q2: What is the difference between HTTP/1.1 and HTTP/2?**
-> HTTP/1.1 is text-based and processes requests sequentially (head-of-line blocking). HTTP/2 is binary-based and introduces multiplexing (multiple concurrent requests over a single TCP connection) and header compression (HPACK).
+**Q2: How does HTTP caching work with ETags?**
+> Server returns ETag (content hash) with response. Browser stores response + ETag. On next request, browser sends `If-None-Match: <etag>`. If content unchanged, server returns 304 (no body) — saves bandwidth. If changed, server returns 200 with new content and new ETag.
 
-**Q3: How does HTTP/3 improve page load times?**
-> By running over UDP using the QUIC protocol. It reduces connection establishment time (combines TCP + TLS handshakes) and eliminates TCP head-of-line blocking (packet loss in one stream doesn't stall other streams).
+**Q3: Why do CORS errors only happen in browsers?**
+> Same-Origin Policy is enforced by browsers, not servers. `curl`, Postman, and server-to-server requests don't check CORS. Browsers send an OPTIONS preflight for cross-origin requests; the server must respond with appropriate `Access-Control-*` headers.
 
-**Q4: Explain the difference between `Cache-Control: no-cache` and `no-store`.**
-> `no-cache` tells the browser it can cache the response but must validate it with the server (using ETag) before reusing it. `no-store` instructs the browser to never cache the response at all (necessary for private/sensitive data).
+**Q4: What causes a 502 Bad Gateway?**
+> The reverse proxy (Nginx/ALB) cannot reach your backend (Node.js). Causes: Node.js crashed, wrong port, firewall blocking, health check failing. The proxy received the client's request but couldn't forward it.
 
-**Q5: What is HTTP Head-of-Line Blocking and how was it solved?**
-> In HTTP/1.1, a TCP connection can only handle one request at a time. If a request is slow, all subsequent requests behind it are blocked. Solved in HTTP/2 by multiplexing, which allows sending multiple requests concurrently on the same connection.
+**Q5: When would you use HTTP/3 over HTTP/2?**
+> HTTP/3 uses QUIC (UDP) instead of TCP. It eliminates TCP head-of-line blocking, reduces connection setup time (0-RTT), and handles network switches better (WiFi→cellular). Best for mobile users with unstable connections. CloudFront supports it — enable in distribution settings.
 
 ---
 

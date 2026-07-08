@@ -6,197 +6,421 @@
 
 ## What is it?
 
-DNS (Domain Name System) is the phone book of the internet. It translates human-readable domain names (like `myapp.com`) into computer-readable IP addresses (like `54.23.189.12`). In AWS, Route 53 is the authoritative DNS service.
+DNS (Domain Name System) is the internet's phone book — it translates domain names (`api.myapp.com`) to IP addresses (`54.23.189.12`). Every time your React app calls an API, every time Node.js connects to MongoDB Atlas, DNS happens first. It's invisible when it works and devastating when it breaks.
 
 ---
 
 ## Map it to MY STACK (CRITICAL)
 
 ```
-Your Domain Name: myapp.com
-Your Server IP: 54.23.189.12 (Elastic IP) or ALB endpoint
+┌──────────────────────────────────────────────────────────────────────┐
+│  DNS in Your Stack                                                  │
+├────────────────────────────────────┬─────────────────────────────────┤
+│  myapp.com                         │ Route 53 → CloudFront (CDN)    │
+│  api.myapp.com                     │ Route 53 → ALB (load balancer) │
+│  cluster0.mongodb.net              │ Atlas DNS → replica set IPs    │
+│  my-cache.xxxxx.cache.amazonaws.com│ ElastiCache DNS → Redis IP     │
+│  my-db.xxxxx.rds.amazonaws.com     │ RDS DNS → PostgreSQL IP       │
+│  s3.amazonaws.com                  │ AWS DNS → S3 regional endpoint │
+│  d111xxxx.cloudfront.net           │ CloudFront DNS → nearest edge  │
+├────────────────────────────────────┴─────────────────────────────────┤
+│  EVERY connection starts with DNS. EVERY one.                       │
+└──────────────────────────────────────────────────────────────────────┘
+```
 
-DNS Records you must configure:
-  - A Record:     myapp.com → 54.23.189.12 (Direct IP)
-  - CNAME Record: www.myapp.com → myapp.com (Alias)
-  - MX Record:    myapp.com → mail.google.com (Emails)
-  - TXT Record:   myapp.com → "google-site-verification=..." (Verification)
+### What Happens During DNS (Unrolled)
 
-In AWS Route 53:
-  Instead of CNAME for Root Domain (myapp.com), use ALIAS record:
-  - ALIAS Record: myapp.com → alb-dns-name.amazonaws.com
-  (DNS standard forbids CNAME on root domain; ALIAS solves this!)
+```
+User browser: fetch('https://api.myapp.com/products')
+
+Step 1: Browser DNS cache → "Do I already know this?" → MISS
+Step 2: OS DNS cache → "Has any app looked this up?" → MISS
+Step 3: Router DNS cache → "Has anyone on the network asked?" → MISS
+Step 4: ISP's(Internet Service Providers) recursive resolver → "Let me find out..."
+Step 5: Root DNS server → "I know who handles .com" → return .com NS(Name Server)
+Step 6: .com TLD(Top Level Domain) server → "I know who handles myapp.com" → return NS records
+Step 7: myapp.com authoritative DNS (Route 53) → "api.myapp.com = 54.23.189.12"
+Step 8: Result cached at every level (TTL-based)
+
+Next request: Browser cache → HIT → 0ms (cached for TTL seconds)
 ```
 
 ---
 
-## How DNS Resolution Works
+## Why this matters in real systems
+
+### Scenario 1: "DNS propagation is taking hours!"
 
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│  DNS Resolution Flow (Iterative Query)                           │
-│                                                                  │
-│  Client (Your Browser)                                           │
-│       │                                                          │
-│       ├── 1. Check local browser cache, then OS hosts file       │
-│       │                                                          │
-│  ┌────▼────┐                                                     │
-│  │Resolving│  Local Resolver (usually ISP, Google 8.8.8.8,       │
-│  │Resolver │  or Cloudflare 1.1.1.1)                             │
-│  └────┬────┘                                                     │
-│       │                                                          │
-│       ├── 2. Query Root Name Server (".")                        │
-│       ├── 3. Query TLD Name Server (".com")                      │
-│       └── 4. Query Authoritative Name Server (Route 53)          │
-│                                                                  │
-│  Server IP (e.g. 54.23.189.12) returned to Client                │
-└──────────────────────────────────────────────────────────────────┘
+You changed api.myapp.com from old-server to new-server in Route 53.
+
+Old Record: api.myapp.com → 54.23.189.12 (TTL: 86400 = 24 hours)
+New Record: api.myapp.com → 54.23.189.99
+
+Problem: Users still hitting old IP for up to 24 HOURS because:
+  - Their ISP cached the old record for TTL duration
+  - Their OS cached it
+  - Their browser cached it
+
+Prevention: Set TTL to 300 (5 min) BEFORE making changes.
+  Step 1: Change TTL from 86400 → 300 (wait 24h for old TTL to expire)
+  Step 2: Change the IP address
+  Step 3: Full propagation in ~5 minutes
+  Step 4: Optionally increase TTL back to 3600 after confirming
 ```
 
-#### Diagram Explanation (The Library Catalog)
-DNS resolution is visually exactly like finding a book in a library:
-- **Local Cache (Your desk):** You check if the book is on your desk first.
-- **Resolving Resolver (The Librarian):** You ask the librarian. The librarian does the walking for you.
-- **Root Server (The Directory):** The librarian checks the directory, which says "All science books are in Section C" (points to `.com` TLD).
-- **TLD Server (The Section Sign):** Section C says "Go to Shelf 4 for networking" (points to Route 53).
-- **Authoritative Server (The Book Shelf):** Shelf 4 gives you the exact book page (returns the IP address).
-
----
-
-## Key DNS Record Types
+### Scenario 2: "My API works locally but times out on EC2"
 
 ```
-┌──────────────────────────────────────────────────────────────────┐
-│  Record Type │ Maps From      │ Maps To       │ Use Case         │
-├──────────────┼────────────────┼───────────────┼──────────────────┤
-│  A           │ Domain Name    │ IPv4 Address  │ Standard server  │
-│              │ (myapp.com)    │ (54.23.189.1) │ mapping          │
-│              │                │               │                  │
-│  AAAA        │ Domain Name    │ IPv6 Address  │ Modern IPv6      │
-│              │                │               │ networks         │
-│              │                │               │                  │
-│  CNAME       │ Subdomain      │ Domain Name   │ Alias: redirect  │
-│              │ (www.myapp.com)│ (myapp.com)   │ to another host  │
-│              │                │               │                  │
-│  MX          │ Domain Name    │ Mail Server   │ Email routing    │
-│              │ (gmail-smtp)   │ (GSuite)         │                  │
-│              │                │               │                  │
-│  TXT         │ Domain Name    │ Text String   │ Domain verification│
-│              │                │               │ (SSL, Google)    │
-└──────────────┴────────────────┴───────────────┴──────────────────┘
+Problem: EC2 can't resolve MongoDB Atlas hostname
+
+Causes:
+  1. VPC DNS resolution disabled (enableDnsSupport = false)
+  2. VPC DNS hostnames disabled (enableDnsHostnames = false)
+  3. Security group blocking outbound UDP port 53 (DNS)
+  4. DHCP options set pointing to wrong DNS server
+
+Fix: Check VPC settings:
+  aws ec2 describe-vpc-attribute --vpc-id vpc-xxx --attribute enableDnsSupport
+  aws ec2 describe-vpc-attribute --vpc-id vpc-xxx --attribute enableDnsHostnames
+  Both should be true.
 ```
 
 ---
 
-## TTL (Time To Live)
+## How does it actually work?
+
+### DNS Record Types (The Ones You'll Actually Use)
 
 ```
-TTL determines how long DNS resolvers can cache your record.
-
-Low TTL (e.g. 60 seconds):
-  - Resolvers ask Route 53 for updates every 60s.
-  - Good for migration: if you change server IP, users see it fast.
-  - Bad for cost/latency: more DNS queries to Route 53 ($0.40/million).
-
-High TTL (e.g. 86,400 seconds / 24 hours):
-  - Resolvers cache your IP for 24 hours.
-  - Good for latency: fast loads, low Route 53 queries.
-  - Bad for migration: if server dies, users try old IP for 24 hours!
+┌────────┬────────────────────────────────────────────────────────┐
+│ Type   │ Purpose & Example                                     │
+├────────┼────────────────────────────────────────────────────────┤
+│ A      │ Domain → IPv4 address                                 │
+│        │ api.myapp.com → 54.23.189.12                         │
+│        │ Used for: EC2 instances, direct IP mapping           │
+│        │                                                       │
+│ AAAA   │ Domain → IPv6 address                                 │
+│        │ api.myapp.com → 2600:1f18:xxxx::1                    │
+│        │                                                       │
+│ CNAME  │ Domain → another domain (alias)                       │
+│        │ www.myapp.com → myapp.com                            │
+│        │ api.myapp.com → my-alb-123.us-east-1.elb.amazonaws.com│
+│        │ ❌ Cannot be used at zone apex (myapp.com)           │
+│        │                                                       │
+│ ALIAS  │ Like CNAME but works at zone apex (Route 53 only)    │
+│        │ myapp.com → d111xxx.cloudfront.net                   │
+│        │ ✅ Can be used at zone apex                           │
+│        │                                                       │
+│ MX     │ Domain → mail server                                  │
+│        │ myapp.com → 10 mail.myapp.com                        │
+│        │                                                       │
+│ TXT    │ Domain → text data (verification, SPF, DKIM)         │
+│        │ myapp.com → "v=spf1 include:_spf.google.com ~all"   │
+│        │                                                       │
+│ NS     │ Domain → authoritative nameservers                    │
+│        │ myapp.com → ns-123.awsdns-45.com                     │
+│        │                                                       │
+│ SRV    │ Service discovery (used by MongoDB Atlas)             │
+│        │ _mongodb._tcp.cluster0.xxxxx.mongodb.net              │
+└────────┴────────────────────────────────────────────────────────┘
 ```
+
+### Route 53 Routing Policies
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│  Policy          │ Use Case                                         │
+├──────────────────┼──────────────────────────────────────────────────┤
+│  Simple          │ Single resource: api.myapp.com → one ALB        │
+│  Weighted        │ A/B testing: 90% → v2, 10% → v3                │
+│  Latency         │ Multi-region: closest server to user             │
+│  Failover        │ Primary/secondary: primary down → secondary     │
+│  Geolocation     │ EU users → EU server, US users → US server      │
+│  Multi-value     │ Return multiple IPs (poor man's load balancing) │
+├──────────────────┴──────────────────────────────────────────────────┤
+│  For your stack:                                                    │
+│  - Single region: Simple routing to ALB                            │
+│  - Multi-region: Latency-based routing to regional ALBs           │
+│  - Blue/green deployments: Weighted routing (0% → 100% shift)    │
+│  - DR: Failover routing with health checks                        │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+#### Diagram Explanation (The Traffic Cop)
+Route 53 doesn't just hand out IP addresses blindly; it acts like an intelligent internet traffic cop:
+- **Latency Policy:** If a user in London asks for the IP, Route 53 detects their location and hands them the IP of your EU server instead of your US server.
+- **Weighted Policy (A/B Testing):** You can tell Route 53 to give out the old server's IP 90% of the time, and the new server's IP 10% of the time to test a new version safely.
+- **Failover:** If Route 53 detects your primary server is offline (via health checks), it automatically flips a switch and starts handing out the IP address of your backup survivor server.
 
 ---
 
-## Route 53 Routing Policies
+## Visual Diagram — DNS Resolution Chain
 
 ```
-AWS Route 53 can route traffic intelligently:
+Browser: \"What is the IP of api.myapp.com?\"
 
-1. Simple Routing: Single resource (one IP). No health checks.
-2. Weighted Routing: Split traffic (e.g. 90% to App v1, 10% to App v2).
-3. Latency-Based Routing: Route user to the nearest AWS region.
-4. Failover Routing: Active-Passive. Route to standby if active fails.
-5. Geolocation Routing: Route by user country (e.g. EU users to EU server).
+Browser Cache ──→ OS Cache ──→ Router ──→ ISP Resolver
+     │                │           │            │
+   MISS             MISS        MISS          │
+                                          ┌────▼────┐
+                                          │ Root DNS│ \"Try .com servers\"
+                                          │ (.)     │
+                                          └────┬────┘
+                                               │
+                                          ┌────▼────┐
+                                          │.com TLD │ \"Try Route 53\"
+                                          │ DNS     │
+                                          └────┬────┘
+                                               │
+                                          ┌────▼────────────────┐
+                                          │ Route 53            │
+                                          │ (authoritative for  │
+                                          │  myapp.com)         │
+                                          │                     │
+                                          │ api.myapp.com       │
+                                          │ → ALIAS → ALB DNS   │
+                                          │ → A → 54.23.189.12  │
+                                          └────┬────────────────┘
+                                               │
+                                     Answer: 54.23.189.12
+                                Cached for TTL (e.g., 300 seconds)
 ```
+
+#### Diagram Explanation (The Phonebook Hunt)
+Think of DNS resolution like trying to find a friend's phone number before smartphones existed:
+1. **Your Memory (Browser/OS cache):** You check your own brain first. \"Do I already know API.myapp.com?\" If not, you check your physical address book on your desk (OS cache). 
+2. **The Local Operator (ISP Resolver):** You call the local neighborhood operator and ask. They don't know either, but they promise to go find out for you.
+3. **The Global Directory (Root & TLD Servers):** The operator calls the Global Directory. They don't know the specific number, but they route you: \"I know who manages all `.com` numbers. Go ask them.\" Then the `.com` manager says \"I know who manages `myapp.com`. Go ask Route 53.\"
+4. **The Authoritative Answer (Route 53):** The operator finally reaches Route 53 (the actual authoritative owner of the domain) and gets the precise IP address (`54.23.189.12`).
+5. **Caching:** The operator tells you the number, but importantly, they write it down so the next person who asks gets the answer instantly!
 
 ---
 
-## Commands & Diagnostics
+## Commands & Debugging Tools
 
 ```bash
-# Basic DNS lookup (returns A records)
-nslookup myapp.com
+# Basic DNS lookup
+nslookup api.myapp.com
+dig api.myapp.com
 
-# Detailed DNS query (mac/linux)
-dig myapp.com
+# Detailed DNS lookup (dig is more powerful)
+dig api.myapp.com +short          # Just the IP
+dig api.myapp.com +trace          # Full resolution chain (root → TLD → auth)
+dig api.myapp.com A               # IPv4 records
+dig api.myapp.com AAAA            # IPv6 records
+dig api.myapp.com CNAME           # CNAME records
+dig api.myapp.com MX              # Mail records
+dig api.myapp.com NS              # Nameservers
+dig api.myapp.com TXT             # TXT records (SPF, DKIM)
+dig api.myapp.com ANY             # All records
 
-# Query specific DNS server (Google DNS) to check propagation
-dig @8.8.8.8 myapp.com
+# Query specific DNS server
+dig @8.8.8.8 api.myapp.com       # Ask Google DNS
+dig @1.1.1.1 api.myapp.com       # Ask Cloudflare DNS
+dig @ns-123.awsdns-45.com api.myapp.com  # Ask Route 53 directly
 
-# Trace DNS delegation path (root -> TLD -> Route 53)
-dig +trace myapp.com
+# Check TTL
+dig api.myapp.com | grep -i ttl
 
-# Query TXT records (domain verification)
-dig myapp.com TXT
+# DNS timing
+dig api.myapp.com | grep "Query time"
+
+# Flush DNS cache
+# Windows:
+ipconfig /flushdns
+# Mac:
+sudo dsdncacheutil -flushcache
+# Linux:
+sudo systemd-resolve --flush-caches
+```
+
+---
+
+## Node.js Implementation
+
+```javascript
+const dns = require('dns');
+const { performance } = require('perf_hooks');
+
+// ──── DNS Resolution with Timing ────
+async function dnsLookup(hostname) {
+  // Method 1: OS-level resolution (uses /etc/hosts, OS cache)
+  const start1 = performance.now();
+  const { address, family } = await dns.promises.lookup(hostname);
+  const time1 = performance.now() - start1;
+  
+  console.log(`dns.lookup:  ${hostname} → ${address} (IPv${family}) [${time1.toFixed(1)}ms]`);
+  console.log(`  (Uses OS resolver — checks /etc/hosts, OS cache first)`);
+  
+  // Method 2: Direct DNS query (bypasses OS cache)
+  const start2 = performance.now();
+  const addresses = await dns.promises.resolve4(hostname);
+  const time2 = performance.now() - start2;
+  
+  console.log(`dns.resolve: ${hostname} → ${addresses.join(', ')} [${time2.toFixed(1)}ms]`);
+  console.log(`  (Direct DNS query — always hits DNS server)\n`);
+}
+
+// ──── Full DNS Record Inspection ────
+async function inspectDomain(domain) {
+  console.log(`\n═══ DNS Records for ${domain} ═══\n`);
+  
+  try {
+    const a = await dns.promises.resolve4(domain);
+    console.log(`A (IPv4):     ${a.join(', ')}`);
+  } catch { console.log('A: none'); }
+  
+  try {
+    const cname = await dns.promises.resolveCname(domain);
+    console.log(`CNAME:        ${cname.join(', ')}`);
+  } catch { console.log('CNAME: none (direct A record)'); }
+  
+  try {
+    const ns = await dns.promises.resolveNs(domain);
+    console.log(`NS:           ${ns.join(', ')}`);
+  } catch { console.log('NS: none'); }
+  
+  try {
+    const mx = await dns.promises.resolveMx(domain);
+    console.log(`MX (mail):    ${mx.map(r => `${r.priority} ${r.exchange}`).join(', ')}`);
+  } catch { console.log('MX: none'); }
+  
+  try {
+    const txt = await dns.promises.resolveTxt(domain);
+    console.log(`TXT:          ${txt.map(r => r.join('')).join('\n              ')}`);
+  } catch { console.log('TXT: none'); }
+}
+
+// ──── DNS Prefetching (Performance Optimization) ────
+function prefetchDNS(hostnames) {
+  console.log('\nPrefetching DNS for:', hostnames);
+  return Promise.all(
+    hostnames.map(async (host) => {
+      const start = performance.now();
+      try {
+        const { address } = await dns.promises.lookup(host);
+        console.log(`  ✅ ${host} → ${address} (${(performance.now() - start).toFixed(1)}ms)`);
+      } catch (err) {
+        console.log(`  ❌ ${host}: ${err.message}`);
+      }
+    })
+  );
+}
+
+// Run diagnostics
+(async () => {
+  await dnsLookup('google.com');
+  await dnsLookup('api.github.com');
+  await inspectDomain('google.com');
+  
+  // Prefetch DNS for services your app connects to
+  await prefetchDNS([
+    'cluster0.xxxxx.mongodb.net',  // MongoDB Atlas
+    'my-cache.xxxxx.cache.amazonaws.com', // ElastiCache
+    'api.stripe.com',  // Payment provider
+    's3.us-east-1.amazonaws.com'  // S3
+  ]);
+})();
+```
+
+### DNS Prefetching in Next.js
+
+```html
+<!-- In your Next.js _document.js or head -->
+<head>
+  <!-- Prefetch DNS for external APIs your app calls -->
+  <link rel="dns-prefetch" href="https://api.stripe.com" />
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+  <link rel="dns-prefetch" href="https://cdn.myapp.com" />
+  
+  <!-- Preconnect: DNS + TCP + TLS (even faster) -->
+  <link rel="preconnect" href="https://api.myapp.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+</head>
+```
+
+---
+
+## Performance Insight
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│  DNS Performance Impact                                          │
+├───────────────────────────┬──────────────────────────────────────┤
+│  Cached DNS lookup        │ < 1ms                                │
+│  ISP resolver (cached)    │ 5-20ms                               │
+│  Full recursive lookup    │ 50-200ms                             │
+│  DNS failure + retry      │ 5-30 SECONDS (devastating)           │
+├───────────────────────────┴──────────────────────────────────────┤
+│                                                                  │
+│  Optimization strategies:                                        │
+│  1. DNS prefetching in HTML (<link rel="dns-prefetch">)         │
+│  2. Low TTL before changes, higher after (300 → 3600)           │
+│  3. Use ALIAS instead of CNAME at zone apex (one less lookup)   │
+│  4. Health checks + failover in Route 53                        │
+│  5. Connection keep-alive (avoid re-resolution)                  │
+│  6. Node.js dns cache (dns.setDefaultResultOrder('ipv4first'))  │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
 ## Common Mistakes
 
-### ❌ CNAME on Root Domain (Zone Apex)
+### ❌ Node.js DNS Not Cached
 
+```javascript
+// ❌ Node.js resolves DNS on EVERY HTTP request (no built-in cache)
+// 100 requests to api.stripe.com = 100 DNS lookups
+
+// ✅ Install cacheable-lookup
+const CacheableLookup = require('cacheable-lookup');
+const cacheable = new CacheableLookup();
+cacheable.install(require('http').globalAgent);
+cacheable.install(require('https').globalAgent);
+// Now DNS is cached for TTL duration
 ```
-❌ CNAME myapp.com → alb-dns-name.amazonaws.com
-   DNS standard forbids CNAME records at the root. It breaks MX records.
 
-✅ Route 53 ALIAS record:
-   A record: myapp.com → ALIAS to alb-dns-name.amazonaws.com
-   This behaves like a CNAME but complies with standards.
-```
+### ❌ Using IP Addresses Instead of DNS Names
 
-### ❌ Forgetting to lower TTL before migration
+```javascript
+// ❌ Hardcoded IP — breaks when server changes
+mongoose.connect('mongodb://54.23.189.12:27017/mydb');
 
-```
-❌ Server migration day: You change IP with TTL set to 86,400s (24h).
-   → Half your users hit the old, dead server for 24 hours.
-
-✅ Before migration: Change TTL to 60s, wait 24h.
-   Perform migration: Change IP, verify.
-   After migration: Raise TTL back to 86,400s.
+// ✅ Use DNS hostname — automatically resolves to current IP
+mongoose.connect('mongodb+srv://cluster0.xxxxx.mongodb.net/mydb');
 ```
 
 ---
 
 ## Practice Exercises
 
-### Exercise 1: dig trace
-Run `dig +trace google.com`. Identify: the root server names, the `.com` TLD servers, and Google's authoritative name servers.
+### Exercise 1: DNS Discovery
+Use `dig` to find all DNS records for `amazon.com`. How many A records does it have? Why multiple?
 
-### Exercise 2: DNS Propagation
-Add a TXT record to your domain. Use `dig @1.1.1.1 myapp.com TXT` and `dig @8.8.8.8 myapp.com TXT` to observe how fast it propagates across different global DNS servers.
-
-### Exercise 3: Local hosts override
-Modify your local hosts file (`/etc/hosts` or `C:\Windows\System32\drivers\etc\hosts`). Add: `127.0.0.1 google.com`. Open browser and visit google.com. Document what happens. (Remove entry immediately after!)
+### Exercise 2: TTL Observation
+Run `dig google.com` twice, 30 seconds apart. Watch the TTL decrease. Calculate the original TTL.
 
 ---
 
 ## Interview Q&A
 
-**Q1: What happens step-by-step when you type google.com in browser?**
-> Browser checks local cache. If miss, asks Local DNS Resolver (ISP). Resolver queries Root server (returns `.com` TLD IP). Resolver queries `.com` TLD server (returns Google Name Server IP). Resolver queries Google Name Server (returns Google's A/AAAA IP). Resolver returns IP to browser. Browser initiates TCP connection.
+**Q1: How does DNS resolution work step by step?**
+> Browser cache → OS cache → Recursive resolver (ISP) → Root server (.com referral) → TLD server (myapp.com referral) → Authoritative nameserver (returns IP). Results cached at each level based on TTL.
 
-**Q2: What is the difference between a CNAME and an A record?**
-> An A record maps a hostname to an IP address (`myapp.com` → `54.23.189.1`). A CNAME maps a hostname to another hostname (`www.myapp.com` → `myapp.com`). CNAME cannot be used at the root zone (apex).
+**Q2: What's the difference between CNAME and ALIAS records?**
+> CNAME maps a domain to another domain (adds one DNS lookup). Cannot be used at zone apex (myapp.com). ALIAS (Route 53) resolves at the DNS level — returns the final IP directly. Can be used at zone apex. ALIAS is faster (one fewer lookup).
 
-**Q3: What is a Route 53 ALIAS record?**
-> An AWS-specific record that acts like a CNAME but can be used at the root zone (apex). Unlike CNAME, which redirects the client, ALIAS resolves the target internally on AWS DNS servers and returns the IP directly to the client.
+**Q3: How does DNS affect application performance?**
+> First DNS lookup adds 50-200ms. Node.js doesn't cache DNS by default (unlike browsers). Each new hostname requires a new lookup. Solutions: DNS prefetch, connection keep-alive, cacheable-lookup module, preconnect hints.
 
-**Q4: How do you perform a zero-downtime DNS migration?**
-> Lower TTL to 60 seconds at least 24 hours before migration. Perform migration by changing IP. Verify traffic moves. Raise TTL back to normal (e.g. 1 hour) once stable.
+**Q4: What happens when a DNS server goes down?**
+> If your authoritative DNS is down, new lookups fail. Cached lookups continue until TTL expires. Route 53 has 100% SLA with 4 nameservers per hosted zone. For self-hosted DNS, this is a single point of failure.
 
-**Q5: What is DNS Propagation delay?**
-> The time it takes for DNS records to update across all global servers. Cached records remain valid until their TTL expires. Propagation delay is mostly determined by the TTL of the old record.
+**Q5: How does MongoDB Atlas use DNS (SRV records)?**
+> Atlas uses SRV DNS records (`_mongodb._tcp.cluster0.xxxxx.mongodb.net`) that return a list of all replica set members with ports and priorities. The driver discovers nodes automatically.
 
 ---
 
-Prev : [03 HTTP HTTPS Internals](./03_HTTP_HTTPS_Internals.md) | Index: [00 Index](./00_Index.md) | Next : [05 WebSockets & Real-Time](./05_WebSockets_And_Real_Time.md)
+Prev : [03 HTTP HTTPS Internals](./03_HTTP_HTTPS_Internals.md) | Index: [00 Index](./00_Index.md) | Next : [05 WebSockets And Real Time](./05_WebSockets_And_Real_Time.md)
