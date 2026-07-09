@@ -39,39 +39,60 @@ Every networking concept we've covered converges here:
 │  │  Public Subnet: 10.0.1.0/24             │  │ 10.0.2.0/24      │ │
 │  │  ┌─────────┐  ┌────────────┐            │  │ ┌─────────┐     │ │
 │  │  │  ALB    │  │NAT Gateway │            │  │ │  ALB    │     │ │
-│  │  └─────────┘  └────────────┘            │  │ └─────────┘     │ │
+│  │  │ (node1) │  │            │            │  │ │ (node2) │     │ │
+│  │  │         │  │            │            │  │ └─────────┘     │ │
+│  │  └─────────┘  └────────────┘            │  │                   │ │
 │  │                                          │  │                   │ │
 │  │  Private Subnet (App): 10.0.10.0/24     │  │ 10.0.11.0/24    │ │
 │  │  ┌─────────┐  ┌─────────┐              │  │ ┌─────────┐     │ │
 │  │  │  EC2    │  │  EC2    │              │  │ │  EC2    │     │ │
+│  │  │ Node.js │  │ Node.js │              │  │ │ Node.js │     │ │
+│  │  │ :3000   │  │ :3000   │              │  │ │ :3000   │     │ │
 │  │  └─────────┘  └─────────┘              │  │ └─────────┘     │ │
 │  │                                          │  │                   │ │
 │  │  Private Subnet (Data): 10.0.20.0/24    │  │ 10.0.21.0/24    │ │
 │  │  ┌─────────┐  ┌─────────┐              │  │ ┌─────────┐     │ │
 │  │  │  RDS    │  │  Redis  │              │  │ │  RDS    │     │ │
+│  │  │ Primary │  │ Primary │              │  │ │ Standby │     │ │
+│  │  │ :5432   │  │ :6379   │              │  │ │ :5432   │     │ │
 │  │  └─────────┘  └─────────┘              │  │ └─────────┘     │ │
+│  │                                          │  │                   │ │
 │  └──────────────────────────────────────────┘  └───────────────────┘ │
+│                                                                      │
+│  Route Tables:                                                       │
+│  Public:  10.0.0.0/16 → local, 0.0.0.0/0 → IGW                   │
+│  Private: 10.0.0.0/16 → local, 0.0.0.0/0 → NAT GW                │
+│  Data:    10.0.0.0/16 → local (NO internet access)                 │
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
 #### Diagram Explanation (The Corporate Office Building)
-Think of a secure VPC like designing a corporate office building:
-- **The Lobby (Public Subnet):** This is the only room with physical doors directly to the outside street (Internet Gateway). The front desk receptionist (ALB) and the outgoing mailroom (NAT Gateway) work here.
-- **The Cubicles (App Subnet - Private):** Employees (Node.js servers) sit here. They can send outgoing mail *out* to the internet by handing it to the mailroom (NAT), but no random person from the street can walk past the lobby straight into the cubicles.
-- **The Vault (Data Subnet - Isolated):** The bank safe (Databases). It has zero doors or windows to the outside. Only authorized internal employees from the cubicles can badge in.
+Think of a fundamentally secure VPC visually exactly like designing a massive corporate office building:
+- **The Lobby (Public Subnet):** This is the exclusively only room with physical doors directly to the completely outside street (Internet Gateway). The front desk receptionist (ALB) and the outgoing mailroom (NAT Gateway) safely securely work here.
+- **The Cubicles (App Subnet - Private):** The everyday employees (Node.js servers) logically sit here. They can safely send outgoing mail *out* to the internet by heavily handing it directly to the mailroom (NAT), but no violently random dangerous person from the street can physically logically walk past the lobby straight into the cubicles.
+- **The Vault (Data Subnet - Isolated):** The massive company physical bank safe (Databases). It structurally intentionally has exactly zero doors or windows to the outside world whatsoever. Only highly authorized internal employees specifically from the cubicles can physically badge in to deposit or withdraw extremely sensitive information.
 
----
-
-## Three-Tier Subnet Strategy
+### Three-Tier Subnet Strategy
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
 │  Tier       │ Subnet Type │ Internet  │ Contains               │
 ├─────────────┼─────────────┼───────────┼────────────────────────┤
 │  Public     │ Public      │ In + Out  │ ALB, NAT GW, Bastion  │
-│  App        │ Private     │ Out only  │ EC2 (Node.js), ECS     │
-│  Data       │ Isolated    │ None      │ RDS, ElastiCache       │
-└─────────────┴─────────────┴───────────┴────────────────────────┘
+│             │             │ (via IGW) │                        │
+│             │             │           │                        │
+│  App        │ Private     │ Out only  │ EC2 (Node.js),         │
+│             │             │ (via NAT) │ ECS Tasks, Lambda      │
+│             │             │           │                        │
+│  Data       │ Isolated    │ None      │ RDS, ElastiCache,      │
+│             │             │           │ DocumentDB             │
+├─────────────┴─────────────┴───────────┴────────────────────────┤
+│  Why 3 tiers:                                                   │
+│  - Public: load balancer faces internet                        │
+│  - App: servers need outbound (npm, APIs) but no inbound      │
+│  - Data: databases need NO internet access at all              │
+│  Each tier has its own route table and security group           │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -86,34 +107,163 @@ Think of a secure VPC like designing a corporate office building:
 ├─────────────────────────────────────────────────────────────────┤
 │  SG: sg-app                                                    │
 │  Inbound:  3000 from sg-alb (only from load balancer)         │
-│  Outbound: 5432 to sg-data, 443 to 0.0.0.0/0                   │
+│  Inbound:  22 from sg-bastion (SSH from bastion only)         │
+│  Outbound: 5432 to sg-data (PostgreSQL)                       │
+│  Outbound: 6379 to sg-data (Redis)                            │
+│  Outbound: 443 to 0.0.0.0/0 (external APIs, npm)             │
 ├─────────────────────────────────────────────────────────────────┤
 │  SG: sg-data                                                   │
 │  Inbound:  5432 from sg-app (PostgreSQL from app tier only)   │
-│  Outbound: None needed                                         │
+│  Inbound:  6379 from sg-app (Redis from app tier only)        │
+│  Outbound: None needed (data tier doesn't initiate connections)│
+├─────────────────────────────────────────────────────────────────┤
+│  SG: sg-bastion                                                │
+│  Inbound:  22 from YOUR-IP/32 (SSH from your IP only)        │
+│  Outbound: 22 to sg-app (SSH to app servers)                  │
+│            5432 to sg-data (direct DB access for admin)        │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
 #### Diagram Explanation (The ID Badge System)
-AWS Security Groups are identical to an electronic ID badge system on the doors between rooms:
-Instead of trying to remember every employee's specific name (their temporary IP Address), you rely on group classifications: "Anyone wearing an 'App Tier' role badge (`sg-app`) is allowed to open the doorway directly into the Data Vault (`sg-data`)". If you hire and deploy 50 new Node.js server instances, you just hand them the 'App Tier' badge, and you never have to manually update the locks on the database itself!
+AWS Security Groups are structurally physically identical to an electronic ID badge system on the thick doors strictly between rooms:
+Instead of frantically trying to awkwardly remember every single moving employee's manually specific name (their temporary IP Address), you heavily rely on broad group classifications. You simply logically declare "Anyone physically wearing an 'App Tier' role badge (`sg-app`) is universally automatically allowed to open the strict doorway directly into the Data Vault (`sg-data`)". This way, if you physically actively hire and forcefully rapidly deploy 50 brand new Node.js server employees, you instantly just simply hand them all the standardized standard 'App Tier' physical badge, and you magnificently impressively magically never have to painstakingly manually update the physical locks directly on the Vault itself!
+
+---
+
+## Multi-Region Architecture
+
+```
+Region: us-east-1 (Primary)              Region: eu-west-1 (DR / Low latency EU)
+┌──────────────────────────┐              ┌──────────────────────────┐
+│  VPC: 10.0.0.0/16        │              │  VPC: 10.1.0.0/16        │
+│  ┌──────┐ ┌──────┐      │  VPC Peering │  ┌──────┐ ┌──────┐      │
+│  │ ALB  │ │Node.js│     │◄────────────►│  │ ALB  │ │Node.js│     │
+│  └──────┘ └──────┘      │  or Transit  │  └──────┘ └──────┘      │
+│  ┌──────┐ ┌──────┐      │  Gateway     │  ┌──────┐ ┌──────┐      │
+│  │ RDS  │ │Redis │      │              │  │ RDS  │ │Redis │      │
+│  │Primary│ │      │      │              │  │Read  │ │      │      │
+│  └──────┘ └──────┘      │              │  │Replica│ └──────┘      │
+└──────────────────────────┘              └──────────────────────────┘
+                │                                    │
+                └──── Route 53 Latency-Based ────────┘
+                      US users → us-east-1
+                      EU users → eu-west-1
+
+CIDR planning for multi-region:
+  us-east-1: 10.0.0.0/16
+  eu-west-1: 10.1.0.0/16
+  ap-south-1: 10.2.0.0/16
+  CIDRs MUST NOT overlap for VPC peering to work!
+```
 
 ---
 
 ## VPC Endpoints (Saving Money + Security)
 
-- **Gateway Endpoints (S3, DynamoDB):** Route traffic internally, bypassing the internet. They are **FREE** and highly recommended to save NAT Gateway data processing fees.
-- **Interface Endpoints (other AWS services):** Cost ~$0.01/hour plus data fees, but keep traffic private and bypass the internet.
+```
+Without VPC Endpoint:
+  EC2 → NAT Gateway → Internet → S3
+  Cost: NAT Gateway data processing ($0.045/GB)
+  Security: Traffic goes over the internet
+
+With VPC Endpoint (Gateway):
+  EC2 → VPC Endpoint → S3 (internal AWS network)
+  Cost: FREE for S3 and DynamoDB gateway endpoints
+  Security: Traffic stays within AWS network
+
+┌──────────────────────────────────────────────────────────────────┐
+│  Endpoint Type │ Services               │ Cost                  │
+├────────────────┼────────────────────────┼───────────────────────┤
+│  Gateway       │ S3, DynamoDB           │ FREE                  │
+│  Interface     │ All other AWS services │ $0.01/hour + data    │
+│                │ (SQS, SNS, ECR, Secrets│                       │
+│                │  Manager, CloudWatch)  │                       │
+├────────────────┴────────────────────────┴───────────────────────┤
+│  Always create S3 and DynamoDB gateway endpoints.              │
+│  They're free and save NAT Gateway costs.                       │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## VPC Design Checklist
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│  ✅ VPC Design Checklist                                        │
+├──────────────────────────────────────────────────────────────────┤
+│  □ CIDR block large enough (/16 for production)                 │
+│  □ At least 2 AZs (high availability)                          │
+│  □ Public subnets (ALB, NAT GW)                                │
+│  □ Private app subnets (EC2, ECS)                               │
+│  □ Private data subnets (RDS, ElastiCache)                     │
+│  □ Internet Gateway attached                                    │
+│  □ NAT Gateway in each AZ (for HA) or single (for cost)       │
+│  □ Route tables per subnet tier                                 │
+│  □ Security groups per tier (reference by SG ID)               │
+│  □ VPC endpoints for S3 and DynamoDB (free!)                   │
+│  □ VPC Flow Logs enabled (debugging, compliance)               │
+│  □ DNS resolution enabled (enableDnsSupport)                   │
+│  □ DNS hostnames enabled (enableDnsHostnames)                  │
+│  □ Non-overlapping CIDRs for peering                           │
+│  □ Tagging strategy for all resources                           │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Common Mistakes
+
+### ❌ Single AZ Deployment
+
+```
+Everything in us-east-1a:
+  ALB, EC2, RDS, Redis — all in one AZ
+  
+  us-east-1a goes down (it happens!):
+  → EVERYTHING is down. Full outage.
+
+✅ Multi-AZ:
+  ALB: spans us-east-1a + 1b (automatic)
+  EC2: ASG across 1a + 1b
+  RDS: Multi-AZ (automatic failover)
+  ElastiCache: Multi-AZ with automatic failover
+  
+  us-east-1a goes down:
+  → ALB routes to 1b, RDS fails over, EVERYTHiNG continues
+```
+
+### ❌ VPC CIDR Too Small
+
+```
+❌ VPC: 10.0.0.0/24 (256 IPs total)
+  4 subnets × 64 IPs = full. Can't add more subnets.
+
+✅ VPC: 10.0.0.0/16 (65,536 IPs)
+  Room for hundreds of subnets
+```
+
+### ❌ NAT Gateway in One AZ Only
+
+```
+NAT Gateway in us-east-1a only:
+  If 1a goes down → private subnets in 1b lose internet access
+  → npm install fails, external API calls fail
+
+✅ NAT Gateway per AZ (costs more but resilient):
+  us-east-1a private → NAT-1a → IGW
+  us-east-1b private → NAT-1b → IGW
+```
 
 ---
 
 ## Practice Exercises
 
-### Exercise 1: VPC Design Diagram
-Design a VPC for an app with an ALB, Node.js API (3 instances), PostgreSQL (Multi-AZ), and Redis. List the subnets and route tables.
+### Exercise 1: VPC Design
+Design a VPC for an app with: React frontend (S3 + CloudFront), Node.js API (3 instances), PostgreSQL (Multi-AZ), Redis, and a bastion host. Define all subnets, route tables, and security groups.
 
-### Exercise 2: Flow Logs Analysis
-Enable VPC Flow Logs in the AWS console. Generate traffic and analyze accepted and rejected packets to ensure security rules are working.
+### Exercise 2: VPC Endpoint
+Create an S3 VPC Gateway endpoint. Measure the cost savings if your app processes 50GB/month from S3.
 
 ---
 
@@ -126,13 +276,13 @@ Enable VPC Flow Logs in the AWS console. Generate traffic and analyze accepted a
 > A VPC endpoint routes traffic to AWS services internally without going through NAT/internet. Gateway endpoints (S3, DynamoDB) are free — always create them. Interface endpoints cost money but keep traffic private and reduce NAT costs for services like SQS, ECR, Secrets Manager.
 
 **Q3: How do you connect two VPCs?**
-> VPC Peering: direct connection between two VPCs. Must have non-overlapping CIDRs. For many VPCs: Transit Gateway is a central hub.
+> VPC Peering: direct connection between two VPCs. Must have non-overlapping CIDRs. Routes added in both VPCs. Non-transitive. For many VPCs: Transit Gateway is a central hub.
 
 **Q4: Why use multiple Availability Zones?**
-> AZs are physically separate data centers. If one AZ has an outage, services in other AZs continue. Multi-AZ is required for production: ALB spans AZs, ASG launches in multiple AZs, RDS Multi-AZ provides automatic failover.
+> AZs are physically separate data centers. If one AZ has an outage (power, cooling, network), services in other AZs continue. Multi-AZ is required for production: ALB spans AZs, ASG launches in multiple AZs, RDS Multi-AZ provides automatic failover.
 
 **Q5: What is the cost of a NAT Gateway and how do you reduce it?**
-> ~$32/month + $0.045/GB data processing. Reduce by: S3/DynamoDB VPC endpoints (free, skip NAT for AWS traffic), caching (reduce outbound API calls), pulling Docker images from ECR via VPC endpoint.
+> ~$32/month + $0.045/GB data processing. Reduce by: S3/DynamoDB VPC endpoints (free, skip NAT for AWS traffic), caching (reduce outbound API calls), pulling Docker images from ECR via VPC endpoint, and using a single NAT Gateway in dev (save $32/month per extra AZ).
 
 ---
 

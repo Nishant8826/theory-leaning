@@ -26,6 +26,8 @@ Where time goes for a typical API call (cross-continent):
 │  Total               │  900ms │                        │
 ├────────────────────────────────────────────────────────┤
 │  Network: 800ms (89%) — Server: 100ms (11%)           │
+│  Your code is only 11% of the total time!              │
+│  Optimizing your Node.js code alone won't fix this.   │
 └────────────────────────────────────────────────────────┘
 
 After optimization (CDN + keep-alive + cache):
@@ -41,66 +43,286 @@ After optimization (CDN + keep-alive + cache):
 ```
 
 #### Diagram Explanation (The Delivery Route)
-Think of an API request like ordering an item for delivery:
-- **Before Optimization:** You look up the warehouse address in a phone book (DNS), drive your truck to the warehouse to shake hands with the manager (TCP/TLS), and then request the package (HTTP). The warehouse packaging time is only 11% of the total trip!
-- **After Optimization (CDN + Caching):** You build a mini-warehouse locally (CDN/Redis). The address is memorized (DNS cached), and the delivery driver has an open pre-approved connection (TCP reused). You cut out the geographical commute!
+Think of an API request functionally exactly like ordering a physical item for package delivery across the country:
+- **Before Optimization:** You have to look up the warehouse address in a physical phone book (DNS), drive your truck to the warehouse to personally shake hands with the manager to prove who you are (TCP/TLS), and then finally request the package (HTTP). The actual time the warehouse takes to put the package in the box (Server Processing) is only 11% of the total trip!
+- **After Optimization (CDN + Caching):** You build a mini-warehouse directly in your hometown (CDN/Redis). The local address is completely permanently memorized (DNS cached), and the delivery guy already has an open pre-approved tab with the warehouse manager (TCP reused). The result? The package is delivered 66% shockingly faster purely because you completely eliminated the massive geographical cross-country networking commute!
 
 ---
 
 ## Optimization by Layer
 
 ### 1. DNS Optimization
-```javascript
-// Node.js DNS caching (Node.js does NOT cache DNS by default!)
-const CacheableLookup = require('cacheable-lookup');
-const cacheable = new CacheableLookup({ maxTtl: 300 });
 
+```javascript
+// ──── Node.js DNS caching (Node.js does NOT cache DNS by default!) ────
+const CacheableLookup = require('cacheable-lookup');
+const cacheable = new CacheableLookup({ maxTtl: 300 }); // 5 min cache
+
+// Apply globally
 const http = require('http');
 const https = require('https');
 cacheable.install(http.globalAgent);
 cacheable.install(https.globalAgent);
+
+// Next.js frontend: dns-prefetch and preconnect
+// In _document.js or layout.tsx:
+// <link rel="dns-prefetch" href="https://api.myapp.com" />
+// <link rel="preconnect" href="https://api.myapp.com" crossorigin />
+// <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 ```
 
-### 2. Connection Optimization (HTTP Keep-Alive)
+### 2. Connection Optimization
+
 ```javascript
+// ──── HTTP Keep-Alive (reuse TCP connections) ────
+const http = require('http');
 const https = require('https');
 
+// Node.js outbound: reuse connections to external services
 const keepAliveAgent = new https.Agent({
   keepAlive: true,
-  maxSockets: 50,
-  maxFreeSockets: 10,
-  timeout: 60000
+  maxSockets: 50,        // Max concurrent connections per host
+  maxFreeSockets: 10,    // Keep 10 idle connections warm
+  timeout: 60000,        // Socket timeout
+  freeSocketTimeout: 30000  // Close idle sockets after 30s
 });
 
+// Use with axios
 const axios = require('axios');
 const apiClient = axios.create({
   baseURL: 'https://api.stripe.com',
-  httpsAgent: keepAliveAgent
+  httpsAgent: keepAliveAgent,
+  timeout: 10000
 });
+
+// Express inbound: align keep-alive with ALB
+const server = http.createServer(app);
+server.keepAliveTimeout = 65000;  // > ALB's 60s idle timeout
+server.headersTimeout = 66000;
 ```
 
-### 3. Compression (Express gzip)
+### 3. Compression
+
 ```javascript
+// ──── Enable compression (60-80% size reduction) ────
 const compression = require('compression');
+
 app.use(compression({
-  threshold: 1024,
-  level: 6
+  threshold: 1024,     // Only compress responses > 1KB
+  level: 6,            // Compression level (1=fast, 9=best, 6=balanced)
+  filter: (req, res) => {
+    if (req.headers['accept'] === 'text/event-stream') return false;
+    return compression.filter(req, res);
+  }
 }));
 ```
 
-### 4. Response Optimization (Pagination & Projection)
+### 4. HTTP/2 and Connection Multiplexing
+
+```nginx
+# Nginx: Enable HTTP/2 (single connection, multiple requests)
+server {
+    listen 443 ssl http2;           # Enable HTTP/2
+    # ...
+    
+    # HTTP/2 push (preload critical resources)
+    location / {
+        http2_push /static/css/main.css;
+        http2_push /static/js/bundle.js;
+        proxy_pass http://node_api;
+    }
+}
+```
+
+### 5. Response Optimization
+
 ```javascript
+// ──── Pagination — don't return 10,000 records ────
 app.get('/api/products', async (req, res) => {
-  const { page = 1, limit = 20 } = req.query;
+  const { page = 1, limit = 20, fields } = req.query;
+  
+  const projection = fields 
+    ? fields.split(',').reduce((acc, f) => ({ ...acc, [f.trim()]: 1 }), {})
+    : { name: 1, price: 1, image: 1, rating: 1 }; // Default minimal fields
+  
   const products = await Product.find({ isActive: true })
-    .select({ name: 1, price: 1, image: 1 })
+    .select(projection)
     .skip((page - 1) * limit)
     .limit(limit)
-    .lean(); // Skip Mongoose heavy wrappers
+    .lean();                      // Skip Mongoose overhead for read-only
   
   res.set('Cache-Control', 'public, max-age=60, s-maxage=300');
   res.json({ products, page, limit });
 });
+```
+
+### 6. Parallel Requests
+
+```javascript
+// ──── Backend: Parallel service calls ────
+app.get('/api/dashboard', async (req, res) => {
+  // ✅ Parallel (1000ms total — speed of slowest)
+  const [user, orders, recommendations] = await Promise.all([
+    getUser(req.userId),
+    getOrders(req.userId),
+    getRecs(req.userId)
+  ]);
+
+  res.json({ user, orders, recommendations });
+});
+
+// ──── Frontend: Parallel API calls in React ────
+useEffect(() => {
+  Promise.all([
+    fetch('/api/user').then(r => r.json()),
+    fetch('/api/orders').then(r => r.json()),
+    fetch('/api/notifications').then(r => r.json())
+  ]).then(([user, orders, notifications]) => {
+    setData({ user, orders, notifications });
+  });
+}, []);
+```
+
+### 7. Redis Caching
+
+```javascript
+// ──── Cache expensive operations ────
+async function getProductsWithCache(category) {
+  const cacheKey = `products:${category}`;
+  
+  const cached = await redis.get(cacheKey);
+  if (cached) return JSON.parse(cached);
+  
+  const products = await Product.find({ category, isActive: true })
+    .sort({ rating: -1 })
+    .limit(50)
+    .lean();
+  
+  await redis.set(cacheKey, JSON.stringify(products), 'EX', 300);
+  return products;
+}
+```
+
+---
+
+## Frontend Performance
+
+```javascript
+// ──── Next.js Performance Optimizations ────
+
+// 1. Static generation where possible
+export async function getStaticProps() {
+  const products = await fetch(`${API_URL}/api/products`).then(r => r.json());
+  return {
+    props: { products },
+    revalidate: 60  // ISR: regenerate every 60 seconds
+  };
+}
+
+// 2. Image optimization
+import Image from 'next/image';
+<Image
+  src="/product.jpg"
+  width={400}
+  height={300}
+  loading="lazy"       // Lazy load below-fold images
+  placeholder="blur"   // Show blur while loading
+  priority={false}     // Set true for above-fold (LCP) images
+/>
+
+// 3. Code splitting (automatic in Next.js)
+import dynamic from 'next/dynamic';
+const HeavyComponent = dynamic(() => import('./HeavyComponent'), {
+  loading: () => <Spinner />,
+  ssr: false  // Don't server-render this (only needed client-side)
+});
+```
+
+---
+
+## Performance Monitoring
+
+```javascript
+// ──── Server-Side: Track key metrics ────
+const metrics = {
+  requests: 0,
+  errors: 0,
+  totalDuration: 0,
+  p50: [],        // 50th percentile
+  slowQueries: 0
+};
+
+app.use((req, res, next) => {
+  const start = Date.now();
+  
+  res.on('finish', () => {
+    const duration = Date.now() - start;
+    metrics.requests++;
+    metrics.totalDuration += duration;
+    
+    if (res.statusCode >= 500) metrics.errors++;
+    if (duration > 1000) metrics.slowQueries++;
+    
+    metrics.p50.push(duration);
+    if (metrics.p50.length > 1000) metrics.p50.shift();
+  });
+  
+  next();
+});
+
+app.get('/metrics', (req, res) => {
+  const sorted = [...metrics.p50].sort((a, b) => a - b);
+  res.json({
+    totalRequests: metrics.requests,
+    errorRate: `${((metrics.errors / metrics.requests) * 100).toFixed(2)}%`,
+    avgDuration: `${(metrics.totalDuration / metrics.requests).toFixed(0)}ms`,
+    p50: `${sorted[Math.floor(sorted.length * 0.5)]}ms`,
+    p95: `${sorted[Math.floor(sorted.length * 0.95)]}ms`,
+    p99: `${sorted[Math.floor(sorted.length * 0.99)]}ms`,
+    slowQueries: metrics.slowQueries
+  });
+});
+```
+
+---
+
+## Common Mistakes
+
+### ❌ N+1 API Problem
+
+```javascript
+// Frontend makes N+1 requests:
+const products = await fetch('/api/products').then(r => r.json());
+for (const p of products) {
+  p.reviews = await fetch(`/api/products/${p.id}/reviews`).then(r => r.json());
+}
+
+// ✅ Backend aggregation endpoint
+app.get('/api/products-with-reviews', async (req, res) => {
+  const products = await Product.aggregate([
+    { $lookup: { from: 'reviews', localField: '_id', foreignField: 'productId', as: 'reviews' } },
+    { $addFields: { reviewCount: { $size: '$reviews' }, reviews: { $slice: ['$reviews', 3] } } }
+  ]);
+  res.json(products);
+});
+```
+
+### ❌ Not Using CDN for Static Assets
+
+```
+Without CDN (everything from origin):
+  index.html:    200ms (origin)
+  bundle.js:     200ms (origin)
+  styles.css:    200ms (origin)
+  10 images:     200ms × 10 (origin)
+  Total: ~2.6 seconds
+
+With CDN (static from edge):
+  index.html:    10ms (edge, short cache)
+  bundle.js:     10ms (edge, immutable)
+  styles.css:    10ms (edge, immutable)
+  10 images:     10ms × 10 (edge)
+  Total: ~130ms  — 20x faster!
 ```
 
 ---
@@ -108,29 +330,29 @@ app.get('/api/products', async (req, res) => {
 ## Practice Exercises
 
 ### Exercise 1: Timing Audit
-Use `curl -w` to measure your API's DNS, TCP, TLS, and TTFB times. Identify the biggest bottleneck and fix it.
+Use `curl -w` to measure your API's DNS, TCP, TLS, and TTFB times. Identify the biggest bottleneck.
 
-### Exercise 2: Compression Verification
-Verify compression headers on your endpoints. Compare payload size with and without gzip enabled.
+### Exercise 2: Compression Impact
+Measure your API response size with and without gzip.
 
 ---
 
 ## Interview Q&A
 
 **Q1: How do you reduce Time to First Byte (TTFB)?**
-> CDN (serve from edge), Redis cache (skip DB queries), connection keep-alive (skip TCP/TLS handshake), HTTP/2 (multiplex requests), database query optimization (indexes, projections), and compression.
+> CDN (serve from edge), Redis cache (skip DB queries), connection keep-alive (skip TCP/TLS handshake), HTTP/2 (multiplex requests), database query optimization (indexes, projections), and compression (smaller response = faster transfer).
 
 **Q2: What is the difference between latency and throughput?**
 > Latency = time for one request (ms). Throughput = requests processed per second. You can have high throughput with high latency (many parallel slow requests). Reducing latency usually improves throughput.
 
 **Q3: How does HTTP/2 improve performance?**
-> Multiplexes multiple requests over one TCP connection. Compresses headers (HPACK). Eliminates head-of-line blocking at HTTP level, reducing overhead and speeding up page loads.
+> Multiplexes multiple requests over one TCP connection (vs 6 parallel connections in HTTP/1.1). Compresses headers (HPACK). Eliminates head-of-line blocking at HTTP level. Result: fewer connections, less overhead, 30-50% faster page loads.
 
 **Q4: When should you use Redis cache vs CDN cache?**
 > CDN: static assets, public API responses identical for all users. Redis: database query results, user-specific data, computed values, rate limiting counters.
 
 **Q5: How do you handle the thundering herd problem?**
-> When a cache key expires, hundreds of concurrent requests hit the DB. Solutions: cache lock (only first query runs, others wait), stale-while-revalidate (serve stale data while refreshing), and random TTL jitter.
+> When a cache key expires, hundreds of concurrent requests hit the DB. Solutions: cache lock (only first request queries DB, others wait), stale-while-revalidate (serve stale data while refreshing in background), random TTL jitter (prevent simultaneous expiry), pre-warming before expiry.
 
 ---
 
