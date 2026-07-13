@@ -12,12 +12,12 @@ Welcome to the DevOps Complete Revision Guide. This guide aggregates all key con
 * [04. ☁️ Cloud Computing & Data Centers](#04-cloud-computing-data-centers)
 * [05. 🛠️ Scripts, Docker & VM Setup Practical Reference](#05-scripts-docker-vm-setup-practical-reference)
 * [06. DevOps Basics: Tools, Phases, and Roles](#06-devops-basics-tools-phases-and-roles)
-* [07. 🖥️ Linux, OS & GitHub Basics](#07-linux-os-github-basics)
-* [08. 🐧 Linux Commands & Concepts](#08-linux-commands-concepts)
-* [09. 🐧 Linux Commands & Concepts (Intermediate - Part 2)](#09-linux-commands-concepts-intermediate-part-2)
-* [10. 🐧 Linux Commands & Concepts (Intermediate - Part 3)](#10-linux-commands-concepts-intermediate-part-3)
-* [11. 🐧 Linux Commands & Concepts (Intermediate - Part 4)](#11-linux-commands-concepts-intermediate-part-4)
-* [12. ☁️ AWS Fundamentals (Part 1)](#12-aws-fundamentals-part-1)
+* [07. 🖥️ Linux, OS and GitHub Basics](#07-linux-os-github-basics)
+* [08. 🐧 Linux, SSH and Basic Commands](#08-linux-commands-concepts)
+* [09. 🐧 Linux Monitoring, Scripting and Permissions](#09-linux-commands-concepts-intermediate-part-2)
+* [10. 🐧 Linux, VI Editor and Package Management](#10-linux-commands-concepts-intermediate-part-3)
+* [11. 🐧 Linux Troubleshooting, Logs and Services](#11-linux-commands-concepts-intermediate-part-4)
+* [12. ☁️ AWS Basics and Cloud Introduction](#12-aws-fundamentals-part-1)
 * [13. ☁️ AWS IAM & EC2 Hands-on Guide](#13-aws-iam-ec2-hands-on-guide)
 * [14. ⚖️ Scaling, EC2, AMI & Load Balancers Essentials](#14-scaling-ec2-ami-load-balancers-essentials)
 * [15. ☁️ AWS EC2, AMI, EBS & Load Balancers Deep Dive](#15-aws-ec2-ami-ebs-load-balancers-deep-dive)
@@ -396,12 +396,12 @@ sudo sh install-docker.sh
 
 ---
 
-## <a id="07-linux-os-github-basics"></a>07. Linux, OS & GitHub Basics 🖥️
+## <a id="07-linux-os-github-basics"></a>07. Linux, OS and GitHub Basics 🖥️
 
 🔗 **Full Lesson:** [07_Linux_OS_and_GitHub_Basics.md](./07_Linux_OS_and_GitHub_Basics.md)
 
-* **What**: Introduction and foundational concepts of 🖥️ Linux, OS & GitHub Basics.
-* **Why It Exists**: Solves deployment speed, consistency, and reliability challenges of 🖥️ Linux, OS & GitHub Basics in production.
+* **What**: Introduction and foundational concepts of 🖥️ Linux, OS and GitHub Basics.
+* **Why It Exists**: Solves deployment speed, consistency, and reliability challenges of 🖥️ Linux, OS and GitHub Basics in production.
 * **Key Concepts**:
   * **📌 1. What is an Operating System (OS)?**
     * **Definition**: Software that manages hardware resources and provides interfaces (GUI/CLI) for users and applications.
@@ -460,11 +460,11 @@ sudo sh install-docker.sh
 
 ---
 
-## <a id="08-linux-commands-concepts"></a>08. Linux Commands & Concepts 🐧
+## <a id="08-linux-commands-concepts"></a>08. Linux, SSH and Basic Commands 🐧
 
 🔗 **Full Lesson:** [08_Linux_SSH_and_Basic_Commands.md](./08_Linux_SSH_and_Basic_Commands.md)
 
-* **What**: Introduction and foundational concepts of 🐧 Linux Commands & Concepts.
+* **What**: Introduction and foundational concepts of 🐧 Linux, SSH and Basic Commands.
 * **Why It Exists**: Many commands output sizes in **bytes** by default, which is hard to read. Adding `-h` flag converts them to **KB, MB, GB** — much easier to understand!
 * **Key Concepts**:
   * **📌 Introduction**: Provides a starting point for the command-line interface ("cockpit of the airplane") for system navigation, file manipulation, and process control.
@@ -479,7 +479,6 @@ sudo sh install-docker.sh
   * **💡 Important Concepts**
     * **Zombie Processes**: Process that has finished execution but remains in the process table waiting for parental acknowledgement; cannot be killed with `kill -9`.
     * **vi Editor modes**: Dual modes: Command Mode (for navigating, saving `:w`, quitting `:q`) and Insert Mode (for typing/editing text via `i`).
-  * **🏋️ Practice Tasks**: Hands-on practice scripts for configuring SSH keypairs, organizing files/directories, checking system health, and editing scripts inside the vi terminal.
 
 ### Key Commands / Code Example:
 
@@ -496,7 +495,7 @@ cat ~/.ssh/id_ed25519.pub
 
 ---
 
-## <a id="09-linux-commands-concepts-intermediate-part-2"></a>09. Linux Commands & Concepts (Intermediate - Part 2) 🐧
+## <a id="09-linux-commands-concepts-intermediate-part-2"></a>09. Linux Monitoring, Scripting and Permissions 🐧
 
 🔗 **Full Lesson:** [09_Linux_Monitoring_Scripting_and_Permissions.md](./09_Linux_Monitoring_Scripting_and_Permissions.md)
 
@@ -505,36 +504,31 @@ cat ~/.ssh/id_ed25519.pub
 - Compress log files to save disk space
 - Package application files for deployment
 - Create backups
-* **Why It Exists**: `chmod 777 file.sh` means:
-- **Everyone** on the system can read, write, AND execute it
-- A hacker or malicious user who gains any access to the server can:
-  - Read your config files (steal database passwords!)
-  - Modify your scripts (inject malicious code!)
-  - Execute dangerous commands
+* **Why It Exists**: Real-time server visibility, automation, and security permissions are the absolute backbone of system administration. DevOps engineers must know how to diagnose server performance bottlenecks, automate recurring tasks via shell scripts, package logs using archive tools, and enforce strict, secure file access bounds (preventing security holes like raw 777 permissions).
 * **Key Concepts**:
-  * **📌 Introduction**
+  * **📌 Introduction**: Covers intermediate Linux tasks essential for DevOps engineers on live production environments: watching server state, process manipulation, shell scripting, and security permissions.
   * **💻 System Monitoring Commands**
     * **Load average** — a server with 1 CPU should have load < 1.0 (ideally)
-  * **️ Process Management**
+    * **Tools**: Use `top` or `htop` for live metrics, `free -h` for memory, `df -h` for disk space, and `du -sh` for folder sizes.
+  * **⚙️ Process Management**: Snapshot processes with `ps aux` or `ps -aef`. Terminate frozen/stuck processes using `kill <PID>` (SIGTERM 15) or `kill -9 <PID>` (SIGKILL 9). If the OS runs out of RAM, the **OOM Killer** dynamically force-stops memory-heavy applications.
   * **📦 File Compression (TAR)**
     * Adding `z` = compress with **gzip** (makes the file much smaller)
+    * **Commands**: Bundle files using `tar cvf` and extract them with `tar xvf` (or `tar cvzf`/`tar xvzf` for compressed `.tar.gz` files).
   * **🧾 Shell Scripting**
     * 🔁 **Automation** — Run repetitive tasks without manual effort
     * ⏰ **Scheduling** — Run with cron jobs at specific times
     * 🚨 **Monitoring** — Check server health and send alerts
     * 🚀 **Deployment** — Deploy applications automatically
+    * **Shebang**: Starts with `#!/bin/bash` to specify the Bash command interpreter. Make executable using `chmod +x script.sh`.
   * **🔐 File Permissions**
     * **Everyone** on the system can read, write, AND execute it
-  * **👤 User Management**
+    * **Enforcement**: Set numerical permissions (Read=4, Write=2, Execute=1) like `600` for private SSH keys or `644` for configs. Modify with `chmod` and change owners with `chown`.
+  * **👤 User Management**: Admin creation of human accounts with `adduser` / `useradd`, password management via `passwd`, account removal with `deluser --remove-home`, and switching user environments with `su - username`.
   * **👥 Group Management**
     * `-a` = **Append** (add without removing existing groups) ← VERY IMPORTANT!
     * `-G` = specify the **Group** to add
-  * **🔒 Advanced User Management**
-  * **🏋️ Practice Tasks**
-    * For a **1 CPU system**: load average of `1.0` means 100% utilized; above 1.0 means processes are waiting (overloaded)
-    * For a **4 CPU system**: load average of `4.0` means all CPUs are at 100%
-    * Rule of thumb: **load average should not regularly exceed the number of CPU cores**
-    * **Free**: RAM that is completely unused
+    * **Application**: Group access cards represent group identities. Create with `addgroup` and add users with `usermod -aG groupname username` to manage shared directory ownership.
+  * **🔒 Advanced User Management**: Set account/password aging and expiry parameters using `chage` (e.g. `chage -M 90` for password rotation). Inspect user system mappings in `/etc/passwd`.
 
 ### Key Commands / Code Example:
 
@@ -550,47 +544,45 @@ MiB Mem :   7951.2 total,   1234.5 free,   4200.1 used,   2516.6 buff/cache
 
 ---
 
-## <a id="10-linux-commands-concepts-intermediate-part-3"></a>10. Linux Commands & Concepts (Intermediate - Part 3) 🐧
+## <a id="10-linux-commands-concepts-intermediate-part-3"></a>10. Linux, VI Editor and Package Management 🐧
 
 🔗 **Full Lesson:** [10_Linux_VI_Editor_and_Package_Management.md](./10_Linux_VI_Editor_and_Package_Management.md)
 
 * **What**: Linux is an **Open Source** operating system kernel. Unlike Windows, anyone can see the code, modify it, and share it.
-* **Why It Exists**: Solves deployment speed, consistency, and reliability challenges of 🐧 Linux Commands & Concepts (Intermediate - Part 3) in production.
+* **Why It Exists**: In modern production environments, server access is headless (no graphic desktop or mouse interface). DevOps engineers need to log in remotely and securely using SSH, edit server configuration files in place using terminal editors like VI/Vim, read files without causing system memory exhaustion, and use native package managers (apt, yum) to handle dependencies during software installations.
 * **Key Concepts**:
-  * **📌 Introduction**
-  * **🔁 Linux Fundamentals Quick Revision**
+  * **📌 Introduction**: Focuses on bridging the gap from simple local user usage to professional DevOps engineering tasks: connecting between servers, editing config files on headless systems, and installing software packages.
+  * **🔁 Linux Fundamentals Quick Revision**: Quick summary of Linux open source kernel philosophy, its core architecture layers (Kernel, Shell, User Space), root/system configurations file hierarchies (`/etc`, `/var/log`), and basic navigations.
   * **🎮 Bandit Game (Hands-on Practice)**
     * **Username:** `bandit0`
     * **Password:** `bandit0`
     * **Port:** `2220` (Standard SSH is 22, but Bandit uses 2220).
-  * **🔐 Server-to-Server Connectivity (SSH)**
-  * **️ VI Editor Deep Dive**
+    * **Purpose**: Gamified Capture-The-Flag platform to build muscle memory for finding weird files and reading hidden data in the command terminal.
+  * **🔐 Server-to-Server Connectivity (SSH)**: The standard connection command `ssh username@server-ip`. Outlines secure jump paths from personal laptops through a public **Bastion Host** (Jump Box) into protected private application servers, and managing traffic via **Proxy Servers**.
+  * **✏️ VI Editor Deep Dive**: Editing text files in headless terminals using two modes: Command Mode (for moving around, saving `:wq`, and deleting lines `dd`) and Insert Mode (press `i` to type).
   * **📖 File Viewing Commands**
     * `head -n 10 file.txt`: Show the **first** 10 lines.
     * `tail -n 10 file.txt`: Show the **last** 10 lines.
-  * **📦 Package Management**
-  * **🏋️ Practice Tasks**
+    * `tail -f /var/log/syslog`: **Crucial DevOps tool** to dynamically follow logs in real-time as events occur.
+  * **📦 Package Management**: Utilizing automated managers like `apt` (Ubuntu/Debian) or `yum`/`dnf` (RedHat/CentOS) to install, update, and remove software while automatically resolving dependency trees.
 
 ### Key Commands / Code Example:
 
 ```bash
+# Update local package index
 sudo apt update
-   ```
-2. **Upgrade all installed software:**
-   ```bash
-   sudo apt upgrade
-   ```
-3. **Install a new tool (e.g., Git):**
-   ```bash
-   sudo apt install git
-   ```
-4. **Remove a tool:**
-   ```bash
-   sudo apt remove git
-   ```
 
-### 🔹 RHEL/CentOS/Amazon Linux (`yum`)
-On older RedHat-based systems, we use `yum`. On newer ones, we use `dnf`.
+# Upgrade all installed software
+sudo apt upgrade -y
+
+# Install a package (e.g., git)
+sudo apt install git -y
+
+# Remove a package
+sudo apt remove git -y
+
+# RHEL/CentOS/Amazon Linux equivalent for installing httpd
+sudo yum install httpd -y
 ```
 
 > [!IMPORTANT]
@@ -598,27 +590,28 @@ On older RedHat-based systems, we use `yum`. On newer ones, we use `dnf`.
 
 ---
 
-## <a id="11-linux-commands-concepts-intermediate-part-4"></a>11. Linux Commands & Concepts (Intermediate - Part 4) 🐧
+## <a id="11-linux-commands-concepts-intermediate-part-4"></a>11. Linux Troubleshooting, Logs and Services 🐧
 
 🔗 **Full Lesson:** [11_Linux_Troubleshooting_Logs_and_Services.md](./11_Linux_Troubleshooting_Logs_and_Services.md)
 
-* **What**: Introduction and foundational concepts of 🐧 Linux Commands & Concepts (Intermediate - Part 4).
-* **Why It Exists**: Solves deployment speed, consistency, and reliability challenges of 🐧 Linux Commands & Concepts (Intermediate - Part 4) in production.
+* **What**: Introduction and foundational concepts of 🐧 Linux Troubleshooting, Logs and Services.
+* **Why It Exists**: Production servers inevitably experience issues—whether due to disk space saturation, memory resource exhaustion, application daemon crashes, or network blocks. Understanding the core OS boot sequence (BIOS to systemd targets) and using diagnostic commands allows engineers to quickly trace the root cause of an outage, read system logs safely, and control background services.
 * **Key Concepts**:
-  * **📌 Introduction**
+  * **📌 Introduction**: Outlines the importance of troubleshooting as a DevOps engineer's superpower, focusing on tracking down resource exhaustion, service failures, and debugging live site outages.
   * **🌐 Website Troubleshooting Basics**
     * **Red Rows:** Indicate failed requests.
     * **Time Column:** Shows if a backend API is taking too long to respond.
     * **1xx (Informational):** Request received, continuing process.
     * **2xx (Success):** Everything is fine (e.g., `200 OK`).
-  * **🖥️ Linux Boot Process Deep Dive**
+    * **Status Codes**: 4xx Client Errors (e.g. `403 Forbidden`, `404 Not Found`) and 5xx Server Errors (e.g. `500 Internal Error`, `502 Bad Gateway`, `503 Unavailable`).
+  * **🖥️ Linux Boot Process Deep Dive**: The 6 key steps of OS boot: BIOS/UEFI (hardware POST check) → MBR/GPT partition sector → GRUB Bootloader → Kernel Initialization → Init Process (`systemd` with PID 1 starting background services) → Runlevel Target state. Features comparison to Windows boot stages (`Bootmgr`, `winload.exe`, `ntoskrnl.exe`, `smss.exe`).
   * **📊 System Troubleshooting Commands**
     * `df -h`: Check Disk Space. If `/` is **100% full**, the system will crash!
     * **High CPU?** Check `top`. Find the process ID (PID) using the most %CPU.
     * **Everything is slow?** Check `free -h`. If `available` is near 0, the system is swapping, which is very slow.
   * **📁 Log Management & Debugging**
     * `tail -f /var/log/syslog`: **Crucial!** It follows the log in real-time as new lines are added.
-  * **️ Service & Process Management**
+  * **⚙️ Service & Process Management**
     * `kill -15 <PID>`: **Graceful Kill**. Asks the app to "Please save your work and close."
     * `kill -9 <PID>`: **Force Kill**. Literally kills the process instantly. Use only as a last resort!
   * **💽 Disk & Storage Troubleshooting**
@@ -626,11 +619,6 @@ On older RedHat-based systems, we use `yum`. On newer ones, we use `dnf`.
   * **🔐 File Permissions (Troubleshooting Perspective)**
     * **R** (Read), **W** (Write), **X** (Execute).
     * **Owner** (first 3), **Group** (next 3), **Others** (last 3).
-  * **🏋️ Practice Tasks**
-    * **A:** `kill -15` (SIGTERM) is a graceful termination signal allowing the process to clean up. `kill -9` (SIGKILL) is an immediate force-kill that doesn't allow any cleanup.
-    * **A:** First, check the service status with `systemctl status nginx/apache`. Then check the logs in `/var/log/nginx/error.log`. Finally, check system resources using `df -h` and `free -h`.
-    * **A:** It means your web proxy (like Nginx) cannot communicate with the backend application service (like Gunicorn or Node.js).
-    * **A:** Use the `top` or `htop` command and sort by `%CPU`.
 
 ### Key Commands / Code Example:
 
@@ -645,36 +633,31 @@ dmesg | grep -i error
 
 ---
 
-## <a id="12-aws-fundamentals-part-1"></a>12. AWS Fundamentals (Part 1) ☁️
+## <a id="12-aws-fundamentals-part-1"></a>12. AWS (Amazon Web Services) Basics and Cloud Introduction ☁️
 
 🔗 **Full Lesson:** [12_AWS_Basics_and_Cloud_Introduction.md](./12_AWS_Basics_and_Cloud_Introduction.md)
 
-* **What**: Introduction and foundational concepts of ☁️ AWS Fundamentals (Part 1).
-* **Why It Exists**: 1. **Cost Reduction:** Companies didn't want to spend millions on hardware before even making a profit.
+* **What**: Introduction and foundational concepts of ☁️ AWS Basics and Cloud Introduction.
+* **Why It Exists**: Traditional physical server deployments required weeks of hardware shipping, heavy capital expense, manual cabling, and round-the-clock environmental maintenance. Cloud platforms like AWS remove this overhead, providing on-demand utility-style compute and storage resources globally with horizontal auto-scaling capabilities.
 * **Key Concepts**:
-  * **📌 Introduction**
+  * **📌 Introduction**: Introducing AWS cloud capabilities. AWS acts as the playground of modern software deployment, replacing physical datacenters with virtual resource renting over the internet.
   * **️ What is AWS?**
     * **Traditional Way:** You buy an oven, rent a building, buy the furniture, and hire staff. If the shop fails, you are stuck with the expensive oven and a long lease.
     * **Cloud (AWS) Way:** You rent a fully equipped kitchen for $10 an hour. If you have many orders, you rent a second kitchen instantly. If no one buys pizza, you stop the rental and pay nothing.
     * **No upfront costs. No hidden fees. No commitments.**
-  * **🏗️ Evolution of AWS**
+  * **🏗️ Evolution of AWS**: Traces milestones from 2002 inception to the launch of SQS (Simple Queue Service - 2004), EC2 (Elastic Compute Cloud) / S3 (Simple Storage Service - 2006), VPC (Virtual Private Cloud - 2009), to today's catalog of 200+ managed services.
   * **🌍 Key Features of AWS**
     * **Region:** A physical location in the world (e.g., US-East-1 in Virginia).
     * **Availability Zone (AZ):** One or more data centers within a Region.
     * **Vertical Scaling:** Making your server "bigger" (more RAM/CPU).
     * **Horizontal Scaling:** Adding "more" servers (1 server becomes 10 during a sale).
   * **🏢 Traditional vs Cloud Infrastructure**
-    * **Physical Storage** (Hard drives) → **S3** or **EBS**
+    * **Physical Storage** (Hard drives) → **S3** or **EBS (Elastic Block Store)**
     * **Physical Servers** (CPU/RAM) → **EC2**
     * **Networking** (Cables/Routers) → **VPC**
-    * **Database Admin** → **RDS**
-  * **🧰 Core AWS Services Overview**
-  * **🎯 Why Companies Use AWS (Real Industry Use Cases)**
-  * **🏋️ Practice Tasks**
-    * **A:** AWS is a platform that provides on-demand computing power, storage, and databases over the internet with pay-as-you-go pricing. It’s like renting a supercomputer instead of buying one.
-    * **A:** It eliminates the need for large upfront capital investment and reduces risk. You only pay for what you actually use.
-    * **A:** A **Region** is a geographical area (like London). An **Availability Zone** is a physical data center building *inside* that region. Each region has multiple AZs for safety.
-    * **A:** It is the ability to handle more traffic by adding more resources (RAM or extra servers) and then removing them when traffic is low.
+    * **Database Admin** → **RDS (Relational Database Service)**
+  * **🧰 Core AWS Services Overview**: Overview of compute (EC2), storage (S3), network (VPC), identity database (IAM - Identity and Access Management), managed database (RDS), and logging dashboards (CloudWatch).
+  * **🎯 Why Companies Use AWS (Real Industry Use Cases)**: Outlines cloud adoption motivations: Startup agility (Free Tier), Enterprise security rules (PCI-DSS - Payment Card Industry Data Security Standard compliance), E-Commerce spikes management (Prime Day auto-scaling), and Media latency optimizations (Netflix).
 
 ### Key Commands / Code Example:
 
@@ -692,12 +675,12 @@ dmesg | grep -i error
 🔗 **Full Lesson:** [13_AWS_IAM_and_EC2_Basics.md](./13_AWS_IAM_and_EC2_Basics.md)
 
 * **What**: IAM stands for **Identity and Access Management**. It is a free AWS service that helps you control who can access your AWS resources (like databases, servers, or files).
-* **Why It Exists**: When you create an AWS account, you log in using your email address and password. This is called the **Root User**.
+* **Why It Exists**: Restricting master root account access is a critical security rule. IAM provides identity protection using fine-grained permissions, roles, and programmatic access keys for automation bots. Simultaneously, EC2 allows developers to provision virtual compute nodes globally on-demand utilizing public/private keypairs instead of static insecure passwords.
 * **Key Concepts**:
   * **📌 Introduction**
     * **IAM (Identity and Access Management):** The "Security Guard" of your AWS account. It decides *who* can enter and *what* they can do.
     * **EC2 (Elastic Compute Cloud):** A fancy name for "Virtual Computers in the Cloud". We will rent a computer from Amazon and run Windows on it!
-  * **🔐 IAM (Identity and Access Management) Basics**
+  * **🔐 IAM Basics**
     * **Root User:** The building owner with the master key to every room.
     * **IAM:** The security desk at the front door. They issue ID badges (Users) and decide who can enter the server room, who can only enter the cafeteria, and who isn't strictly allowed anywhere.
   * **👤 IAM Users, Groups & Best Practices**
@@ -714,18 +697,16 @@ dmesg | grep -i error
   * **🔑 Authentication vs Authorization**
     * **Authentication (AuthN):** *Who are you?*
     * **Authorization (AuthZ):** *What are you allowed to do?*
-  * **🧾 Credential Reports & Security Best Practices**
-  * **💻 EC2 (Elastic Compute Cloud) Introduction**
-  * **🪟 Launching Windows Server on EC2**
+  * **🧾 Credential Reports & Security Best Practices**: Downloadable CSV audits tracking password/key ages across all users. Emphasizes security best practices: MFA (Multi-Factor Authentication) on all accounts, deleting stale user accounts, and rotating programmatic keys every 90 days.
+  * **💻 EC2 Introduction**: Scalable virtual computing resources in the cloud that allow you to spin up and terminate virtual servers on demand with zero physical hardware management.
+  * **🪟 Launching Windows Server on EC2**: Detailed hands-on walkthrough choosing an AMI (Amazon Machine Image - Windows Server Datacenter), choosing micro hardware (`t2.micro` / `t3.micro` free-tier eligible), and defining Security Groups (allowing RDP (Remote Desktop Protocol - tool used to see the screen and control a Windows EC2 server) port 3389).
   * **🔐 Key Pairs & Secure Access**
     * **Public Key:** AWS puts this lock on your server.
     * **Private Key (`.pem` file):** You download this to your personal laptop. It's the only key that can open the lock!
-  * **🖥️ Connecting to EC2 via RDP**
+  * **🖥️ Connecting to EC2 via RDP**: Decrypting the Administrator password using the private `.pem` key, opening Windows Remote Desktop Connection client (RDP), and inputting credentials to access the remote Windows OS GUI.
   * **🌍 Region Concept (Important)**
     * **IAM is GLOBAL.** When you create a user, they exist across the entire world simultaneously. You don't pick a region for IAM.
     * **EC2 is REGIONAL.** If you launch a server in Mumbai, and then you change your AWS console view to London, your server disappears! (Don't panic, it's still in Mumbai, you just need to switch back).
-  * **🏋️ Practice Tasks**
-    * [ ] **Crucial Step:** When you are done practicing, **Terminate** (delete) the EC2 instance so AWS doesn't charge you money!
 
 ### Key Commands / Code Example:
 
@@ -742,20 +723,20 @@ dmesg | grep -i error
 
 🔗 **Full Lesson:** [14_ELB_and_EC2.md](./14_ELB_and_EC2.md)
 
-* **What**: Introduction and foundational concepts of ⚖️ Scaling, EC2, AMI & Load Balancers  Essentials.
-* **Why It Exists**: Solves deployment speed, consistency, and reliability challenges of ⚖️ Scaling, EC2, AMI & Load Balancers  Essentials in production.
+* **What**: Introduction and foundational concepts of ⚖️ Scaling, EC2, AMI & Load Balancers Essentials.
+* **Why It Exists**: Running a production application on a single server creates a single point of failure (SPOF - Single Point of Failure) and cannot scale dynamically. Load Balancers distribute traffic across multiple target nodes, while AMIs allow instant copying of server images, laying the foundation for high-availability architectures and horizontal auto-scaling.
 * **Key Concepts**:
   * **Scaling & Elasticity**
     * **Horizontal Scaling (Scale Out / In):** Adding more machines (servers) to share the load.
     * **Vertical Scaling (Scale Up / Down):** Increasing the power (CPU, RAM) of an existing machine.
     * **Cost Efficiency:** Pay only for what you use.
     * **Reliability:** Prevents downtime during high traffic.
-  * **EC2 (Elastic Compute Cloud)**
-  * **AMI (Amazon Machine Image)**
-  * **Load Balancer (ELB)**
+  * **EC2 (Elastic Compute Cloud)**: Rented virtual machines with customizable hardware sizing (instance types) and security parameters (Security Groups and key pairs).
+  * **AMI (Amazon Machine Image)**: Blueprint templates containing pre-packaged OS configurations and dependencies to launch identical cloned servers rapidly.
+  * **Load Balancer (ELB - Elastic Load Balancing)**
     * **High Availability:** If a server crashes, the ELB routes around it without the user noticing.
     * **Fault Tolerance & Seamless Scaling.**
-  * **Practical Implementation Outline**
+  * **Practical Implementation Outline**: Step-by-step setup establishing target Linux EC2 nodes, installing web services (`nginx`), configuring custom default home pages, and opening Port 80.
 
 ### Key Commands / Code Example:
 
@@ -776,29 +757,29 @@ Vertical Scaling              Horizontal Scaling
 🔗 **Full Lesson:** [15_AWS_EC2_AMI_EBS_LoadBalancer.md](./15_AWS_EC2_AMI_EBS_LoadBalancer.md)
 
 * **What**: EC2 = **Elastic Compute Cloud**. It is a service that lets you rent virtual servers (called **instances**) on Amazon's hardware.
-* **Why It Exists**: Solves deployment speed, consistency, and reliability challenges of ☁️ AWS EC2, AMI, EBS & Load Balancers  Deep Dive in production.
+* **Why It Exists**: Going beyond basic virtual compute requires robust data persistence, network isolation, and strict cost controls. Deep knowledge of persistent EBS volumes, AMI backups, Layer-7 load routing (ALB - Application Load Balancer), and Auto Scaling groups enables engineers to prevent database dataloss, survive hardware failures, and avoid expensive cloud billing mistakes.
 * **Key Concepts**:
   * **📌 Introduction**
     * **EC2** — Your virtual servers in the cloud (this time we look at instance options, recovery, and protection).
     * **AMI** — Pre-baked server templates that save you hours of setup.
     * **EBS** — The hard drives attached to your cloud servers.
-    * **Load Balancers** — The traffic cops that distribute user requests across multiple servers.
-  * **💻 EC2 (Elastic Compute Cloud)  Deep Dive**
-    * **What:** If the underlying physical hardware fails, AWS automatically **migrates** your instance to healthy hardware.
+    * **Load Balancers (ELB)** — The traffic cops that distribute user requests across multiple servers.
+  * **💻 EC2 Deep Dive**
+    * **What:** If the underlying physical hardware fails, AWS automatically migrates your instance to healthy hardware.
     * **Why:** Keeps your application running without manual intervention.
     * **How:** Enable it via the EC2 console → Instance Settings → Auto-Recovery. AWS uses health checks to detect hardware issues.
     * **Impact:** Zero-downtime recovery from hardware failures. Your IP address and data stay the same.
-  * **🖼️ AMI (Amazon Machine Image)**
+  * **🖼️ AMI**
     * The **Operating System** (Ubuntu, Amazon Linux, Windows, etc.)
     * **Pre-installed software** (NGINX, Docker, Node.js, etc.)
     * **Application configurations** (config files, environment variables)
     * **Data** on attached storage volumes
-  * **💾 EBS (Elastic Block Storage)**
+  * **💾 EBS (Elastic Block Store)**
     * **Persistence:** Unlike instance storage (which is lost when you stop/terminate), EBS data **survives** even when you stop an instance.
     * **Backups:** You can take **snapshots** (point-in-time backups) of your entire volume.
     * **Flexibility:** You can increase the size, change the type (SSD → HDD), and even detach a volume from one instance and attach it to another.
     * **SSD** = Sports car. Fast, responsive, premium.
-  * **️ Load Balancers (ELB)**
+  * **⚙️ Load Balancers (ELB)**
     * Works at **Layer 7** (HTTP/HTTPS level — understands URLs, headers, cookies).
     * Can route traffic based on **URL path**:
     * Supports **WebSockets** and **HTTP/2**.
@@ -806,15 +787,14 @@ Vertical Scaling              Horizontal Scaling
   * **📈 Auto Scaling  Quick Introduction**
     * **Over-provision:** Run 20 servers 24/7 "just in case" → waste money. 💸
     * **Under-provision:** Run 2 servers and pray traffic doesn't spike → risk downtime. 😰
-  * **🛠️ Practical Tips & Tools**
-  * **📝 Assignment & Practice Tasks**
-    * Learn **5 new Linux commands** and be prepared to demonstrate them.
-    * Goal by end of the course: Master **50+ commands**.
-    * Be ready for **5-minute presentations** explaining what each command does.
-    * [ ] **🚨 CLEAN UP:** Terminate all instances, delete volumes, release Elastic IPs, deregister AMI, delete snapshots.
-  * **🚫 Common Mistakes Beginners Make**
+  * **🛠️ Practical Tips & Tools**: Always verify the console region is set correctly (e.g. Mumbai). Clean up unused resources (EBS volumes, Elastic IPs, AMI snapshots) immediately to avoid background costs. Recommended client software tools include MobaXterm (for SSH/SFTP [Secure File Transfer Protocol]), FileZilla, and AWS CLI.
+  * **🚫 Common Mistakes Beginners Make**:
+    * **Security Mistakes**: Leaving all ports open (`0.0.0.0/0`), setting shutdown behavior to "Terminate" on production, or baking sensitive passwords and API keys into public AMIs.
+    * **EBS Mistakes**: Not configuring regular snapshots or utilizing slow HDD volumes for highly active databases.
+    * **Load Balancer Mistakes**: Blocked communications due to mismatched Security Groups, and forgetting to enable Health Checks.
+    * **Billing Mistakes**: Forgetting to release unattached Elastic IPs, and not monitoring active resources against the AWS Free Tier.
   * **DevOps Best Practices**
-    * 🟢 **Use Infrastructure as Code (IaC):** Manage all your EC2 instances, EBS volumes, and Load Balancers via Terraform or AWS CloudFormation — not by clicking around the console.
+    * 🟢 **Use Infrastructure as Code (IaC - Infrastructure as Code):** Manage all your EC2 instances, EBS volumes, and Load Balancers via Terraform or AWS CloudFormation — not by clicking around the console.
     * 🟢 **Tag everything:** Add tags like `Environment: Production`, `Team: Backend`, `Owner: krishna@company.com` to every resource. This makes billing, auditing, and cleanup easy.
     * 🟢 **Use Launch Templates over Launch Configurations:** Launch Templates support versioning, are more flexible, and are the recommended approach for Auto Scaling Groups.
     * 🟢 **Enable Termination Protection** on all production EC2 instances.
@@ -854,9 +834,9 @@ Vertical Scaling              Horizontal Scaling
 🔗 **Full Lesson:** [16_Linux_Practical_Session.md](./16_Linux_Practical_Session.md)
 
 * **What**: Introduction and foundational concepts of 🐧 Linux Practical Session (Hands-on DevOps Basics).
-* **Why It Exists**: Solves deployment speed, consistency, and reliability challenges of 🐧 Linux Practical Session (Hands-on DevOps Basics) in production.
+* **Why It Exists**: Hands-on scripting, terminal multiplexing (tmux), and background processing (nohup) prevent connection interruptions from aborting critical tasks. It is essential to master live resource check commands, permissions adjustments, secure file copies, and automatic log rotations to prevent servers from crashing due to disk exhaustion.
 * **Key Concepts**:
-  * **Introduction**
+  * **📌 Introduction**: Provides a hands-on, practical deep-dive into the essential Linux commands and concepts every DevOps engineer needs to know to keep servers healthy, troubleshoot deployment failures, and monitor resources.
   * **Detailed Sections**
     * **What:** Virtual Memory Statistics. A command-line tool that reports information about processes, memory, paging, block IO, traps, and CPU activity.
     * **Why:** Used to get a quick overview of why a system might be slow—is it a memory bottleneck or CPU?
@@ -867,7 +847,10 @@ Vertical Scaling              Horizontal Scaling
     * **Deploying Applications:** Using `scp` to send the new build artifact to the server, running `sudo chown` to ensure the web server has rights to read it, and restarting the service.
     * **Monitoring Production Systems:** Writing bash scripts utilizing `vmstat` and `uptime` to alert the team when system load is uncharacteristically high before an actual outage occurs.
     * **Managing Logs:** Setting up `logrotate` to prevent application logs from silently filling up the cloud VM disk space.
-  * **Best Practices / Tips**
+  * **Best Practices / Tips**:
+    * **Root Security**: Log in as a normal user and use `sudo` selectively rather than root commands carelessly.
+    * **Tab Completion & Flags**: Speed up CLI navigation with Tab keys and use human-readable flags (`free -h`, `df -h`) to verify disk and memory.
+    * **Safety Checks**: Double check all `rm -rf` targets by running `ls` first. Preserve SSH security by keeping private key permissions restricted (`chmod 400`).
 
 ### Key Commands / Code Example:
 
@@ -885,38 +868,39 @@ Vertical Scaling              Horizontal Scaling
 🔗 **Full Lesson:** [17_AWS_S3_Static_Website_Hosting.md](./17_AWS_S3_Static_Website_Hosting.md)
 
 * **What**: AWS S3 is "Object Storage" in the cloud. Think of it as an **infinite Google Drive or Dropbox** for your code, images, videos, and backups.
-* **Why It Exists**: Traditional hard drives have size limits. If you need to store millions of profile pictures, you can't just keep adding hard drives to your server.
+* **Why It Exists**: Traditional block devices (like EBS volumes) must be attached to a server, have fixed capacities, and are expensive to scale for massive volumes of static media or log files. S3 solves this by offering an infinite, internet-accessible object store with 11 9's durability, serverless static web hosting, and automatic multi-AZ (Availability Zone) data replication.
 * **Key Concepts**:
-  * **Introduction to AWS S3**
+  * **Introduction to AWS S3**: Fully managed "Object Storage" in the cloud. Acts as an infinite drive for flat files, images, videos, and backups, reachable directly via internet HTTP/HTTPS endpoints.
   * **Key Concepts: Buckets and Objects**
     * A **Bucket** is like a root folder.
     * **Global Uniqueness**: S3 bucket names must be globally unique because each bucket name becomes part of a public URL ``` https://my-portfolio.s3.amazonaws.com ```, and just like domain names(DNS) on the internet, only one unique name can exist worldwide to avoid conflicts, ensure correct data routing, and maintain security and proper access across all AWS users.
     * **An Object** is the file (and any metadata).
     * **Total Size Limit**: A single object can be up to **5 TB**.
-  * **Understanding Data Sizes (KB, MB, GB, TB)**
-  * **Object Storage vs Traditional Storage**
+    * **Single Upload Limit**: A single `PUT` upload has a limit of 5 GB; larger files must use multipart uploads.
+  * **Understanding Data Sizes (KB - Kilobyte, MB - Megabyte, GB - Gigabyte, TB - Terabyte)**: Measures of digital data sizes based on the binary power of two calculations ($2^{10} = 1,024$).
+  * **Object Storage vs Traditional Storage**: Contrast between flat URL-accessible object store (S3) and hierarchical system-mounted block stores (EBS / local disks).
   * **Durability and Availability**
     * **What it means**: If you store 10,000,000 objects in S3, you might lose one object every 10,000 years. It is designed to never lose your data.
+    * **Replication**: Files uploaded to S3 are automatically replicated across at least 3 distinct physical Availability Zones (AZs) inside the target Region.
   * **Pricing and Management**
-    * **Pay-as-you-go**: You only pay for:
+    * **Pay-as-you-go**: You only pay for active storage volume (GB/month), API requests (PUT/GET), and data transfers out.
     * **Free Tier**: AWS offers 5GB of S3 storage for the first 12 months.
+    * **Access Controls**: Set security using IAM policies, Bucket Policies, ACLs (Access Control Lists), and the "Block Public Access" default private block.
   * **Advanced Features**
     * **What**: Keeps multiple versions of an object in the same bucket.
     * **Why**: Protects against accidental deletion or overwrites. You can "roll back" to an older version.
     * **S3 Transfer Acceleration**: Uses Amazon CloudFront’s globally distributed edge locations to speed up long-distance uploads.
     * **AWS Snowball**: A physical "suitcase" full of hard drives sent to your office. You load your data (Petabytes) and mail it back to AWS because uploading over the internet would take years.
-  * **Hands-on: Static Website Hosting**
-  * **Real-World Examples**
-    * **Goal**: Access it via the S3 endpoint URL.
-    * Ensure "Block Public Access" is **ON**.
-    * **Goal**: Restore the deleted file using the "Show Versions" toggle.
+    * **Heavy Bucket Deletion**: AWS UI (User Interface) limits fail when attempting to delete buckets containing 100,000+ objects. Use AWS CLI commands like `aws s3 rb s3://bucket-name --force` to delete.
+  * **Hands-on: Static Website Hosting**: Steps to host public websites (HTML/CSS/JS) serverlessly by uploading files, disabling "Block Public Access", writing a public-read bucket policy, and enabling static website hosting.
+  * **Real-World Examples**: Storing application assets, portfolios, daily server logs, and database backups.
   * **Common Mistakes Beginners Make**
     * **Keeping Buckets Public**: Accidentally leaving sensitive data (customer info) open to the world.
     * **Not Enabling Versioning**: Deleting a critical file and realizing there is no "Undo" button.
     * **Ignoring Data Transfer Costs**: Thinking storage is the only cost (forgetting about the cost of users downloading files).
   * **DevOps Best Practices**
-    * **Use Infrastructure as Code (IaC)**: Use Terraform or AWS CDK to create buckets instead of clicking in the console.
-    * **Enable Encryption**: Always enable SSE-S3 (Server-Side Encryption) for security.
+    * **Use Infrastructure as Code (IaC)**: Use Terraform or AWS CDK (Cloud Development Kit) to create buckets instead of clicking in the console.
+    * **Enable Encryption**: Always enable SSE-S3 (Server-Side Encryption with Amazon S3-Managed Keys) for security.
     * **Lifecycle Policies**: Automatically move old files to "S3 Glacier" (cheaper storage) after 30 days.
     * **Least Privilege**: Grant users only the minimum access they need.
 
@@ -937,11 +921,11 @@ Vertical Scaling              Horizontal Scaling
 
 ---
 
-## 18. S3 Storage Classes, Lifecycle Policies & RDS Introduction
+## <a id="18-s3-storage-classes-lifecycle-policies-rds-introduction"></a>18. S3 Storage Classes, Lifecycle Policies & RDS Introduction
 
 🔗 **Full Lesson:** [18_S3_Storage_Classes_Lifecycle_RDS.md](./18_S3_Storage_Classes_Lifecycle_RDS.md)
 
-* **What**: S3 Storage Classes are **different tiers of storage** offered by AWS, each designed for a specific data access pattern. Think of them as choosing between a **filing cabinet on your desk** (fast access, expensive) vs.
+* **What**: S3 Storage Classes are **different tiers of storage** offered by AWS, each designed for a specific data access pattern. Think of them as choosing between a **filing cabinet on your desk** (fast access, expensive) vs. a **warehouse across town** (slow access, cheap).
 * **Why It Exists**: Not all data is accessed equally. Your app's homepage images are loaded millions of times daily (**hot data**), while a 3-year-old audit report might never be opened again (**cold data**).
 * **Key Concepts**:
   * **S3 Storage Classes Overview**
@@ -1008,7 +992,7 @@ Object uploaded
 
 ---
 
-## 19. AWS RDS & Database Fundamentals
+## <a id="19-aws-rds-database-fundamentals"></a>19. AWS RDS & Database Fundamentals
 
 🔗 **Full Lesson:** [19_AWS_RDS_Database_Fundamentals.md](./19_AWS_RDS_Database_Fundamentals.md)
 
@@ -1075,7 +1059,7 @@ Object uploaded
 
 ---
 
-## 20. AWS RDS MySQL Setup & Management (Hands-On)
+## <a id="20-aws-rds-mysql-setup-management-hands-on"></a>20. AWS RDS MySQL Setup & Management (Hands-On)
 
 🔗 **Full Lesson:** [20_AWS_RDS_MySQL_Setup_and_Management.md](./20_AWS_RDS_MySQL_Setup_and_Management.md)
 
@@ -1210,6 +1194,10 @@ Object uploaded
     * **Better security** — no internet exposure
     * **Lower latency** — shorter path
   * **Route Tables**
+    * **Signposts/GPS System**: Set of routing rules determining where network traffic is directed from subnets.
+    * **Required Association**: Every subnet must be linked to a route table; default is the Main Route Table.
+    * **Outbound Routing**: Public route tables route internet-bound traffic (`0.0.0.0/0`) to the Internet Gateway, while private tables direct it to a NAT Gateway or VPC Endpoint.
+    * **Local Route**: The automatic route allowing all subnets within the VPC to communicate internally (cannot be deleted).
   * **IPv4 vs IPv6**
     * **IPv4** is like the old phone system with 10-digit numbers. When the population grew, they started running out of unique numbers.
     * **IPv6** is the new system with 20-digit numbers — enough for every device on Earth (and then some).
@@ -1219,6 +1207,9 @@ Object uploaded
     * **Security Groups** have rules for both TCP and UDP ports
     * Understanding TCP vs UDP helps you write **correct security group rules**
   * **Egress-Only Internet Gateway**
+    * **One-Way IPv6 Exit**: Stateful gateway that allows private subnet resources (with IPv6 addresses) to initiate outbound internet connections.
+    * **Inbound Block**: Prevents the external public internet from initiating any direct inbound connections back to those private resources.
+    * **Cost-Efficient**: Serves as the free, managed IPv6 counterpart to the expensive NAT Gateway.
   * **Practical Lab Walkthrough**
     * **Tier 1 (Web):** Public subnets for Load Balancers & Web Servers (Internet accessible)
     * **Tier 2 (App):** Private subnets for Application Servers (Outbound internet only via NAT Gateway)
