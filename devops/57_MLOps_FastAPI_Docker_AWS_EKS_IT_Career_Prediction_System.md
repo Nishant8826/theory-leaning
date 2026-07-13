@@ -1194,4 +1194,4 @@ GET  /redoc     → ReDoc UI (auto-generated)
 ---
 ## Navigation Footer
 
-← Previous: [`56_DevSecOps_Jenkins_Trivy_SonarQube_on_AWS.md`](56_DevSecOps_Jenkins_Trivy_SonarQube_on_AWS.md) | Next: [`57_Advanced_Kubernetes_Concepts_and_Best_Practices.md`](57_Advanced_Kubernetes_Concepts_and_Best_Practices.md) →
+← Previous: [`56_DevSecOps_Jenkins_Trivy_SonarQube_on_AWS.md`](56_DevSecOps_Jenkins_Trivy_SonarQube_on_AWS.md) | Next: None →

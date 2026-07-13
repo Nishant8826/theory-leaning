@@ -1324,4 +1324,4 @@ After testing, clean up with: `docker rm -f $(docker ps -aq --filter "name=load-
 
 ---
 
-← Previous: [`32_Introduction_to_Docker_Containers_Images_&_Architecture`](32_Introduction_to_Docker_Containers_Images_&_Architecture) | Next: [`35_Dockerfiles_Custom_Images_Docker_Hub_and_Troubleshooting.md`](35_Dockerfiles_Custom_Images_Docker_Hub_and_Troubleshooting.md) →
+← Previous: [`33_Introduction_to_Docker_Containers_Images_and_Architecture.md`](33_Introduction_to_Docker_Containers_Images_and_Architecture.md) | Next: [`35_Dockerfiles_Custom_Images_Docker_Hub_and_Troubleshooting.md`](35_Dockerfiles_Custom_Images_Docker_Hub_and_Troubleshooting.md) →

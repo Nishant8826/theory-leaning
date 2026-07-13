@@ -1346,4 +1346,4 @@ ansible --version
 
 ## Navigation Footer
 
-← Previous: [`47_Ansible_Playbooks_Roles_and_Tower.md`](47_Ansible_Playbooks_Roles_and_Tower.md) | Next: [`48_Python_for_DevOps_Automation.md`](48_Python_for_DevOps_Automation.md) →
+← Previous: [`46_Ansible_Configuration_Management_and_Automation.md`](46_Ansible_Configuration_Management_and_Automation.md) | Next: [`48_Python_for_DevOps_Automation.md`](48_Python_for_DevOps_Automation.md) →

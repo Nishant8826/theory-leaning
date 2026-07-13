@@ -34,18 +34,49 @@ curl -fsSL https://get.docker.com -o install-docker.sh
 sudo sh install-docker.sh
 ```
 
-**Flag Breakdown:**
-| Flag | Meaning |
-|------|---------|
-| `-f` | Fail silently on HTTP errors |
-| `-s` | Silent mode — don't show progress bar |
-| `-S` | Show errors even in silent mode |
-| `-L` | Follow redirects (if the URL redirects) |
-| `-o` | Output to a file instead of stdout |
+**Command & Flag Breakdown:**
+
+| Component / Flag | Type | Meaning |
+|-------------------|------|---------|
+| `curl` | Command | Command-line tool to download files or transfer data over network protocols |
+| `-f` | Flag | Fail silently on HTTP server errors (e.g., `404 Not Found`) |
+| `-s` | Flag | Silent mode — hides the default download progress bar and stats |
+| `-S` | Flag | Show errors even in silent mode (prints the error message if download fails) |
+| `-L` | Flag | Follow location redirects (follows the URL if the server redirects traffic) |
+| `-o <file>` | Flag | Output download content directly into a local file instead of stdout |
+| `sudo` | Command | Run command with administrative/root privileges (required to install system software) |
+| `sh` | Command | The Bourne Shell interpreter used to execute the lines of the installation script |
+| `install-docker.sh` | Parameter | The local shell script file downloaded in Step 1 |
+
+**Why `sh` instead of `bash`?**
+* **What is `sh`?** `sh` stands for the **Bourne Shell**, the original Unix command line interpreter developed by Stephen Bourne in 1977.
+* **sh vs. bash:** `bash` (Bourne Again Shell) is a newer, enhanced version of `sh` written by the GNU Project in 1989.
+* **Portability:** We use `sh` to execute the installer because `sh` is the universal POSIX standard. It is guaranteed to be pre-installed on **every** Unix/Linux distribution (Ubuntu, CentOS, Alpine, macOS, etc.), ensuring the Docker script executes successfully on any machine.
+
 
 ### 💥 Impact
 - **With script:** Docker installed in ~2 minutes with zero manual steps
 - **Without script:** You'd need to manually add repositories, GPG keys, update package lists, and install — 10+ commands and easy to make mistakes
+
+### 🔐 Security Note: What are GPG Keys?
+When installing software packages manually, you will often run commands to import a GPG key (e.g., `curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor...`). 
+
+* **What is GPG?** GPG (GNU Privacy Guard) is a tool that uses **asymmetric cryptography** (public-private key pairs) to sign, encrypt, and verify files.
+* **Why it's used:** It guarantees the **authenticity** (that the package really comes from Docker) and the **integrity** (that a hacker hasn't modified the code in transit). This prevents **Man-in-the-Middle (MITM)** attacks.
+* **How it works:** 
+  1. **Docker** encrypts a digital signature of their package using their **Private Key**.
+  2. **Your System** imports Docker's **Public Key** to decrypt and verify that signature.
+  3. If the signature matches the downloaded package, the installation proceeds; otherwise, your OS blocks it as a security threat.
+
+### 🧩 What is GNU? ("GNU's Not Unix")
+Since GPG stands for **GNU Privacy Guard**, it is important to understand what GNU is:
+
+* **Origin:** Created by Richard Stallman in 1983, the GNU Project aimed to develop a completely free, Unix-like operating system.
+* **The "GNU/Linux" Connection:** 
+  * The GNU project built almost all the core OS commands and tools (like `bash`, `gcc`, `ls`, `grep`, `tar`, and `gpg`).
+  * However, they lacked the core engine (the **Kernel**) to talk to the hardware.
+  * In 1991, Linus Torvalds created the **Linux Kernel**. Combining GNU's software tools with the Linux kernel created a complete working system, which is why the OS is technically called **GNU/Linux**.
+* **GNU GPL License:** The GNU General Public License ensures that the software remains free, modifiable, and open-source forever.
 
 ---
 
