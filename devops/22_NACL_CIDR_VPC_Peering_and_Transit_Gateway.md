@@ -115,7 +115,7 @@ Architecture:
 
   Account A                    Account B
 ┌──────────┐                ┌──────────┐
-│  VPC-A   │◄──── Peering ──►│  VPC-B   │
+│  VPC-A   │◄─── Peering ──►│  VPC-B   │
 │10.0.0.0  │   Connection   │10.1.0.0  │
 │  /16     │                │  /16     │
 └──────────┘                └──────────┘

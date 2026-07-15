@@ -929,30 +929,36 @@ Vertical Scaling              Horizontal Scaling
 * **Why It Exists**: Not all data is accessed equally. Your app's homepage images are loaded millions of times daily (**hot data**), while a 3-year-old audit report might never be opened again (**cold data**).
 * **Key Concepts**:
   * **S3 Storage Classes Overview**
+    * **Storage Tiers**: S3 offers multiple classes optimized for access patterns, retrieval times, and cost.
     * **Using it**: A company storing 100 TB of logs can save **up to 90% in storage costs** by moving old logs to Glacier Deep Archive.
     * **Not using it**: You pay **Standard prices for everything**, even data nobody touches — burning money every month.
   * **Deep Dive: Each Storage Class**
-    * **Glacier Instant**: Medical records, news media archives (need quick access but rarely)
-    * **Glacier Flexible**: Disaster recovery, yearly compliance audits
-    * **Deep Archive**: Regulatory data (banking/healthcare records kept for 7+ years), historical research data
+    * **S3 Standard**: Default class for active data with millisecond access.
+    * **S3 Standard-IA (Infrequent Access)**: Cheaper storage for data accessed less than once a month, with retrieval fees.
+    * **S3 One Zone-IA**: IA tier stored in only one Availability Zone (AZ) — 20% cheaper but vulnerable to AZ failure.
+    * **S3 Intelligent-Tiering**: Automatically shifts files between frequent and infrequent tiers based on actual access patterns.
+    * **Glacier Instant**: Medical records, news media archives (need quick access but rarely).
+    * **Glacier Flexible**: Disaster recovery, yearly compliance audits (retrieval in minutes to hours).
+    * **Deep Archive**: Regulatory data (banking/healthcare records kept for 7+ years), historical research data (retrieval in 12 hours).
   * **S3 Lifecycle Management**
-    * **Using it**: Set-and-forget cost optimization. Data flows to cheaper tiers automatically.
-    * **Not using it**: Manual management overhead, accidental overspending, human errors (forgetting to move data), and compliance violations (forgetting to delete data on time).
-    * You **cannot** transition directly from Standard to Deep Archive skipping Glacier (must follow the tier order or use specific allowed transitions).
+    * **Automated Transitions**: Rules that automatically move objects to cheaper classes (Transition) or delete them (Expiration) over time.
     * **Minimum storage duration** charges apply — if you move an object out of Glacier before 90 days, you still pay for 90 days.
   * **S3 Bucket Configuration**
-    * **Enabled**: You can recover from accidental deletes (just remove the "Delete Marker"), roll back to any previous version.
-    * **Disabled**: One wrong upload, and the old file is gone forever.
-    * **Using it**: Data at rest is protected. Compliance requirements met. Even AWS employees can't read your data.
-    * **Not using it**: One data breach = lawsuits, fines, customer trust destroyed.
+    * **Versioning**: Keeps all history and old versions of files.
+      * **Enabled**: You can recover from accidental deletes (just remove the "Delete Marker"), roll back to any previous version.
+      * **Disabled**: One wrong upload, and the old file is gone forever.
+    * **Server-Side Encryption (SSE)**: Secures data at rest automatically.
+      * **Using it**: Data at rest is protected. Compliance requirements met.
+      * **Not using it**: One data breach = lawsuits, fines, customer trust destroyed.
   * **Architecture Diagrams with draw.io**
+    * **Visual Mapping**: Creating clear blueprints of cloud resources, security groups, subnets, and databases.
     * **Using it**: Clear communication, faster onboarding of new team members, better documentation.
-    * **Not using it**: Miscommunication, confusion about infrastructure, longer meetings explaining setups verbally.
-  * **Amazon RDS (Relational Database Service)  Preview**
-    * **Using it**: Automated backups, patching, scaling, and high availability. You focus on your app, not infrastructure.
-    * **Not using it**: You manually install the database on EC2, handle all updates yourself, risk data loss if you misconfigure backups.
-    * Days 0–90: **S3 Standard** (frequent access)
-    * Day 90: Transition to **Glacier Instant Retrieval** (rare but quick access needed for audits)
+  * **Amazon RDS (Relational Database Service) Preview**
+    * **Managed Database**: AWS handles patching, backups, scaling, and high availability.
+    * **Not using it**: Manually install DB on EC2, manage backups, risk data loss on failure.
+    * **Transition Example**:
+      * Days 0–90: **S3 Standard** (frequent access)
+      * Day 90: Transition to **Glacier Instant Retrieval** (rare but quick access needed for audits)
 
 ### Key Commands / Code Example:
 
@@ -1010,6 +1016,8 @@ Object uploaded
     * **Right choice**: Application performs well, scales efficiently, maintenance is manageable.
     * **Wrong choice**: Constant refactoring, performance bottlenecks, expensive migrations. Imagine forcing IoT sensor data into rigid SQL tables — millions of inserts per second would crush a traditional RDBMS.
   * **Relational vs Non-Relational Databases**
+    * **SQL (Relational)**: Stores data in rigid, predefined tables with rows and columns. Emphasizes relations (JOINs), strict ACID compliance, and vertical scaling. (e.g., MySQL, Oracle).
+    * **NoSQL (Non-Relational)**: Stores unstructured or semi-structured data (JSON, key-value pairs, wide-columns, graphs). Emphasizes high-speed horizontal scaling, dynamic schemas, and eventual consistency. (e.g., MongoDB, Cassandra).
   * **Deep Dive: MySQL**
     * **Free and open source** — no licensing costs
     * **Massive community** — tutorials, Stack Overflow answers, plugins everywhere
@@ -1097,10 +1105,13 @@ Object uploaded
     * **Defense in depth**: Encryption is one layer of a multi-layered security strategy
     * **Using encryption**: Even if storage hardware is stolen, backups are leaked, or snapshots are shared — data remains unreadable without the KMS key. You remain compliant with regulations.
   * **Auto-Scaling for Storage**
-    * **Prevents downtime**: If a database runs out of storage, it crashes — all write operations fail
-    * **Eliminates manual monitoring**: No need to watch disk usage graphs at 2 AM
-    * **Cost-efficient**: You pay only for the storage you actually use (scales up, never down)
-    * **Scales up to 65,000 GB (64 TB)**: Enough for virtually any workload
+    * **Prevents downtime**: If a database runs out of storage, it crashes — all write operations fail.
+    * **Eliminates manual monitoring**: No need to watch disk usage graphs at 2 AM.
+    * **Cost-efficient**: You pay only for the storage you actually use (scales up, never down).
+    * **Scales up to 65,000 GB (64 TB)**: Enough for virtually any workload.
+    * **Trigger Conditions**:
+      * Free storage is less than **10% of allocated storage**.
+      * Low storage condition persists for at least **5 minutes**.
   * **Multi-AZ Deployment for High Availability**
     * **Zero manual intervention during failures** — AWS handles failover automatically
     * **Protection from**: hardware failure, AZ outages, OS patching, and DB instance maintenance
@@ -1119,8 +1130,7 @@ Object uploaded
   * **Connection Options & Code Snippets**
     * **Using code snippets**: Developers can integrate the database in minutes rather than hours. Reduces configuration errors.
     * **Hardcoding passwords in code**: A major security risk. Always use environment variables, AWS Secrets Manager, or IAM authentication for credentials in production.
-    * Free storage is less than **10% of allocated storage**
-    * Low storage condition persists for at least **5 minutes**
+
 
 ### Key Commands / Code Example:
 
@@ -1240,10 +1250,17 @@ Step 6: Add security guards (Security Groups & NACLs)
 * **Why It Exists**: Security Groups protect individual EC2 instances — but what if 10 servers in a subnet are all being attacked by the same malicious IP? You'd have to update 10 Security Groups.
 * **Key Concepts**:
   * **Network ACL (NACL)**
+    * **Stateless Subnet Security**: Subnet-level firewall evaluating inbound and outbound traffic rules top-to-bottom using rule numbers.
+    * **Allow/Deny Rules**: Unlike Security Groups which only allow "Allow" rules, NACLs support explicit "Deny" rules to block malicious IPs.
   * **CIDR Calculations**
+    * **IP Addressing Ranges**: Classless Inter-Domain Routing notation used to size VPCs and subnets.
+    * **Reserved IP Space**: AWS reserves 5 IP addresses from every subnet for networking routing services (e.g., router, DNS, broadcast).
   * **VPC Peering**
+    * **Private VPC Bridging**: Creates direct connection tunnels between two VPCs using AWS private network infrastructure.
+    * **No Transitive Routing**: If VPC A is peered with B, and B is peered with C, A cannot reach C via B; a direct peer must be created.
     * But route tables on **both sides** must be configured
   * **Transit Gateway**
+    * **Centralized Network Hub**: Simplicity at scale. Replaces a messy mesh of multiple VPC peering links with a hub-and-spoke routing gateway.
     * **Setup 3 EC2 Instances (Ubuntu)**:
     * **Target Instance 1**: Subnet A, install a basic web server.
     * **Target Instance 2**: Subnet B, install a basic web server.
@@ -1268,7 +1285,7 @@ Rule 100 is checked first → blocks 99.33.36.x before rule 200 even runs.
 
 ---
 
-## 23. AWS CloudWatch Monitoring & Billing Management
+## <a id="23-aws-cloudwatch-monitoring-billing-management"></a>23. AWS CloudWatch Monitoring & Billing Management
 
 🔗 **Full Lesson:** [23_AWS_CloudWatch_Monitoring_and_Billing.md](./23_AWS_CloudWatch_Monitoring_and_Billing.md)
 
@@ -1279,6 +1296,8 @@ Rule 100 is checked first → blocks 99.33.36.x before rule 200 even runs.
 - How much money you are burning
 * **Key Concepts**:
   * **What is AWS CloudWatch?**
+    * **Observability Platform**: Centralized console to collect, store, and visualize time-series metrics and logs across all AWS resources.
+    * **Watch, Alert, Respond**: Enables automatic alerting (Alarms) and infrastructure scaling (Auto-Scaling) based on threshold metrics.
   * **EC2 Monitoring with CloudWatch**
     * **Enabled:** You can see trends, spot anomalies, and respond before a crash.
     * **Not enabled:** You are guessing when something goes wrong and have no historical data to debug with.
@@ -1287,7 +1306,9 @@ Rule 100 is checked first → blocks 99.33.36.x before rule 200 even runs.
     * Trigger an **Auto Scaling** action
     * Alarms trigger **continuously** as long as the breach persists — not just once.
     * A **single spike** that lasts less than the evaluation period will NOT trigger an alarm (by design — reduces false alerts).
-  * **SNS  Simple Notification Service**
+  * **SNS (Simple Notification Service)**
+    * **Pub/Sub Messaging**: Publishes alarm events to a "Topic" which instantly fan-out alerts to subscribers.
+    * **Flexible Delivery**: Sends alerts via Email, SMS, Slack, Webhooks, or Lambda functions simultaneously.
   * **CloudWatch Dashboards**
     * Create **one dashboard per project or environment** (e.g., `prod-web-servers`, `dev-databases`), not one per VM.
     * Use **different colors** for each instance on a combined graph to distinguish them easily.
@@ -1297,6 +1318,9 @@ Rule 100 is checked first → blocks 99.33.36.x before rule 200 even runs.
     * Always check **Free Tier Usage** at the end of each lab.
     * Going over free tier limits = **you get charged** — no automatic warning unless you set it up.
   * **Monitoring Best Practices**
+    * **Avoid Alert Fatigue**: Set sensible thresholds and use evaluation windows to prevent momentary noise spikes from paging engineers.
+    * **Create Playbooks (Runbooks)**: Document a clear step-by-step diagnostic and escalation protocol for every alert.
+    * **Consolidate Views**: Group widgets by deployment stage rather than cluttering with a dashboard for every host VM.
   * **Visual Diagrams**
     * **Metrics** – Time-series numerical data (e.g., CPU utilization, request count)
     * **Logs** – Text-based event records collected from applications and services
@@ -1324,7 +1348,7 @@ INSUFFICIENT_DATA = not enough data points yet to evaluate
 
 ---
 
-## 24. AWS Lambda & Serverless Architecture
+## <a id="24-aws-lambda-serverless-architecture"></a>24. AWS Lambda & Serverless Architecture
 
 🔗 **Full Lesson:** [24_AWS_Lambda_and_Serverless_Architecture.md](./24_AWS_Lambda_and_Serverless_Architecture.md)
 
@@ -1338,10 +1362,17 @@ INSUFFICIENT_DATA = not enough data points yet to evaluate
     * ✅ **Used:** No servers to manage, automatic scaling, cost-efficient.
     * ❌ **Not used:** You'd need to run EC2 instances round the clock for event-driven tasks — wasteful and expensive.
   * **Project Architecture  Image Resizing**
+    * **Automated Processing**: A real-world pipeline where uploading a file automatically invokes a function, compresses/resizes the image, and uploads the output to a separate destination bucket.
   * **Key AWS Services Involved**
+    * **S3 Buckets**: Acts as the ingestion source for original images and storage for processed output.
+    * **AWS Lambda & Python (Pillow)**: Runs the compute script to compress the image without running permanent servers.
+    * **SNS & CloudWatch**: Dispatches email alerts for execution status and stores audit logs for troubleshooting.
   * **Practical Implementation with Terraform**
+    * **Infrastructure as Code**: Declaratively defining resources, variables, permissions, roles, S3 buckets, and Lambda configurations to allow easy replication.
   * **How Lambda Triggering Works**
+    * **S3 Event Notifications**: S3 sends an event payload to Lambda asynchronously on object creation API calls (`ObjectCreated:*`), triggering the Lambda run.
   * **Visual Diagrams**
+    * **Compression and Validation Flow**: Diagramming successful image compressions (e.g. 1.4MB to 95KB) and parsing check routines that route invalid files (like PDFs) to write error notifications.
 
 ### Key Commands / Code Example:
 
@@ -1366,7 +1397,7 @@ INSUFFICIENT_DATA = not enough data points yet to evaluate
 
 ---
 
-## 25. Git & GitHub Fundamentals
+## <a id="25-git-github-fundamentals"></a>25. Git & GitHub Fundamentals
 
 🔗 **Full Lesson:** [25_Git_and_GitHub_Fundamentals.md](./25_Git_and_GitHub_Fundamentals.md)
 
@@ -1378,9 +1409,13 @@ INSUFFICIENT_DATA = not enough data points yet to evaluate
 - There'd be no record of *who* changed *what* and *when*
 * **Key Concepts**:
   * **What is Version Control?**
+    * **History Tracking**: A system that records and manages changes to files over time, allowing rollback to past commits, audit logs of changes, and parallel branching.
   * **Git  The Local Version Control Tool**
+    * **Offline Tracking**: An open-source distributed command-line tool running locally on your computer to track history without network connection.
   * **GitHub  The Cloud Hosting Platform**
+    * **Online Hosting & Collaboration**: Web-based cloud platform owned by Microsoft to host Git repositories and facilitate code reviews and team collaboration.
   * **Git vs GitHub  Side-by-Side Comparison**
+    * **Tool vs Platform**: Git is the local CLI engine; GitHub is the cloud storage garage for your repository.
   * **Market Landscape**
     * **99% of developers** use Git as their version control system
   * **The Git Workflow  Step by Step**
@@ -1394,6 +1429,7 @@ INSUFFICIENT_DATA = not enough data points yet to evaluate
     * **When to use:** Once, at the start of every new project
     * **What:** Moves files from *Untracked* → *Staged* (tells Git "include these in the next snapshot")
   * **First-Time Git Configuration**
+    * **Identity Binding**: Configuring global metadata using `git config --global user.name` and `git config --global user.email` to attribute commits to the correct developer.
   * **Visual Diagrams**
     * `git add` moves files to the **Staging Area** — it tells Git "I want to include these changes in my next snapshot." It does NOT save permanently.
     * `git commit` takes the staged changes and creates a **permanent snapshot** in the local repository with a unique ID and message.
@@ -1416,7 +1452,7 @@ Others     ████████                      10%
 
 ---
 
-## 26. Git & GitHub Deep Dive: Branching, PRs & Collaboration
+## <a id="26-git-github-deep-dive-branching-prs-collaboration"></a>26. Git & GitHub Deep Dive: Branching, PRs & Collaboration
 
 🔗 **Full Lesson:** [26_Git_and_GitHub_Deep_Dive_Branching_PRs_and_Collaboration.md](./26_Git_and_GitHub_Deep_Dive_Branching_PRs_and_Collaboration.md)
 
@@ -1424,13 +1460,16 @@ Others     ████████                      10%
 * **Why It Exists**: Centralized systems (like older SVN) had a single server. If that server went down, no one could work.
 * **Key Concepts**:
   * **Git as a Distributed System**
+    * **Full History Copies**: De-centralized control where every user possesses a complete duplicate of the repository, enabling local caching, off-grid code staging, and robust redundancy backups.
   * **Essential Git Commands**
     * **What:** Downloads a full copy of a remote repository to your local machine
     * **When:** First time you want to start working on an existing project
     * **Creates:** A local folder with all files, branches, and history
     * **What:** Shows the current state of your working directory and staging area
   * **Fork vs Clone  Cloud vs Local**
+    * **Scope Boundaries**: A Fork copies an external GitHub repo to your personal GitHub account in the cloud. A Clone copies a GitHub repo down to your local storage.
   * **Branching Strategy**
+    * **Isolated Lines of Development**: Feature-based separation of commits (feature-*, bugfix-*, hotfix-*) that prevents direct pushes to stable integration tracks (`main` or `develop`).
   * **Pull Request (PR) Workflow**
     * Keep PRs **small and focused** — one feature or bug fix per PR
     * Write a **clear description** — what, why, and how to test
@@ -1442,16 +1481,19 @@ Others     ████████                      10%
     * You must **manually pick one** (or combine them), then delete the markers
     * Pull from main **before starting new work** and **regularly during development**
   * **GitHub Repository Settings & Features**
+    * **Platform Controls**: Managing access scopes and locking configuration branches.
     * **Public:** Anyone on the internet can see the code (used for open source)
     * **Private:** Only invited collaborators can see it (used for company code)
     * **Read** – can view code
     * **Write** – can push branches
   * **Advanced Git Concepts**
+    * **History Manipulation**: Utilities like rebase and reset to control the commit history log.
     * **What:** Re-applies your commits on top of another branch's latest commits — creates a cleaner, linear history
     * **vs Merge:** Merge preserves the true history (including branch divergence); Rebase rewrites history to look linear
     * **Use with caution:** Never rebase commits that have already been pushed to a shared remote
     * **What:** Moves the current branch pointer backwards to an earlier commit
   * **DevOps Engineer's Role in GitHub**
+    * **Platform Administration**: Setting up repository defaults, configuring branch protection rules, onboarding developers, managing SSH deployment keys, and configuring secret scanning alerts.
   * **Visual Diagrams**
     * `git fetch` downloads the changes but does **not** merge them into your local branch. Your working directory stays untouched. You can inspect what changed before deciding to merge.
     * **Fork** is a cloud-to-cloud operation — it copies a repo from someone else's GitHub account to your GitHub account. No download happens.
