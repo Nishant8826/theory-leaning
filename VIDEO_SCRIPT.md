@@ -1,38 +1,3 @@
-# Video Script (English — simple + detailed)
-
-## What this assignment is (read once before recording)
-
-They gave you 2 folders:
-
-- **project-a (host app)** = the real company app. It already has rules.
-- **project-b (poll module)** = another engineer made a poll/voting feature. They say: “Just copy it in. Tests are green. It will work.”
-
-Your real job:
-
-1. Do **not** run poll as a separate app or separate API.
-2. Put poll **inside** the host app, using host rules.
-3. Check if “tests are green” is enough to trust it.
-4. Decide: ship to production or not? Say why.
-
-“Native” means:
-
-- use host database client
-- use host tRPC + auth
-- mount poll in host root router
-- match host style (like notes feature)
-
----
-
-## Recording tips
-
-- Time: **6–8 minutes**
-- Screen share ON
-- Open the file written under **Open:**
-- Speak the **Say:** lines in your own voice
-- Keep it point to point
-
----
-
 ## START (30 sec)
 
 ### Open: `exercise/CANDIDATE_BRIEF.md`
