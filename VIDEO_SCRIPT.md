@@ -94,8 +94,7 @@ For each change: first open old file (project-b), then new file (host).
 - Client can call `trpc.polls.create`, `trpc.polls.vote`, and so on, with full TypeScript types.
 
 **Why this matters:**
-- Native means one router tree.
-- If I kept project-b’s tRPC, types and auth context would not fit cleanly.
+- Native means there should on =ly one router tree not multiple.
 
 ---
 
@@ -147,10 +146,6 @@ For each change: first open old file (project-b), then new file (host).
 - All ids are **text**
 - `ownerId` / `userId` are **string**
 - This matches notes and Clerk
-
-**Why this matters:**
-- If I left integer owner ids, Clerk string user ids would not fit.
-- Then create/list ownership would break or need unsafe casting.
 
 ---
 
