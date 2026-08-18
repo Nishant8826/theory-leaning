@@ -179,19 +179,19 @@ sequenceDiagram
 
     Note over User,Server: Normal Token Rotation
     User->>Server: 1. Uses RT_1 to get new tokens
-    Server->>DB: Invalidate RT_1, Issue RT_2 (Family #101)
+    Server->>DB: Invalidate RT_1, Issue RT_2 (Family 101)
     Server-->>User: Returns AT_2 + RT_2
 
-    Note over Attacker,Server: Attacker tries to use stolen RT_1!
-    Attacker->>Server: 2. Attempts to use already-invalidated RT_1!
-    Server->>DB: Checks RT_1 status -> STATUS: ALREADY_USED / INVALID!
-    Note over Server,DB: 🚨 THEFT DETECTED! <br> Someone is replaying an old token from Family #101!
-    Server->>DB: Revoke ALL tokens in Family #101 (Deletes RT_2 as well)
+    Note over Attacker,Server: Attacker tries to use stolen RT_1
+    Attacker->>Server: 2. Attempts to use already-invalidated RT_1
+    Server->>DB: Checks RT_1 status (STATUS: ALREADY_USED)
+    Note over Server,DB: THEFT DETECTED: Someone is replaying old token
+    Server->>DB: Revoke ALL tokens in Family 101 (Deletes RT_2 as well)
     Server-->>Attacker: 403 Forbidden (Access Denied)
     
     Note over User,Server: Legitimate user makes next request
     User->>Server: 3. User tries to refresh with RT_2
-    Server->>DB: Checks RT_2 -> STATUS: FAMILY_REVOKED
+    Server->>DB: Checks RT_2 status (STATUS: FAMILY_REVOKED)
     Server-->>User: 401 Unauthorized (Forces user to log in again with 2FA)
 ```
 
@@ -208,13 +208,13 @@ sequenceDiagram
     participant API as Express.js Auth Server
     participant DB as MongoDB
     
-    Client->>API: POST /api/auth/login { email, password }
+    Client->>API: POST /api/auth/login (email, password)
     API->>DB: Find User by email
-    API->>API: Verify password with bcrypt.compare()
+    API->>API: Verify password with bcrypt
     API->>API: Generate Access Token (15m, HMAC SHA-256)
-    API->>API: Generate Refresh Token & Family ID (UUID)
+    API->>API: Generate Refresh Token and Family ID (UUID)
     API->>DB: Save hashed Refresh Token (Family ID, expiresAt, device info)
-    API-->>Client: HTTP 200 OK <br> Body: { accessToken, user } <br> Set-Cookie: refreshToken=...; HttpOnly; Secure; SameSite=Strict
+    API-->>Client: 200 OK (Returns accessToken in body and sets httpOnly Cookie)
     Client->>Client: Stores accessToken in React Memory State
 ```
 
@@ -226,16 +226,16 @@ sequenceDiagram
 sequenceDiagram
     autonumber
     actor Client as React Web App
-    participant Middleware as Express verifyToken Middleware
+    participant Middleware as Express Auth Middleware
     participant Controller as Protected Controller (/api/orders)
     
-    Client->>Middleware: GET /api/orders <br> Headers: Authorization: Bearer <accessToken>
-    Note over Middleware: 1. jwt.verify(token, ACCESS_SECRET) <br> 2. Check expiration & signature (In-Memory < 1ms)
+    Client->>Middleware: GET /api/orders (Authorization: Bearer token)
+    Note over Middleware: 1. Verify token signature and expiration in memory (sub-1ms)
     alt Token Valid
-        Middleware->>Controller: req.user = decodedToken; next()
-        Controller-->>Client: 200 OK { orders: [...] }
+        Middleware->>Controller: Attach req.user and call next()
+        Controller-->>Client: 200 OK (Returns order data)
     else Token Expired (15 mins passed)
-        Middleware-->>Client: 401 Unauthorized { code: "TOKEN_EXPIRED" }
+        Middleware-->>Client: 401 Unauthorized (TOKEN_EXPIRED)
     end
 ```
 
@@ -254,13 +254,13 @@ sequenceDiagram
     
     React->>Axios: Request A: GET /api/user/profile
     React->>Axios: Request B: GET /api/user/notifications
-    Note over Axios: Both requests fail with 401 Token Expired!
-    Note over Axios: Axios initiates 1 SINGLE refresh call. <br> Request B is pushed to pendingQueue[]
+    Note over Axios: Both requests fail with 401 Token Expired
+    Note over Axios: Axios initiates 1 SINGLE refresh call. Request B is queued
     Axios->>API: POST /api/auth/refresh (Sends httpOnly Cookie)
-    API-->>Axios: 200 OK { accessToken: "new_token_xyz" }
-    Note over Axios: Updates In-Memory Access Token. <br> Replays Request A & Request B with new token!
-    Axios-->>React: Request A Response: { profile }
-    Axios-->>React: Request B Response: { notifications }
+    API-->>Axios: 200 OK (Returns new accessToken)
+    Note over Axios: Updates In-Memory Token and replays Request A and B
+    Axios-->>React: Request A Response (profile data)
+    Axios-->>React: Request B Response (notification data)
 ```
 
 ---
@@ -851,18 +851,17 @@ sequenceDiagram
     participant Dashboard as Protected Dashboard UI
 
     User->>React: Page Reloads (F5)
-    Note over React: Memory is wiped clean!<br>accessToken = null<br>user = null<br>isLoading = true
-    React->>AuthContext: AuthProvider mounts
-    Note over AuthContext: Shows a full-screen Loader / Spinner<br>(Prevents flashing the Login screen!)
-    AuthContext->>API: POST /api/auth/refresh<br>(Browser automatically sends httpOnly Cookie!)
+    Note over React: Memory is wiped clean (accessToken = null, user = null)
+    React->>AuthContext: AuthProvider mounts and shows spinner
+    AuthContext->>API: POST /api/auth/refresh (Browser sends httpOnly Cookie)
     
     alt Refresh Token is Valid
-        API-->>AuthContext: 200 OK { accessToken: "fresh_jwt_xyz", user: {...} }
-        Note over AuthContext: 1. setAccessToken("fresh_jwt_xyz") in memory<br>2. setUser(data.user)<br>3. setIsLoading(false)
-        AuthContext->>Dashboard: Renders Protected UI seamlessly! (Takes ~50ms)
-    else Refresh Token Expired / Not Found
+        API-->>AuthContext: 200 OK (Returns fresh accessToken and user data)
+        Note over AuthContext: Stores token in memory, sets user, stops loading
+        AuthContext->>Dashboard: Renders Protected UI seamlessly (Takes ~50ms)
+    else Refresh Token Expired or Not Found
         API-->>AuthContext: 401 Unauthorized
-        Note over AuthContext: setIsLoading(false)<br>Redirects to /login
+        Note over AuthContext: Stops loading and redirects to /login
     end
 ```
 
