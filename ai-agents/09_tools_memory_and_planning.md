@@ -82,6 +82,85 @@ memory.addUserInput("What is my name?");
 
 ---
 
+### Memory & Cache System Design (Short & Descriptive)
+
+In real-world production, storing memory in an in-memory JS array resets whenever the server restarts and blows up token limits. 
+
+Here is the **Tiered Memory & Cache Architecture**:
+
+```mermaid
+flowchart TD
+    User["👤 User Request"] --> Server["⚡ Node.js Server"]
+    
+    subgraph Caching_Layer["1. Caching & Session Layer (Redis)"]
+        SemanticCache{"Semantic Cache: <br> Similar query seen before? (Cosine > 0.95)"}
+        SessionStore["Session Store: <br> Key: session:userId:chatId <br> Sliding Window (Last K messages) <br> TTL: 24 Hours"]
+    end
+    
+    subgraph Storage_Layer["2. Long-Term Storage Layer"]
+        VectorDB[("Vector Database (pgvector) <br> Permanent user facts & preferences")]
+    end
+    
+    subgraph LLM_Layer["3. Model Reasoning Layer"]
+        LLM["🤖 LLM API (OpenAI / Claude)"]
+    end
+
+    Server --> SemanticCache
+    SemanticCache -->|HIT (5ms)| FastAnswer["Instant Cached Answer ($0.00)"]
+    SemanticCache -->|MISS| SessionStore
+    SessionStore --> VectorDB
+    SessionStore --> LLM
+    VectorDB --> LLM
+    LLM --> SaveTurn["Save new message turn to Redis Session"]
+
+    style Caching_Layer fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
+    style Storage_Layer fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
+    style LLM_Layer fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+```
+
+#### The 3 Memory Storage Tiers:
+1. **Semantic Response Cache (Redis Vector)**:
+   - Caches prompt embeddings $\to$ LLM answers.
+   - If similarity $> 0.95$, returns the cached answer in **5ms for $0.00** (cuts API bills by 40–70%).
+2. **Session Memory (Redis Key-Value + Sliding Window)**:
+   - Stores chat history under `session:{userId}:{chatId}` with a 24h TTL.
+   - **Sliding Window Buffer**: Only sends the last $K$ turns (e.g., last 6 messages) to keep token costs constant and predictable.
+3. **Long-Term Memory (PostgreSQL `pgvector` / Pinecone)**:
+   - Stores permanent user preferences, bio facts, and uploaded docs.
+   - Retrieved via semantic search (RAG) when relevant to the query.
+
+#### Quick Implementation (Redis Sliding Window Session Cache):
+
+```typescript
+// Production Session Memory with Redis & Sliding Window (Max K messages)
+class RedisSessionMemory {
+  private redis: any; // Redis client (ioredis)
+  private maxTurns: number;
+
+  constructor(redisClient: any, maxTurns = 6) {
+    this.redis = redisClient;
+    this.maxTurns = maxTurns;
+  }
+
+  // 1. Save message with sliding window pruning and 24h TTL
+  async appendMessage(sessionId: string, message: { role: string; content: string }) {
+    const key = `session:${sessionId}:history`;
+    await this.redis.rpush(key, JSON.stringify(message));
+    // Keep only last N messages (Sliding Window)
+    await this.redis.ltrim(key, -this.maxTurns, -1);
+    await this.redis.expire(key, 86400); // 24 hours TTL
+  }
+
+  // 2. Fetch context to pass to LLM
+  async getContext(sessionId: string): Promise<Array<{ role: string; content: string }>> {
+    const raw = await this.redis.lrange(`session:${sessionId}:history`, 0, -1);
+    return raw.map((item: string) => JSON.parse(item));
+  }
+}
+```
+
+---
+
 ### Integration
 
 * **React:** Manage Short-Term Memory in React State (`useState()`). Render the array of messages as a chat interface.
