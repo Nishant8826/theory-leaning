@@ -1,215 +1,277 @@
-# Chapter 30: AI Agent Blueprints - Part 2
+# 🤖 AI Agent Blueprints II: Code Reviewer and Research Synthesis Agent
 
-**Estimated Reading Time**: 25 minutes  
-**Difficulty**: Expert  
-**Prerequisites**: Chapters 1–29.  
-**Learning Objectives**:
-1. Design blueprints for Research Agent, Project Manager, Task Planner, and Interview Assistant.
-2. Structure task plans as Directed Acyclic Graphs (DAGs).
-3. Handle parallel execution nodes inside agent workflows.
-4. Implement a DAG cycle detector in TypeScript.
+## 📌 Overview
 
----
+Reviewing Pull Requests (PRs) is one of the most time-consuming tasks for software engineering teams. 
 
-## Introduction
+A human senior engineer must check for security holes, memory leaks, performance bottlenecks, and TypeScript best practices across hundreds of lines of code daily.
 
-In this chapter, we cover blueprints for the remaining four agent projects (Research Agent, Project Manager, Task Planner, and Interview Assistant) and write a dependency cycle validator in TypeScript.
-
-These blueprints demonstrate how to coordinate parallel worker nodes and break large objectives into execution graphs.
-
----
-
-## The 4 Agent Blueprints (Continued)
-
-### 5. AI Research Agent
-* **Goal**: Conduct deep-dive research on complex topics using real-time search.
-* **State Schema**:
-  ```typescript
-  interface ResearchState {
-    topic: string;
-    queries: string[];
-    articles: { url: string; content: string }[];
-    reportMarkdown: string;
-  }
-  ```
-* **Tools**: `googleSearch`, `scrapeUrl`.
-* **Core Flow**: Generate search queries $\to$ execute web searches in parallel $\to$ fetch page content $\to$ compile and synthesize research markdown report.
-
-### 6. AI Project Manager
-* **Goal**: Match backlog issues to team members based on capacity.
-* **State Schema**:
-  ```typescript
-  interface PMState {
-    backlog: { id: string; title: string; points: number }[];
-    team: { id: string; name: string; capacity: number }[];
-    assignments: { ticketId: string; assigneeId: string }[];
-  }
-  ```
-* **Tools**: `getBacklog`, `assignTicket`.
-* **Core Flow**: Fetch issues $\to$ retrieve team workload state $\to$ calculate optimal assignments using LLM optimizer $\to$ update ticket statuses.
-
-### 7. AI Task Planner
-* **Goal**: Break large goals down into a sequence of dependent sub-tasks.
-* **State Schema**:
-  ```typescript
-  interface Task { id: string; desc: string; dependencies: string[]; status: 'PENDING' | 'DONE' }
-  interface PlannerState {
-    goal: string;
-    plan: Task[];
-    valid: boolean;
-  }
-  ```
-* **Tools**: None (Model reasoning only).
-* **Core Flow**: LLM generates a task dependency plan $\to$ backend validates plan for circular loops (DAG verification) $\to$ save plan for sequential execution.
-
-### 8. AI Interview Assistant
-* **Goal**: Conduct technical chat mock interviews and score candidates.
-* **State Schema**:
-  ```typescript
-  interface InterviewState {
-    role: string;
-    questions: string[];
-    currentIdx: number;
-    answers: { question: string; answer: string; score: number }[];
-    report: string;
-  }
-  ```
-* **Tools**: `generateSpeech` (TTS), `recordSpeech` (STT).
-* **Core Flow**: Ask question $\to$ await answer $\to$ grade response $\to$ increment index $\to$ repeat 5 times $\to$ generate final scorecard dashboard.
-
----
-
-## Real-World Analogy: The Planning Department
-
-Think of these agents as **corporate operations teams**:
-* **Research Agent = Research Librarian**: Collects stacks of articles, summarizes findings, and drafts briefs.
-* **Project Manager = Team Lead**: Evaluates task estimates, checks developer bandwidth, and assigns tickets.
-* **Task Planner = Operations Director**: Reviews the year's goals, breaks them into milestones, and schedules work to ensure dependencies are met.
-* **Interview Assistant = Recruiter**: Conducts screening calls, notes responses, scores candidates, and drafts hiring recommendations.
-
----
-
-## Architecture Diagram: Task Planner Workflow
-
-This diagram maps out a task planner pipeline generating and validating task schedules.
+In this chapter, we will build the **Automated Code Review & Research Synthesis Agent**—a production-grade agent that uses **Parallel Evaluation Nodes** in LangGraph to perform a multi-perspective audit of incoming code and generate a clean, actionable GitHub PR review!
 
 ```mermaid
-graph TD
-    Start([START]) --> Plan[Node: Generate Plan]
-    Plan --> Validate{Validate DAG: Any Circular Loops?}
-    Validate -->|No| Execute[Sequential Task Runner]
-    Validate -->|Yes| Replan[Node: Re-plan Tasks]
-    Replan --> Validate
+flowchart TD
+    PR["💻 Incoming Code Diff / Pull Request"] --> FanOut["1. Fan-Out Dispatcher (Parallel Analysis)"]
+    
+    FanOut --> SecNode["🔒 2. Security Auditor Node <br> (Checks for SQLi, XSS, leaked secrets)"]
+    FanOut --> PerfNode["⚡ 3. Performance Node <br> (Checks for O(N^2) loops, memory leaks)"]
+    FanOut --> StyleNode["🎨 4. TS Best Practice Node <br> (Checks typing, error handling, clean code)"]
+
+    SecNode --> Synthesizer["5. Lead Architect Synthesizer Node <br> (Consolidates findings into structured Markdown)"]
+    PerfNode --> Synthesizer
+    StyleNode --> Synthesizer
+
+    Synthesizer --> FinalReport["🏁 GitHub PR Review Comment with Actionable Diffs!"]
+
+    style PR fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
+    style FanOut fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
+    style SecNode fill:#ffebee,stroke:#c62828,stroke-width:2px
+    style PerfNode fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    style StyleNode fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    style Synthesizer fill:#ede7f6,stroke:#7e57c2,stroke-width:2px
+    style FinalReport fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px
 ```
 
 ---
 
-## Code Example: DAG Dependency Cycle Detector (TypeScript)
+## 🎯 Why This Matters
 
-Let's build a TypeScript class that validates task plans to ensure they contain no circular dependencies (e.g., Task A depends on Task B, and Task B depends on Task A), which would lock up execution pipelines.
+1. **Parallel Execution (Fan-Out / Fan-In)**: Demonstrates how LangGraph runs multiple analysis nodes concurrently to minimize latency.
+2. **Specialized Domain Focus**: Each evaluation node is guided by strict domain prompts (Security, Performance, Style) to avoid missing critical edge cases.
+3. **Automated CI/CD Integration**: Can be triggered directly by GitHub Actions webhooks on every Pull Request.
 
-Create `dag_validator.ts`:
+---
+
+## 🧠 Prerequisites
+
+- [13_Prompt_Engineering_Advanced.md](./13_Prompt_Engineering_Advanced.md): System prompt guardrails and XML isolation.
+- [19_LangGraph_Core_Nodes_and_Edges.md](./19_LangGraph_Core_Nodes_and_Edges.md): StateGraph architecture.
+- [22_LangGraph_Multi_Agent_Design.md](./22_LangGraph_Multi_Agent_Design.md): Multi-Agent design patterns.
+
+---
+
+## 🔍 Deep Dive
+
+### 1. State Schema for Multi-Perspective Review
 
 ```typescript
-interface TaskNode {
-  id: string;
-  dependencies: string[]; // IDs of tasks that must run before this task
+const ReviewState = Annotation.Root({
+  codeSnippet: Annotation<string>(),
+  securityIssues: Annotation<string[]>({
+    reducer: (curr, update) => curr.concat(update),
+    default: () => [],
+  }),
+  performanceIssues: Annotation<string[]>({
+    reducer: (curr, update) => curr.concat(update),
+    default: () => [],
+  }),
+  styleImprovements: Annotation<string[]>({
+    reducer: (curr, update) => curr.concat(update),
+    default: () => [],
+  }),
+  finalSummary: Annotation<string>(),
+});
+```
+
+---
+
+### 2. Structured Findings Schema (Zod)
+
+Each specialist node outputs a structured array of issues:
+
+```typescript
+const IssueListSchema = z.object({
+  issues: z.array(
+    z.object({
+      severity: z.enum(["CRITICAL", "WARNING", "SUGGESTION"]),
+      description: z.string().describe("What is wrong"),
+      recommendedFix: z.string().describe("How to fix it with code"),
+    })
+  ),
+});
+```
+
+---
+
+## 💡 Simple Example: The Medical Board of Specialists
+
+Think of this architecture like a **Hospital Medical Board**:
+- The patient's chart (**The Code**) arrives.
+- **Cardiologist (Security Auditor)** checks the heart.
+- **Neurologist (Performance Auditor)** checks the brain.
+- **General Physician (Style Auditor)** checks vitals.
+- **Chief Medical Officer (Synthesizer)** combines all reports into one unified treatment plan!
+
+---
+
+## 🏗️ Real-World Example: GitHub Actions PR Bot
+
+In a company's CI/CD pipeline:
+1. Developer opens a PR adding a new payment route in Express.js.
+2. GitHub Webhook triggers the Code Reviewer Agent.
+3. **Security Node** flags: *"Raw SQL string concatenation detected on line 34 (SQL Injection risk)"*.
+4. **Performance Node** flags: *"Database query inside a `forEach` loop on line 52 (N+1 query problem)"*.
+5. Agent automatically posts a detailed review comment with diff suggestions on the PR within 10 seconds!
+
+---
+
+## ⚠️ Common Mistakes & Pitfalls
+
+1. ❌ **Running Reviewers Sequentially instead of Concurrently**:
+   - *Bad*: Security (3s) $\to$ Performance (3s) $\to$ Style (3s) = 9s total latency.
+   - *Good*: Run all 3 in parallel via LangGraph Fan-Out = **3s total latency**!
+2. ❌ **Generating Vague Feedback**:
+   - *Trap*: Telling the developer *"Improve your code performance"*.
+   - *Fix*: Provide exact line numbers and replacement code diffs.
+
+---
+
+## 🔥 Important Points to Remember
+
+- Parallel evaluation nodes (Fan-Out) slash latency.
+- Specialized prompts per node yield far deeper findings than one generalist prompt.
+- The Synthesizer node aggregates and formats findings into actionable Markdown reports.
+
+---
+
+## 💻 Code / Commands / Configuration
+
+Here is a complete, runnable TypeScript implementation of the **Automated Code Reviewer Agent**:
+
+```typescript
+// code_reviewer_agent.ts
+// 1. Run: npm install @langchain/langgraph @langchain/core @langchain/openai zod dotenv
+// 2. Run: npx ts-node code_reviewer_agent.ts
+
+import { StateGraph, START, END, Annotation } from "@langchain/langgraph";
+import { ChatOpenAI } from "@langchain/openai";
+import { z } from "zod";
+import * as dotenv from "dotenv";
+
+dotenv.config();
+
+// 1. Define Review State
+const ReviewState = Annotation.Root({
+  codeSnippet: Annotation<string>(),
+  securityFeedback: Annotation<string>({ reducer: (c, u) => u ?? c, default: () => "" }),
+  performanceFeedback: Annotation<string>({ reducer: (c, u) => u ?? c, default: () => "" }),
+  finalReport: Annotation<string>(),
+});
+
+const model = new ChatOpenAI({ modelName: "gpt-4o-mini", temperature: 0.0 });
+
+// 2. Node: Security Auditor
+async function securityAuditNode(state: typeof ReviewState.State) {
+  console.log("🔒 [Security Node] Auditing code for vulnerabilities...");
+  const prompt = `You are an elite Application Security Engineer.
+Audit this TypeScript code strictly for security risks (SQLi, XSS, insecure secrets, unvalidated inputs).
+If secure, state 'NO_SECURITY_ISSUES'. If issues exist, list them concisely with severity.
+
+Code:
+${state.codeSnippet}`;
+
+  const res = await model.invoke(prompt);
+  return { securityFeedback: res.content as string };
 }
 
-class DagValidator {
-  /**
-   * Evaluates if a list of tasks contains a circular dependency loop (Depth-First Search)
-   */
-  public hasCycle(tasks: TaskNode[]): boolean {
-    const adjList: Map<string, string[]> = new Map();
-    tasks.forEach(t => adjList.set(t.id, t.dependencies));
+// 3. Node: Performance Auditor
+async function performanceAuditNode(state: typeof ReviewState.State) {
+  console.log("⚡ [Performance Node] Auditing algorithmic efficiency...");
+  const prompt = `You are a Principal Performance Engineer.
+Audit this TypeScript code strictly for performance bottlenecks (N+1 queries, unindexed lookups, memory leaks, O(N^2) loops).
+If optimal, state 'NO_PERFORMANCE_ISSUES'. If issues exist, list them concisely.
 
-    const visited: Set<string> = new Set();
-    const recStack: Set<string> = new Set();
+Code:
+${state.codeSnippet}`;
 
-    const dfs = (node: string): boolean => {
-      if (recStack.has(node)) return true; // Cycle detected!
-      if (visited.has(node)) return false;
+  const res = await model.invoke(prompt);
+  return { performanceFeedback: res.content as string };
+}
 
-      visited.add(node);
-      recStack.add(node);
+// 4. Node: Synthesizer (Lead Architect)
+async function synthesisNode(state: typeof ReviewState.State) {
+  console.log("👔 [Synthesizer Node] Compiling consolidated Pull Request report...");
+  const prompt = `You are a Lead Software Architect.
+Synthesize the following security and performance audit notes into a clean, professional GitHub PR Review in Markdown.
 
-      const neighbors = adjList.get(node) || [];
-      for (const neighbor of neighbors) {
-        if (dfs(neighbor)) return true;
-      }
+Security Findings:
+${state.securityFeedback}
 
-      recStack.delete(node);
-      return false;
-    };
+Performance Findings:
+${state.performanceFeedback}
 
-    for (const task of tasks) {
-      if (dfs(task.id)) return true;
-    }
+Original Code:
+${state.codeSnippet}`;
 
-    return false;
+  const res = await model.invoke(prompt);
+  return { finalReport: res.content as string };
+}
+
+// 5. Assemble Parallel Fan-Out / Fan-In Graph
+async function runReviewerDemo() {
+  const workflow = new StateGraph(ReviewState)
+    .addNode("security_auditor", securityAuditNode)
+    .addNode("performance_auditor", performanceAuditNode)
+    .addNode("synthesizer", synthesisNode)
+    
+    // Fan-Out: Run Security and Performance audits in parallel from START!
+    .addEdge(START, "security_auditor")
+    .addEdge(START, "performance_auditor")
+    
+    // Fan-In: Both must complete before Synthesizer runs!
+    .addEdge("security_auditor", "synthesizer")
+    .addEdge("performance_auditor", "synthesizer")
+    .addEdge("synthesizer", END);
+
+  const app = workflow.compile();
+
+  // Test Code with intentional security flaw and performance bottleneck
+  const samplePRCode = `
+import { Request, Response } from 'express';
+import db from './database';
+
+export async function getUserOrders(req: Request, res: Response) {
+  const userId = req.query.userId;
+  
+  // Vulnerability: Direct SQL string interpolation
+  const user = await db.query("SELECT * FROM users WHERE id = '" + userId + "'");
+  
+  // Bottleneck: Querying database inside a loop
+  const orders = await db.query("SELECT * FROM orders WHERE user_id = " + userId);
+  for (const order of orders.rows) {
+    const items = await db.query("SELECT * FROM order_items WHERE order_id = " + order.id);
+    order.items = items.rows;
   }
+  
+  res.json(orders.rows);
+}
+`;
+
+  console.log("🚀 Running Parallel Code Review Agent Graph...\n");
+  const result = await app.invoke({ codeSnippet: samplePRCode });
+
+  console.log("\n🏁 Final GitHub PR Review Report:\n");
+  console.log(result.finalReport);
 }
 
-// Ingestion and Setup
-const validator = new DagValidator();
-
-// 1. Valid Task Plan (Task A -> Task B -> Task C)
-const validPlan: TaskNode[] = [
-  { id: "task_A", dependencies: [] },
-  { id: "task_B", dependencies: ["task_A"] },
-  { id: "task_C", dependencies: ["task_B"] }
-];
-console.log("Valid Plan has cycle:", validator.hasCycle(validPlan)); // Should print false
-
-// 2. Invalid Task Plan (Circular loop: A depends on C, C depends on B, B depends on A)
-const invalidPlan: TaskNode[] = [
-  { id: "task_A", dependencies: ["task_C"] },
-  { id: "task_B", dependencies: ["task_A"] },
-  { id: "task_C", dependencies: ["task_B"] }
-];
-console.log("Invalid Plan has cycle:", validator.hasCycle(invalidPlan)); // Should print true
-```
-
-Run this file:
-```bash
-npx tsx dag_validator.ts
+runReviewerDemo();
 ```
 
 ---
 
-## Best Practices, Production & Security Considerations
+## 🎤 Interview Perspective
 
-### 1. Enforce DAG Validation
-Before running any dynamically compiled task lists, always run a cycle validation check (as shown in the code example) to prevent execution pipelines from locking up.
-
----
-
-## Common Mistakes
-
-1. **Allowing circular dependency execution**: Letting worker systems run tasks without validation, which can lock up queue systems.
+* **Q: How does LangGraph support concurrent (parallel) node execution in a graph?**
+  * **Answer**: In LangGraph, when multiple outgoing edges branch from a single node (or from `START`), the runtime executes those target nodes concurrently using asynchronous Promise resolution (`Promise.all`). Nodes that share incoming edges into a downstream node automatically act as a barrier synchronization point (Fan-In), ensuring the downstream node only executes after all concurrent dependencies resolve.
+* **Q: Why is decomposing a code review into separate security and performance passes better than a single LLM prompt?**
+  * **Answer**: A single prompt asking for security, performance, style, architecture, and typing suffers from attention dispersion and context crowding. Specialized agents focus the model's full attention capacity on a single evaluation rubric, yielding significantly fewer false negatives on subtle security exploits and algorithmic bottlenecks.
 
 ---
 
-## Exercises & Mini Project
+## 🧩 Connection With Previous Concepts
 
-### Exercise 1: Parallel group partition
-Write a TypeScript function that partitions a list of tasks into parallel groups that can run concurrently based on their dependencies.
-
-### Mini Project: Research Synthesis API
-Build a graph that takes a topic, generates 3 Google search queries, scraping the top results, and compiles a markdown report.
+- **Previous Lesson ([29_AI_Agent_Blueprints_1.md](./29_AI_Agent_Blueprints_1.md))**: Built a customer support and billing agent.
+- **Next Lesson ([31_Production_Fastify_and_Docker.md](./31_Production_Fastify_and_Docker.md))**: We will learn how to package and deploy our AI agents using **Fastify** and **Docker** for production!
 
 ---
 
-## Interview Questions
-
-1. **Q**: What is a Directed Acyclic Graph (DAG) in task planning?
-   * **A**: A DAG is a graph containing nodes and directed edges with no circular loops, used to represent task execution sequences where tasks run based on their dependencies.
-2. **Q**: How do you identify circular dependencies in task graphs?
-   * **A**: By running a Depth-First Search (DFS) check that tracks node visitation states using a recursion stack. If a node is visited while already in the stack, a circular dependency exists.
-
----
-
-## Navigation
-
-**Prev:** [Chapter 29: AI Agent Blueprints 1](file:///d:/learning/theory/AI-tut/29_AI_Agent_Blueprints_1.md) | **Index:** [Course Overview](file:///d:/learning/theory/AI-tut/README.md) | **Next:** [Chapter 31: Fastify and Docker](file:///d:/learning/theory/AI-tut/31_Production_Fastify_and_Docker.md)
+Previous : [29_AI_Agent_Blueprints_1.md](./29_AI_Agent_Blueprints_1.md) | Index: [00_Index.md](./00_Index.md) | Next: [31_Production_Fastify_and_Docker.md](./31_Production_Fastify_and_Docker.md)

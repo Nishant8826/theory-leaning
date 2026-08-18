@@ -1,238 +1,305 @@
-# Chapter 7: Function Calling and Structured Outputs
+# 🤖 Function Calling and Structured Outputs
 
-**Estimated Reading Time**: 25 minutes  
-**Difficulty**: Advanced  
-**Prerequisites**: Chapters 1–6.  
-**Learning Objectives**:
-1. Declare tools using JSON Schema in LLM API payloads.
-2. Intercept and parse model tool-calling responses programmatically.
-3. Force output generation to match a schema using Zod.
-4. Execute tool calls safely on the backend.
+## 📌 Overview
 
----
+By default, Large Language Models output unstructured conversational text. 
 
-## Introduction
+While great for chatting, text is dangerous for backend applications. If you ask an AI: *"Give me the user's order details"*, and it replies *"Sure! Here is the info: Name is Alex, Order #123"*, your JavaScript code will crash trying to parse that string into database fields!
 
-To build applications with LLMs, they must connect to the outside world. An LLM that only chats is a closed system. It cannot write to your database, fetch current stock prices, or check user files.
-
-**Function Calling** (or Tool Calling) allows models to interact with your code. The model does not execute code itself. Instead, it halts text generation, outputs a JSON payload containing function names and arguments, and waits for your backend application to run the code.
-
-In this chapter, we explore how to configure structured outputs and execute tool calls in TypeScript.
-
----
-
-## Theory: The Tool Calling Loop and Structured Output Enforcements
-
-### 1. Tool Declaration (JSON Schema)
-When you register a tool with an LLM, you define a JSON Schema. The schema tells the model:
-1. The tool's name (e.g. `getAccountBalance`).
-2. A description of what the tool does (used by the model to decide if it should call the tool).
-3. The parameters the tool expects (including types, constraints, and required fields).
-
-### 2. The Tool Execution Lifecycle
-1. **Request**: The user asks: `"Check balance for user_123."`
-2. **Model Call**: The application calls the LLM, passing the prompt and the tool schemas.
-3. **Inference**: The model recognizes that `getAccountBalance` matches the request. It outputs a `tool_call` payload instead of a text message:
-   `{ name: "getAccountBalance", arguments: { userId: "user_123" } }`
-4. **Execution**: Your backend catches this payload, parses the arguments, runs the function (e.g., queries database), and gets a result: `{ balance: "$150.00" }`
-5. **Final Inference**: The backend sends the result back to the model, and the model synthesizes a final response: `"User 123 has a balance of $150.00."`
-
-### 3. Structured Outputs
-Instead of returning conversational text, structured outputs force the model to conform strictly to a target JSON schema.
-* **Mechanism**: Standard models might occasionally return invalid JSON. Structured outputs enforce schema constraints at the token sampler level, preventing the model from outputting tokens that would violate the schema structure.
-
----
-
-## Real-World Analogy: The Restaurant Menu
-
-Imagine you are ordering at a drive-thru:
-* **Without Tools**: You ask: "How much is a burger?" The employee looks at the static board and tells you. They cannot cook anything or take your card.
-* **With Tools**: You say: "I want to order a Cheeseburger, bill my card ending in 1234."
-  * The employee cannot charge your card directly.
-  * They press a button on their register (Tool Call: `processPayment(cardSuffix: 1234, amount: 5.99)`).
-  * The payment terminal processes the card and sends a printout back to the employee (Tool Result: `success`).
-  * The employee hands you the burger (Final Output).
-
----
-
-## Architecture Diagram: Tool Execution Sequence
-
-This diagram maps out the multi-step communication loop of tool execution.
+**Function Calling** (also known as **Tool Calling**) and **Structured Outputs** turn the LLM into a reliable backend component:
+1. **Structured Outputs**: Guarantees that the AI returns 100% valid JSON matching a strict TypeScript/Zod schema.
+2. **Function Calling**: Allows the AI to decide *when* and *which* function (API, database query, payment tool) to call to fetch live data or take real-world actions.
 
 ```mermaid
 sequenceDiagram
     autonumber
-    participant Client as Node.js App
-    participant LLM as OpenAI / Anthropic
-    participant Database as Database / API
-
-    Client->>LLM: Prompt: 'What is the balance of account 456?' + Tool Schema
-    LLM->>LLM: Matches prompt to getBalance schema
-    LLM-->>Client: Returns tool_call: getBalance(accountId: '456')
-    Client->>Database: Query balance for account '456'
-    Database-->>Client: Return: { balance: '$250.00' }
-    Client->>LLM: Send tool_result: { balance: '$250.00' }
-    LLM-->>Client: Returns final response: 'Account 456 has a balance of $250.00.'
+    actor User
+    participant Backend as Node.js Backend
+    participant LLM as AI Model (e.g. GPT-4o)
+    participant Tool as Weather API / Database
+    
+    User->>Backend: "What's the weather in Tokyo?"
+    Backend->>LLM: Send message + Tool Definitions (getWeather schema)
+    Note over LLM: Model realizes it needs live data!
+    LLM-->>Backend: Returns Tool Call: { name: "getWeather", args: { city: "Tokyo" } }
+    Note over Backend: Model does NOT run code.<br>Your backend executes the function!
+    Backend->>Tool: fetch("api.weather.com?city=Tokyo")
+    Tool-->>Backend: { temp: "22°C", condition: "Sunny" }
+    Backend->>LLM: Send Tool Result: { temp: "22°C", condition: "Sunny" }
+    LLM-->>Backend: "The weather in Tokyo is currently 22°C and sunny! ☀️"
+    Backend-->>User: Sends final answer to user
 ```
 
 ---
 
-## Code Example: Tool Routing and Execution (TypeScript)
+## 🎯 Why This Matters
 
-Let's implement a complete tool-calling loop in TypeScript using the official OpenAI SDK and Zod.
+1. **Connects AI to the Real World**: An AI model's training data is frozen in time. Function calling lets it check live databases, query stock prices, send emails, and trigger Stripe payments.
+2. **Eliminates JSON Syntax Errors**: Before Structured Outputs, models frequently returned broken JSON with missing brackets or markdown ticks (` ```json `). Native Structured Outputs enforce 100% schema compliance at the token level using constrained decoding.
+3. **Foundation for AI Agents**: Every AI Agent is built on function calling—the agent loops between thinking, picking a tool, reading the result, and picking the next tool.
 
-Ensure you have installed the dependencies:
-```bash
-npm install openai zod dotenv
+---
+
+## 🧠 Prerequisites
+
+- [01_Introduction.md](./01_Introduction.md): How LLMs communicate via HTTP JSON payloads.
+- [06_Generation_Control.md](./06_Generation_Control.md): Temperature settings (`0.0` for structured outputs).
+
+---
+
+## 🔍 Deep Dive
+
+### 1. Golden Rule: Who Runs the Code?
+
+> [!IMPORTANT]
+> **The LLM never runs code directly!**
+> The AI only acts as a **decision maker**. It outputs a JSON payload containing the function name and parameters. **Your Node.js backend** inspects the payload, executes the real TypeScript function, and sends the return value back to the model.
+
+---
+
+### 2. Anatomy of a Tool Definition (JSON Schema)
+
+When you send a request to OpenAI or Gemini, you pass a list of available `tools`:
+
+```json
+{
+  "type": "function",
+  "function": {
+    "name": "get_stock_price",
+    "description": "Fetches current market price for a given stock ticker symbol",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "ticker": {
+          "type": "string",
+          "description": "The 3 or 4 letter stock ticker (e.g. AAPL, GOOG)"
+        }
+      },
+      "required": ["ticker"],
+      "additionalProperties": false
+    }
+  }
+}
 ```
 
-Create `tool_executor.ts`:
+---
+
+### 3. Tool Choice Modes (`tool_choice`)
+
+You can control whether the model is allowed or forced to call tools:
+
+```mermaid
+flowchart TD
+    subgraph ToolChoiceModes["Tool Choice Options"]
+        Auto["'auto' (Default): <br> Model decides whether to call a tool or reply with plain text"]
+        Required["'required': <br> Model MUST call at least one tool before replying"]
+        Specific["{ type: 'function', function: { name: 'getWeather' } }: <br> FORCES the model to call this specific tool"]
+        NoneMode["'none': <br> Disables tool calling; model only outputs plain text"]
+    end
+
+    style Auto fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
+    style Required fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
+    style Specific fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+```
+
+---
+
+### 4. Structured Outputs with Zod
+
+Instead of writing JSON Schema by hand, you can define TypeScript models using **Zod** (via `@openai/zod-response-format` or LangChain):
+
+```mermaid
+flowchart LR
+    ZodDef["TypeScript Zod Schema <br> z.object({ name, price, inStock })"] --> OpenAIHelper["zodResponseFormat()"]
+    OpenAIHelper --> JSONSchema["Strict JSON Schema"]
+    JSONSchema --> LLM["LLM Constrained Decoding"]
+    LLM --> GuaranteedJSON["Guaranteed 100% Type-Safe JSON Output"]
+
+    style ZodDef fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
+    style GuaranteedJSON fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px
+```
+
+---
+
+## 💡 Simple Example: The Smart Home Assistant
+
+Imagine telling your smart speaker: *"Turn off the living room lights and set the bedroom thermostat to 72 degrees."*
+1. Model reads your prompt.
+2. Model emits two tool calls simultaneously:
+   - Tool 1: `setLight({ room: "living_room", state: false })`
+   - Tool 2: `setThermostat({ room: "bedroom", degrees: 72 })`
+3. Node.js backend calls your IoT smart home devices.
+4. Model responds: *"I've turned off the living room lights and set the bedroom temperature to 72°."*
+
+---
+
+## 🏗️ Real-World Example: Database SQL Query Agent
+
+In an enterprise dashboard:
+- User asks: *"How many new users signed up last week?"*
+- LLM calls tool: `runReadOnlySqlQuery({ query: "SELECT count(*) FROM users WHERE created_at >= NOW() - INTERVAL '7 days'" })`
+- Backend runs the query safely on PostgreSQL and returns `{ count: 412 }`.
+- LLM reads `{ count: 412 }` and answers: *"There were 412 new signups last week, an increase of 12% over the prior week."*
+
+---
+
+## ⚠️ Common Mistakes & Pitfalls
+
+1. ❌ **Vague Tool Descriptions**:
+   - *Trap*: Writing description: `"Gets data"`. The model won't know when to use it.
+   - *Fix*: Be extremely explicit: `"Retrieves current user account balance in USD. Requires authenticated userId."`
+2. ❌ **Not handling Tool Call Errors**:
+   - *Trap*: If your database query fails, crashing the server.
+   - *Fix*: Catch the error in Node.js and return a tool message `{ error: "User not found with ID 456" }` so the AI can explain the error politely to the user.
+3. ❌ **Allowing destructive actions without confirmation**:
+   - *Caution*: Never let an AI directly call `deleteUser()` or `sendRefund()` without human confirmation (Human-in-the-Loop).
+
+---
+
+## 🔥 Important Points to Remember
+
+- LLMs **decide** what to call; your backend **executes** the code.
+- Always provide clear descriptions for functions and parameters.
+- Use `response_format` with strict JSON schema for guaranteed type-safe output.
+- `tool_choice: "auto"` allows the model to decide whether a tool is needed.
+
+---
+
+## 💻 Code / Commands / Configuration
+
+Here is a complete, working TypeScript script demonstrating Function Calling with Node.js:
 
 ```typescript
-import { OpenAI } from "openai";
-import { z } from "zod";
-import dotenv from "dotenv";
+// function_calling_demo.ts
+// 1. Run: npm install dotenv
+// 2. Run: npx ts-node function_calling_demo.ts
 
+import * as dotenv from 'dotenv';
 dotenv.config();
 
-const openai = new OpenAI();
-
-// 1. Define local backend tools
-
-// User DB Lookup Tool Schema
-const GetUserEmailSchema = z.object({
-  userId: z.string().describe("The unique user database identification string")
-});
-type GetUserEmailInput = z.infer<typeof GetUserEmailSchema>;
-
-// Local Tool Implementation
-function getUserEmail(args: GetUserEmailInput): string {
-  console.log(`[Executing Tool] getUserEmail for user ID: ${args.userId}`);
-  const mockDb: Record<string, string> = {
-    "user_123": "john.doe@example.com",
-    "user_456": "jane.smith@example.com"
+// 1. Define our real backend tool
+function getCryptoPrice(args: { symbol: string }): { symbol: string; price: number; currency: string } {
+  const prices: Record<string, number> = {
+    "BTC": 64500.00,
+    "ETH": 3450.50,
+    "SOL": 145.20
   };
-  return mockDb[args.userId] || "user_not_found";
+
+  const symbol = args.symbol.toUpperCase();
+  const price = prices[symbol] || 0;
+  return { symbol, price, currency: "USD" };
 }
 
-async function runToolCallingDemo() {
-  const userPrompt = "Can you check the email database for user_123 and let me know if they exist?";
-
-  // 2. Define the tool configuration payload for OpenAI API
-  const tools = [
-    {
-      type: "function" as const,
-      function: {
-        name: "getUserEmail",
-        description: "Fetch a user's registered email address from the local database.",
-        parameters: {
-          type: "object",
-          properties: {
-            userId: {
-              type: "string",
-              description: "The unique user database identification string"
-            }
-          },
-          required: ["userId"],
-          additionalProperties: false
+// 2. Tool definition schema sent to LLM
+const cryptoTool = {
+  type: "function" as const,
+  function: {
+    name: "getCryptoPrice",
+    description: "Get the current live price of a cryptocurrency by ticker symbol (e.g. BTC, ETH, SOL).",
+    parameters: {
+      type: "object",
+      properties: {
+        symbol: {
+          type: "string",
+          description: "The crypto ticker symbol like BTC, ETH, or SOL"
         }
-      }
-    }
+      },
+      required: ["symbol"],
+      additionalProperties: false
+    },
+    strict: true
+  }
+};
+
+async function runAgent(userPrompt: string) {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) throw new Error("Missing OPENAI_API_KEY");
+
+  const messages: any[] = [
+    { role: "system", content: "You are a helpful crypto trading assistant." },
+    { role: "user", content: userPrompt }
   ];
 
-  console.log("Sending initial prompt to model...");
-  const response = await openai.chat.completions.create({
-    model: "gpt-4o-mini",
-    messages: [{ role: "user", content: userPrompt }],
-    tools: tools,
-    temperature: 0.1
+  console.log(`👤 User: "${userPrompt}"`);
+
+  // Step 1: Send user query + tool definitions to model
+  const firstResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${apiKey}`
+    },
+    body: JSON.stringify({
+      model: "gpt-4o-mini",
+      messages: messages,
+      tools: [cryptoTool],
+      tool_choice: "auto",
+      temperature: 0.0
+    })
   });
 
-  const message = response.choices[0].message;
+  const firstData = await firstResponse.json();
+  const choice = firstData.choices[0].message;
 
-  // 3. Check if the model decided to call a tool
-  if (message.tool_calls && message.tool_calls.length > 0) {
-    const toolCall = message.tool_calls[0];
-    console.log(`\nModel requested tool call: "${toolCall.function.name}"`);
-    console.log(`Arguments payload: ${toolCall.function.arguments}`);
+  // Step 2: Check if model wants to call a tool
+  if (choice.tool_calls && choice.tool_calls.length > 0) {
+    const toolCall = choice.tool_calls[0];
+    console.log(`\n⚙️ LLM decided to call tool: "${toolCall.function.name}"`);
+    console.log(`📦 Arguments generated by LLM:`, toolCall.function.arguments);
 
-    if (toolCall.function.name === "getUserEmail") {
-      // Parse and validate arguments using Zod
-      const args = GetUserEmailSchema.parse(JSON.parse(toolCall.function.arguments));
-      
-      // Execute the local tool
-      const emailResult = getUserEmail(args);
-      console.log(`Tool Result: "${emailResult}"`);
+    // Step 3: Execute the real TypeScript function in Node.js
+    const parsedArgs = JSON.parse(toolCall.function.arguments);
+    const toolResult = getCryptoPrice(parsedArgs);
+    console.log(`⚡ Tool Output:`, toolResult);
 
-      // 4. Feed the tool result back to the model
-      const finalResponse = await openai.chat.completions.create({
+    // Step 4: Append model's tool call AND tool result to conversation history
+    messages.push(choice);
+    messages.push({
+      role: "tool",
+      tool_call_id: toolCall.id,
+      content: JSON.stringify(toolResult)
+    });
+
+    // Step 5: Send updated history back to model for final natural language answer
+    const secondResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
         model: "gpt-4o-mini",
-        messages: [
-          { role: "user", content: userPrompt },
-          message, // Include initial assistant response with tool_call
-          {
-            role: "tool",
-            tool_call_id: toolCall.id,
-            content: JSON.stringify({ email: emailResult })
-          }
-        ]
-      });
+        messages: messages
+      })
+    });
 
-      console.log("\n--- Final Model Synthesis ---");
-      console.log(finalResponse.choices[0].message.content);
-    }
+    const secondData = await secondResponse.json();
+    console.log(`\n🤖 AI Final Reply:\n"${secondData.choices[0].message.content}"`);
   } else {
-    console.log("No tool calls triggered. Response:", message.content);
+    console.log(`\n🤖 AI Reply (No tool needed):\n"${choice.content}"`);
   }
 }
 
-// Execute
-runToolCallingDemo();
-```
-
-Run this script:
-```bash
-npx tsx tool_executor.ts
+// Run the agent
+runAgent("How much is 1 Bitcoin (BTC) worth right now?");
 ```
 
 ---
 
-## Best Practices, Production & Security Considerations
+## 🎤 Interview Perspective
 
-### 1. Implement Strict Input Validation
-Never trust the arguments returned by the LLM. They are generated probabilistically and could contain prompt injection payloads or invalid types.
-* **Production Rule**: Always parse LLM arguments using Zod schemas (as shown in the code example) before passing them to internal databases, filesystem APIs, or billing services.
-
-### 2. Implement Execution Retries
-If the LLM returns invalid JSON for tool arguments, catch the parsing error and send it back to the model: *"You returned invalid arguments for tool X. Error: Y. Please try again."*
+* **Q: How does OpenAI's Structured Outputs feature guarantee 100% valid JSON adherence compared to prompting?**
+  * **Answer**: Older prompting methods relied on the model generating tokens freely and hoping it followed JSON syntax. Structured Outputs use **Constrained Decoding / Grammar Masking** at the token sampling step. The model's logits are dynamically masked using a grammar state machine so that invalid tokens (e.g. a letter where a number or closing brace is expected) have probability zero, making syntax errors mathematically impossible.
+* **Q: How do you protect against security vulnerabilities when allowing an LLM to call backend tools?**
+  * **Answer**: Enforce strict schema validation (Zod) on arguments, use read-only database connections for data queries, implement authentication/role checks in the backend function runner, and require explicit human confirmation for destructive actions (like financial transactions or data deletion).
 
 ---
 
-## Common Mistakes
+## 🧩 Connection With Previous Concepts
 
-1. **Allowing direct SQL or shell command execution**: Exposing tools like `runSQL(query)` or `executeShell(cmd)`. This allows users to execute prompt injections to delete databases or read server files.
-
----
-
-## Exercises & Mini Project
-
-### Exercise 1: Zod Schema Compiler
-Write a TypeScript script that converts a Zod schema into a JSON Schema object automatically, making it easier to register tools programmatically.
-
-### Mini Project: Weather Tool Agent
-Implement a local tool `getWeather(city: string)`. Call the LLM with the prompt: *"Should I take an umbrella in Paris today?"*. Intercept the tool call, return a mock response containing `{ weather: "rainy" }`, and print the final model output.
+- **Previous Lesson ([06_Generation_Control.md](./06_Generation_Control.md))**: Used temperature `0.0` for deterministic outputs.
+- **Next Lesson ([08_Model_Context_Protocol_MCP.md](./08_Model_Context_Protocol_MCP.md))**: We will explore the open industry standard for connecting AI models to tools and data sources: Anthropic's **Model Context Protocol (MCP)**!
 
 ---
 
-## Interview Questions
-
-1. **Q**: What is the difference between Function Calling and code execution?
-   * **A**: Function calling is a communication protocol. The LLM does not execute code. It output structured JSON arguments and suggests *when* to run a function. The client application executes the code on its own system and returns the result to the LLM.
-2. **Q**: How do structured output enforcements work at the sampler level?
-   * **A**: During generation, the sampler calculates probabilities for every vocabulary token. If a structured output schema is enforced, tokens that violate the schema structure are filtered out (their probability is set to zero), forcing the model to generate syntax-compliant JSON.
-
----
-
-## Navigation
-
-**Prev:** [Chapter 6: Generation Control](./06_Generation_Control.md) | **Index:** [Course Overview](./00_Index.md) | **Next:** [Chapter 8: Model Context Protocol](./08_Model_Context_Protocol_MCP.md)
+Previous : [06_Generation_Control.md](./06_Generation_Control.md) | Index: [00_Index.md](./00_Index.md) | Next: [08_Model_Context_Protocol_MCP.md](./08_Model_Context_Protocol_MCP.md)

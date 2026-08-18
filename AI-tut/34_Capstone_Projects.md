@@ -1,277 +1,146 @@
-# Chapter 34: Capstone Projects
+# 🤖 Capstone Projects: Enterprise AI Platforms and Autonomous Swarms
 
-**Estimated Reading Time**: 30 minutes  
-**Difficulty**: Expert  
-**Prerequisites**: Chapters 1–33.  
-**Learning Objectives**:
-1. Architect multi-container, full-stack AI applications.
-2. Design database schemas supporting standard and vector data.
-3. Construct multi-agent workspaces using LangGraph.
-4. Set up multi-container orchestrations using Docker Compose.
+## 📌 Overview
 
----
+Welcome to the **Grand Capstone Projects**! 
 
-## Introduction
+Throughout this entire course, you have learned the individual building blocks of modern GenAI: Tokenization, Embeddings, Prompt Engineering, LCEL Pipelines, LangGraph State Machines, Advanced RAG, pgvector, Redis Caching, and Docker Containerization.
 
-You have reached the end of the curriculum. You understand the math, the orchestration frameworks, the indexing strategies, and the security parameters of modern generative AI. Now it is time to put everything together to build production-grade systems.
+In this capstone chapter, we bring all of these concepts together into **Two Production-Grade End-to-End Projects** that you can build, deploy, and showcase on your portfolio!
 
-This final chapter details the blueprints and schemas for **two Capstone Projects** to add to your portfolio.
+```mermaid
+flowchart TD
+    subgraph Capstone1["🏆 Capstone 1: Enterprise Multi-Tenant RAG Search Engine"]
+        C1["• React Streaming UI <br> • Fastify Microservice <br> • Redis Semantic Cache <br> • PostgreSQL pgvector Hybrid Search <br> • Cohere Rerank & Exact Citations"]
+    end
 
----
+    subgraph Capstone2["🏆 Capstone 2: Autonomous Multi-Agent Dev & Review Swarm"]
+        C2["• GitHub Webhook Ingestion <br> • LangGraph Supervisor Orchestrator <br> • Specialist Agents (Coder, Security, Tester) <br> • Human-in-the-Loop Approval Gate <br> • Automated PR Comment & Deployment"]
+    end
 
-## Capstone 1: Enterprise-Grade Support RAG System
-
-### 1. Goal & Specifications
-Build a ticketing support platform. When a customer submits a ticket, the system automatically checks support docs, queries user databases for validation, suggests an answer, and resolves the ticket or escalates to a human agent, providing live streaming UI updates.
-
-### 2. Architecture & Data Flow
-* **Frontend**: React application displaying tickets dashboard, customer logs, and chat streams.
-* **Backend**: Fastify API handling authentication, rate limiting, and agent orchestration.
-* **Database**: PostgreSQL with `pgvector` extension storing tickets and vectorized knowledge docs.
-* **Cache**: Redis acting as a rate limiter and Semantic Cache store.
-* **Deployment**: Docker containerization on AWS App Runner and RDS Postgres.
-
-### 3. Database Schema Design (SQL)
-```sql
--- Enable Extensions
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE EXTENSION IF NOT EXISTS "vector";
-
--- Users and Roles
-CREATE TABLE users (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  email TEXT UNIQUE NOT NULL,
-  role VARCHAR(20) DEFAULT 'customer' -- customer, support_rep, admin
-);
-
--- Support Knowledgebase Articles
-CREATE TABLE knowledge_base (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  title TEXT NOT NULL,
-  content TEXT NOT NULL,
-  embedding vector(1536) -- OpenAI embedding size
-);
-
--- Support Tickets Table
-CREATE TABLE tickets (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  customer_id UUID REFERENCES users(id),
-  subject TEXT NOT NULL,
-  description TEXT NOT NULL,
-  status VARCHAR(20) DEFAULT 'open', -- open, resolved, escalated
-  ai_suggested_response TEXT,
-  created_at TIMESTAMP DEFAULT NOW()
-);
+    style Capstone1 fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
+    style Capstone2 fill:#ede7f6,stroke:#7e57c2,stroke-width:2px
 ```
 
 ---
 
-## Capstone 2: Multi-Agent Software Development Workspace
+## 🏗️ Capstone Project 1: Enterprise Multi-Tenant RAG Platform
 
-### 1. Goal & Specifications
-Create a web agent workspace. You supply a requirements prompt (e.g. "Create a Express billing router with tests"). The agent graph analyzes files, generates a plan, writes code files, runs testing scripts, fixes compiler issues, and opens a git branch with code changes.
+### 🎯 Architecture Overview
 
-### 2. Graph Topology (LangGraph)
-* **Supervisor Node**: Parses requirements and creates a task list (DAG).
-* **Code Writer Node**: Reads/writes files using file-system tooling.
-* **Validator Node**: Runs `npm run build` or `npm test` via Node `child_process`.
-* **Reflection Routing**: If compiler/tests fail, loops the code back to Coder with error logs. If clean, routes to Git tool and terminates.
+A complete, production-ready enterprise search and knowledge retrieval platform for multi-tenant SaaS applications:
 
----
-
-## Code Example: Capstone 2 Agent Skeleton (TypeScript)
-
-Let's build the core execution engine of the Multi-Agent Coding Workspace using LangGraph and Node.js child processes.
-
-Create `capstone_workspace.ts`:
-
-```typescript
-import { Annotation, StateGraph, START, END } from "@langchain/langgraph";
-import * as fs from "fs";
-import * as path from "path";
-
-// 1. Define the Workspace State Schema
-const WorkspaceState = Annotation.Root({
-  taskInstructions: Annotation<string>({
-    reducer: (x, y) => y ?? x,
-    default: () => "",
-  }),
-  codeContent: Annotation<string>({
-    reducer: (x, y) => y ?? x,
-    default: () => "",
-  }),
-  compilerErrors: Annotation<string>({
-    reducer: (x, y) => y ?? x,
-    default: () => "",
-  }),
-  attemptsCount: Annotation<number>({
-    reducer: (x, y) => x + y, // Increments compilation attempts
-    default: () => 0,
-  }),
-  status: Annotation<'COMPILING' | 'SUCCESS'>({
-    reducer: (x, y) => y ?? x,
-    default: () => "COMPILING",
-  })
-});
-
-// 2. Define Node Actions
-
-// Node A: Coder Agent Node
-async function coderNode(state: typeof WorkspaceState.State) {
-  console.log(`[CoderNode] Writing typescript code. Attempt: ${state.attemptsCount + 1}`);
-  let code = `export function add(a: number, b: number): number {\n  return a + b;\n}`;
-
-  // Write file to workspace
-  const tempFilePath = path.join(process.cwd(), "temp_target.ts");
-  fs.writeFileSync(tempFilePath, code);
-  
-  return {
-    codeContent: code,
-    attemptsCount: 1
-  };
-}
-
-// Node B: Validator Node (Runs compiler / tests)
-async function validatorNode(state: typeof WorkspaceState.State) {
-  console.log("[ValidatorNode] Compiling TS file and running validation checks...");
-  const tempFilePath = path.join(process.cwd(), "temp_target.ts");
-
-  try {
-    if (!fs.existsSync(tempFilePath)) {
-      throw new Error("Target file not found.");
-    }
-    console.log("[ValidatorNode] Compilation successful. Running tests...");
+```mermaid
+flowchart TD
+    User["👤 End User (Browser / React)"] --> Fastify["⚡ Fastify API Gateway"]
+    Fastify --> RedisLimit{"1. Redis Rate Limiter (Token Bucket)"}
     
-    return {
-      status: "SUCCESS" as const,
-      compilerErrors: ""
-    };
-  } catch (error: any) {
-    console.error("[ValidatorNode] Validation error detected!");
-    return {
-      status: "COMPILING" as const,
-      compilerErrors: error.message
-    };
-  }
-}
+    RedisLimit -->|Allowed| RedisCache{"2. Redis Semantic Cache (Cosine > 0.95)"}
+    RedisCache -->|HIT (5ms)| Fastify
+    
+    RedisCache -->|MISS| Hybrid["3. Hybrid Retrieval Engine <br> • Dense Vectors (pgvector HNSW) <br> • Sparse BM25 Keywords <br> • Tenant Filter: WHERE tenant_id = $1"]
+    
+    Hybrid --> Rerank["4. Cohere Cross-Encoder Reranker <br> (Filters Top 50 down to Top 3)"]
+    Rerank --> LangChain["5. LCEL Context Synthesizer (GPT-4o)"]
+    LangChain --> Stream["6. SSE Live Streaming Response with Citations"]
+    Stream --> User
 
-// 3. Routing Edge Logic
-function routeAfterValidation(state: typeof WorkspaceState.State) {
-  if (state.status === "SUCCESS") {
-    return "success";
-  }
-  if (state.attemptsCount >= 3) {
-    console.log("[Router] Maximum compile attempts reached. Terminating workspace.");
-    return "fail";
-  }
-  return "retry";
-}
-
-// 4. Construct Graph
-const workflow = new StateGraph(WorkspaceState)
-  .addNode("coder", coderNode)
-  .addNode("validator", validatorNode)
-  .addEdge(START, "coder")
-  .addEdge("coder", "validator")
-  .addConditionalEdges("validator", routeAfterValidation, {
-    success: END,
-    retry: "coder",
-    fail: END
-  });
-
-const workspaceAgent = workflow.compile();
-
-// 5. Run Capstone Engine Simulation
-(async () => {
-  console.log("Starting Capstone Multi-Agent Software Development workspace runner...");
-  const finalState = await workspaceAgent.invoke({
-    taskInstructions: "Create a math module with a TypeScript add function."
-  });
-
-  console.log("\n--- Final Execution Report ---");
-  console.log("Status:", finalState.status);
-  console.log("Attempts:", finalState.attemptsCount);
-  console.log("Generated File Content:\n", finalState.codeContent);
-  
-  // Cleanup file
-  const tempFilePath = path.join(process.cwd(), "temp_target.ts");
-  if (fs.existsSync(tempFilePath)) {
-    fs.unlinkSync(tempFilePath);
-  }
-})();
+    style User fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
+    style Fastify fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
+    style RedisCache fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    style Hybrid fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    style Stream fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px
 ```
 
-Run this file:
-```bash
-npx tsx capstone_workspace.ts
+### 💻 Key Architectural Features
+
+1. **Multi-Tenant Data Isolation**: Every chunk in PostgreSQL is tagged with `tenant_id` and filtered at the database level.
+2. **Sub-10ms Semantic Caching**: Repetitive queries are served instantly from Redis.
+3. **Two-Stage Hybrid Search**: Combines BM25 exact keyword matching with pgvector HNSW cosine distance, refined by Cohere Rerank.
+4. **Real-Time SSE Streaming**: Streams tokens to React UI with exact document citation cards.
+
+---
+
+## 🏗️ Capstone Project 2: Autonomous Multi-Agent Dev & Review Swarm
+
+### 🎯 Architecture Overview
+
+An autonomous, multi-agent developer assistant that ingests GitHub Pull Requests, performs parallel audits, runs automated code fixes, and requires human approval before committing:
+
+```mermaid
+flowchart TD
+    GH["🐙 GitHub PR Webhook Trigger"] --> Sup["👔 LangGraph Supervisor Agent"]
+    
+    subgraph Parallel_Audit["Parallel Specialist Audit"]
+        Sec["🔒 Security Auditor <br> (OWASP & Secret Scanner)"]
+        Perf["⚡ Performance Auditor <br> (N+1 Query & Loop Scanner)"]
+        Type["🎨 TypeScript Clean Code Auditor"]
+    end
+
+    Sup --> Parallel_Audit
+    Parallel_Audit --> Synthesis["Lead Architect Synthesizer"]
+    
+    Synthesis --> CoderAgent["💻 Auto-Fix Coder Agent <br> (Generates replacement code patch)"]
+    
+    CoderAgent --> HITL{"🛑 Human-in-the-Loop Approval Gate <br> (interruptBefore: ['git_commit'])"}
+    
+    HITL -->|Lead Dev Approves| Commit["🚀 Git Commit & Auto-Merge PR"]
+    HITL -->|Lead Dev Rejects| Reject["❌ Close Workflow with Feedback"]
+
+    style GH fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
+    style Sup fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
+    style Parallel_Audit fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    style HITL fill:#ffebee,stroke:#c62828,stroke-width:2px
+    style Commit fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px
 ```
 
+### 💻 Key Architectural Features
+
+1. **LangGraph Stateful Swarm**: Multi-agent state machine coordinating specialized worker nodes.
+2. **Parallel Fan-Out Execution**: Security, performance, and styling audits run concurrently.
+3. **State Checkpointing with Time-Travel**: Pauses execution using `PostgresSaver` under a unique `thread_id` until a human engineer approves the suggested code changes.
+4. **Zero Unsupervised Merges**: Hard programmatic guardrail preventing any AI tool from pushing code without explicit human cryptographic signature.
+
 ---
 
-## Best Practices, Production & Security Considerations
+## 🚀 Production Launch Checklist
 
-### 1. Docker Compose Orchestration
-To host the Enterprise Support system, run a multi-container stack. Save this configuration as `docker-compose.yml`:
-```yaml
-version: '3.8'
+Before deploying any AI application to production, run through this **10-Point Readiness Checklist**:
 
-services:
-  database:
-    image: pgvector/pgvector:pg16
-    container_name: postgres_db
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: production_password
-      POSTGRES_DB: app_db
-    volumes:
-      - pgdata:/var/lib/postgresql/data
+- [ ] **1. API Key Security**: No keys exposed in client bundles or pushed to git; all keys loaded via secure environment variables.
+- [ ] **2. Hardcoded Tool Guardrails**: Strict financial, permission, and rate limits enforced in backend TypeScript code.
+- [ ] **3. Schema Validation**: 100% of LLM JSON outputs validated using strict Zod schemas with fallback error handlers.
+- [ ] **4. Real-Time Streaming**: All user-facing chat endpoints stream tokens via Server-Sent Events (SSE).
+- [ ] **5. Cost & Latency Controls**: Redis Semantic Caching active with similarity threshold $\ge 0.94$.
+- [ ] **6. Rate Limiting**: Token-Bucket rate limiting configured to prevent API exhaustion.
+- [ ] **7. Vector Index Tuning**: PostgreSQL pgvector tables have HNSW indexes enabled (`vector_cosine_ops`).
+- [ ] **8. Multi-Stage Docker Container**: Built on Node.js Alpine, running as an unprivileged non-root user.
+- [ ] **9. Graceful Shutdown**: `SIGTERM` handlers implemented to allow in-flight token streams to drain cleanly.
+- [ ] **10. Full Observability**: LangSmith or OpenTelemetry tracing enabled for token accounting and latency waterfall inspection.
 
-  cache:
-    image: redis:7-alpine
-    container_name: redis_cache
-    ports:
-      - "6379:6379"
+---
 
-  api-server:
-    build: .
-    container_name: fastify_api
-    ports:
-      - "3000:3000"
-    environment:
-      DATABASE_URL: postgresql://postgres:production_password@database:5432/app_db
-      REDIS_URL: redis://cache:6379
-      OPENAI_API_KEY: ${OPENAI_API_KEY}
-    depends_on:
-      - database
-      - cache
+## 🎓 Summary of Your AI Engineering Journey
 
-volumes:
-  pgdata:
+```mermaid
+timeline
+    title Your Full-Stack AI Mastery Roadmap
+    Fundamentals : Deterministic vs Probabilistic : Neurons, Backprop & Loss : Transformers & Self-Attention : Tokens & Embeddings
+    Model Control : Temperature & Sampling : Function Calling & Zod : Model Context Protocol (MCP) : SDKs & SSE Streaming
+    Orchestration : Prompt Engineering & Guardrails : LangChain.js & LCEL : Memory & Custom Tools : LangSmith Tracing
+    Multi-Agent Systems : LangGraph StateGraph : Reducers & Routing : Human-in-the-Loop Gates : Supervisor Swarm Patterns
+    RAG & Vector DBs : Ingestion & Chunking : Hybrid Search & HyDE : Corrective & Self-RAG : Cohere Rerank & pgvector
+    Production Mastery : Fastify & Docker : Redis Semantic Cache : Capstone Deployments : High-Yield Interview Prep
 ```
 
----
-
-## Exercises & Mini Project
-
-### Exercise 1: Multi-Tenant Schema Validation
-Extend the Postgres SQL schema for Capstone 1 by adding a `tenant_id` column to both the `tickets` and `knowledge_base` tables. Add indices on the `tenant_id` columns.
-
-### Mini Project: Git branch automation
-Update the Capstone 2 TypeScript code snippet. Add a tool `gitCommitAndPush(branchName: string)` using Node's `execSync` command to automate creating a git branch, staging changes, and committing the files locally.
+You now possess the complete, end-to-end skillset required to design, build, optimize, and deploy world-class Generative AI applications as a **Full-Stack AI Engineer**!
 
 ---
 
-## Interview Questions
+## 🧩 Course Navigation
 
-1. **Q**: How would you handle database connection pooling in a serverless environment querying pgvector?
-   * **A**: Use an RDS Proxy or pgBouncer between the serverless functions and the database to reuse database connections, reducing connection overhead.
-2. **Q**: How do you secure code validator steps inside child processes?
-   * **A**: Execute the validator and compiler checks in an isolated, sandboxed environment (such as a temporary Docker container with read-only files system access and no internet connection).
+- **Master Index**: Return to the complete curriculum and high-density revision guide in [00_Index.md](./00_Index.md).
 
 ---
 
-## Navigation
-
-**Prev:** [Chapter 33: Interview Prep](file:///d:/learning/theory/AI-tut/33_Interview_Questions_and_Coding_Challenges.md) | **Index:** [Course Overview](file:///d:/learning/theory/AI-tut/README.md) | **Next:** -
+Previous : [33_Interview_Questions_and_Coding_Challenges.md](./33_Interview_Questions_and_Coding_Challenges.md) | Index: [00_Index.md](./00_Index.md) | Next: —

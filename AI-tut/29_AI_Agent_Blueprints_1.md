@@ -1,228 +1,293 @@
-# Chapter 29: AI Agent Blueprints - Part 1
+# 🤖 AI Agent Blueprints I: Customer Support and Billing Agent
 
-**Estimated Reading Time**: 25 minutes  
-**Difficulty**: Expert  
-**Prerequisites**: Chapters 1–28.  
-**Learning Objectives**:
-1. Architect specialized state structures and tool signatures for agent systems.
-2. Design blueprints for Resume Analyzer, Coding Assistant, Support Bot, and Email Assistant.
-3. Handle file system execution tool outputs securely on the backend.
-4. Implement a mock validator test runner for coding agents in TypeScript.
+## 📌 Overview
 
----
+Now that you have mastered LangChain, LangGraph, RAG, and Vector Databases, it is time to build **Real-World Production AI Agents**!
 
-## Introduction
+In this chapter, we will build the **Autonomous Customer Support & Billing Agent**—one of the most common and high-value AI systems deployed in the software industry today.
 
-So far, you have studied the building blocks: models, embeddings, vectors, and graphs. Now we will apply these components to design production-grade agent architectures.
-
-An **AI Agent** is not just an API call; it is a system of state schemas, tool bindings, and routing loops.
-
-In this chapter, we explore blueprints for the first four agent projects (Resume Analyzer, Coding Assistant, Support Bot, and Email Assistant) and write a mock validation harness in TypeScript.
-
----
-
-## The 4 Agent Blueprints
-
-### 1. AI Resume Analyzer
-* **Goal**: Match candidate resumes against job descriptions (JDs) and score fit.
-* **State Schema**:
-  ```typescript
-  interface ResumeState {
-    resumeText: string;
-    jobDescription: string;
-    extractedSkills: string[];
-    skillsGap: string[];
-    fitScore: number; // 0 - 100
-  }
-  ```
-* **Tools**: PDF text parser, vector match extractor.
-* **Core Flow**: Parse Resume text $\to$ extract candidate skills $\to$ compare against JD embedding using cosine similarity $\to$ generate structured report.
-
-### 2. AI Coding Assistant
-* **Goal**: Read, edit, and debug code files recursively.
-* **State Schema**:
-  ```typescript
-  interface CoderState {
-    filePath: string;
-    instructions: string;
-    code: string;
-    compileSuccess: boolean;
-    errors?: string;
-  }
-  ```
-* **Tools**: `readFile`, `writeFile`, `executeTests`.
-* **Core Flow**: Read target file $\to$ modify code $\to$ run compiler/tests tool $\to$ if compilation fails, feed error logs back to model $\to$ repeat loop until tests pass.
-
-### 3. AI Customer Support Bot
-* **Goal**: Answer customer queries, query databases, and handle human escalation.
-* **State Schema**:
-  ```typescript
-  interface SupportState {
-    messages: BaseMessage[];
-    userId: string;
-    needsEscalation: boolean;
-  }
-  ```
-* **Tools**: `getUserRecord`, `queryBilling`.
-* **Core Flow**: Check user ID $\to$ fetch account status tool $\to$ answer query $\to$ if user expresses frustration or requests human, set state flag `needsEscalation: true` and halt graph.
-
-### 4. AI Email Assistant
-* **Goal**: Read email inboxes, classify urgency, draft replies, and wait for approval.
-* **State Schema**:
-  ```typescript
-  interface EmailState {
-    sender: string;
-    subject: string;
-    body: string;
-    draftReply: string;
-    approved: boolean;
-  }
-  ```
-* **Tools**: `fetchEmails`, `sendEmailDraft`, `slackNotify`.
-* **Core Flow**: Ingest unread email $\to$ draft reply $\to$ send draft to Slack with approval links $\to$ await approval webhook $\to$ send email.
-
----
-
-## Real-World Analogy: The Corporate Office
-
-Think of specialized agents as **different office departments**:
-* **Resume Analyzer = HR Assistant**: Scans stacks of CVs and filters out unqualified candidates.
-* **Coding Assistant = Junior Developer**: Writes code, runs compiler checks, corrects typos, and submits changes.
-* **Support Bot = Receptionist**: Greets callers, answers basic questions using manuals, and routes complex calls to the manager.
-* **Email Assistant = Executive Secretary**: Reads the manager's mail, categorizes mail by urgency, drafts responses, and asks the manager to sign off.
-
----
-
-## Architecture Diagram: Coding Assistant Loop
-
-This diagram maps out the recursive compilation loop of a Coding Assistant.
+This agent can:
+1. Greet customers and look up their active orders,
+2. Search company return policies using RAG,
+3. Safely process automated refunds under **$100**,
+4. Automatically escalate high-value or angry customers to a human agent with full ticket history!
 
 ```mermaid
-graph TD
-    Start([START]) --> Read[Read File: code.ts]
-    Read --> Edit[Node: Edit Code]
-    Edit --> Test[Node: Run Tests Tool]
-    Test --> Check{Test Success?}
-    Check -->|Yes| End([END])
-    Check -->|No| Edit
+flowchart TD
+    UserMsg["Customer: 'I want a refund for damaged order #501'"] --> Triage["1. Triage & Intent Classifier"]
+    
+    Triage -->|Policy Question| RAGNode["2. RAG Knowledge Retriever <br> (Searches Return Policies)"]
+    Triage -->|Refund Action| CheckAmount{"3. Refund Amount Guardrail"}
+    
+    CheckAmount -->|Amount <= $100| ProcessRefund["4. Auto-Execute Refund Tool (Stripe API)"]
+    CheckAmount -->|Amount > $100| Escalate["5. Escalate to Human Support (Zendesk Ticket)"]
+
+    RAGNode --> FinalReply["6. Final Polite Response with Citations"]
+    ProcessRefund --> FinalReply
+    Escalate --> FinalReply
+
+    style UserMsg fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
+    style Triage fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
+    style CheckAmount fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    style ProcessRefund fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px
+    style Escalate fill:#ffe0b2,stroke:#f57c00,stroke-width:2px
 ```
 
 ---
 
-## Code Example: Validator Test Runner (TypeScript)
+## 🎯 Why This Matters
 
-Let's build a TypeScript class that simulates a validator runner executing compiler commands on code files written by a coder agent.
+1. **Production Blueprint**: Combines all previous concepts (LangGraph, RAG, Zod tools, guardrails, conditional routing) into a single cohesive system.
+2. **Defensive AI Engineering**: Demonstrates how to put hard programmatic boundaries around AI tools to prevent unauthorized financial losses.
+3. **High-Demand Portfolio Project**: A cornerstone project for full-stack AI engineering portfolios and technical interviews.
 
-Create `agent_validator.ts`:
+---
+
+## 🧠 Prerequisites
+
+- [07_Function_Calling_and_Structured_Outputs.md](./07_Function_Calling_and_Structured_Outputs.md): Zod tool definitions.
+- [20_LangGraph_Reducers_and_Routing.md](./20_LangGraph_Reducers_and_Routing.md): StateGraph routing.
+- [23_RAG_Ingestion_and_Chunking.md](./23_RAG_Ingestion_and_Chunking.md): RAG retrieval.
+
+---
+
+## 🔍 Deep Dive
+
+### 1. State Schema Architecture
+
+The support agent state tracks the conversation, customer identity, and escalation flags:
 
 ```typescript
-import * as fs from "fs";
-import * as path from "path";
+const SupportState = Annotation.Root({
+  messages: Annotation<BaseMessage[]>({
+    reducer: (curr, update) => curr.concat(update),
+    default: () => [],
+  }),
+  customerId: Annotation<string>(),
+  orderId: Annotation<string | null>(),
+  isEscalated: Annotation<boolean>(),
+});
+```
 
-class AgentTestRunner {
-  private workspacePath: string;
+---
 
-  constructor() {
-    this.workspacePath = path.join(process.cwd(), "agent_workspace");
-    if (!fs.existsSync(this.workspacePath)) {
-      fs.mkdirSync(this.workspacePath);
+### 2. The Defensive Refund Guardrail
+
+Never let an LLM execute financial transactions without strict **programmatic validation**:
+
+```mermaid
+flowchart LR
+    LLMDecision["LLM triggers refundOrder(orderId: 501, amount: 150)"] --> BackendValidator{"Node.js Guardrail Check: <br> amount <= 100?"}
+    
+    BackendValidator -->|True (<= $100)| CallStripe["Call Stripe API -> Success!"]
+    BackendValidator -->|False (> $100)| Block["BLOCK Action -> Route to Human Manager!"]
+
+    style BackendValidator fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
+    style CallStripe fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px
+    style Block fill:#ffebee,stroke:#c62828,stroke-width:2px
+```
+
+---
+
+## 💡 Simple Example: The Bank Teller & Branch Manager
+
+Think of this architecture like a **Bank Branch**:
+- **The AI Teller**: Can check your balance, explain branch hours, and cash checks under $100 immediately.
+- **The Branch Manager**: If you want to withdraw $5,000 or close a mortgage, the teller pauses and walks you directly to the Branch Manager's desk (**Human Escalation**).
+
+---
+
+## 🏗️ Real-World Example: E-Commerce Store Support
+
+In an online clothing store:
+1. Customer: *"My blue jeans arrived torn. Can I get my $45 back?"*
+2. Agent calls `lookupOrder("501")` $\to$ verifies order is for $45 and delivered 2 days ago.
+3. Policy check confirms items can be returned within 30 days.
+4. Agent executes `refundOrder("501", 45)`.
+5. Customer receives instant email confirmation and Stripe refund receipt.
+
+---
+
+## ⚠️ Common Mistakes & Pitfalls
+
+1. ❌ **Allowing the LLM to Decide the Refund Cap**:
+   - *Danger*: Writing in the prompt *"Only refund under $100"*. A prompt injection could trick the model into ignoring that rule.
+   - *Fix*: Enforce the `< $100` condition in the **TypeScript code** inside the tool handler, completely outside the LLM's control!
+2. ❌ **Not Providing Full Chat Transcript on Escalation**:
+   - *Fix*: When escalating to a human support queue, bundle the full message history so the human doesn't ask the customer to repeat themselves.
+
+---
+
+## 🔥 Important Points to Remember
+
+- Customer support agents combine **Triage**, **RAG Retrieval**, and **Action Tooling**.
+- Always enforce financial caps in **hard backend code**, not solely in prompts.
+- Seamlessly transition from AI to human support when confidence is low or policies are exceeded.
+
+---
+
+## 💻 Code / Commands / Configuration
+
+Here is a complete, runnable TypeScript implementation of the **Customer Support & Billing Agent**:
+
+```typescript
+// customer_support_agent.ts
+// 1. Run: npm install @langchain/langgraph @langchain/core @langchain/openai zod dotenv
+// 2. Run: npx ts-node customer_support_agent.ts
+
+import { StateGraph, START, END, Annotation } from "@langchain/langgraph";
+import { ChatOpenAI } from "@langchain/openai";
+import { HumanMessage, AIMessage, ToolMessage, BaseMessage } from "@langchain/core/messages";
+import { DynamicStructuredTool } from "@langchain/core/tools";
+import { z } from "zod";
+import * as dotenv from "dotenv";
+
+dotenv.config();
+
+// 1. Define Support Agent State
+const SupportState = Annotation.Root({
+  messages: Annotation<BaseMessage[]>({
+    reducer: (curr, update) => curr.concat(update),
+    default: () => [],
+  }),
+  isEscalated: Annotation<boolean>({
+    reducer: (curr, update) => update ?? curr,
+    default: () => false,
+  }),
+});
+
+// 2. Tools with Hardcoded Security Guardrails
+const orderLookupTool = new DynamicStructuredTool({
+  name: "lookup_order",
+  description: "Look up details of a customer order by Order ID",
+  schema: z.object({ orderId: z.string().describe("Order ID number") }),
+  func: async ({ orderId }) => {
+    if (orderId === "501") {
+      return JSON.stringify({ orderId: "501", item: "Wireless Headphones", amount: 65.00, status: "Delivered" });
     }
-  }
+    if (orderId === "999") {
+      return JSON.stringify({ orderId: "999", item: "4K OLED TV", amount: 1200.00, status: "Delivered" });
+    }
+    return JSON.stringify({ error: "Order not found" });
+  },
+});
 
-  // Coder agent writes file to disk
-  public writeCodeFile(fileName: string, content: string) {
-    const filePath = path.join(this.workspacePath, fileName);
-    fs.writeFileSync(filePath, content);
-    console.log(`[Agent Workspace] Written file: ${fileName}`);
-  }
-
-  // Validator node tests compilation
-  public runCompilerCheck(fileName: string): { success: boolean; errors?: string } {
-    console.log(`[Validator Node] Compiling: ${fileName}...`);
-    const filePath = path.join(this.workspacePath, fileName);
-    const content = fs.readFileSync(filePath, "utf-8");
-
-    // Simple mock compilation check: check for syntax errors
-    if (content.includes("syntax_error") || !content.includes("export")) {
-      return {
+const refundTool = new DynamicStructuredTool({
+  name: "process_refund",
+  description: "Processes a financial refund for an order. Max auto-approval limit is $100.",
+  schema: z.object({
+    orderId: z.string(),
+    amount: z.number().describe("Refund amount in USD"),
+    reason: z.string().describe("Reason for refund"),
+  }),
+  func: async ({ orderId, amount, reason }) => {
+    // 🛡️ HARD PROGRAMMATIC GUARDRAIL: Never allow AI to refund > $100!
+    if (amount > 100) {
+      return JSON.stringify({
         success: false,
-        errors: "Compilation Error: Missing export statement or invalid syntax identifier."
-      };
+        error: "AMOUNT_EXCEEDS_LIMIT",
+        message: `Refund of $${amount} exceeds the $100 automated limit. Human supervisor escalation required.`,
+      });
     }
 
-    return { success: true };
-  }
+    return JSON.stringify({
+      success: true,
+      message: `Successfully refunded $${amount} for Order #${orderId}. Confirmation code: REF-${Date.now()}`,
+    });
+  },
+});
 
-  // Cleanup
-  public cleanup() {
-    const dir = fs.readdirSync(this.workspacePath);
-    for (const file of dir) {
-      fs.unlinkSync(path.join(this.workspacePath, file));
-    }
-    fs.rmdirSync(this.workspacePath);
-  }
+const tools = [orderLookupTool, refundTool];
+const toolMap = { [orderLookupTool.name]: orderLookupTool, [refundTool.name]: refundTool };
+
+// 3. Initialize Model
+const model = new ChatOpenAI({ modelName: "gpt-4o-mini", temperature: 0.0 }).bindTools(tools);
+
+// 4. Agent Node
+async function agentNode(state: typeof SupportState.State) {
+  console.log("🤖 [Support Agent] Processing customer request...");
+  const systemPrompt = `You are a polite, helpful customer support agent for Acme Electronics.
+1. When a user asks about an order or refund, first look up the order using 'lookup_order'.
+2. If the user is eligible for a refund under $100, execute 'process_refund'.
+3. If a refund fails because it exceeds $100, inform the user politely that a senior human support manager has been notified to process their high-value request.`;
+
+  const response = await model.invoke([
+    { role: "system", content: systemPrompt },
+    ...state.messages,
+  ]);
+
+  return { messages: [response] };
 }
 
-// Execution Block
-const runner = new AgentTestRunner();
+// 5. Tool Node
+async function toolNode(state: typeof SupportState.State) {
+  const lastMsg = state.messages[state.messages.length - 1] as AIMessage;
+  const toolResults: BaseMessage[] = [];
+  let escalated = false;
 
-// 1. Coder writes bad code (fails compiler check)
-console.log("--- Test Run 1: Coder Agent writes invalid script ---");
-runner.writeCodeFile("math.ts", "const add = (a, b) => a + b; syntax_error;");
-const check1 = runner.runCompilerCheck("math.ts");
-console.log("Compile Success:", check1.success);
-console.log("Error Log:", check1.errors);
+  for (const call of lastMsg.tool_calls || []) {
+    console.log(`⚡ [Tool Execution]: ${call.name}(${JSON.stringify(call.args)})`);
+    const tool = toolMap[call.name];
+    const output = await tool.invoke(call.args);
+    
+    if (output.includes("AMOUNT_EXCEEDS_LIMIT")) {
+      escalated = true;
+    }
 
-// 2. Coder fixes code based on feedback
-console.log("\n--- Test Run 2: Coder Agent corrects script ---");
-runner.writeCodeFile("math.ts", "export function add(a: number, b: number) { return a + b; }");
-const check2 = runner.runCompilerCheck("math.ts");
-console.log("Compile Success:", check2.success);
+    toolResults.push(new ToolMessage({ tool_call_id: call.id!, content: output }));
+  }
 
-// Clean workspace files
-runner.cleanup();
+  return { messages: toolResults, isEscalated: escalated };
+}
+
+// 6. Router
+function router(state: typeof SupportState.State) {
+  const lastMsg = state.messages[state.messages.length - 1] as AIMessage;
+  if (lastMsg.tool_calls && lastMsg.tool_calls.length > 0) {
+    return "tools";
+  }
+  return "__end__";
+}
+
+// 7. Compile Graph
+async function main() {
+  const workflow = new StateGraph(SupportState)
+    .addNode("agent", agentNode)
+    .addNode("tools", toolNode)
+    .addEdge(START, "agent")
+    .addConditionalEdges("agent", router, { tools: "tools", __end__: END })
+    .addEdge("tools", "agent");
+
+  const app = workflow.compile();
+
+  // Test Case: Auto-approved $65 refund
+  console.log("🚀 --- Test Scenario: $65 Refund for Order #501 ---\n");
+  const result = await app.invoke({
+    messages: [new HumanMessage("Hi, my headphones for order #501 arrived broken. Can I get a refund?")],
+  });
+
+  console.log("\n🏁 Final Agent Response:\n", result.messages[result.messages.length - 1].content);
+}
+
+main();
 ```
 
-Run this file:
-```bash
-npx tsx agent_validator.ts
-```
+---
+
+## 🎤 Interview Perspective
+
+* **Q: Why must financial and high-stakes guardrails be implemented in application code rather than prompt instructions?**
+  * **Answer**: System prompts are advisory and vulnerable to indirect prompt injection, jailbreaking, and non-deterministic compliance failures. Programmatic guardrails in the tool execution layer (e.g. `if (amount > 100) return error`) execute deterministically in the Node.js runtime, making unauthorized actions mathematically impossible regardless of model output.
+* **Q: How do you handle customer sentiment escalation in a production support graph?**
+  * **Answer**: We attach a lightweight sentiment analysis node or classifier to the incoming user message. If anger/frustration score exceeds a threshold (or if the user explicitly types "talk to human"), the graph routes directly to an `EscalationNode` that generates a Zendesk/Freshdesk ticket with conversation transcript and bypasses the AI tool loop.
 
 ---
 
-## Best Practices, Production & Security Considerations
+## 🧩 Connection With Previous Concepts
 
-### 1. Sandboxing Agent File Executions
-If an agent has command-line execution permissions, it can run dangerous commands (e.g. `rm -rf /`).
-* **Production Rule**: Run coding agent execution tools inside sandboxed virtual environments (like Docker containers or WASM runtimes) with restricted directory access and no network connections.
-
----
-
-## Common Mistakes
-
-1. **Infinite agent loops**: Allowing coding agents to loop recursively indefinitely when compiler tests fail, draining your API budget. Always set a maximum retry counter (e.g. 3 attempts).
+- **Previous Lesson ([28_pgvector_in_PostgreSQL.md](./28_pgvector_in_PostgreSQL.md))**: Covered vector databases in SQL.
+- **Next Lesson ([30_AI_Agent_Blueprints_2.md](./30_AI_Agent_Blueprints_2.md))**: We will build our second production blueprint: an **Automated Code Reviewer and Research Synthesis Agent**!
 
 ---
 
-## Exercises & Mini Project
-
-### Exercise 1: State validation schema
-Create a Zod schema validating the `ResumeState` input object, ensuring `fitScore` is an integer between 0 and 100.
-
-### Mini Project: Code Debugger Graph
-Build a simple LangGraph workflow containing `Coder` and `Validator` nodes that loops until the compiler check passes or 3 attempts are hit.
-
----
-
-## Interview Questions
-
-1. **Q**: Why is code execution sandboxing critical for agent tools?
-   * **A**: LLM generations are probabilistic. If an agent has shell command execution tools, a user could execute a prompt injection attack that runs unauthorized system commands, highlighting the need for isolated sandboxes (like Docker containers).
-2. **Q**: How do you prevent state bloat in multi-turn coding agent graphs?
-   * **A**: You save only refined summaries and compilation logs inside the main state schema, keeping raw files and compiler dumps in temporary files on disk.
-
----
-
-## Navigation
-
-**Prev:** [Chapter 28: pgvector in PostgreSQL](file:///d:/learning/theory/AI-tut/28_pgvector_in_PostgreSQL.md) | **Index:** [Course Overview](file:///d:/learning/theory/AI-tut/README.md) | **Next:** [Chapter 30: AI Agent Blueprints 2](file:///d:/learning/theory/AI-tut/30_AI_Agent_Blueprints_2.md)
+Previous : [28_pgvector_in_PostgreSQL.md](./28_pgvector_in_PostgreSQL.md) | Index: [00_Index.md](./00_Index.md) | Next: [30_AI_Agent_Blueprints_2.md](./30_AI_Agent_Blueprints_2.md)

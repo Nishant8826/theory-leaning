@@ -1,201 +1,252 @@
-# Chapter 24: RAG Advanced Retrieval
+# 🤖 RAG: Advanced Retrieval, Hybrid Search, and HyDE
 
-**Estimated Reading Time**: 25 minutes  
-**Difficulty**: Expert  
-**Prerequisites**: Chapters 1–23.  
-**Learning Objectives**:
-1. Implement Parent-Child retrieval architectures.
-2. Rewrite and expand queries using Multi-Query expansion.
-3. Understand the math of reciprocal rank fusion (RRF) for hybrid search merging.
-4. Build a Parent-Child retriever index in TypeScript.
+## 📌 Overview
 
----
+In the previous chapter, we built a **Naive RAG** system using basic vector search.
 
-## Introduction
+In production, Naive RAG often fails in two common real-world scenarios:
+1. **The Exact Keyword Problem**: When a user searches for an exact serial number (`"Error Code #ERR-404-X"`), vector embeddings fail because semantic search is looking for concepts, not exact letters!
+2. **The Question-vs-Answer Mismatch**: A user's query is a short question (*"How to fix leaking pipe?"*), while the stored document is a long declarative statement (*"Turn the brass valve clockwise..."*). In vector space, questions and answers don't always land next to each other!
 
-Basic vector retrieval has limits. If you search for a short snippet, the vector database finds the chunk, but the chunk may lack context. If you search using a poorly phrased query, the search will fail to return relevant results.
-
-**Advanced Retrieval** solves this by separating the text we search from the text we pass to the model.
-
-In this chapter, we explore Parent-Child and Multi-Query retrieval architectures and build a Parent-Child database index in TypeScript.
-
----
-
-## Theory: Parent-Child mapping and Query Expansion
-
-We use two primary patterns to improve retrieval quality:
-
-### 1. Parent-Child Retrieval
-Instead of embedding large documents (which are wordy) or small chunks (which lack context), we divide documents into small Child Chunks (e.g. 100 tokens) linked to larger Parent Documents (e.g. 1,000 tokens).
-* We search the small child chunks (which yield higher search precision because they have less semantic noise).
-* When a match is found, we retrieve and feed the larger parent document to the LLM, giving it full context.
-
-```text
-   Search: Query ──> [Matches Child Chunk 1A]
-                            │
-                            └──> Retrieve & Send [Parent Document 1] to LLM
-```
-
-### 2. Multi-Query Expansion
-Users write poor search queries. A Multi-Query system uses an LLM to rewrite a single user query into three or four variations (e.g. "Postgres indexing" $\to$ "DB performance tips", "slow SQL query optimization"). We retrieve documents for all variations, merge them, and remove duplicates.
-
----
-
-## Real-World Analogy: Footnotes in a Book
-
-Imagine researching tax law:
-* **Basic Retrieval**: You find a index snippet pointing to a single footnote: *"See clause 12.4"*. You read only that footnote. It contains no explanation, so you don't understand the law.
-* **Parent-Child Retrieval**: You find the footnote (Child). Instead of reading only that footnote, you read the entire chapter (Parent Context) to understand the background of the footnote.
-
----
-
-## Architecture Diagram: Parent-Child Retrieval Pipeline
-
-This diagram shows how child chunks are matched against search queries, while their associated parent documents are resolved and sent to the LLM.
+To solve this, industry-grade RAG systems use **Advanced Retrieval Techniques**:
+- **Hybrid Search (Dense Vectors + Sparse BM25)**: Combines semantic search with exact keyword search.
+- **HyDE (Hypothetical Document Embeddings)**: Uses an LLM to hallucinate a fake ideal answer, then embeds that answer to find the real document!
+- **Parent-Document (Small-to-Big) Retrieval**: Searches tiny chunks for precision, but feeds the full parent paragraph to the LLM!
 
 ```mermaid
-graph TD
-    Query[User Query: 'How to deploy?'] --> Search{Search Child Database}
-    Search -->|Match: Child 1B| Resolve{Resolve Parent ID}
-    Resolve -->|ID: Parent 1| ParentDB[(Parent Document Store)]
-    ParentDB -->|Fetch| Context[Full Parent 1 Context]
-    Context --> LLM[LLM Prompt Integration]
-    LLM --> Answer[Factual Response]
+flowchart TD
+    UserQuery["User: 'Why does error 0x88F occur in auth service?'"] --> Branch{Advanced Search Strategies}
+    
+    Branch -->|1. Hybrid Search| Hybrid["Dense Vector Search + BM25 Keyword Search <br> Reciprocal Rank Fusion (RRF)"]
+    Branch -->|2. HyDE Strategy| HyDE["Generate Hypothetical Error Doc <br> Embed Doc -> Find Real Matches"]
+    Branch -->|3. Small-to-Big| ParentDoc["Search 100-token chunk <br> Return 1000-token Parent section"]
+
+    Hybrid --> Merged["High-Precision Ranked Context"]
+    HyDE --> Merged
+    ParentDoc --> Merged
+
+    Merged --> LLM["LLM Generates 100% Accurate Answer"]
+
+    style UserQuery fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
+    style Merged fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px
 ```
 
 ---
 
-## Code Example: Parent-Child Database Index (TypeScript)
+## 🎯 Why This Matters
 
-Let's build a Parent-Child index matcher in TypeScript. We ingest a document, split it into small child sentences, link them to the parent, and resolve the parent document upon query matching.
+1. **Finds Rare Codes, SKUs, and Names**: BM25 keyword matching guarantees you will never miss exact part numbers, API routes, or product IDs.
+2. **Bridges Semantic Gap with HyDE**: Transforms short user queries into detailed technical paragraphs before searching, increasing retrieval accuracy by 25%+.
+3. **No More Lost Context with Parent-Document**: Provides full surrounding paragraph context to the LLM without diluting the search index.
 
-Create `parent_child_retriever.ts`:
+---
+
+## 🧠 Prerequisites
+
+- [05_Embeddings_and_Vector_Search.md](./05_Embeddings_and_Vector_Search.md): Dense vectors and cosine similarity.
+- [23_RAG_Ingestion_and_Chunking.md](./23_RAG_Ingestion_and_Chunking.md): Ingestion and chunking fundamentals.
+
+---
+
+## 🔍 Deep Dive
+
+### 1. Hybrid Search (Dense + Sparse BM25 with RRF)
+
+```mermaid
+flowchart LR
+    Query["User Query"] --> Dense["1. Dense Vector Search <br> (Captures Synonyms & Meaning)"]
+    Query --> Sparse["2. Sparse BM25 Search <br> (Captures Exact Keywords & IDs)"]
+    
+    Dense --> RRF["3. Reciprocal Rank Fusion (RRF) <br> RRF_Score = 1 / (60 + Rank)"]
+    Sparse --> RRF
+    
+    RRF --> FinalRank["4. Merged & De-duplicated Top-K Docs"]
+
+    style Dense fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
+    style Sparse fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
+    style RRF fill:#ede7f6,stroke:#7e57c2,stroke-width:2px
+    style FinalRank fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px
+```
+
+**Reciprocal Rank Fusion (RRF)** formula:
+
+$$RRF\_Score(d) = \sum_{m \in M} \frac{1}{k + r_m(d)}$$
+
+Where $k \approx 60$, and $r_m(d)$ is the document's rank position in search method $m$.
+
+---
+
+### 2. HyDE: Hypothetical Document Embeddings
+
+How HyDE works:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User
+    participant LLM as Fast LLM (gpt-4o-mini)
+    participant Embedder as Embedding Model
+    participant VectorDB as Vector Database
+    
+    User->>LLM: "What are the tax implications of remote work in Portugal?"
+    Note over LLM: LLM writes a hypothetical fake passage: <br> "In Portugal, remote workers under the NHR tax regime pay a flat 20% rate..."
+    LLM-->>Embedder: Hypothetical Document
+    Embedder->>VectorDB: Embed hypothetical document & search nearest vectors
+    VectorDB-->>User: Returns REAL official Portuguese tax documents!
+```
+
+---
+
+### 3. Parent-Document (Small-to-Big) Retrieval
+
+```mermaid
+flowchart TD
+    subgraph Storage_Strategy["Small-to-Big Indexing Strategy"]
+        Parent["Parent Document: Full 1,000 Token Chapter (Stored in Document Store)"]
+        Parent --> Child1["Child 1: 150 Tokens (Vector Indexed)"]
+        Parent --> Child2["Child 2: 150 Tokens (Vector Indexed)"]
+        Parent --> Child3["Child 3: 150 Tokens (Vector Indexed)"]
+    end
+
+    Child2 -.->|Query Matches Child 2| FetchParent["Retrieve Full Parent Document!"]
+    FetchParent --> LLMContext["LLM receives complete 1,000 token context!"]
+
+    style Child2 fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
+    style FetchParent fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px
+```
+
+---
+
+## 💡 Simple Example: The Detective and the Sketch Artist
+
+Think of **HyDE** like a police detective:
+- **Direct Search**: The victim says *"Find the thief"*. The computer searches millions of photos with zero visual description. (Fails).
+- **HyDE Approach**: The detective asks a sketch artist to draw what the suspect *probably* looks like (**Hypothetical Document**). Then, they run facial recognition on the sketch (**Vector Search**) to locate the real criminal!
+
+---
+
+## 🏗️ Real-World Example: Enterprise Technical Documentation
+
+In a cloud developer portal:
+- User queries: `"AWS_SDK_V3_CONNECT_TIMEOUT_504"`
+- Pure vector search returns generic articles on timeout best practices.
+- **Hybrid Search** matches the exact string `AWS_SDK_V3_CONNECT_TIMEOUT_504` via BM25, pulling the precise troubleshooting page to the #1 spot immediately.
+
+---
+
+## ⚠️ Common Mistakes & Pitfalls
+
+1. ❌ **Using HyDE for Math or Exact Fact Retrieval**:
+   - *Trap*: If a user asks for an exact phone number or address, the hypothetical document will hallucinate fake numbers, causing the search to steer in the wrong direction. Use Hybrid Search instead for exact facts.
+2. ❌ **Blindly Normalizing Scores from Different Search Engines**:
+   - *Trap*: Cosine similarity scores (0.0 to 1.0) and BM25 scores (0 to 50+) cannot be added directly. Always use **Reciprocal Rank Fusion (RRF)** to combine rankings safely.
+
+---
+
+## 🔥 Important Points to Remember
+
+- **Hybrid Search** combines dense vectors (meaning) + BM25 (exact keywords).
+- **Reciprocal Rank Fusion (RRF)** blends rankings fairly without score calibration issues.
+- **HyDE** generates a hypothetical answer to bridge the question-to-document vector gap.
+- **Parent-Document Retrieval** searches small child chunks but returns the full parent context.
+
+---
+
+## 💻 Code / Commands / Configuration
+
+Here is a TypeScript script demonstrating the **HyDE (Hypothetical Document Embeddings)** technique:
 
 ```typescript
-interface ChildChunk {
-  id: string;
-  parentId: string;
-  content: string;
+// hyde_retrieval_demo.ts
+// 1. Run: npm install @langchain/core @langchain/openai dotenv
+// 2. Run: npx ts-node hyde_retrieval_demo.ts
+
+import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
+import * as dotenv from "dotenv";
+
+dotenv.config();
+
+// Simple In-Memory Vector Store simulation
+interface DocRecord {
+  title: string;
+  text: string;
+  vector: number[];
 }
 
-interface ParentDoc {
-  id: string;
-  content: string;
+function cosineSimilarity(a: number[], b: number[]): number {
+  const dot = a.reduce((sum, val, i) => sum + val * b[i], 0);
+  const normA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0));
+  const normB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0));
+  return dot / (normA * normB);
 }
 
-class ParentChildIndex {
-  private childStore: ChildChunk[] = [];
-  private parentStore: Map<string, ParentDoc> = new Map();
+async function runHyDEDemo() {
+  const model = new ChatOpenAI({ modelName: "gpt-4o-mini", temperature: 0.7 });
+  const embeddings = new OpenAIEmbeddings({ model: "text-embedding-3-small" });
 
-  // Ingest document: creates 1 parent and multiple child sentences
-  public ingest(docId: string, text: string) {
-    // 1. Store parent document
-    this.parentStore.set(docId, { id: docId, content: text });
+  // 1. Real documents in database
+  const knowledgeBase = [
+    {
+      title: "Portugal Digital Nomad Visa (D8)",
+      text: "The Portugal D8 visa allows remote workers earning at least 4 times the national minimum wage (approx €3,280/month) to reside in Portugal. Applicants can benefit from favorable tax conditions.",
+    },
+    {
+      title: "Spain Beckham Law",
+      text: "Spain's Special Expats Regime (Beckham Law) allows foreign remote workers to pay a flat 24% tax rate on income earned in Spain up to €600,000 for 6 years.",
+    },
+  ];
 
-    // 2. Split into sentences (Child chunks)
-    const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
-    
-    sentences.forEach((sentence, idx) => {
-      this.childStore.push({
-        id: `${docId}_child_${idx}`,
-        parentId: docId,
-        content: sentence.trim()
-      });
-    });
+  console.log("📚 1. Indexing real knowledge base...");
+  const vectorDB: DocRecord[] = [];
+  for (const doc of knowledgeBase) {
+    const vec = await embeddings.embedQuery(doc.text);
+    vectorDB.push({ ...doc, vector: vec });
   }
 
-  // Simulated vector search returning matching child chunks
-  private searchChildren(query: string): ChildChunk[] {
-    const queryTerms = new Set(query.toLowerCase().split(/\W+/));
-    
-    // Sort child chunks by matching words (mock vector similarity)
-    return [...this.childStore].sort((a, b) => {
-      const scoreA = a.content.toLowerCase().split(/\W+/).filter(w => queryTerms.has(w)).length;
-      const scoreB = b.content.toLowerCase().split(/\W+/).filter(w => queryTerms.has(w)).length;
-      return scoreB - scoreA;
-    });
-  }
+  // 2. User Query
+  const userQuery = "Can I move to Lisbon as a software dev and pay less tax?";
+  console.log(`\n👤 User Query: "${userQuery}"`);
 
-  // Retrieve: searches child chunks, returns parent document
-  public retrieveParent(query: string): ParentDoc | null {
-    console.log(`[Retriever] Searching child chunks for: "${query}"`);
-    const matchedChildren = this.searchChildren(query);
+  // 3. Step A: Generate Hypothetical Document using LLM
+  console.log("\n🧠 Step A: Generating Hypothetical Document (HyDE)...");
+  const hydePrompt = `Please write a short, formal paragraph that directly answers this question: "${userQuery}". Write as if you are an excerpt from an official immigration tax law document.`;
+  
+  const hypotheticalDoc = (await model.invoke(hydePrompt)).content as string;
+  console.log(`\n[Hypothetical Generated Passage]:\n"${hypotheticalDoc}"\n`);
 
-    if (matchedChildren.length === 0) return null;
+  // 4. Step B: Embed the Hypothetical Document
+  console.log("⚡ Step B: Embedding Hypothetical Document & Searching Vector Store...");
+  const hydeVector = await embeddings.embedQuery(hypotheticalDoc);
 
-    const topMatch = matchedChildren[0];
-    console.log(` -> Matched child chunk: "${topMatch.content}"`);
-    
-    const parent = this.parentStore.get(topMatch.parentId) || null;
-    return parent;
-  }
+  // 5. Find nearest real document
+  const results = vectorDB
+    .map(doc => ({ ...doc, similarity: cosineSimilarity(hydeVector, doc.vector) }))
+    .sort((a, b) => b.similarity - a.similarity);
+
+  console.log("🏆 Top Retrieved Real Document via HyDE:");
+  console.log(`Title: ${results[0].title} (Similarity: ${(results[0].similarity * 100).toFixed(2)}%)`);
+  console.log(`Content: "${results[0].text}"`);
 }
 
-// Ingestion and Setup
-const index = new ParentChildIndex();
-
-// Ingest Postgres replication guide
-index.ingest(
-  "postgres_guide",
-  "PostgreSQL database clustering requires setting up primary and replica nodes. " +
-  "You must modify the postgresql.conf file and enable hot_standby configurations. " +
-  "Use pg_basebackup to copy directories between servers. " +
-  "This ensures secondary failover capabilities for production clusters."
-);
-
-// Run Search
-const result = index.retrieveParent("How do I configure my postgresql.conf file?");
-
-console.log("\n--- Resolved Parent Context ---");
-if (result) {
-  console.log(`Parent ID: ${result.id}`);
-  console.log(`Parent Content: "${result.content}"`);
-} else {
-  console.log("No documents matched.");
-}
+runHyDEDemo();
 ```
 
-Run this file:
-```bash
-npx tsx parent_child_retriever.ts
-```
+---
 
-Observe how matching a single sentence returns the entire Postgres replication guide to provide the LLM with full context.
+## 🎤 Interview Perspective
+
+* **Q: Why does Hybrid Search (Dense + Sparse) outperform pure Vector Search in production?**
+  * **Answer**: Dense vectors excel at fuzzy semantic matching, understanding synonyms, and abstract concepts, but struggle with precise keyword collisions (like product SKUs, exact error codes, and unique user IDs). Sparse search (BM25) provides exact token frequency matching. Combining both via Reciprocal Rank Fusion guarantees both broad semantic recall and high-precision exact keyword targeting.
+* **Q: What is the primary limitation of Hypothetical Document Embeddings (HyDE)?**
+  * **Answer**: HyDE introduces an additional LLM call at query time, increasing latency by 500–1000ms and adding API cost. Furthermore, for highly niche, proprietary internal facts (e.g. custom internal server hostnames), the model may generate misleading hypothetical content that steers vector retrieval toward incorrect clusters.
 
 ---
 
-## Best Practices, Production & Security Considerations
+## 🧩 Connection With Previous Concepts
 
-### 1. Apply Metadata Filters at Ingest
-Ensure that every child chunk inherits all metadata fields from its parent document. This allows you to restrict vector searches using metadata filters to enforce access permissions.
-
----
-
-## Common Mistakes
-
-1. **Returning child chunks directly to LLMs**: Feeding short sentences to the LLM without parent context, resulting in vague or incorrect answers.
+- **Previous Lesson ([23_RAG_Ingestion_and_Chunking.md](./23_RAG_Ingestion_and_Chunking.md))**: Covered basic ingestion and vector indexing.
+- **Next Lesson ([25_RAG_Corrective_and_Self_RAG.md](./25_RAG_Corrective_and_Self_RAG.md))**: We will learn how to build self-healing RAG systems using **Corrective RAG (CRAG)** and **Self-RAG**!
 
 ---
 
-## Exercises & Mini Project
-
-### Exercise 1: Multi-Query generator
-Write a TypeScript function that takes a query, calls an LLM to generate 3 query variations, and returns them in an array.
-
-### Mini Project: Hybrid RRF Search
-Write a script implementing Reciprocal Rank Fusion (RRF). Take two ranked lists of search results (one from vector search, one from keyword search) and merge them into a single sorted list.
-
----
-
-## Interview Questions
-
-1. **Q**: What is Parent-Child Retrieval, and what problem does it solve?
-   * **A**: Parent-Child Retrieval splits documents into small chunks for vector search, but links them to larger parent documents. This provides high search precision (small chunks have less semantic noise) while giving the LLM full context.
-2. **Q**: How does Multi-Query expansion improve retrieval quality?
-   * **A**: Users write poor search queries. Multi-query uses an LLM to rewrite a query into multiple variations, retrieving documents for all variations and merging them to find more relevant matches.
-
----
-
-## Navigation
-
-**Prev:** [Chapter 23: RAG Ingestion](./23_RAG_Ingestion_and_Chunking.md) | **Index:** [Course Overview](./00_Index.md) | **Next:** [Chapter 25: Corrective RAG and Self-RAG](./25_RAG_Corrective_and_Self_RAG.md)
+Previous : [23_RAG_Ingestion_and_Chunking.md](./23_RAG_Ingestion_and_Chunking.md) | Index: [00_Index.md](./00_Index.md) | Next: [25_RAG_Corrective_and_Self_RAG.md](./25_RAG_Corrective_and_Self_RAG.md)

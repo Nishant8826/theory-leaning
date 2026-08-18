@@ -1,224 +1,270 @@
-# Chapter 25: Corrective RAG (CRAG) and Self-RAG
+# 🤖 RAG: Corrective RAG (CRAG) and Self-RAG
 
-**Estimated Reading Time**: 25 minutes  
-**Difficulty**: Expert  
-**Prerequisites**: Chapters 1–24.  
-**Learning Objectives**:
-1. Build self-correcting RAG loops using LangGraph state-machines.
-2. Evaluate retrieved context relevance programmatically.
-3. Implement Corrective RAG (CRAG) with web search fallback routing.
-4. Implement Self-RAG loops to evaluate answer faithfulness.
+## 📌 Overview
 
----
+In standard RAG, if your vector database returns 3 completely useless or irrelevant documents, what happens? 
 
-## Introduction
+The LLM blindly reads the junk context and either hallucinates a fake answer or apologizes helplessly. This is called **Blind Retrieval**.
 
-Standard RAG pipelines are linear: they search, retrieve documents, and generate an answer. But what happens if the database search returns irrelevant documents? The model will hallucinate. What happens if the generated answer doesn't match the retrieved facts?
-
-**Corrective RAG (CRAG)** and **Self-RAG** solve this by building validation loops. We evaluate the retrieved documents and generated answers, routing to search engines or regenerating text as needed.
-
-In this chapter, we explore self-correcting RAG architectures and build a corrective search router node in TypeScript.
-
----
-
-## Theory: Self-Correction Loops
-
-### 1. Corrective RAG (CRAG)
-CRAG adds a grader node after retrieval:
-1. **Grade Documents**: Check if the retrieved documents are relevant to the query.
-2. **Fallback Routing**: If similarity scores are below a threshold, the system flags the retrieval as failed and routes to a web search tool (e.g. Tavily/Google Search) to fetch current facts.
-
-### 2. Self-RAG
-Self-RAG adds a grader node after generation:
-1. **Faithfulness Check**: Verify if the generated answer is supported by the retrieved context. If it contains claims not in the context, reject the answer and rewrite it.
-2. **Answer Relevance**: Verify if the answer actually addresses the user's query.
-
-```text
-  Retrieve ──> [Grade Docs] ──(Low Score)──> [Web Search] ──> Generate
-                      │                                          ▲
-                      └────────(High Score)──────────────────────┘
-```
-
----
-
-## Real-World Analogy: Writing a Research Paper
-
-Imagine writing a research paper:
-* **Linear RAG**: You pull 3 random folders from a cabinet. Without checking if they are relevant, you copy paragraphs from them and hand in the paper.
-* **Corrective RAG (CRAG)**: You pull the folders. You look inside and see they are empty or about the wrong topic. You put them away, go to the library, and look up current articles.
-* **Self-RAG**: Once the paper is written, you double-check every sentence against your source folders. If you wrote a claim not supported by your sources, you rewrite it.
-
----
-
-## Architecture Diagram: Self-Correcting RAG Graph
-
-This diagram shows a state graph implementing document grading, fallback search routing, and generation validation loops.
+To solve this, advanced AI systems use **Self-Healing RAG**:
+1. **CRAG (Corrective RAG)**: A dedicated "Grader" model inspects the retrieved documents. If they are irrelevant, it automatically triggers a **Fallback Web Search** or rewrites the user's query!
+2. **Self-RAG (Self-Reflective RAG)**: The AI grades its own generated answer against the source documents to catch and eliminate hallucinations before the user ever sees them!
 
 ```mermaid
-graph TD
-    Start([START]) --> Retrieve[Node: Retrieve Documents]
-    Retrieve --> Grade{Grade: Relevant Docs found?}
-    Grade -->|Yes| Generate[Node: Generate Answer]
-    Grade -->|No| WebSearch[Node: Run Web Search Tool]
+flowchart TD
+    UserQuery["User: 'What are the specs of the 2026 M5 MacBook?'"] --> Retrieve["1. Vector DB Retrieve"]
+    Retrieve --> Grade{"2. Grader Node: Are docs relevant?"}
+    
+    Grade -->|Yes, Docs Relevant| Generate["3. Generate Grounded Answer"]
+    Grade -->|No, Docs Irrelevant / Empty| WebSearch["4. Fallback: Search Web (Tavily API)"]
+    
     WebSearch --> Generate
-    Generate --> Validate{Validate: Faithfulness check?}
-    Validate -->|Pass| End([END])
-    Validate -->|Fail| Generate
+    Generate --> HallucinationCheck{"5. Self-RAG: Does answer match facts?"}
+    
+    HallucinationCheck -->|Pass| Final["🏁 Return Verified Answer to User"]
+    HallucinationCheck -->|Fail| Rewrite["6. Regenerate & Fix Hallucination"]
+    Rewrite --> Generate
+
+    style UserQuery fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
+    style Grade fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
+    style WebSearch fill:#ffe0b2,stroke:#f57c00,stroke-width:2px
+    style Final fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px
 ```
 
 ---
 
-## Code Example: Corrective Search Router Node (TypeScript)
+## 🎯 Why This Matters
 
-Let's build a LangGraph workflow that grades retrieved documents and dynamically routes to a web search node if the database search returns no relevant results.
+1. **Zero Garbage-In, Garbage-Out**: Stops the LLM from generating nonsense answers when the internal database doesn't have the answer.
+2. **Autonomous Fallbacks**: Seamlessly switches to live web search when private documentation is out of date.
+3. **Automated Hallucination Detection**: Gives enterprise systems mathematical confidence that generated answers are 100% supported by retrieved facts.
 
-Create `corrective_rag.ts`:
+---
+
+## 🧠 Prerequisites
+
+- [19_LangGraph_Core_Nodes_and_Edges.md](./19_LangGraph_Core_Nodes_and_Edges.md): Building state machines.
+- [20_LangGraph_Reducers_and_Routing.md](./20_LangGraph_Reducers_and_Routing.md): Conditional routing.
+- [23_RAG_Ingestion_and_Chunking.md](./23_RAG_Ingestion_and_Chunking.md): Standard RAG pipeline.
+
+---
+
+## 🔍 Deep Dive
+
+### 1. Corrective RAG (CRAG) Architecture in LangGraph
+
+CRAG is modeled as a LangGraph state machine with 4 key nodes:
+
+```mermaid
+flowchart LR
+    RetrieveNode["1. retrieve"] --> GradeNode["2. grade_documents"]
+    GradeNode --> RouteCheck{"Has Relevant Docs?"}
+    RouteCheck -->|Yes| GenNode["3. generate"]
+    RouteCheck -->|No| SearchNode["4. web_search"]
+    SearchNode --> GenNode
+    GenNode --> END([END])
+
+    style GradeNode fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
+    style SearchNode fill:#ffe0b2,stroke:#f57c00,stroke-width:2px
+    style GenNode fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px
+```
+
+---
+
+### 2. The Document Grader (Structured LLM Judge)
+
+The grader is a fast, lightweight LLM (like `gpt-4o-mini`) configured with a Zod schema that grades each document as either relevant or irrelevant:
 
 ```typescript
-import { Annotation, StateGraph, START, END } from "@langchain/langgraph";
+const GradeDocumentSchema = z.object({
+  binaryScore: z.enum(["yes", "no"]).describe("Whether the document is relevant to the question"),
+  reasoning: z.string().describe("Brief explanation for the score"),
+});
+```
 
-// 1. Define the RAG State Schema
-const RagState = Annotation.Root({
-  query: Annotation<string>({
-    reducer: (x, y) => y ?? x,
-    default: () => "",
+---
+
+### 3. The 3 Self-RAG Reflection Checks
+
+```mermaid
+flowchart TD
+    C1["1. Is Retrieval Needed? <br> (If user says 'Hi', skip retrieval!)"] --> C2["2. Are Retrieved Passages Relevant? <br> (Filter out spam / noise chunks)"]
+    C2 --> C3["3. Is Generation Grounded? <br> (Verify every claim against retrieved text)"]
+    C3 --> C4["4. Is Answer Useful? <br> (Does it directly resolve user question?)"]
+
+    style C1 fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
+    style C3 fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
+    style C4 fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px
+```
+
+---
+
+## 💡 Simple Example: The Smart Research Assistant
+
+Think of CRAG like an **executive research assistant**:
+- You ask: *"Find me our contract with Company X"*.
+- The assistant checks the file cabinet (**Vector Search**).
+- The files found are for Company Y (**Document Grader detects mismatch**).
+- Instead of giving you the wrong contract, the assistant searches the company email archive or Google (**Fallback Search**), finds the real document, and brings you the right answer!
+
+---
+
+## 🏗️ Real-World Example: Customer Support Helpdesk
+
+In a tech company chatbot:
+- User asks: *"Why is Stripe webhook failing with error 400?"*
+- System searches internal knowledge base. No internal docs match error 400.
+- Grader flags `relevance = 'no'`.
+- System triggers a live search of official `stripe.com/docs`.
+- Generates answer citing official Stripe documentation.
+
+---
+
+## ⚠️ Common Mistakes & Pitfalls
+
+1. ❌ **Using Expensive Models for Document Grading**:
+   - *Trap*: Using `gpt-4o` to grade 5 documents individually multiplies costs. Always use lightweight models like `gpt-4o-mini` or `gemini-1.5-flash` for grading.
+2. ❌ **Allowing Endless Hallucination Loops**:
+   - *Fix*: Limit hallucination retries to a maximum of 2 cycles before returning *"I could not verify this answer"*.
+
+---
+
+## 🔥 Important Points to Remember
+
+- **CRAG** uses a Document Grader to evaluate retrieved chunks before generating.
+- If documents are irrelevant, CRAG falls back to web search or query rewriting.
+- **Self-RAG** grades generated answers against source facts to catch hallucinations.
+- LangGraph is the optimal framework for building self-healing RAG graphs.
+
+---
+
+## 💻 Code / Commands / Configuration
+
+Here is a TypeScript implementation of a **Corrective RAG (CRAG) Document Grader and Graph**:
+
+```typescript
+// crag_langgraph_demo.ts
+// 1. Run: npm install @langchain/langgraph @langchain/core @langchain/openai zod dotenv
+// 2. Run: npx ts-node crag_langgraph_demo.ts
+
+import { StateGraph, START, END, Annotation } from "@langchain/langgraph";
+import { ChatOpenAI } from "@langchain/openai";
+import { z } from "zod";
+import * as dotenv from "dotenv";
+
+dotenv.config();
+
+// 1. Define CRAG State
+const CRAGState = Annotation.Root({
+  question: Annotation<string>(),
+  documents: Annotation<string[]>({
+    reducer: (curr, update) => update ?? curr,
+    default: () => [],
   }),
-  retrievedContext: Annotation<string>({
-    reducer: (x, y) => y ?? x,
-    default: () => "",
+  webSearchNeeded: Annotation<boolean>({
+    reducer: (curr, update) => update ?? curr,
+    default: () => false,
   }),
-  documentScore: Annotation<number>({
-    reducer: (x, y) => y ?? x,
-    default: () => 0.0,
-  }),
-  answer: Annotation<string>({
-    reducer: (x, y) => y ?? x,
-    default: () => "",
-  })
+  generation: Annotation<string>(),
 });
 
-// 2. Define the Nodes
+const model = new ChatOpenAI({ modelName: "gpt-4o-mini", temperature: 0.0 });
 
-// Node A: Database Search
-async function retrieveFromDb(state: typeof RagState.State) {
-  console.log(`[Node: DB] Searching database for query: "${state.query}"`);
-  
-  // Simulating a database check. For test query "Kubernetes", we simulate a search failure
-  if (state.query.toLowerCase().includes("kubernetes")) {
-    return {
-      retrievedContext: "",
-      documentScore: 0.15 // Low similarity score
-    };
+// 2. Node: Document Grader
+const GradeSchema = z.object({
+  score: z.enum(["yes", "no"]).describe("Is the document relevant to the user question?"),
+});
+
+async function gradeDocumentsNode(state: typeof CRAGState.State) {
+  console.log("🧐 [Grader Node] Evaluating retrieved document relevance...");
+  const grader = model.withStructuredOutput(GradeSchema);
+
+  const relevantDocs: string[] = [];
+  let needsWeb = false;
+
+  for (const doc of state.documents) {
+    const result = await grader.invoke([
+      { role: "system", content: "You grade whether a document is relevant to a user question. Answer 'yes' or 'no'." },
+      { role: "user", content: `Question: ${state.question}\nDocument: ${doc}` },
+    ]);
+
+    if (result.score === "yes") {
+      relevantDocs.push(doc);
+    }
   }
-  
-  return {
-    retrievedContext: "PostgreSQL pgvector extension stores float embeddings.",
-    documentScore: 0.88 // High similarity score
-  };
-}
 
-// Node B: Web Search (Fallback)
-async function searchWebFallback(state: typeof RagState.State) {
-  console.log(`[Node: Web] Fallback triggered! Querying Google/Tavily for: "${state.query}"`);
-  return {
-    retrievedContext: "Kubernetes is an open-source container orchestration engine.",
-    documentScore: 0.95
-  };
-}
-
-// Node C: Generator Node
-async function generateAnswerNode(state: typeof RagState.State) {
-  console.log(`[Node: Generator] Generating answer using context: "${state.retrievedContext}"`);
-  return {
-    answer: `Resolved Answer: ${state.retrievedContext}`
-  };
-}
-
-// 3. Define the Grader Routing Function
-function routeContextCheck(state: typeof RagState.State) {
-  const MIN_SCORE = 0.5;
-  if (state.documentScore < MIN_SCORE) {
-    console.log(`[Router] Context score too low (${state.documentScore}). Routing to Web Search...`);
-    return "webSearch";
+  if (relevantDocs.length === 0) {
+    console.log("⚠️ No relevant internal documents found! Triggering Web Search...");
+    needsWeb = true;
+  } else {
+    console.log(`✅ Found ${relevantDocs.length} relevant internal documents.`);
   }
-  console.log(`[Router] Context score sufficient (${state.documentScore}). Routing to Generator...`);
-  return "generate";
+
+  return { documents: relevantDocs, webSearchNeeded: needsWeb };
 }
 
-// 4. Construct Graph
-const workflow = new StateGraph(RagState)
-  .addNode("retrieve", retrieveFromDb)
-  .addNode("webSearch", searchWebFallback)
-  .addNode("generate", generateAnswerNode)
-  
-  .addEdge(START, "retrieve")
-  
-  // Register the grader router edge
-  .addConditionalEdges("retrieve", routeContextCheck, {
-    webSearch: "webSearch",
-    generate: "generate"
-  })
-  
-  .addEdge("webSearch", "generate")
-  .addEdge("generate", END);
-
-const app = workflow.compile();
-
-// 5. Run Simulations
-async function runSimulation() {
-  console.log("--- RUN 1: Relational Query (DB Hit) ---");
-  const res1 = await app.invoke({ query: "How does postgres store vectors?" });
-  console.log(res1.answer);
-
-  console.log("\n--- RUN 2: Unseen Query (DB Miss -> Fallback Web Search) ---");
-  const res2 = await app.invoke({ query: "What is Kubernetes architecture?" });
-  console.log(res2.answer);
+// 3. Node: Fallback Web Search Simulator
+async function webSearchNode(state: typeof CRAGState.State) {
+  console.log("🌐 [Web Search Node] Querying live search API for:", state.question);
+  const searchResult = "Live Web Result: PostgreSQL 17 introduces improved query optimization for JSONB and vector indexing.";
+  return { documents: [searchResult], webSearchNeeded: false };
 }
 
-runSimulation();
+// 4. Node: Answer Generator
+async function generateNode(state: typeof CRAGState.State) {
+  console.log("✍️ [Generate Node] Generating answer grounded in verified context...");
+  const context = state.documents.join("\n\n");
+  const response = await model.invoke(
+    `Answer the question based only on this context:\n${context}\n\nQuestion: ${state.question}`
+  );
+  return { generation: response.content as string };
+}
+
+// 5. Assemble the CRAG Graph
+async function runCRAGDemo() {
+  const workflow = new StateGraph(CRAGState)
+    .addNode("grade_documents", gradeDocumentsNode)
+    .addNode("web_search", webSearchNode)
+    .addNode("generate", generateNode)
+    .addEdge(START, "grade_documents")
+    .addConditionalEdges("grade_documents", (state) => (state.webSearchNeeded ? "web_search" : "generate"), {
+      web_search: "web_search",
+      generate: "generate",
+    })
+    .addEdge("web_search", "generate")
+    .addEdge("generate", END);
+
+  const app = workflow.compile();
+
+  // Test Case: Question with irrelevant retrieved context (Forces Web Search Fallback)
+  console.log("🚀 Running CRAG Pipeline with Mismatched Internal Documents...\n");
+  const result = await app.invoke({
+    question: "What are the new features in PostgreSQL 17?",
+    documents: ["Company Holiday Calendar: The office will be closed on Thanksgiving."], // Irrelevant doc!
+  });
+
+  console.log("\n🏁 Final Verified Output:\n", result.generation);
+}
+
+runCRAGDemo();
 ```
 
-Run this file:
-```bash
-npx tsx corrective_rag.ts
-```
+---
 
-Observe how the graph automatically routes to `webSearch` when the database search score falls below the threshold, and routes directly to the generator when the database search is successful.
+## 🎤 Interview Perspective
+
+* **Q: How does Corrective RAG (CRAG) improve reliability over standard RAG pipelines?**
+  * **Answer**: Standard RAG is an unvalidated pipeline where retrieved documents are passed directly to the generator regardless of relevance. CRAG introduces a self-correcting feedback loop: an evaluator grades document relevance. If relevance falls below a threshold, the system triggers query reformulation and web search fallback, eliminating hallucinations caused by irrelevant retrieval.
+* **Q: How do you detect hallucinations programmatically in Self-RAG?**
+  * **Answer**: We use an LLM-as-a-Judge or NLI (Natural Language Inference) model. We prompt the judge with the retrieved context as the "Premise" and the generated answer as the "Hypothesis", classifying the relationship as `Entailment`, `Neutral`, or `Contradiction`. If contradictions exist, the response is rejected and sent for regeneration.
 
 ---
 
-## Best Practices, Production & Security Considerations
+## 🧩 Connection With Previous Concepts
 
-### 1. Log Retrieval Failures
-Track and log instances where your RAG system triggers web search fallback. This tells you which documentation areas are missing from your vector store database.
-
----
-
-## Common Mistakes
-
-1. **Looping without constraints**: Creating self-RAG loops that regenerate text repeatedly when validation fails, without a maximum attempt limit.
+- **Previous Lesson ([24_RAG_Advanced_Retrieval.md](./24_RAG_Advanced_Retrieval.md))**: Covered Hybrid Search and HyDE.
+- **Next Lesson ([26_RAG_Reranking_and_Compression.md](./26_RAG_Reranking_and_Compression.md))**: We will learn how to boost search precision using **Cross-Encoder Rerankers (Cohere Rerank)** and **Contextual Compression**!
 
 ---
 
-## Exercises & Mini Project
-
-### Exercise 1: Self-RAG validation addition
-Add an `answerValidator` node. Check if the generated answer contains the context string. If it doesn't, route back to the generator node.
-
-### Mini Project: Search agent with Tavily API
-Replace the mock web search node in the code example with a real tool calling the Tavily Search API to retrieve live web results.
-
----
-
-## Interview Questions
-
-1. **Q**: What is the difference between standard RAG and Corrective RAG (CRAG)?
-   * **A**: Standard RAG is linear and uses retrieved documents immediately. CRAG grades the relevance of retrieved documents first. If the score is too low, it routes to web search tools to retrieve current information.
-2. **Q**: What is the purpose of Self-RAG loops?
-   * **A**: Self-RAG checks if the generated answer is supported by the retrieved facts (faithfulness check) and addresses the query, preventing hallucinations.
-
----
-
-## Navigation
-
-**Prev:** [Chapter 24: RAG Advanced Retrieval](file:///d:/learning/theory/AI-tut/24_RAG_Advanced_Retrieval.md) | **Index:** [Course Overview](file:///d:/learning/theory/AI-tut/README.md) | **Next:** [Chapter 26: Reranking and Compression](file:///d:/learning/theory/AI-tut/26_RAG_Reranking_and_Compression.md)
+Previous : [24_RAG_Advanced_Retrieval.md](./24_RAG_Advanced_Retrieval.md) | Index: [00_Index.md](./00_Index.md) | Next: [26_RAG_Reranking_and_Compression.md](./26_RAG_Reranking_and_Compression.md)
