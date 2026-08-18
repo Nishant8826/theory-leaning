@@ -1,0 +1,20 @@
+Season: 01
+Class: 01
+
+Here are my raw notes from today's class:
+
+--- RAW NOTES START ---
+
+1950 - Alan Turing
+1956 - John Mc Carthy
+50-80s - Rule Based AI
+1997 - Deep Blue defeats Garvy
+90's - Machine Learning
+2000's - Deep learning
+2012 - Alex Net
+2016 - AlphaGo beats lee Sedol
+2017 - Transformers**
+2022 - ChatGPT
+2025 - Agentic AI
+
+--- RAW NOTES END ---
