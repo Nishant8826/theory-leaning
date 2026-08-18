@@ -584,4 +584,4 @@ CREATE TABLE document_versions (
 ---
 
 ### Navigation
-**Prev:** [07_Design_Dropbox.md](07_Design_Dropbox.md) | **Index:** [00_Index.md](00_Index.md)
+**Prev:** [07_Design_Dropbox.md](07_Design_Dropbox.md) | **Index:** [00_Index.md](00_Index.md) | **Next:** [09_Design_Auth_Access_Refresh_Token.md](09_Design_Auth_Access_Refresh_Token.md)

@@ -58,7 +58,7 @@ Covers object-oriented design, design patterns, and implementation-level decisio
 
 ## 🏗️ System Design Case Studies
 
-Full end-to-end design for 8 real-world systems. Each includes requirements, capacity estimation, architecture diagram, core implementation code, database schema, and interview discussion points.
+Full end-to-end design for 10 real-world systems. Each includes requirements, capacity estimation, architecture diagram, core implementation code, database schema, and interview discussion points.
 
 | # | System | Key Topics Covered |
 |---|--------|--------------------|
@@ -70,6 +70,8 @@ Full end-to-end design for 8 real-world systems. Each includes requirements, cap
 | [06](06_Design_Twitter.md) | Twitter | Celebrity problem, timeline pre-computation, trending |
 | [07](07_Design_Dropbox.md) | Dropbox | Block-based storage, delta sync, deduplication |
 | [08](08_Design_Google_Drive.md) | Google Drive | OT for collaboration, permission cascading, resumable uploads |
+| [09](09_Design_Auth_Access_Refresh_Token.md) | Access & Refresh Token System | JWT, Rotation (RTR), Reuse Detection, Axios Interceptor Queue, Redis Blacklist |
+| [10](10_Design_Role_Based_Access_Control_RBAC.md) | Role-Based Access Control (RBAC) | Granular Permissions, Redis Cache, ABAC Ownership Policy, React UI Gating |
 
 ---
 
