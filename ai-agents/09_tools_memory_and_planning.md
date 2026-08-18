@@ -90,24 +90,24 @@ Here is the **Tiered Memory & Cache Architecture**:
 
 ```mermaid
 flowchart TD
-    User["👤 User Request"] --> Server["⚡ Node.js Server"]
+    User["User Request"] --> Server["Node.js Server"]
     
     subgraph Caching_Layer["1. Caching & Session Layer (Redis)"]
-        SemanticCache{"Semantic Cache: <br> Similar query seen before? (Cosine > 0.95)"}
+        SemanticCache{"Semantic Cache: <br> Similar query seen before? <br> Cosine Match > 0.95"}
         SessionStore["Session Store: <br> Key: session:userId:chatId <br> Sliding Window (Last K messages) <br> TTL: 24 Hours"]
     end
     
     subgraph Storage_Layer["2. Long-Term Storage Layer"]
-        VectorDB[("Vector Database (pgvector) <br> Permanent user facts & preferences")]
+        VectorDB[("Vector Database - pgvector <br> Permanent user facts and preferences")]
     end
     
     subgraph LLM_Layer["3. Model Reasoning Layer"]
-        LLM["🤖 LLM API (OpenAI / Claude)"]
+        LLM["LLM API - OpenAI / Claude"]
     end
 
     Server --> SemanticCache
-    SemanticCache -->|HIT (5ms)| FastAnswer["Instant Cached Answer ($0.00)"]
-    SemanticCache -->|MISS| SessionStore
+    SemanticCache -->|"HIT - 5ms"| FastAnswer["Instant Cached Answer ($0.00)"]
+    SemanticCache -->|"MISS"| SessionStore
     SessionStore --> VectorDB
     SessionStore --> LLM
     VectorDB --> LLM
