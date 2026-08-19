@@ -1,48 +1,54 @@
 # Testing (Jasmine & Jest)
 
 ## What is it?
-Angular me Testing ka matlab hai yeh verify karna ki individual code units (jaise components aur services) aur complete user flows specs ke mutabik perform kar rahe hain. Angular unit tests (using Jasmine, Karma, ya Jest) aur End-to-End (E2E) UI testing (using Playwright ya Cypress) dono ko support karta hai.
+Testing in Angular is the automated verification process that confirms individual code units (Components, Services, Pipes, Directives) and end-to-end user workflows operate according to specifications. Angular provides first-class support for Unit & Integration Testing (via Jasmine, Karma, or Jest/Vitest) and End-to-End (E2E) UI Testing (via Playwright or Cypress).
 
 ## Why do we need it?
-Bina test kiye code production par deploy karne se bugs create ho sakte hain jo user experience ko break kar sakte hain. Automated testing se development time ya CI/CD run me hi bugs trace ho jate hain, jisse safety confirmation milti hai ki naye changes se purana code break nahi hua hai.
+Deploying untested frontend code to production risks shipping regressions, broken UI bindings, and application crashes directly to end users. Automated testing catches bugs early during development or in CI/CD pipelines, giving engineering teams high confidence when refactoring or adding new features.
 
 ```
-Testing Pyramid:
+The Testing Pyramid:
      ▲
-    / \     E2E Testing (Playwright / Cypress) - Test full user journeys
-   /   \    Integration Testing (TestBed) - Test component DOM interactions
-  /     \   Unit Testing (Jasmine / Jest) - Test pure logic & service APIs
+    / \     E2E Testing (Playwright / Cypress) - Test complete user journeys in real browsers
+   /   \    Integration Testing (TestBed) - Test component DOM bindings & event interactions
+  /     \   Unit Testing (Jasmine / Jest) - Test pure TypeScript logic, calculations, & services
  ─────────
 ```
 
 ## How does it work?
-1. **`TestBed`**: Testing context me components aur services ko configure aur compile karne ke liye primary Angular utility class hai.
-2. **Assertions**: Test files structure (`describe`, `it`) aur expectations verify checks (jaise `expect(val).toBe(true)`) execute karne wale functions.
-3. **Component Fixture (`ComponentFixture`)**: Test component ka handler wrapper jo DOM interaction testing aur manual change detection trigger (`fixture.detectChanges()`) verify karne ka access deta hai.
-4. **Mocking HTTP (`HttpTestingController`)**: Fake API responses return karke HTTP request flow aur response handling behaviors ko test karne ka tool.
+1. **`TestBed`**: The primary Angular testing utility that configures an isolated, simulated Angular module environment to instantiate and inject components and services under test.
+2. **Assertions & Matchers**: Test structure blocks (`describe`, `it`, `beforeEach`) and assertion checks (`expect(actual).toBe(expected)`, `toEqual()`, `toBeTruthy()`).
+3. **Component Fixture (`ComponentFixture<T>`)**: A testing wrapper around a component instance that provides access to the component class, the rendered DOM tree (`fixture.nativeElement`), and manual change detection triggering (`fixture.detectChanges()`).
+4. **`HttpTestingController`**: Angular's testing backend for intercepting outgoing `HttpClient` calls, verifying request URLs/methods, and flushing mock JSON responses without making real network calls.
+5. **Spies & Mocks**: Jasmine spies (`spyOn()`) or Jest mocks to spy on method invocations and replace external dependencies with mock implementations.
 
 ## Impact
-* **Application Architecture**: Code testable hone se modular architecture aur solid design pattern self-enforce ho jata hai.
-* **Performance**: Infinite rendering loops aur event subscription memory leaks logic tests me hi pakad me aa jate hain.
-* **Maintainability**: Unit tests documentation specs ki tarah behave karte hain jisse component refactoring safe aur easy ho jati hai.
+* **Application Architecture**: Writing testable code naturally encourages loose coupling, small focused functions, and disciplined dependency injection.
+* **Performance**: Catches infinite loops, unhandled change detection cycles, and memory leaks before code reaches production.
+* **Maintainability**: Automated tests serve as living documentation, ensuring that refactoring legacy code does not break existing application behavior.
 
 ## Real World Example
-Jaise payment checkout component me testing yeh verify karti hai ki card details validate hone se pehle submit button locked rahey, aur invalid input par validator error display kare.
+In an e-commerce checkout flow, automated tests verify that:
+- The "Pay Now" button remains disabled until credit card validation passes.
+- Clicking "Pay Now" triggers the `PaymentService.processOrder()` method once with correct payload parameters.
+- If the payment API returns an error, an accessible alert banner is rendered in the DOM.
 
 ## Syntax
-* **Service Testing Structure**:
+* **Service Testing Configuration**:
 ```typescript
 beforeEach(() => {
-  TestBed.configureTestingModule({ providers: [MyService] });
+  TestBed.configureTestingModule({
+    providers: [MyService]
+  });
   service = TestBed.inject(MyService);
 });
 ```
-* **Jasmine Assertion**: `expect(component.title).toEqual('New App');`
+* **Jasmine / Jest Assertion**: `expect(component.title).toEqual('Angular Academy');`
 
 ## Code Examples
-Neeche dynamic HTTP service mocking aur DOM component interaction testing ke complete code examples diye gaye hain:
+Below are complete implementations for testing an HTTP service with `HttpTestingController` and testing a standalone component's DOM interactions:
 
-### `api-test.service.spec.ts`
+### `product.service.spec.ts`
 ```typescript
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
@@ -58,7 +64,7 @@ describe('ProductService Unit Tests', () => {
       providers: [
         ProductService,
         provideHttpClient(),
-        provideHttpClientTesting()
+        provideHttpClientTesting() // Configures mock HTTP backend
       ]
     });
 
@@ -67,13 +73,13 @@ describe('ProductService Unit Tests', () => {
   });
 
   afterEach(() => {
-    httpMock.verify();
+    httpMock.verify(); // Asserts that no unhandled HTTP requests are left open
   });
 
-  it('should fetch products list successfully', () => {
+  it('should fetch and return product list from API', () => {
     const mockProducts: Product[] = [
-      { id: 1, title: 'Laptop', price: 999 },
-      { id: 2, title: 'Phone', price: 499 }
+      { id: 1, title: 'Mechanical Keyboard', price: 120 },
+      { id: 2, title: 'Gaming Mouse', price: 60 }
     ];
 
     service.getProducts().subscribe((data) => {
@@ -81,9 +87,11 @@ describe('ProductService Unit Tests', () => {
       expect(data).toEqual(mockProducts);
     });
 
+    // Expect a single GET request to the designated endpoint
     const req = httpMock.expectOne('https://api.escuelajs.co/api/v1/products');
     expect(req.request.method).toBe('GET');
     
+    // Respond with mock data
     req.flush(mockProducts);
   });
 });
@@ -100,64 +108,71 @@ import { Component, signal } from '@angular/core';
   template: `
     <div>
       <span class="count-display">Value: {{ count() }}</span>
-      <button (click)="increment()">Add</button>
+      <button class="btn-inc" (click)="increment()">Increment</button>
     </div>
   `
 })
 export class CounterComponent {
   count = signal(0);
-  increment() { this.count.update(c => c + 1); }
+  
+  increment(): void { 
+    this.count.update(c => c + 1); 
+  }
 }
 
-describe('CounterComponent DOM tests', () => {
+describe('CounterComponent DOM & Interaction Tests', () => {
   let component: CounterComponent;
   let fixture: ComponentFixture<CounterComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CounterComponent]
+      imports: [CounterComponent] // Standalone components are imported directly
     }).compileComponents();
 
     fixture = TestBed.createComponent(CounterComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    fixture.detectChanges(); // Initial change detection to render template bindings
   });
 
-  it('should render default value', () => {
+  it('should render the default initial count value of 0', () => {
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.count-display')?.textContent).toContain('Value: 0');
+    const text = compiled.querySelector('.count-display')?.textContent;
+    expect(text).toContain('Value: 0');
   });
 
-  it('should increment value on button click', () => {
+  it('should increment count and update DOM on button click', () => {
     const compiled = fixture.nativeElement as HTMLElement;
-    const button = compiled.querySelector('button');
+    const button = compiled.querySelector<HTMLButtonElement>('.btn-inc');
 
+    // Simulate user button click
     button?.click();
-    fixture.detectChanges();
+    fixture.detectChanges(); // Trigger change detection to re-render DOM
 
-    expect(compiled.querySelector('.count-display')?.textContent).toContain('Value: 1');
+    const text = compiled.querySelector('.count-display')?.textContent;
+    expect(text).toContain('Value: 1');
   });
 });
 ```
 
 ## Best Practices
-1. **Always Isolate Unit Tests**: External services aur HTTP requests ko mock karne ke liye spies/mocks ya mock classes injection configure karein taaki test cases isolated pipeline me run ho saken.
-2. **Call `fixture.detectChanges()`**: Component state change hone par UI template re-rendering updates check karne ke liye hamesha manually `fixture.detectChanges()` trigger karein.
-3. **Write E2E Tests for Critical Paths**: Application ke main features (jaise authentication ya checkout dynamic paths) ko end-to-end testing systems (jaise Playwright) se verify karein.
+1. **Always Isolate Unit Tests**: Mock external HTTP requests, routing dependencies, and third-party services using `provideHttpClientTesting()` or custom mock providers to ensure tests execute quickly and reliably in CI environments.
+2. **Call `fixture.detectChanges()` Explicitly**: In unit tests, Angular does not run automatic change detection. You must explicitly invoke `fixture.detectChanges()` after modifying component properties or triggering DOM events.
+3. **Always Call `httpMock.verify()` in `afterEach`**: Ensures that every expected HTTP call was made and that no unexpected requests were left pending.
+4. **Use E2E Testing for Critical User Journeys**: Use Playwright or Cypress for full user flows (such as authentication, multi-step checkout, and file uploads).
 
 ## Common Mistakes
-* **Forgetting `httpMock.verify()`**: Test case completion par `httpMock.verify()` call na karna, jisse unexpected pending network requests detect nahi ho pati hain.
-* **Testing DOM elements before compile**: `compileComponents()` execute hone se pehle templates select/access karne ki koshish karna, jisse components instantiation compile errors throw kar dete hain.
+* **Omitting `httpMock.verify()`**: Missing verification calls can hide accidental duplicate HTTP requests or unhandled request timeouts.
+* **Accessing DOM Elements Before Change Detection**: Querying native DOM elements immediately after component creation without calling `fixture.detectChanges()`, which results in empty or un-rendered template nodes.
 
 ## Interview Questions & Answers
-### Q: What is the purpose of `TestBed` in Angular testing?
-**A**: `TestBed` Angular applications ke components aur services unit testing ke liye testing sandbox environment create karta hai. Yeh standard dependencies aur mock inputs providers register karne aur components compile karne me help karta hai.
+### Q: What is the purpose of `TestBed` in Angular?
+**A**: `TestBed` is Angular's core testing API that creates an isolated testing module environment. It allows developers to configure providers, import standalone components or modules, resolve mock dependencies, and instantiate components wrapped in a `ComponentFixture` for unit and integration testing.
 
-### Q: Why do we use `HttpTestingController` in unit tests?
-**A**: `HttpTestingController` real HTTP backend calls ko block karke dynamic assertions verify karta hai. Yeh faked responses return karne (`flush()`) aur pending HTTP connections check settings verify karne ke options compile karta hai.
+### Q: Why do we use `HttpTestingController` instead of making real HTTP calls in unit tests?
+**A**: Real network requests introduce flakiness, latency, and backend dependency into test suites. `HttpTestingController` intercepts Angular's `HttpClient` requests, allowing tests to verify request URLs, HTTP methods, and headers, and synchronously simulate server responses (`req.flush()`) or error scenarios (`req.error()`) without hitting a real server.
 
 ## Summary
-Testing code behaviors aur system flows validation ensure karta hai. Unit testing (`TestBed` and assertions) controllers and templates rules check manage karte hain, jabki E2E tests complete browser features simulate karte hain.
+Automated testing guarantees software stability, reliability, and maintainability. Using `TestBed`, `ComponentFixture`, and `HttpTestingController`, developers can thoroughly test TypeScript logic, template DOM bindings, and asynchronous API interactions with confidence.
 
 ---
 

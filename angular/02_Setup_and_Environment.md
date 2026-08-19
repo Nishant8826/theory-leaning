@@ -1,55 +1,56 @@
 # Setup and Environment
 
 ## What is it?
-Angular environment setup karne me Node.js, npm (Node Package Manager), aur Angular Command Line Interface (CLI) install karna shamil hai. Yeh tools TypeScript compile karte hain, external libraries manage karte hain, local development servers start karte hain, aur production ke liye code bundle karte hain.
+Setting up an Angular development environment involves installing Node.js, npm (Node Package Manager), and the Angular Command Line Interface (CLI). These tools work together to compile TypeScript, manage external libraries, run local development servers with live reload, and bundle optimized assets for production.
 
 ## Why do we need it?
-Browsers native roop se TypeScript, Angular templates, ya modern CSS formats (SASS) ko nahi samajhte. Hamein ek development environment chahiye taaki:
-1. Files ko standard JavaScript, CSS, aur HTML me compile kiya ja sake.
-2. Dependencies (jaise RxJS, Tailwind, Angular Material) ko manage kiya ja sake.
-3. Quick iteration ke liye Hot Module Replacement (HMR) ke sath local development server run kiya ja sake.
+Web browsers cannot natively execute TypeScript, Angular template syntax, or modern CSS preprocessors (such as SCSS). A dedicated development environment is required to:
+1. Compile modern TypeScript, SCSS, and template files into standard JavaScript, CSS, and HTML.
+2. Manage project dependencies (such as RxJS, Tailwind CSS, or Angular Material) cleanly.
+3. Host a local development server with Hot Module Replacement (HMR) for fast feedback during development.
 
 ```
-Development:
-[TS Files + Styles] ──> Angular CLI ──> Vite/Webpack compiler ──> Browser Execution (HTML/JS/CSS)
+Development Workflow:
+[TypeScript Files + Styles] ──> Angular CLI ──> Vite/Webpack Compiler ──> Browser Execution (HTML/JS/CSS)
 ```
 
 ## How does it work?
-1. **Node.js**: Yeh runtime environment hai jo browser ke bahar developer tools ko execute karta hai.
-2. **npm**: Yeh registry repository hai jahan se hum Angular core aur secondary packages download karte hain.
-3. **Angular CLI**: Command-line orchestration tool jo code generate karta hai (components, services), dev server start karta (`ng serve`), application build karta (`ng build`), aur tests run karta (`ng test`).
+1. **Node.js**: The JavaScript runtime environment that executes developer build tools outside of the web browser.
+2. **npm**: The package registry from which we download the core Angular framework, CLI packages, and third-party libraries.
+3. **Angular CLI**: The official command-line tool that automates project scaffolding, generates boilerplate code (components, services, guards), runs the dev server (`ng serve`), executes unit tests (`ng test`), and compiles production builds (`ng build`).
 
 ## Impact
-* **Application Architecture**: Poori team ke liye ek standard project folder layout ensure karta hai.
-* **Performance**: Dev mode me fast build ke liye CLI Vite ka use karta hai aur production build ke liye Webpack/esbuild use karta hai.
-* **Maintainability**: `ng update` command ke zariye Angular major versions ke beech smooth migration possible hota hai.
+* **Application Architecture**: Enforces a consistent, standardized project folder structure across engineering teams.
+* **Performance**: Utilizes Vite for blazing-fast local development and esbuild/Webpack for optimized, minified production bundles.
+* **Maintainability**: Makes upgrading between major Angular versions effortless and automated via the `ng update` command.
 
 ## Real World Example
-Ek professional team environment me, naye developers sirf ek single command (`npm install` aur uske baad `ng serve`) chala kar apna workspace setup kar lete hain aur kuch hi minutes me local application run karne lagte hain.
+In a professional enterprise team, a new engineer can clone the repository, run `npm install` followed by `ng serve`, and have a fully functioning local development environment running in just a few minutes.
 
 ## Syntax
-Basic CLI commands:
+Essential Angular CLI commands:
+
 ```bash
-# Install CLI globally
+# Install Angular CLI globally
 npm install -g @angular/cli
 
-# Create a new standalone application
+# Create a new standalone application with routing and CSS styling
 ng new my-app --standalone --routing --style=css
 
-# Run development server
-ng serve
+# Start the local development server with auto-reload
+ng serve --open
 
-# Build production assets
-ng build
+# Compile optimized production assets into the dist/ directory
+ng build --configuration production
 ```
 
 ## Code Examples
-Ek typical Angular setup me `package.json` file aisi dikhti hai:
+Here is what a typical `package.json` looks like in a modern Angular project:
 
 ```json
 {
   "name": "angular-academy",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -80,23 +81,23 @@ Ek typical Angular setup me `package.json` file aisi dikhti hai:
 ```
 
 ## Best Practices
-1. **Local Node Version**: Developers ke beech Node.js versions ko synchronous rakhne ke liye Node Version Manager (`nvm`) ka use karein.
-2. **Run via npm Scripts**: Global CLI ko directly use karne ke bajaye, `npm run start` ya `npm run build` jaise local scripts use karein taaki CI/CD platforms par versions consistent rahein.
-3. **Keep CLI updated**: CLI version ko humesha Angular framework version ke sath align rakhein.
+1. **Manage Node Versions with NVM**: Use Node Version Manager (`nvm`) or `.nvmrc` to ensure all team members and CI/CD pipelines run the exact same Node.js LTS version.
+2. **Use npm Scripts**: Instead of relying on a globally installed CLI binary, run commands via `npm start`, `npm run build`, or `npx ng` to prevent version mismatches.
+3. **Keep the CLI Synchronized**: Always keep your Angular CLI version aligned with your project's `@angular/core` version to avoid configuration warnings and deprecated build options.
 
 ## Common Mistakes
-* **Global/Local CLI Mismatches**: Ek globally outdated CLI par commands run karna jo local project packages ke sath conflict kare. Ise door karne ke liye `npx ng <command>` ka use karein.
-* **Not using standard folders**: Manually files banana ke bajaye CLI generator commands (`ng generate`) use karein, nahi toh files connect karne me galti ho sakti hai.
+* **Global vs. Local CLI Version Mismatches**: Running an outdated global CLI against a newer local project can cause build failures. Use `npx ng <command>` to ensure you execute the project-specific local CLI.
+* **Manually Creating Files**: Manually creating component or service files without the CLI can lead to typos in class names, missing test files, or forgotten imports. Always prefer `ng generate` commands.
 
 ## Interview Questions & Answers
-### Q: What is the command to create a component, and why should you use CLI?
-**A**: Command `ng generate component component-name` (ya `ng g c component-name`) hai. CLI use karna isliye recommended hai kyunki yeh component ki TS, HTML, CSS, aur test (spec) files automatically bana deta hai, dependencies register kar deta hai, aur standard naming conventions follow karta hai.
+### Q: What is the command to create a component, and why is using the CLI recommended?
+**A**: The command is `ng generate component <component-name>` (or `ng g c <name>`). Using the CLI is recommended because it automatically creates the TypeScript logic, HTML template, CSS styling, and unit test (`.spec.ts`) files, registers necessary dependencies, and enforces consistent naming conventions.
 
-### Q: What is the difference between global npm installation and local dependencies?
-**A**: Global installation (`npm i -g`) command-line binaries ko pure system me available banata hai. Local dependencies (`node_modules` me stored) yeh ensure karti hain ki project `package.json` me locked exact dependency version ke sath compile ho, taaki build servers par breaks na hon.
+### Q: What is the difference between global npm packages and local project dependencies?
+**A**: Global packages (`npm i -g`) make command-line utilities available across your entire operating system. Local dependencies (stored in `node_modules` and listed in `package.json`) ensure that the project compiles using the exact locked versions, preventing build breaks in continuous integration (CI) environments.
 
 ## Summary
-Angular workspace setup karne ke liye Node.js, npm, aur Angular CLI ki zaroorat hoti hai. CLI Angular project ka nervous system hai, jo scaffolding, compilation, testing, aur final builds ko aasan banata hai.
+Setting up an Angular workspace requires Node.js, npm, and the Angular CLI. The CLI serves as the backbone of an Angular project, managing code generation, development servers, testing suites, and production optimizations.
 
 ---
 

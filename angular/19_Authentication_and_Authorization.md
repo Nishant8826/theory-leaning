@@ -1,68 +1,77 @@
 # Authentication and Authorization
 
 ## What is it?
-Authentication user identity verify karne ka process hai (ki user kaun hai). Authorization user access permissions check karne ka process hai (ki user ko kya-kya karne ki permission hai). Angular applications me ise JSON Web Tokens (JWT), HTTP Interceptors, functional Route Guards, aur role-based check logics ke zariye handle kiya jata hai.
+- **Authentication** is the process of verifying a user's identity (answering: *"Who are you?"*).
+- **Authorization** is the process of verifying a user's access permissions (answering: *"What resources are you allowed to access or modify?"*).
+
+In Angular applications, authentication and authorization are implemented using JSON Web Tokens (JWT), HTTP Interceptors, functional Route Guards (`CanActivateFn`, `CanMatchFn`), and role-based access control (RBAC) patterns.
 
 ## Why do we need it?
-Authentication aur Authorization ke bina koi bhi user secure routes (jaise admin dashboard ya billing reports) ko browser URL bar me direct paste karke access kar sakta hai. Angular apps me routes access control restrict karne, client API requests me token headers attach karne, aur expired tokens ko coordinate/refresh karne ke liye in mechanisms ki zaroorat hoti hai.
+Without proper authentication and authorization controls, any user could navigate directly to restricted application routes (such as `/admin/finance` or `/user/billing`) by pasting the URL into the browser. 
+
+In addition, protected backend REST APIs require a valid credential header on every request. Angular coordinates client-side route access control, attaches credentials to outgoing API requests, and seamlessly refreshes expired tokens in the background.
 
 ```
 Access Request Flow:
-User navigates to /admin ──> CanMatch/CanActivate Guard checks JWT 
-                          ──> Valid JWT? ──> Check user role (Admin?) ──> Render Admin View
+User navigates to /admin ──> CanMatch / CanActivate Guard checks JWT 
+                          ──> Valid JWT? ──> Check user role (e.g., 'admin') ──> Render Admin View
                           ──> Expired JWT? ──> Interceptor requests Refresh Token ──> Swap tokens ──> Load admin view
-                          ──> No token? ──> Redirect to /login
+                          ──> No Token / Invalid? ──> Redirect to /login
 ```
 
 ## How does it work?
-1. **JWT (JSON Web Tokens)**: Authentication state maintain karne ke liye server login response me short-lived Access Token aur long-lived Refresh Token return karta hai.
-2. **Secure Storage**: Access tokens ko in-memory storage ya SessionStorage me rakha jata hai, aur refresh tokens ko securely HTTP-only cookies me store kiya jata hai taaki script-based XSS attacks se bach sakein.
-3. **Route Guards**: Functional gatekeepers (jaise `CanActivate` aur `CanMatch`) jo components rendering ya chunk loading se pehle authentication status check karte hain.
-4. **HTTP Interceptors**: Outgoing API requests me automatic `Authorization: Bearer <token>` header inject karte hain.
+1. **JWT (JSON Web Tokens)**: Upon successful login, the authentication server returns a short-lived **Access Token** and a long-lived **Refresh Token**.
+2. **Secure Token Storage**:
+   - Access tokens are stored in-memory (inside an Angular service or Signal) or in `sessionStorage`.
+   - Refresh tokens are stored in secure, `HttpOnly`, `SameSite` cookies managed by the backend, protecting them from JavaScript-based Cross-Site Scripting (XSS) extraction.
+3. **Route Guards**: Functional gatekeepers (`CanMatchFn`, `CanActivateFn`) that intercept route transitions, verifying authentication and role permissions before lazy chunks are downloaded or components are rendered.
+4. **HTTP Interceptors**: Automatically clone and attach `Authorization: Bearer <token>` headers to outgoing backend requests and catch `401 Unauthorized` responses to initiate silent token refresh flows.
+
+---
 
 ### 🔑 Access Token vs. Refresh Token (In-Depth)
 
-Dono tokens API safety aur user session boundaries manage karne ke liye mandatory hain, par inke functions aur storage policies different hote hain:
+Both tokens are essential for balancing API security with a smooth, continuous user experience:
 
 | Property | Access Token (Short-Lived) | Refresh Token (Long-Lived) |
 | :--- | :--- | :--- |
-| **Purpose** | Resource Server APIs ko verify aur authenticate karne ke liye. | Expire hone par naya Access Token generate karne ke liye. |
-| **Life Span** | Behad short (e.g., 15 mins to 1 hour). | Long duration (e.g., 7 days to 30 days). |
-| **Stored In** | Application memory (Signals/Service) ya SessionStorage. | Secure HTTP-only, Secure, SameSite Cookie (Server-side manage). |
-| **Exposure Risks** | XSS (Cross-Site Scripting) attack se chori ho sakta hai agar localStorage me rakhein. | CSRF (Cross-Site Request Forgery) protect karna zaroori hai. |
-| **Format** | Signed JWT string (UserId, Role, Expiration attributes carry karta hai). | Random string ya cryptographically signed string, server side validation base token. |
+| **Primary Purpose** | Authorize requests against backend resource APIs. | Obtain a new Access Token once the current one expires. |
+| **Lifespan** | Very short (e.g., 10–15 minutes). | Long duration (e.g., 7–30 days). |
+| **Storage Location** | Application memory (Angular Service/Signal) or `sessionStorage`. | Secure `HttpOnly`, `Secure`, `SameSite` Cookie (managed by server). |
+| **Security Risk** | Vulnerable to XSS if placed in `localStorage`. | Vulnerable to CSRF if not protected with `SameSite` and anti-CSRF headers. |
+| **Format** | Cryptographically signed JWT containing claims (`sub`, `role`, `exp`). | Opaque random string or encrypted token tracked in a backend database. |
 
-#### 🔄 Token Refresh Flow (The Silent Exchange)
+#### 🔄 The Silent Token Refresh Flow
 
-1. **Client API Request**: Angular component page load par API data fetch request bhejta hai. HTTP Interceptor active Access Token ko `Authorization: Bearer <Access_Token>` header me append kar deta hai.
-2. **401 Unauthorized Error**: Agar access token expire ho jata hai, toh backend server `401 Unauthorized` response code return karta hai.
-3. **Catch & Intercept**: HTTP Interceptor handle checks me is error ko intercept karta hai aur ongoing requests queue ko pause (hold) par daal deta hai.
-4. **Refresh Call**: Interceptor automatic background me `/api/refresh` endpoint par hit trigger karta hai (browser securely HTTP-only cookie me save Refresh Token auto-attach bhej deta hai).
-5. **New Token Issuance**: Server refresh token check karke new dynamic Access Token emit karta hai.
-6. **Retry Queue**: Angular interceptor new access token ko parameters me update karke paused requests ko modify (clone) kar retry karta hai, jisse user page load transition smooth complete ho jata hai.
+1. **Client API Request**: An Angular component triggers an API call. The HTTP Interceptor appends the active Access Token in the `Authorization: Bearer <Access_Token>` header.
+2. **401 Unauthorized Response**: If the access token has expired, the resource server rejects the request with a `401 Unauthorized` status code.
+3. **Catch & Intercept**: The Angular HTTP Interceptor intercepts the 401 error and temporarily pauses pending API calls in an internal queue.
+4. **Silent Refresh Request**: The interceptor dispatches a POST request to `/api/auth/refresh`. The browser automatically includes the secure `HttpOnly` refresh token cookie.
+5. **New Token Issuance**: The backend verifies the refresh token against its database/cache and issues a brand-new short-lived Access Token.
+6. **Replay Pending Requests**: The interceptor clones the original failed request with the new Access Token, replays it to the server, and returns the successful response to the waiting component seamlessly.
 
-### 🔌 Full-Stack Integration (Node.js + JWT + Angular/React + MongoDB/MySQL)
+---
 
-Dono tokens flow frontend clients (Angular/React), backend server (Node.js), aur database storage (MongoDB/MySQL) ke beech coordination se set hote hain:
+### 🔌 Full-Stack Architecture (Angular + Node.js/Express + Database)
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
 │                                    FRONTEND LAYER                                      │
-│                                   (Angular / React)                                    │
-│   • Access Token: In-memory (Signals / state)                                          │
-│   • Refresh Token: Secure HTTP-Only Cookie (Set by Backend)                            │
-│   • Request Setup: Hamesha 'withCredentials: true' trigger karein                      │
+│                                   (Angular 17/18+)                                     │
+│   • Access Token: In-memory (Signals / AuthService)                                    │
+│   • Refresh Token: Secure HTTP-Only Cookie (automatically attached by browser)         │
+│   • HTTP Client: Configured with withCredentials: true                                 │
 └───────────┬────────────────────────────────────────────────────────────────▲───────────┘
             │                                                                │
-     Sends API Call                                                   Emits new Token
- (Bearer AccessToken)                                               (and updates Cookie)
+     Sends API Request                                                Emits New Token
+   (Bearer AccessToken)                                             (and updates Cookie)
             │                                                                │
 ┌───────────▼────────────────────────────────────────────────────────────────┴───────────┐
 │                                    BACKEND SERVER                                      │
 │                                  (Node.js / Express)                                   │
-│   • sign(payload, ACCESS_SECRET, { expiresIn: '15m' }) ──> JSON Response               │
-│   • sign(payload, REFRESH_SECRET, { expiresIn: '7d' }) ──> Cookie Header               │
-│   • Verify Refresh Token against Database (on refresh requests)                        │
+│   • jwt.sign(payload, ACCESS_SECRET, { expiresIn: '15m' }) ──> JSON Body               │
+│   • jwt.sign(payload, REFRESH_SECRET, { expiresIn: '7d' }) ──> HttpOnly Cookie Header │
+│   • Validates Refresh Token against Database on /api/auth/refresh                      │
 └───────────┬────────────────────────────────────────────────────────────────▲───────────┘
             │                                                                │
        Saves / Checks                                                   Query Result
@@ -73,84 +82,76 @@ Dono tokens flow frontend clients (Angular/React), backend server (Node.js), aur
 │                                  (MongoDB / MySQL)                                     │
 │   • MongoDB Schema: { userId: ObjectId, token: String, expiresAt: Date }               │
 │   • MySQL Table: RefreshTokens (id, userId, token, expiresAt, isRevoked)               │
-│   • Purpose: Central tracking for session revocation (password reset, logout)          │
+│   • Purpose: Centralized session revocation (Logout, Password Reset, Device Purge)    │
 └────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-#### 1. Frontend Configuration (Angular vs. React Axios)
-Chunki Refresh Token browser ke securely managed cookies (HTTP-Only) me hota hai, isliye har request me cookies send karne ke liye settings enable karni padti hain:
-* **Angular**: `provideHttpClient()` configuration me `withInterceptors()` use karein. Interceptor me request clone karte waqt request options me `withCredentials: true` set karein.
-* **React (Axios)**: Axios custom instance create karte waqt options config me defaults property set karein: `axios.defaults.withCredentials = true;`.
+#### 1. Frontend Configuration
+Because the Refresh Token resides inside an `HttpOnly` cookie, cross-origin requests must include credentials:
+* In Angular: Use `withInterceptors()` in `provideHttpClient()` and ensure request clones include `withCredentials: true`.
 
 #### 2. Backend Server Setup (Node.js + Express)
-Server side par login endpoint dynamic access aur refresh verify parameters signs karta hai:
 ```javascript
-// Sign Access Token (Short-lived)
-const accessToken = jwt.sign({ id: user.id, role: user.role }, process.env.ACCESS_SECRET, { expiresIn: '15m' });
+// Sign Access Token (Short-Lived)
+const accessToken = jwt.sign(
+  { id: user._id, role: user.role }, 
+  process.env.ACCESS_TOKEN_SECRET, 
+  { expiresIn: '15m' }
+);
 
-// Sign Refresh Token (Long-lived)
-const refreshToken = jwt.sign({ id: user.id }, process.env.REFRESH_SECRET, { expiresIn: '7d' });
+// Sign Refresh Token (Long-Lived)
+const refreshToken = jwt.sign(
+  { id: user._id }, 
+  process.env.REFRESH_TOKEN_SECRET, 
+  { expiresIn: '7d' }
+);
 
-// Save Refresh Token in Database (MongoDB/MySQL)
-await tokenService.saveRefreshToken(user.id, refreshToken);
+// Persist Refresh Token to Database for revocation support
+await tokenService.saveRefreshToken(user._id, refreshToken);
 
-// Send Refresh Token as secure Cookie
+// Set secure HttpOnly Cookie
 res.cookie('refreshToken', refreshToken, {
-  httpOnly: true, // Secure logic: JavaScript cannot access it
-  secure: true,   // Serves only over HTTPS
+  httpOnly: true, // Prevents JavaScript access (Immune to XSS)
+  secure: true,   // Transmitted only over HTTPS
   sameSite: 'Strict',
-  maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days in ms
+  maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
 });
 
-// Return Access Token in Response JSON
+// Return Access Token in JSON response body
 res.json({ accessToken, user: { name: user.name, role: user.role } });
 ```
 
-#### 3. Database Layer (MongoDB vs. MySQL)
-Stateless JWT flows me single session logout ya password resets handle check logic verify karne ke liye Refresh Tokens ko DB me track karna mandatory hai:
-* **MongoDB (Mongoose Schema)**:
-  ```javascript
-  const RefreshTokenSchema = new mongoose.Schema({
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    token: { type: String, required: true, unique: true },
-    expiresAt: { type: Date, required: true }
-  });
-  // Auto-delete expired documents using TTL index
-  RefreshTokenSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
-  ```
-* **MySQL (Sequelize Schema)**:
-  ```javascript
-  // Table: RefreshTokens
-  const RefreshToken = sequelize.define('RefreshToken', {
-    userId: { type: DataTypes.INTEGER, allowNull: false },
-    token: { type: DataTypes.STRING, allowNull: false, unique: true },
-    expiresAt: { type: DataTypes.DATE, allowNull: false },
-    isRevoked: { type: DataTypes.BOOLEAN, defaultValue: false }
-  });
-  ```
-  Jab user **Logout** karta hai ya **Password Reset** karta hai, toh server database se is record ko delete ya `isRevoked = true` kar deta hai. Jab `/api/refresh` request chalegi, backend validation check DB search queries me failure payega aur access block kar dega.
+#### 3. Database Layer (Session Revocation)
+Tracking refresh tokens in the database allows the server to invalidate user sessions immediately upon **Logout** or **Password Reset**:
+* **MongoDB**: Use a TTL (Time-To-Live) index on `expiresAt` to automatically clean up expired tokens from the collection.
+* **MySQL**: Store token records with an `isRevoked` boolean flag. If `isRevoked === true` during `/api/auth/refresh`, the server rejects the request immediately.
+
+---
 
 ## Impact
-* **Application Architecture**: Routing barriers lagane se core views aur login workflow ka clear separation rehta hai.
-* **Performance**: `CanMatch` guard fail hone par lazy-loaded route bundles download nahi hote, jisse bandwidth aur page load speed optimized rehte hain.
-* **Security**: Interceptors centralizing security token attachment and refresh logic ko automate karte hain.
+* **Application Architecture**: Clear boundary between unauthenticated public views, protected user sections, and administrative portals.
+* **Performance**: `CanMatch` prevents unauthorized users from downloading lazy-loaded feature JavaScript bundles, preserving bandwidth and security.
+* **Security**: Multi-layered defense combining short-lived in-memory tokens, `HttpOnly` cookies, and server-side session revocation.
 
 ## Real World Example
-Jaise medical dashboard portal me, doctor aur normal staff ke roles different hote hain. Agar user bina 'doctor' role ke edit section par navigate karne ki koshish karega, toh `CanMatch` routing block check karke use access denied page par redirect kar dega.
+In a healthcare hospital management system:
+- Standard staff members can access patient records in read-only mode.
+- If a nurse attempts to navigate to `/admin/billing`, the `roleGuard` checks the JWT role claim, detects the lack of the `admin` role, and redirects to an `/unauthorized` view without downloading administrative bundle code.
 
 ## Syntax
-* **Role Guard checking JWT claim**:
+* **Functional Role Guard**:
 ```typescript
 export const roleGuard: CanActivateFn = (route) => {
   const auth = inject(AuthService);
   const router = inject(Router);
   const requiredRole = route.data['role'];
+
   return auth.hasRole(requiredRole) ? true : router.createUrlTree(['/unauthorized']);
 };
 ```
 
 ## Code Examples
-Neeche HTTP Interceptor ke andar silent token refresh operations aur route guards use karne ka complete configuration design diya gaya hai:
+Below is a complete Angular authentication architecture with an `AuthService`, a silent refresh `jwtInterceptor`, and a role guard:
 
 ### `auth.service.ts`
 ```typescript
@@ -160,7 +161,6 @@ import { tap, throwError, Observable } from 'rxjs';
 
 export interface AuthResponse {
   accessToken: string;
-  refreshToken: string;
   user: { name: string; role: string; };
 }
 
@@ -169,10 +169,17 @@ export interface AuthResponse {
 })
 export class AuthService {
   private http = inject(HttpClient);
+  
+  // In-memory reactive user state
   currentUser = signal<{ name: string; role: string } | null>(null);
+  private accessToken: string | null = null;
 
   getToken(): string | null {
-    return localStorage.getItem('access_token');
+    return this.accessToken;
+  }
+
+  setToken(token: string | null): void {
+    this.accessToken = token;
   }
 
   hasRole(role: string): boolean {
@@ -181,36 +188,41 @@ export class AuthService {
   }
 
   refreshToken(): Observable<AuthResponse> {
-    const rToken = localStorage.getItem('refresh_token');
-    if (!rToken) return throwError(() => new Error('No refresh token available'));
-
-    return this.http.post<AuthResponse>('https://api.my-app.com/auth/refresh', { refreshToken: rToken }).pipe(
+    // Refresh token is automatically sent by the browser via HttpOnly cookie
+    return this.http.post<AuthResponse>(
+      'https://api.enterprise-app.com/api/auth/refresh', 
+      {}, 
+      { withCredentials: true }
+    ).pipe(
       tap(res => {
-        localStorage.setItem('access_token', res.accessToken);
-        localStorage.setItem('refresh_token', res.refreshToken);
+        this.setToken(res.accessToken);
+        this.currentUser.set(res.user);
       })
     );
   }
 
-  logout() {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
+  logout(): void {
+    this.http.post('https://api.enterprise-app.com/api/auth/logout', {}, { withCredentials: true }).subscribe();
+    this.setToken(null);
     this.currentUser.set(null);
   }
 }
 ```
 
-### `jwt.interceptor.ts`
+### `jwt.interceptor.ts` (Silent Token Refresh)
 ```typescript
 import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { AuthService } from './auth.service';
 import { catchError, switchMap, throwError } from 'rxjs';
+import { Router } from '@angular/router';
 
 export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
+  const router = inject(Router);
   const token = authService.getToken();
 
+  // Attach active bearer token if available
   let authReq = req;
   if (token) {
     authReq = req.clone({
@@ -220,16 +232,20 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(authReq).pipe(
     catchError((error) => {
+      // Intercept 401 Unauthorized errors
       if (error instanceof HttpErrorResponse && error.status === 401) {
         return authService.refreshToken().pipe(
           switchMap((newTokens) => {
+            // Replay original request with new access token
             const retriedReq = req.clone({
               setHeaders: { Authorization: `Bearer ${newTokens.accessToken}` }
             });
             return next(retriedReq);
           }),
           catchError((refreshErr) => {
+            // If refresh fails, log out and redirect to login
             authService.logout();
+            router.navigate(['/login']);
             return throwError(() => refreshErr);
           })
         );
@@ -241,23 +257,23 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
 ```
 
 ## Best Practices
-1. **Store Tokens Securely**: Refresh token ko localStorage me store na karein. Uske liye secure HTTP-only cookies ka use karein.
-2. **Use `CanMatch` over `CanActivate`**: Lazy-loaded module bundles download hone se pehle hi routes check secure karne ke liye `CanMatch` guard prefer karein.
-3. **Parse JWT claims on the Server**: Client-side route guards sirf user experience (UI logic visibility) ke liye hote hain. Actual validation checks aur access controls hamesha backend server par hi verify and enforce karein.
+1. **Never Store Sensitive Refresh Tokens in LocalStorage**: `localStorage` is accessible to any JavaScript running on the page, making tokens vulnerable to Cross-Site Scripting (XSS). Always use backend-managed `HttpOnly`, `SameSite: Strict` cookies for refresh tokens.
+2. **Prefer `CanMatch` Over `CanActivate`**: Use `CanMatchFn` on lazy routes so Angular stops unauthorized users from even downloading the lazy route's JavaScript bundle.
+3. **Always Enforce Security on the Backend**: Client-side route guards and UI button states are purely for user experience. The backend server must independently validate JWT signatures and permissions on every incoming request.
 
 ## Common Mistakes
-* **Leaking Tokens**: Access tokens ko third-party API calls me automatically headers me send kar dena, jisse dynamic token leakage ho sakti hai.
-* **Storing Tokens in localStorage Permanently**: Tokens ko bina expiration check ke permanent store rakhna, jo script injection (XSS) ke chalte browser memory se extract kiya ja sake.
+* **Sending Bearer Tokens to Third-Party Domains**: Configuring interceptors that attach authorization headers to external URLs (e.g., third-party CDNs or analytics endpoints), leaking private user tokens.
+* **Infinite Refresh Loops**: If the `/api/auth/refresh` endpoint itself returns a `401 Unauthorized`, failing to exclude it from the interceptor retry logic will trigger an infinite request loop.
 
 ## Interview Questions & Answers
 ### Q: What is the difference between `CanActivate` and `CanMatch` route guards?
-**A**: `CanActivate` check hone se pehle route bundle file load ho chuki hoti hai, bas dynamic navigation blocks check hote hain. `CanMatch` lazy bundle download hone se pehle hi dynamic routes filters verify karke, authorization fail hone par download chunk stop kar deta hai.
+**A**: `CanActivate` runs *after* the lazy route chunk has already been downloaded to the browser, simply deciding whether to instantiate and render the component. `CanMatch` runs *before* the route chunk is fetched; if it returns `false`, Angular skips the route entirely and does not download the JavaScript bundle at all.
 
-### Q: How does a silent JWT refresh flow work in an HTTP interceptor?
-**A**: Jab API `401 Unauthorized` throw karti hai, interceptor pichli request pause karke background me token refresh request call karta hai. Agar refresh successful hota hai, toh new token ke sath original request clone karke retry ki jati hai, warna user session end redirect to login trigger ho jata hai.
+### Q: How does a silent JWT refresh flow work with an HTTP Interceptor?
+**A**: When an API request fails with a `401 Unauthorized` status, the HTTP Interceptor catches the error, pauses outgoing requests, and calls `/api/auth/refresh` (sending the `HttpOnly` cookie). If the server returns a new access token, the interceptor clones the original failed request with the new header and replays it. If the refresh request also fails, it clears local session state and redirects the user to `/login`.
 
 ## Summary
-Authentication aur Authorization application safety boundaries ko secure karte hain. Functional guards (`CanMatch`) layouts aur code downloads protect karte hain, aur HTTP Interceptors transparently bearer tokens handle karke application data exchanges manage karte hain.
+Authentication verifies user identity, while Authorization regulates access to features and data. By combining functional route guards (`CanMatch`), secure `HttpOnly` cookies, in-memory access tokens, and silent refresh HTTP interceptors, Angular applications achieve enterprise-level security.
 
 ---
 

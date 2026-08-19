@@ -1,56 +1,61 @@
 # Angular Architecture
 
 ## What is it?
-Angular Architecture component-driven framework ka ek blueprint hai. Yeh define karta hai ki kaise views (Templates), styling (CSS), behavior (Component TypeScript), dependency injectors, aur data providers (Services) aapas me compile aur coordinate hokar Single Page Application run karte hain.
+Angular Architecture is the foundational blueprint of the framework. It defines how visual views (HTML Templates), styling (CSS/SCSS), component logic (TypeScript classes), dependency injectors, and data providers (Services) interact, compile, and coordinate to power a robust Single Page Application (SPA).
 
 ## Why do we need it?
-Bina kisi clear architectural model ke, jaise-jaise codebase bada hota hai, chaos badh jata hai. Developers business logic HTML templates me likh de sakte hain, duplicate HTTP requests banate hain, ya fir unstable component communication setup karte hain. Angular ka architecture strict separation of concerns (kaam ka bantwara) establish karta hai, jisse yeh ensure hota hai ki har class ka ek clear role (Presentation, Structure, Behavior, State, ya Integration) ho.
+Without a structured architectural pattern, software complexity increases rapidly as codebases grow. Developers might embed business logic directly into HTML templates, create redundant HTTP requests, or build fragile component communication chains. Angular's architecture enforces a strict **Separation of Concerns**, ensuring that every class has a single, well-defined responsibility (Presentation, Structure, Behavior, State, or Backend Integration).
 
 ```
 ┌────────────────────────────────────────────────────────┐
 │                      Angular App                       │
-│└──────────────────────────┬─────────────────────────────┘
-│                           ▼
-│          ┌──────────────────────────────────┐
-│          │  bootstrapApplication(AppComponent)│
-│          └────────────────\u252c─────────────────┘
-│                            ▼
-│              ┌────────────────────────────┐
-│              │       Root Component       │
-│              │       (AppComponent)       │
-│              └─────────────┬──────────────┘
-│                            ▼
-│              ┌────────────────────────────┐
-│              │    Sub-Components Tree     │
-│              │  (Home, Products, Login)   │
-│              └─────────────┬──────────────┘
-│                            ▼
-│              ┌────────────────────────────┐
-│              │  Shared Services / APIs    │
-│              │  (Dependency Injection)    │
-│              └────────────────────────────┘
+└──────────────────────────┬─────────────────────────────┘
+                           │
+                           ▼
+          ┌──────────────────────────────────┐
+          │  bootstrapApplication(AppComponent)│
+          └────────────────┬─────────────────┘
+                           │
+                           ▼
+              ┌────────────────────────────┐
+              │       Root Component       │
+              │       (AppComponent)       │
+              └─────────────┬──────────────┘
+                            │
+                            ▼
+              ┌────────────────────────────┐
+              │    Sub-Components Tree     │
+              │  (Home, Products, Login)   │
+              └─────────────┬──────────────┘
+                            │
+                            ▼
+              ┌────────────────────────────┐
+              │  Shared Services / APIs    │
+              │  (Dependency Injection)    │
+              └────────────────────────────┘
 ```
 
 ## How does it work?
-1. **Bootstrapping**: Jab app start hoti hai, toh index file load hone ke baad `main.ts` execute hota hai. Modern Angular me, `bootstrapApplication(AppComponent, config)` run hota hai aur primary root view generate karta hai.
-2. **Standalone Components**: Modern Angular ke building blocks. Yeh modular container structure (`NgModule`) ko bypass karke apni dependency imports metadata me khud declare karte hain.
-3. **Dependency Injection**: Injector system components ko services supply karta hai. Jab koi component kisi service ki request karta hai, toh DI system use retrieve ya instantiate karke provide karta hai, jo UI templates aur data processing logic ka clear separation banaye rakhta hai.
+1. **Bootstrapping**: When the application loads in the browser, `index.html` loads and `main.ts` executes. In modern Angular, `bootstrapApplication(AppComponent, appConfig)` initializes the application and renders the primary root component into the DOM.
+2. **Standalone Components**: The fundamental building blocks of modern Angular. They declare their own dependencies directly in their component metadata (`imports: [...]`), eliminating the need for intermediary `NgModule` definitions.
+3. **Dependency Injection (DI)**: A hierarchical injection engine that provides services to components. When a component declares a service dependency, Angular's DI system resolves or instantiates the service instance, maintaining clear isolation between UI rendering and business logic.
 
 ## Impact
-* **Application Architecture**: Predictable structure milta hai. Har application components ka ek nested tree hoti hai jo shared data services se connected hoti hai.
-* **Performance**: Standalone components code splitting aur deep tree-shaking support karte hain, jisse compiled bundle size kaafi small ho jata hai.
-* **Scalability**: Hierarchical injection tree lazy-loaded modules ko self-contained state maintain karne ki permission deti hai.
+* **Application Architecture**: Creates a predictable component tree where UI elements communicate via structured inputs, outputs, and shared data services.
+* **Performance**: Standalone components enable precise code-splitting and deep tree-shaking, resulting in smaller initial bundle sizes and faster load times.
+* **Scalability**: Hierarchical dependency injection allows feature branches and lazy-loaded routes to encapsulate their own private state and services cleanly.
 
 ## Real World Example
-Ek global banking dashboard project me, visual dashboard elements (charts, tables, menus) individual components होते हैं. Jabki authentication status, API calls, aur financial calculations alag services directories me hote hain jinhe DI ke through import kiya jata hai.
+In an enterprise banking dashboard, visual interface elements (transaction tables, balance cards, navigation menus) are individual reusable components. Meanwhile, authentication state, API communication, and financial balance calculations reside in dedicated services injected where needed.
 
 ## Syntax
-Modern Angular applications configuration bootstrap settings `app.config.ts` me setup karte hain:
+Modern Angular applications configure global providers using `ApplicationConfig` in `app.config.ts`:
+
 ```typescript
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { routes } from './app.routes';
 import { provideHttpClient } from '@angular/common/http';
+import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -62,7 +67,7 @@ export const appConfig: ApplicationConfig = {
 ```
 
 ## Code Examples
-Neeche Standalone-centric bootstrap app framework ka complete implementation diya gaya hai:
+Below is a complete implementation of a modern standalone application structure:
 
 ### `main.ts`
 ```typescript
@@ -71,7 +76,7 @@ import { appConfig } from './app/app.config';
 import { AppComponent } from './app/app.component';
 
 bootstrapApplication(AppComponent, appConfig)
-  .catch((err) => console.error(err));
+  .catch((err) => console.error('Application bootstrap error:', err));
 ```
 
 ### `app/app.component.ts`
@@ -88,35 +93,44 @@ import { CommonModule } from '@angular/common';
       <h1>Enterprise Angular Dashboard</h1>
     </header>
     <main>
-      <p>Bootstrap status: Completed Successfully</p>
+      <p>Bootstrap status: Application Initialized Successfully</p>
     </main>
   `,
   styles: [`
-    .app-header { background: #1f2937; color: white; padding: 15px; text-align: center; }
-    main { padding: 20px; text-align: center; font-family: sans-serif; }
+    .app-header { 
+      background: #1f2937; 
+      color: white; 
+      padding: 15px; 
+      text-align: center; 
+    }
+    main { 
+      padding: 20px; 
+      text-align: center; 
+      font-family: sans-serif; 
+    }
   `]
 })
 export class AppComponent {}
 ```
 
 ## Best Practices
-1. **Avoid Legacy Modules**: Naye components likhte waqt `NgModule` use na karein. Humesha `standalone: true` set karein.
-2. **Single Instance Configs**: Global engines (Router, HttpClient, Store) ko application bootstrapping ke waqt `app.config.ts` ke `appConfig` me register karein.
-3. **Decouple View from Services**: Components ke andar kabhi bhi complex computations ya business calculations directly na likhein. Ise humesha separate services me delegate karein.
+1. **Always Use Standalone Architecture**: Avoid creating new `NgModule` files. Set `standalone: true` for all new components, directives, and pipes.
+2. **Centralize Global Providers in `app.config.ts`**: Register global application infrastructure (Router, HttpClient, NgRx Store, Interceptors) within `appConfig` during bootstrap.
+3. **Decouple View from Business Logic**: Never write heavy mathematical calculations, direct HTTP calls, or localStorage manipulation inside component classes. Delegate these tasks to injectable services.
 
 ## Common Mistakes
-* **Bootstrapping multiple components**: `index.html` me directly multiple sibling components ko bootstrap karne ki koshish karna. Humesha ek single root component (`app-root`) bootstrap karein aur baaki component templates ko nesting child trees ke roop me layout karein.
-* **Cyclic Dependencies**: Component A me Component B ko import karna aur B me A ko. Humesha top-down structure setup rakhein ya cyclic issue handle karne ke liye shared service inject karein.
+* **Bootstrapping Multiple Root Components**: Trying to bootstrap multiple sibling components in `index.html`. Always bootstrap a single root component (`AppComponent`) and render additional components through template nesting and routing.
+* **Circular Dependencies**: Importing Component A into Component B while also importing Component B into Component A. Structure component hierarchies strictly top-down, or use a shared service to coordinate interactions.
 
 ## Interview Questions & Answers
-### Q: What is bootstrapping in Angular, and how has it changed in modern versions?
-**A**: Bootstrapping Angular runtime ko initialize aur root component ko render karne ka process hai. Purane versions me, iske liye `NgModule` setup chahiye hota tha (`platformBrowserDynamic().bootstrapModule(AppModule)`). Modern Angular (v14+) me, bootstrapping direct aur lightweight standalone API `bootstrapApplication(AppComponent, appConfig)` ke zariye hoti hai.
+### Q: What is bootstrapping in Angular, and how has it evolved in modern versions?
+**A**: Bootstrapping is the process by which Angular initializes its runtime, compiles the root component, and inserts it into the browser's DOM (`index.html`). In legacy Angular versions, this required an `NgModule` (`platformBrowserDynamic().bootstrapModule(AppModule)`). Modern Angular uses the lightweight, standalone API `bootstrapApplication(AppComponent, appConfig)`, reducing boilerplate and improving build performance.
 
-### Q: What are Standalone Components, and what problem do they solve?
-**A**: Standalone components aise components hote hain jinhe kisi intermediate `NgModule` wrapper ki zaroorat nahi padti. Yeh metadata me `standalone: true` set karte hain aur direct dependencies ko `imports` array me specify kar lete hain.
+### Q: What are Standalone Components and what problems do they solve?
+**A**: Standalone components are self-contained Angular components that do not require an intermediary `NgModule` container. They declare their required dependencies directly in their `imports` array. This eliminates module configuration overhead, makes components easily reusable across projects, and optimizes tree-shaking for smaller production bundles.
 
 ## Summary
-Modern Angular architecture Standalone components aur centralized application config structure par based hai. TypeScript se boot hone wala yeh setup DI ke zariye rendering view aur API/business logic ko separate rakhta hai.
+Modern Angular architecture is built around Standalone components and centralized application configurations. This setup leverages TypeScript and hierarchical Dependency Injection to ensure a clean separation between presentation views, application routing, and business logic.
 
 ---
 
