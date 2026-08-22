@@ -498,4 +498,4 @@ class SupportAgent:
 
 ---
 
-Previous : — | Index: [00_index.md](../00_index.md) | Next: —
+Previous : — | Index: [00_index.md](../00_index.md) | Next: [02_Search_Engines_vs_LLMs_and_LLM_Fundamentals.md](./02_Search_Engines_vs_LLMs_and_LLM_Fundamentals.md)

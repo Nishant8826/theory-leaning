@@ -1,20 +1,143 @@
 Season: 01
-Class: 01
+Class: 02
 
 Here are my raw notes from today's class:
 
 --- RAW NOTES START ---
 
-1950 - Alan Turing
-1956 - John Mc Carthy
-50-80s - Rule Based AI
-1997 - Deep Blue defeats Garvy
-90's - Machine Learning
-2000's - Deep learning
-2012 - Alex Net
-2016 - AlphaGo beats lee Sedol
-2017 - Transformers**
-2022 - ChatGPT
-2025 - Agentic AI
+# Search engine vs LLMs
+    - Search engine : retrieve documents
+    - LLMs : generate text
+
+
+# How search engine find info?
+  Query -> Index -> Ranking
+    - Query Processing
+    - Indexing
+    - Ranking
+ 
+    Crawlers/spiders : domain authority, page speed, keywords, avg. time spent, backlinks, meta tags, date, page title, url, alt text, anchor text
+
+    pages being updated very frequently, then re-crawl the pages and update the index
+    when need to update: depends on type of content
+        - news: frequently
+        - product: frequently
+        - blog: frequently
+        - social media: very frequently
+        - static: rarely
+        - pdf : rarely
+        - video : rarely
+
+    Important things about Search engine
+        - does not gurantee truth
+        - can be outdated
+        - ranking can be imperfect
+        - misleading
+        But, 
+        - trail back to source
+        - check who published, time, compare multiple pages.
+
+# How LLMs generate info?
+    - predict next word e.g. The sun rises in _______.
+    
+    - So chatGPT is just guessing the next word?
+    - is an LLM just an autocomplete?
+
+    LLM is a **probabilistic** model.
+    Capital of India is _______
+    here delhi **0.002%**, kolkata **0.001%**, mumbai **0.001%**, lucknow **0.0005%**....
+    probabilistic means not deterministic.
+    not necessarily accurate.
+
+
+    Modern LLM can use much larger context and has learned extremely complex patterns:-
+        grammer, Programmin, Languages, Maths, Reasoning,etc
+
+
+# What knowledge does LLM contain
+    - Tarined Neural Network contains a very large collection of numbers called **parameters** or **weights**.
+    - During training these numbers are repeatedly adjusted 
+    - create pattern e.g. Roses then pridicted as Flower, Beautyful, Red, 
+
+
+# Knowledge cutoff
+    - LLM don't have realtime data, but search engine have.
+    - Neraul network not trained daily!
+    - so LLM knowledge have cutoff e.g. 2021, 2022, etc.
+    - Model do not learn new things automatically.
+    
+# Base Model (vs ChatGPT, Gemini, Claude)
+    It is model trained primarily to predict text.
+    e.g. Roses are _____ (red/yellow/pink/white/yellow/orange/purple/blue/etc. in 5%)
+    
+    - Base Model
+        - Instruction tuning
+        - instruction following
+        - better user interaction
+        - safe response
+        - Web search
+        - Realtime data
+        - memory
+        - retirval
+        - security, auth
+        - guardrails
+        - safety training, system instruction
+        - Tool access
+        - conversation data
+    - e.g. base modal car and you are adding tools and accessories to make it more usefull.
+
+
+# Inference (vs Training)
+    - Training : Learning patterns from data
+    - Inference : generate new text from learned patterns.
+
+
+# Why Modals confidently produce wrong answers?
+    - Fake Fluency != Truthfullness
+    - `Hellucination`
+        A Hellucination occur when an AI model generates information that appear plausible but is unsupported, incoorect, misleading or fabricated
+    
+    Why Hallucination?
+        - Insufficient info
+        - Ambigues info
+        - Outdated knowledge
+        - false asumption
+        - unreliable pattern
+        - Models are optimistic to answer
+        - generation is probabilistic
+
+    Type of Hallucination
+        - Invented facts
+        - oudated factsincorrect combination
+        - false precision
+        - broken reasoning
+
+
+# why models say "i don't know"
+    - safety measures
+    - weak patterns
+    - system instruction
+    - assistant training
+    - tool requirement
+    - prompt wording
+
+# How tools extends the model?
+    - Web search
+    - Calculator
+    - Code execution
+    - Whether, localtion, callender
+    - email
+    - database/ internal docs 
+    - files
+
+
+RAG : Retrieval Augmented Generation
+
+
+# does modal know itself(self awareness)?
+    - training
+    - context
+    - system    
+    - tools
 
 --- RAW NOTES END ---
