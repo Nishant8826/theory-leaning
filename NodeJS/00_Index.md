@@ -1191,9 +1191,10 @@ const restrictToRoles = (...allowedRoles) => {
 * **What**: JSON Web Token, an open standard (RFC 7519) that defines a compact, self-contained, and cryptographically signed payload for stateless authentication.
 * **Why It Exists**: Provides a secure, signed token that the client carries with every request. This lets the server authorize the user instantly without checking a database session table.
 * **Key Concepts**:
-  * **JWT Architecture**: Formatted in three base64 segments: Header (signing algorithm), Payload (user claims), and Signature (verifies integrity).
-  * **Stateless Validation**: The server verifies the token signature using a local secret key. If valid, the payload claims are trusted without database queries.
-  * **Expiry Guarding**: Enforcing short lifespans (e.g., 15 minutes) on tokens and utilizing refresh token flows to renew keys.
+  * **JWT Creation Pipeline**: Header and Payload are Base64Url encoded first. The string `encodedHeader + "." + encodedPayload` is signed with a key via HMAC-SHA256. The resulting binary digest is Base64Url encoded to form the signature. Final format: `header.payload.signature`.
+  * **`jwt.verify` Behind-the-Scenes**: Splits token by `.`, decodes header, reconstructs `unsignedData`, re-computes expected signature digest using secret key, compares signatures using **timing-safe comparison** (`crypto.timingSafeEqual`), decodes payload, and checks expiration (`exp`).
+  * **Stateless Validation**: The server verifies the token signature using a local secret key (HS256) or public key (RS256). If valid, the payload claims are trusted without database queries.
+  * **Expiry Guarding**: Enforcing short lifespans (e.g., 15 minutes) on access tokens and utilizing refresh token flows to renew keys.
 
 ### Key Commands / Code Example:
 
@@ -1208,7 +1209,7 @@ const token = jwt.sign(
 );
 
 try {
-  // Verifies signature integrity and expiration
+  // jwt.verify re-computes signature using secret, does timing-safe comparison, & checks exp claim
   const payload = jwt.verify(token, process.env.JWT_SECRET);
   console.log('Decoded Claims:', payload);
 } catch (err) {
