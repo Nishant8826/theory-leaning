@@ -423,65 +423,77 @@ Query: *"What is the policy for employee parental leave at my company?"*
 
 ## 💻 Code / Commands / Configuration
 
-### Conceptual Python Script: Next-Token Probability & RAG Pattern
+### Conceptual JavaScript Script: Next-Token Probability & RAG Pattern
 
-```python
-import numpy as np
+```javascript
+// =====================================================================
+// 1. Conceptual Next-Token Probability Selection
+// =====================================================================
+function simulateNextTokenPrediction(context, temperature = 0.7) {
+  // Simulated vocabulary probability logits for: "The capital of France is ____"
+  const vocabProbabilities = {
+    "Paris": 0.95,
+    "Lyon": 0.03,
+    "Marseille": 0.01,
+    "London": 0.009,
+    "pizza": 0.001
+  };
 
-# =====================================================================
-# 1. Conceptual Next-Token Probability Selection
-# =====================================================================
-def simulate_next_token_prediction(context: str, temperature: float = 0.7):
-    # Simulated vocabulary probability logits for: "The capital of France is ____"
-    vocab_probabilities = {
-        "Paris": 0.95,
-        "Lyon": 0.03,
-        "Marseille": 0.01,
-        "London": 0.009,
-        "pizza": 0.001
+  const tokens = Object.keys(vocabProbabilities);
+  const probs = Object.values(vocabProbabilities);
+
+  // Greedy deterministic decoding (Temperature = 0.0)
+  if (temperature === 0.0) {
+    const maxIndex = probs.indexOf(Math.max(...probs));
+    return tokens[maxIndex];
+  }
+
+  // Probabilistic sampling based on cumulative probability
+  const randomVal = Math.random();
+  let cumulativeProbability = 0;
+
+  for (let i = 0; i < tokens.length; i++) {
+    cumulativeProbability += probs[i];
+    if (randomVal <= cumulativeProbability) {
+      return tokens[i];
     }
-    
-    tokens = list(vocab_probabilities.keys())
-    probs = list(vocab_probabilities.values())
-    
-    # Sample next token probabilistically based on temperature
-    if temperature == 0.0:  # Greedy deterministic decoding
-        next_token = tokens[np.argmax(probs)]
-    else:  # Probabilistic sampling
-        next_token = np.random.choice(tokens, p=probs)
-        
-    return next_token
+  }
 
-print("Predicted Next Token:", simulate_next_token_prediction("The capital of France is"))
+  return tokens[0];
+}
+
+console.log("Predicted Next Token:", simulateNextTokenPrediction("The capital of France is"));
 
 
-# =====================================================================
-# 2. Basic RAG (Retrieval-Augmented Generation) Prompt Pattern
-# =====================================================================
-def build_rag_prompt(user_query: str, retrieved_documents: list[str]) -> str:
-    context_str = "\n".join([f"- {doc}" for doc in retrieved_documents])
-    
-    system_prompt = f"""
+// =====================================================================
+// 2. Basic RAG (Retrieval-Augmented Generation) Prompt Pattern
+// =====================================================================
+function buildRagPrompt(userQuery, retrievedDocuments = []) {
+  const contextStr = retrievedDocuments.map(doc => `- ${doc}`).join('\n');
+
+  const systemPrompt = `
 You are a helpful AI assistant. Answer the user's question using ONLY the ground-truth context provided below.
 If the answer cannot be determined from the context, respond with "I cannot answer based on the provided information."
 
 --- GROUND TRUTH CONTEXT ---
-{context_str}
+${contextStr}
 ---------------------------
 
-User Question: {user_query}
+User Question: ${userQuery}
 Answer:
-"""
-    return system_prompt
+`;
 
-# Example Usage
-docs = [
-    "ACME Corp's Q3 2025 revenue was $4.2 Billion.",
-    "ACME Corp announced a new AI product called SmartSync in October 2025."
-]
+  return systemPrompt;
+}
 
-prompt = build_rag_prompt("What was ACME Corp's Q3 2025 revenue?", docs)
-print("\nGenerated RAG Prompt:\n", prompt)
+// Example Usage
+const docs = [
+  "ACME Corp's Q3 2025 revenue was $4.2 Billion.",
+  "ACME Corp announced a new AI product called SmartSync in October 2025."
+];
+
+const prompt = buildRagPrompt("What was ACME Corp's Q3 2025 revenue?", docs);
+console.log("\nGenerated RAG Prompt:\n", prompt);
 ```
 
 ---

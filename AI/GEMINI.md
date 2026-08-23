@@ -458,6 +458,7 @@ When code is relevant:
 * Explain what the code is doing rather than dropping code without context.
 * Explain expected input/output where useful.
 * Mention important production considerations.
+* If you are writing code, use javascript for code only. Don't write .js or .html extension in code fences, just use ````javascript```.
 
 For example:
 
