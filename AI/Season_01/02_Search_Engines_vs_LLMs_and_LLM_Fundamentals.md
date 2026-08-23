@@ -515,4 +515,4 @@ console.log("\nGenerated RAG Prompt:\n", prompt);
 
 ---
 
-Previous : [01. History and Evolution of AI](./01_History_and_Evolution_of_AI.md) | Index: [00_index.md](../00_index.md) | Next: —
+Previous : [01. History and Evolution of AI](./01_History_and_Evolution_of_AI.md) | Index: [00_index.md](../00_index.md) | Next: [03. Tokenization and Context Windows](./03_Tokenization_and_Context_Windows.md)

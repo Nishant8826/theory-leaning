@@ -34,6 +34,7 @@ Class: [e.g., Class 01]
 
 * [01. History and Evolution of AI](./Season_01/01_History_and_Evolution_of_AI.md)
 * [02. Search Engines vs LLMs and LLM Fundamentals](./Season_01/02_Search_Engines_vs_LLMs_and_LLM_Fundamentals.md)
+* [03. Tokenization and Context Windows](./Season_01/03_Tokenization_and_Context_Windows.md)
 
 ---
 
@@ -106,5 +107,35 @@ Class: [e.g., Class 01]
 
 > [!NOTE]
 > Never treat an LLM as a static database. To build accurate enterprise applications, use **RAG** (Retrieval-Augmented Generation) to supply verified data in the prompt context while leveraging the LLM exclusively for reasoning and synthesis.
+
+---
+
+## 03. Tokenization and Context Windows
+
+🔗 **Full Lesson:** [03_Tokenization_and_Context_Windows.md](./Season_01/03_Tokenization_and_Context_Windows.md)
+
+* **What**: The fundamental preprocessing layer that translates human text into numerical TokenIDs (Encoding) and back (Decoding), alongside the mathematical memory constraints (Context Length & Active Context Window) governing LLMs.
+* **Why It Exists**: Explains how LLMs process text without understanding words natively, why API pricing is billed per token, how subword algorithms (BPE, WordPiece, Unigram) eliminate Out-of-Vocabulary errors, and why long prompts experience accuracy degradation.
+* **Key Concepts**:
+  * **Words vs Characters vs Subwords**: Word tokenization creates massive vocabularies; character tokenization creates long sequences ($O(N^2)$ attention compute); subword tokenization provides an optimal trade-off (e.g., `"Un"` + `"trust"` + `"able"`).
+  * **Subword Algorithms**: BPE (Byte Pair Encoding - greedy merge of frequent character pairs, used by OpenAI & LLaMA), WordPiece (BERT likelihood merge), and Unigram (SentencePiece top-down pruning).
+  * **Multilingual Fertility Bias**: Ratio of tokens to words ($\frac{\text{Tokens}}{\text{Words}}$). Non-English languages (Hindi, Arabic) generate 2x to 4x more tokens per word due to English-centric training corpora, spiking API costs and shrinking effective memory.
+  * **Tokenization Edge Cases**: Capitalization (`"Apple"` vs `"apple"`), Whitespace, Emojis (multi-byte Unicode splitting), and Code syntax.
+  * **Special Tokens**: Control tokens like `<|im_start|>`, `<|im_end|>`, and `<|tool_call|>` defining conversational structure and safety boundaries.
+  * **Context Length vs Context Window**: Context Length is the hard ceiling imposed by model architecture/hardware (e.g., 128k); Context Window is the active payload shared between System Prompt + History + RAG Context + Generated Output.
+  * **Context Overflow Strategies**: Request rejection, truncation, sliding window FIFO pruning, context summarization, selective RAG retrieval, and task chunking.
+  * **The "Lost in the Middle" Effect**: Recall accuracy is high at the beginning (Primacy) and end (Recency) of prompts, but drops significantly for information in central positions.
+
+### Tokenization Algorithm Comparison Matrix
+
+| Feature | Byte Pair Encoding (BPE) | WordPiece | Unigram |
+| :--- | :--- | :--- | :--- |
+| **Direction** | Bottom-up (Merge) | Bottom-up (Merge) | Top-down (Prune) |
+| **Merge Criterion** | Pair Frequency | Maximum Likelihood | Loss Minimization |
+| **Popular Models** | GPT-3.5, GPT-4, LLaMA, Mistral | BERT, RoBERTa | SentencePiece, T5 |
+| **OOV Handling** | 100% Coverage (Falls back to bytes/chars) | 100% Coverage (`[UNK]` or subwords) | 100% Coverage |
+
+> [!WARNING]
+> Do not assume longer prompts lead to better LLM responses. Irrelevant text increases API costs, spikes inference latency, and triggers the "Lost in the Middle" effect, causing the model to miss critical instructions.
 
 ---

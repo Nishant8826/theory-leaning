@@ -1,143 +1,134 @@
 Season: 01
-Class: 02
+Class: 03
 
 Here are my raw notes from today's class:
 
 --- RAW NOTES START ---
 
-# Search engine vs LLMs
-    - Search engine : retrieve documents
-    - LLMs : generate text
+# The Secret Language of LLMs
 
+computers cannot directly understand words
+    - convert text into numbers then passs to LLM
+    - TokenID is a single token.
 
-# How search engine find info?
-  Query -> Index -> Ranking
-    - Query Processing
-    - Indexing
-    - Ranking
- 
-    Crawlers/spiders : domain authority, page speed, keywords, avg. time spent, backlinks, meta tags, date, page title, url, alt text, anchor text
-
-    pages being updated very frequently, then re-crawl the pages and update the index
-    when need to update: depends on type of content
-        - news: frequently
-        - product: frequently
-        - blog: frequently
-        - social media: very frequently
-        - static: rarely
-        - pdf : rarely
-        - video : rarely
-
-    Important things about Search engine
-        - does not gurantee truth
-        - can be outdated
-        - ranking can be imperfect
-        - misleading
-        But, 
-        - trail back to source
-        - check who published, time, compare multiple pages.
-
-# How LLMs generate info?
-    - predict next word e.g. The sun rises in _______.
+    # What is a token?
+    - A "Token" is a unit of text defined by a tokenizer.
+    - Tokenization is the process of converting text into tokens.
+    - "Tokenizer" is a separate program that breaks text into tokens(encode & decode).
+    - there are many tokenizer in the market.
+    - each tokenizer has its own vocabulary.
+    - Each LLM has its own tokenizer.
     
-    - So chatGPT is just guessing the next word?
-    - is an LLM just an autocomplete?
+Words vs Characters vs Tokens
 
-    LLM is a **probabilistic** model.
-    Capital of India is _______
-    here delhi **0.002%**, kolkata **0.001%**, mumbai **0.001%**, lucknow **0.0005%**....
-    probabilistic means not deterministic.
-    not necessarily accurate.
+Why models use subword tokenization
 
+`Word tokenization creates very lengthy vocabulary.
+character tokenization creates very long sequences.
+sub-word is a balance of both.`
 
-    Modern LLM can use much larger context and has learned extremely complex patterns:-
-        grammer, Programmin, Languages, Maths, Reasoning,etc
+"This is a boy" -> 4 tokens by using commonly used words
+"Untrustable" -> 3 token "Un" + "trust" + "able"
 
 
-# What knowledge does LLM contain
-    - Tarined Neural Network contains a very large collection of numbers called **parameters** or **weights**.
-    - During training these numbers are repeatedly adjusted 
-    - create pattern e.g. Roses then pridicted as Flower, Beautyful, Red, 
+# Vocabulary & TokenID
+Every tokenizer has a vocabulary
+The vocabulary is the collection of tokens that the tokenizer know how to represent directly.
+"This is a boy" -> ["This", " is", " a", " boy"] -> [100, 200, 300, 400] 
+"Untrustable" -> ["Un", "trust", "able"] -> [500, 600, 700]
+
+OpenAI uses Byte Pair Encoding(BPE)
+BPW builds a vocabulary by repeatedly merging frequently occuring neighbouring pieces.
+
+Low     -> "Low"              -> [15]
+Lower   -> "Low", "er"        -> [15, 35]
+Lowest  -> "Low", "er", "est" -> [15, 35, 20]
+
+# Wordpiece (Select and matach usefull patterns)
+Similar to BPE, but merges pairs that maximize the likelihood of the training data.
+
+# Unigram 
+start with a larger set of possible pieces and gradually removes less useful ones.
+exactly opposite to BPE
 
 
-# Knowledge cutoff
-    - LLM don't have realtime data, but search engine have.
-    - Neraul network not trained daily!
-    - so LLM knowledge have cutoff e.g. 2021, 2022, etc.
-    - Model do not learn new things automatically.
-    
-# Base Model (vs ChatGPT, Gemini, Claude)
-    It is model trained primarily to predict text.
-    e.g. Roses are _____ (red/yellow/pink/white/yellow/orange/purple/blue/etc. in 5%)
-    
-    - Base Model
-        - Instruction tuning
-        - instruction following
-        - better user interaction
-        - safe response
-        - Web search
-        - Realtime data
-        - memory
-        - retirval
-        - security, auth
-        - guardrails
-        - safety training, system instruction
-        - Tool access
-        - conversation data
-    - e.g. base modal car and you are adding tools and accessories to make it more usefull.
+Modern tokenization usually break unfamillier text into resuable subword units rather than treating every complete word as unique.
 
 
-# Inference (vs Training)
-    - Training : Learning patterns from data
-    - Inference : generate new text from learned patterns.
+"This is a simple sentenct in English" -> around 7 token
+"KJjh kjh kjh jkghjh ghf gdf d se sdf" -> around 10-15 tokens
 
 
-# Why Modals confidently produce wrong answers?
-    - Fake Fluency != Truthfullness
-    - `Hellucination`
-        A Hellucination occur when an AI model generates information that appear plausible but is unsupported, incoorect, misleading or fabricated
-    
-    Why Hallucination?
-        - Insufficient info
-        - Ambigues info
-        - Outdated knowledge
-        - false asumption
-        - unreliable pattern
-        - Models are optimistic to answer
-        - generation is probabilistic
-
-    Type of Hallucination
-        - Invented facts
-        - oudated factsincorrect combination
-        - false precision
-        - broken reasoning
-
-
-# why models say "i don't know"
-    - safety measures
-    - weak patterns
+# English vs other Languages
+- most LLM trained on english data
+- So if you use some other language, the model will break it down into smaller pieces.
+- for example
+    "I cannot help you with that" -> "I", " cannot", " help", " you", " with", " that" (around 6 tokens)
+    "मैं आपकी मदद नहीं कर सकता" -> "मैं", " आपकी", " मदद", " नहीं", " कर", " सकता" (around 12 tokens)
+    " I cannot help you with that" -> "I", " cannot", " help", " you", " with", " that" (around 6 tokens)
+- tokenization in hindi is not good as baises of legacy LLMs being trained on english data.
+- tokenisation fertility -> ratio of token to word (tokens/word) 
+- Emoji -> 1 token 
+- whitesapces -> 1 token 
+- sample code  -> "if(true) return \"sd\"; else \"sdc\"";
+- Capital Letter -> "Apple"(1 token) but "apple"(1 token)   
+- special token
     - system instruction
-    - assistant training
-    - tool requirement
-    - prompt wording
-
-# How tools extends the model?
-    - Web search
-    - Calculator
-    - Code execution
-    - Whether, localtion, callender
-    - email
-    - database/ internal docs 
-    - files
+    - user instruction
+    - start/end of message
+    - tools output
+    - ,etc
 
 
-RAG : Retrieval Augmented Generation
+# Context Window
+context window is the amount of tokenised information a model can process within a request or active generation context.
+
+llm doesn't have unlimited working memory, have a limit of token that can be process at once
+this is called context window
+context may include
+- system information
+- your current/previous prompt
+- uploaded document text
+- retireved information
+- tools output
+- llm generated response
+context window is shared b/w what you send and what the model generates.
 
 
-# does modal know itself(self awareness)?
-    - training
-    - context
-    - system    
-    - tools
+# what happens when context window fills?
+different application may have this differently
+possible strategies:
+- rejecting the request
+- truncate some input
+- removing older conversation
+- summarising previous messages
+- retrieving only previous messages
+- asking the user to shorten the input
+- splitting the work into multiple requests
+
+every llm has fixed context window.
+
+# Context Length vs Context Window
+Context length is the maximum number of tokens a model can process at once.
+Context window is the number of tokens that are actually processed in a request.
+    
+
+# LONG PROMPT != Better results
+every long prompt is not good, it may degrade performance.
+
+
+# misconception
+- one token one word
+- every model use same tokenizer
+- token id represent meaning
+- one visible emoji is equal to 1 token
+- larger vocabular always better
+- larger memory means perfect memory
+- more token always produce better answer
+
+
+# LLM Architecture
+LLM are based on Transformers architecture
+Transformers are based on self-attention mechanism
 
 --- RAW NOTES END ---
