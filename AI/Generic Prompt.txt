@@ -1,134 +1,328 @@
 Season: 01
-Class: 03
+Class: 04
 
 Here are my raw notes from today's class:
 
 --- RAW NOTES START ---
 
-# The Secret Language of LLMs
-
-computers cannot directly understand words
-    - convert text into numbers then passs to LLM
-    - TokenID is a single token.
-
-    # What is a token?
-    - A "Token" is a unit of text defined by a tokenizer.
-    - Tokenization is the process of converting text into tokens.
-    - "Tokenizer" is a separate program that breaks text into tokens(encode & decode).
-    - there are many tokenizer in the market.
-    - each tokenizer has its own vocabulary.
-    - Each LLM has its own tokenizer.
-    
-Words vs Characters vs Tokens
-
-Why models use subword tokenization
-
-`Word tokenization creates very lengthy vocabulary.
-character tokenization creates very long sequences.
-sub-word is a balance of both.`
-
-"This is a boy" -> 4 tokens by using commonly used words
-"Untrustable" -> 3 token "Un" + "trust" + "able"
+# Token IDS do not contain any meaning
+- TOken Ids are just some labels associated to tokens
 
 
-# Vocabulary & TokenID
-Every tokenizer has a vocabulary
-The vocabulary is the collection of tokens that the tokenizer know how to represent directly.
-"This is a boy" -> ["This", " is", " a", " boy"] -> [100, 200, 300, 400] 
-"Untrustable" -> ["Un", "trust", "able"] -> [500, 600, 700]
+# Vectorization 
+It is the process of converting information into numerical vectors.
 
-OpenAI uses Byte Pair Encoding(BPE)
-BPW builds a vocabulary by repeatedly merging frequently occuring neighbouring pieces.
+"Cat" -> [-0.1, 0.2, 0.3, -0.4]
+"Dog" -> [0.11, -0.18, 0.32, -0.39]
+"Tiger" -> [0.9, 0.8, -0.7, -0.6]
 
-Low     -> "Low"              -> [15]
-Lower   -> "Low", "er"        -> [15, 35]
-Lowest  -> "Low", "er", "est" -> [15, 35, 20]
+Text, Images, Users, Products or any information.
 
-# Wordpiece (Select and matach usefull patterns)
-Similar to BPE, but merges pairs that maximize the likelihood of the training data.
+Vectorisation turns infomation into a form on which computers can perform ***mathematical operations***.
 
-# Unigram 
-start with a larger set of possible pieces and gradually removes less useful ones.
-exactly opposite to BPE
+Rank Fruits on 3 properties
+            1. Sweetness      2. Size      3. Crunchyness
 
+Apple:       [0.7,            0.4,         0.8]
+Banana:      [0.8,            0.6,         0.2]
+Carrot:      [0.2,            0.5,         0.9]
+Watermelon:  [0.9,            0.9,         0.1]
 
-Modern tokenization usually break unfamillier text into resuable subword units rather than treating every complete word as unique.
-
-
-"This is a simple sentenct in English" -> around 7 token
-"KJjh kjh kjh jkghjh ghf gdf d se sdf" -> around 10-15 tokens
+Modern embedding models use thousands of dimensions
+THose dimensions are learned from data.
 
 
-# English vs other Languages
-- most LLM trained on english data
-- So if you use some other language, the model will break it down into smaller pieces.
-- for example
-    "I cannot help you with that" -> "I", " cannot", " help", " you", " with", " that" (around 6 tokens)
-    "मैं आपकी मदद नहीं कर सकता" -> "मैं", " आपकी", " मदद", " नहीं", " कर", " सकता" (around 12 tokens)
-    " I cannot help you with that" -> "I", " cannot", " help", " you", " with", " that" (around 6 tokens)
-- tokenization in hindi is not good as baises of legacy LLMs being trained on english data.
-- tokenisation fertility -> ratio of token to word (tokens/word) 
-- Emoji -> 1 token 
-- whitesapces -> 1 token 
-- sample code  -> "if(true) return \"sd\"; else \"sdc\"";
-- Capital Letter -> "Apple"(1 token) but "apple"(1 token)   
-- special token
-    - system instruction
-    - user instruction
-    - start/end of message
-    - tools output
-    - ,etc
+# Embedding
+An embedding is a ***learned numerical representation*** of an item that captures ***useful relationships with other items***.
+
+king:     [0.81, 0.32, -0.52, 0.17]
+queen:    [0.82, 0.33, -0.51, 0.18]
+banana:   [0.69, 0.21,  0.88, 0.93]
+
+Model is not given these values by a human
+During training, the embedding values are learned.
+The system obeserves how tokens are used across enormous amounts of text.
+Words appearing in similar linguistic environments gradually develop useful numerical relationships.
+
+An embedding iss not the meaning of a word. It is a numerical representation that captures  useful patterns about that words.
 
 
-# Context Window
-context window is the amount of tokenised information a model can process within a request or active generation context.
-
-llm doesn't have unlimited working memory, have a limit of token that can be process at once
-this is called context window
-context may include
-- system information
-- your current/previous prompt
-- uploaded document text
-- retireved information
-- tools output
-- llm generated response
-context window is shared b/w what you send and what the model generates.
+Embedding as co-ordinates
 
 
-# what happens when context window fills?
-different application may have this differently
-possible strategies:
-- rejecting the request
-- truncate some input
-- removing older conversation
-- summarising previous messages
-- retrieving only previous messages
-- asking the user to shorten the input
-- splitting the work into multiple requests
+# Dimensions in an embedding
+king = [1.2, 0.24, -2.3, .....]
 
-every llm has fixed context window.
+More dimension != more integlligence.
 
-# Context Length vs Context Window
-Context length is the maximum number of tokens a model can process at once.
-Context window is the number of tokens that are actually processed in a request.
-    
+A model-specific embedding may contain hundreds or thousands of values.
 
-# LONG PROMPT != Better results
-every long prompt is not good, it may degrade performance.
+Higher dimension can capture more complex patterns, but they also require more storage & computation.
+
+Imagine describing a person using only 2 attributes:
+- height
+- weight
+
+This is 2-dimensional.
+
+but people cannot be be meaningfully represented using only 2 properties.
+we may add:
+-age
+-profession
+-education
+-location
+-income
+-language
+....
+
+As we add dimensions, the representation becomes richer.
+
+Language is far more complex, so embeddings require many dimensions to capture different patterns and relationships.
+
+Demo:-
+
+king - man = queen - woman
+
+king:     [0.81, 0.32, -0.52, 0.17]
+man:      [0.82, 0.33, -0.51, 0.18]
+queen:    [0.69, 0.21,  0.88, 0.93]
+woman:    [0.7,  0.22,  0.87, 0.92]
+
+when embeddings are trained well, related concepts often form neighbours
+
+words related to royalty may cluster together.
+Programming languages may form another cluster.
+Foods may form another.
+
+But these neighbourhoods are not mannually programmed.
+
+They emerge from usage patterns in data.
 
 
-# misconception
-- one token one word
-- every model use same tokenizer
-- token id represent meaning
-- one visible emoji is equal to 1 token
-- larger vocabular always better
-- larger memory means perfect memory
-- more token always produce better answer
+The system repeatedly encounters sentences such as:
+- The king rules the kingdom.
+- The Queen addressed the nation.
+- Javascript is used for web development.
+- Python is popular for machine learning.
+
+Through training, the numerical representations are adjusted so that useful relationships becaome encoded in the vector space.
+
+It all depends on data.
+
+# Semantic Similarity
+measures how close 2 pieces of text are in meaning.
+
+Query A
+- How do i center a div?
+Query B
+- How can I align an HTML element in the middle of it's parent?
+
+A keyword- based system may struggle if it relies only on exact word overlap.
+An embedding-based system can represent both queries as vectors and discover that they are close in meaning.
+
+similar meaning:
+- How can i reset my password?
+- I forgot my password. How do i create a new one?
+
+- The application creashes after login.
+- The software closes immediatly when i sign in.
+
+Different meaning despite overlapping words:
+- How do I learn Java?
+- How do I make Java coffee?
+
+The word "Java" appears in both, but the meaning are different.
+
+Embeddings allow systems to compare broader meaning rather than only matching identical words.
 
 
-# LLM Architecture
-LLM are based on Transformers architecture
-Transformers are based on self-attention mechanism
+# Cosine Similarity
+It compares the angle between 2 vectors. It focuses more on direction than on absolute length.
+
+If 2 vectors point in a similar direction, the represented concepts may be similar.
+If they point in unrelated directions, the concepts may be less similar.
+
+e.g.
+- reset password
+- I no longer remember my password and need to create a new one
+have different lengths, but their semantic direction can still be similar.
+
+Vector A and B point is the same direction.
+Even though B is longer, their cosine similarity is very high.
+Vector C points in a different direction.
+So it has lower similarity with A.
+This is useful because 2 pieces of texxt can contain different amounts of detail but still express the same general intest.
+
+Cosine similarity does not "understand" truth.
+2 false statements can be semantically similar.
+2 harmful instructions can be semantically similar.
+2 texts can be close in topic but disagree completely.
+
+e.g. 
+- Javascript is the best language.
+- Javascript is the worst language.
+may still have relatively similar embeddings because both discuss opinions aboubt Javascript.
+
+Embeddings captures relationships.
+They do not independently verify facts, intent, quality or safety.
+
+
+
+# Token Embedding
+   "I                            Love                                       Javacript"
+[   12                        ,  214                                   ,      16684 ]
+    |                             |                                            |
+    |-----------------------------|--------------------------------------------|
+    V                             V                                            V
+[0.12, 0.34, -0.56, ...]      [0.41, 0.22, 0.81,...]                     [-0.17, 0.65, -0.44,...]
+                             
+                                                                         
+This process replaces a meaningless token ID with a dense numerical vector.
+That vector becomes the model's initial representation of the token.
+Because the representation may later change as the model processes contexxt.
+
+
+- Dog bites man 
+- Man bites dog
+
+TOken embeddings alone identify the tokens, but the model also needs information about order or position.
+Models therefore incorporate positional information using architecture-specific techniques.
+
+The embedding tells the model which token is present.
+Positional information helps tell the model where that token appears.
+The model needs both identity and order.
+
+
+# Token Embedding vs Text embeddings
+Token embedding help a language model process a sequence internally.
+
+Text embeddings are often produced specifically for tasks such as Search, Retrival, Clustering, Recommendation, Classification, Duplication detection.
+
+The word "embedding" can refer to both, so always ask:
+An embedding of what, and for which task?
+
+Token embeddings help an LLM process individual tokens.
+Text embeddings help application compare and retireve larger pieced of content.
+
+# Static vs Contextual meaning
+- I ate an Apple after lunch.
+- Apple released a new device.
+
+A simple static embedding system may assign one fixed vectorto the word "apple". That single vecotr must somehow represent both meanings.
+That created a problem because words can have multiple meanings. This is called **ploysemy***.
+The meaning depends on context.
+
+Modern language models solve this more effectively using contextual representations. 
+The representation of a token changes based on the surrounding words.
+
+The same token can develop different contextual representations depending on the sentence around it.
+Example :
+
+"I ate an apple"
+"Apple released a new iPhone"
+
+
+# How modern LLMs handle context [Contextualization]
+"Context modifies represensentation"
+
+- I deposited money in bank.
+- We sat on the bank of the river.
+
+- He hit the ball with a bat.
+- A bat flew out of the cave.
+
+- Java is a programming language.
+- Java is an island in Indonesia.
+- I ordered Java at the cafe.
+
+In a ***trandformer-based language model***, the token first recieves an initial token embediing.
+Then the model processes it together with the surrounding tokens.
+
+Through multiple layers, the representation beomes contextualized.
+
+This means the representation of "bank" in:
+- I deposited money in bank.
+can become different from the represensentation of "bank" in:
+- We sat on the bank of the river.
+
+***The initial token may be the same. But after the model processes the complete sentence, its internal representation changes according to context.***
+
+
+
+# Bias in Embeddings
+
+*Human created data have a lot of flaws*
+
+Human data contains:
+- Cultural patterns
+- Historical context
+- stereotypes
+- Social biases
+- Representation gaps
+
+As a result, embedding can also encode undesireable associatetions.
+For example, some occupation may become more closely associated with one gender because of patterns in the training data.
+
+***Embeddings represent pattern in data, that we may not want the system to reproduce.******
+
+
+# embedding in semantic search
+
+**Traditional keyword search **
+Suppose a student searches:
+- How do I center a div?
+
+A document contains:
+- Use CSS flexbox to horizontally and vertically align an element.
+
+The query and document share few exact words.
+
+A purely keyword-based system may struggle.
+
+**Embedding search**
+- Convert the user's query into an embedding.
+Query -> Query Vector
+
+- Convert every docuemnt into an embedding.
+Document -> Document Vector
+
+- Compare the query vector with document vectors.
+
+- Return documents with the highest semantic similarity.
+
+**Hybrid Search* -(combine both)*
+Keyword search is not always bad. What if you have to search for product ID, Emor code, important keyword, date, place, legal clauses.
+
+
+
+# Embessing in Recommendation
+Embeddings help recommendation systems understand what items are similar.
+
+**Example **
+Youtube Algo, Social Network, E-commerse, etc
+
+# Embedding in Clustering
+Embeddings can help group similar items together.
+e.g. Thousand of student quetions, comments, messages etc
+- Grouping support tickets
+- Detecting repeatitions
+
+# Embedding in RAG
+Ex - Similarity seach in chunks
+
+# Embedding in duplicate detection
+- Diff senetences with same meaning
+
+# Embedding in Classification
+- Classify support messages
+>Billing >Tech Issues >Refunds >Auth access
+
+# Multi Modal Embeddings
+- Text to Image search
+- Image similarity
+- visual Recommendation
+
+*** An embedding is a general techinque for representation information numerically.***
+
 
 --- RAW NOTES END ---

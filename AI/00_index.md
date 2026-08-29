@@ -35,6 +35,7 @@ Class: [e.g., Class 01]
 * [01. History and Evolution of AI](./Season_01/01_History_and_Evolution_of_AI.md)
 * [02. Search Engines vs LLMs and LLM Fundamentals](./Season_01/02_Search_Engines_vs_LLMs_and_LLM_Fundamentals.md)
 * [03. Tokenization and Context Windows](./Season_01/03_Tokenization_and_Context_Windows.md)
+* [04. Vector Embeddings and Semantic Search](./Season_01/04_Vector_Embeddings_and_Semantic_Search.md)
 
 ---
 
@@ -137,5 +138,36 @@ Class: [e.g., Class 01]
 
 > [!WARNING]
 > Do not assume longer prompts lead to better LLM responses. Irrelevant text increases API costs, spikes inference latency, and triggers the "Lost in the Middle" effect, causing the model to miss critical instructions.
+
+---
+
+## 04. Vector Embeddings and Semantic Search
+
+🔗 **Full Lesson:** [04_Vector_Embeddings_and_Semantic_Search.md](./Season_01/04_Vector_Embeddings_and_Semantic_Search.md)
+
+* **What**: Learned dense numerical vector representations that map text, media, and concepts into geometric coordinate space to capture semantic relationships, paired with similarity measurement techniques (Cosine Similarity) and hybrid search architectures.
+* **Why It Exists**: Replaces meaningless integer TokenIDs with continuous multi-dimensional coordinates of meaning, solving exact keyword limitations, handling polysemy, and powering Vector Databases, RAG retrieval, recommendations, and multimodal search.
+* **Key Concepts**:
+  * **Vectorization & Learned Dimensions**: Converting items into floating-point vectors. Latent dimensions (e.g., 1536D) are learned automatically from text distributions via backpropagation.
+  * **Vector Arithmetic**: Geometric relationships enable conceptual linear algebra: $\vec{v}_{\text{King}} - \vec{v}_{\text{Man}} + \vec{v}_{\text{Woman}} \approx \vec{v}_{\text{Queen}}$.
+  * **Cosine Similarity**: $\cos(\theta) = \frac{\mathbf{A} \cdot \mathbf{B}}{\|\mathbf{A}\| \|\mathbf{B}\|}$. Measures vector direction/angle (ignoring document length/magnitude). Does NOT measure factual truth or sentiment agreement (*"I love JS"* and *"I hate JS"* cluster together).
+  * **Token Embeddings vs Positional Embeddings**: Token embeddings identify *which* token is present; Positional embeddings encode *where* it appears (*"Dog bites man"* vs *"Man bites dog"*).
+  * **Token vs Text Embeddings**: Token embeddings ($N \times D$) are used internally by LLM attention layers; Text embeddings ($1 \times D$ pooled) are stored in Vector DBs for document search.
+  * **Static vs Contextual Embeddings (Polysemy)**: Word2Vec (Static) assigns 1 fixed vector per word; Transformer models (Contextual) dynamically mutate vector representations based on surrounding tokens (e.g., *Apple* pie vs *Apple* MacBook).
+  * **Hybrid Search (BM25 + Vectors)**: Combining exact keyword search with dense semantic retrieval using Reciprocal Rank Fusion (RRF) and Cross-Encoder Rerankers.
+  * **Multimodal Embeddings**: CLIP maps images and natural language text into a shared vector space for cross-modal search.
+
+### Search & Embedding Paradigms Comparison Matrix
+
+| Feature | Keyword Search (BM25) | Static Embeddings (Word2Vec) | Contextual Embeddings (Transformers / LLMs) |
+| :--- | :--- | :--- | :--- |
+| **Representation** | Sparse Word Frequencies | Fixed Dense Vector per Word | Dynamic Dense Vector per Token/Sentence |
+| **Understands Synonyms** | ❌ No | ✅ Yes | ✅ Yes |
+| **Handles Polysemy (Context)** | ❌ No | ❌ No (1 vector per word) | ✅ Yes (Mutates based on context) |
+| **Exact Term Precision** | ✅ Excellent (Exact codes/SKUs) | ❌ Poor | ⚠️ Moderate (Can blur exact IDs) |
+| **Best Production Use** | Exact IDs, SKUs, Error Codes | Lightweight NLP / Benchmarks | Modern RAG, Semantic Search & LLM Reasoning |
+
+> [!TIP]
+> Never rely purely on Dense Vector Search when users search for exact product SKUs, phone numbers, or error codes. Always implement **Hybrid Search (BM25 + Dense Vectors with Reciprocal Rank Fusion)** in production RAG systems.
 
 ---

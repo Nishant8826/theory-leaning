@@ -499,4 +499,4 @@ console.log("\nFinal Payload to LLM API:\n", manager.getPayload());
 
 ---
 
-Previous : [02. Search Engines vs LLMs and LLM Fundamentals](./02_Search_Engines_vs_LLMs_and_LLM_Fundamentals.md) | Index: [00_index.md](../00_index.md) | Next: —
+Previous : [02. Search Engines vs LLMs and LLM Fundamentals](./02_Search_Engines_vs_LLMs_and_LLM_Fundamentals.md) | Index: [00_index.md](../00_index.md) | Next: [04. Vector Embeddings and Semantic Search](./04_Vector_Embeddings_and_Semantic_Search.md)
