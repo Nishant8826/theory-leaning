@@ -36,6 +36,7 @@ Class: [e.g., Class 01]
 * [02. Search Engines vs LLMs and LLM Fundamentals](./Season_01/02_Search_Engines_vs_LLMs_and_LLM_Fundamentals.md)
 * [03. Tokenization and Context Windows](./Season_01/03_Tokenization_and_Context_Windows.md)
 * [04. Vector Embeddings and Semantic Search](./Season_01/04_Vector_Embeddings_and_Semantic_Search.md)
+* [05. Transformer Architecture and Self-Attention](./Season_01/05_Transformer_Architecture_and_Self_Attention.md)
 
 ---
 
@@ -169,5 +170,39 @@ Class: [e.g., Class 01]
 
 > [!TIP]
 > Never rely purely on Dense Vector Search when users search for exact product SKUs, phone numbers, or error codes. Always implement **Hybrid Search (BM25 + Dense Vectors with Reciprocal Rank Fusion)** in production RAG systems.
+
+---
+
+## 05. Transformer Architecture and Self-Attention
+
+🔗 **Full Lesson:** [05_Transformer_Architecture_and_Self_Attention.md](./Season_01/05_Transformer_Architecture_and_Self_Attention.md)
+
+* **What**: The core neural network architecture powering all modern Large Language Models, replacing sequential RNNs/LSTMs with highly parallelizable Multi-Head Causal Self-Attention, Residual Skip Connections, LayerNorm, and Feed-Forward Networks.
+* **Why It Exists**: Eliminates the sequential compute bottleneck of recurrent networks, allowing parallel training on trillions of tokens across GPUs, and enables direct token-to-token contextual routing ($O(1)$ path length) across long sequences.
+* **Key Concepts**:
+  * **Autoregressive Generation Loop**: Step-by-step token prediction (`"The pizza is ready ___"`). Embeddings $\rightarrow$ Transformer Stack $\rightarrow$ Unnormalized Logits $\rightarrow$ Softmax Probabilities $\rightarrow$ Sample next token $\rightarrow$ Append and repeat.
+  * **Self-Attention Mechanism**: Computes token-to-token relevance weights. Allows words to resolve ambiguous references (*"The animal didn't cross the street because it was tired"*) and polysemy (*"bank of river"* vs *"bank deposit"*).
+  * **Query, Key, Value ($Q, K, V$)**: $\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$. Library search analogy: Query = search query, Key = book catalog label, Value = book text.
+  * **Causal Masking**: Upper-triangular $-\infty$ mask forcing tokens to attend only to past and current tokens, maintaining strict unidirectional autoregression.
+  * **Multi-Head Attention**: Multiple parallel attention heads specializing simultaneously in syntax, semantics, grammar, and reference tracking.
+  * **Residual (Skip) Connections**: $x + \text{SubLayer}(x)$. Creates an uninterrupted highway for backward gradient flow, preventing vanishing gradients in 100+ layer deep models.
+  * **LayerNorm & RMSNorm**: Rescales internal token vectors to zero-mean and unit variance to stabilize deep network activations.
+  * **Feed-Forward Networks (FFN / MLP)**: Position-wise dense layers where tokens are processed independently in parallel (*"Attention lets tokens talk; FFN lets each token think"*).
+  * **Linear Head & Softmax**: Transforms final hidden states into raw vocabulary logits and converts them into normalized probability distributions summing to 1.0 (100%).
+
+### Transformer Layer Components Quick Matrix
+
+| Component | Primary Function | Interaction Scope | Analogy |
+| :--- | :--- | :--- | :--- |
+| **Embeddings** | TokenID + Positional encoding to vector | Per Token | Translating words into coordinate points |
+| **Self-Attention** | Contextual token-to-token communication | **Cross-Token** (All to All) | A collaborative meeting discussion |
+| **Causal Mask** | Restrict attention to past tokens | Sequence Order | Reading a book without peeking ahead |
+| **Residual Connection** | Add input back to output ($x + f(x)$) | Per Layer | Incremental draft edits vs full rewrite |
+| **LayerNorm / RMSNorm** | Stabilize vector scales to unit variance | Per Vector | Volume normalizer on an audio track |
+| **Feed-Forward (FFN)** | Independent nonlinear feature processing | **Per Token** (Independent) | An individual thinking quietly at a desk |
+| **Softmax Head** | Convert logits into probability distribution | Vocabulary-wide | Final election ballot percentage tally |
+
+> [!IMPORTANT]
+> Attention is the **only** layer in the Transformer block where tokens communicate across sequence positions. The Feed-Forward Network (FFN) operates on each token strictly in isolation ($1 \times D$). Always keep this separation in mind when analyzing model compute and latency.
 
 ---

@@ -518,4 +518,4 @@ console.log(reciprocalRankFusion(keywordRankings, vectorRankings));
 
 ---
 
-Previous : [03. Tokenization and Context Windows](./03_Tokenization_and_Context_Windows.md) | Index: [00_index.md](../00_index.md) | Next: —
+Previous : [03. Tokenization and Context Windows](./03_Tokenization_and_Context_Windows.md) | Index: [00_index.md](../00_index.md) | Next: [05. Transformer Architecture and Self-Attention](./05_Transformer_Architecture_and_Self_Attention.md)
