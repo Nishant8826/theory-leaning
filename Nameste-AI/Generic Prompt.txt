@@ -1,234 +1,825 @@
 Season: 01
-Class: 06
+Class: 08
+File Name : Can AI really think?
 
 Here are my raw notes from today's class:
 
 --- RAW NOTES START ---
 
-# Sharpening the Brain
-Training the Neural NetworN
-
-
-# What does "learning" actually mean for a Machine
-A Neural Network contains a huge collection of adjustable numbers the parameter
-
-During training, we repeatedly modify those parameters so that the model becomes better at a particular objective.
-
-For a neural network, learning means adjusting parameters so that future prediction become better.
-
-GPT3 ----> 175 Billion parameters
-GPT4 ----> 1.8 Trillion parameters [not official]
-GPT5 ----> 100 Trillion parameters [not official]
-
-Parameters are the learned numerical values that determine the model's behaviour.
-Patterns and knowledge learned during training are encoded across these parameters.
-
-# Parameters/weights
-- Embedding
-- Attention [Wq, Wk, Wv, Wo]
-- Layer Norm [gama, beta]
-- FFN [W1, W2, W3, ....]
-
-# Does parameters store knowledge?
-Not exactly.
-Parameters store the **patterns** learned from data.
-When the model predicts "Paris", it's not retrieving a stored string "Paris". Instead, the parameters adjust so that the output distribution favors "Paris" given the input.
-Knowledge emerges from the **interactions** between these patterns.
-
-# How is it related to training data?
-
-## Forward pass
-It's the process of taking input data and pushing it through the network to get an output.
-Think of it as the "normal" usage of the model.
-
-# Loss Function
-It is a numerical way to measure how bad the prediction is.
-A loss fn converts the quality of the prediction into a number.
-correct prediction --> small loss
-very wrong prediction --> large loss
-
-The Sky is _______
-
-Prediction A: blue (90%) 
-Prediction B: green (50%) 
-
-for pred A loss == low and for pred B loss == high
-
-There may be thousands, millions or billions of parameters.
-Which parameters were responsible for the mistake?
-And how should each one changes?
-
-# Back Propagation
-back propagation calculates how changing each parameter would affect the loss.
-
-Backpropagation starts from the error at the output and works backward.
-- How much did layer C contribute? How much did each weight contributes in layer C?
-- What about layer B? what about weights inn layer B?
-- and similarly for layer A?
-
-It calculates the sensitivity of the loss to each parameter.
-
-Mathematically, these sensitivites are called gradients.
-
-# Gradients
-A gradient tells us which direction a parameter should move to change the loss and how sensitive the loss is to that parameter.
-
-Suppose a particular weight is: 0.40
-
-The gradient tells us that increasing this weight would increasse the loss.
-So perhaps we should move it slightly downward.
-Another weight may need to move upward.
-
-Backpropagation computes this information throughout the network.
-
-Does Backpropagation fix the weights?
-Backpropagation does not itself necessarily update theweights.
-It calculates gradients.
-Then an optimization algorithm uses those gradients to update the parameters.
-
-# Gradient Descent  
-Gradient descent is an iterative optimization algorithm used to minimize a function(like error or loss) by adjusting parameters in the opposite direction of the gradient.
-
-Core Conepts:
-- Loss function
-- Gradient
-- Learning Rate
-ex. Imagine standing somewhere on a mountain in thick fog. Your goal is to reach the lowest point. The gradient tells you the slope direction. Take small steps. Repeat.
-
-Main Types
-- Batch Gradient Descent: Uses the entire dataset to compute the gradient for each step; stable but slow on huge datasets.
-- Stochastic Gradient Descent(SGD): Uses a single data point per step; fast but noisy and fluctuates.
-- Mini-Batch Gradient Descent: Splits data into small subset; strikes the best balance between speed and staability.
-
-Challenges:
-- Learning rate too small: Training takes forever.
-- Learning rate too large: The algorithm overshoots the minimum and falls to converge.
-- Local minima or saddle points: The system can get stuck where the slope is flat.
-
-
-
-Sample Data -->  Forward Pass  --->   Calculate Loss   ----->   Back Propagation   --->  Optimizer Gradient Descent   --->   Better Model --> Repeat
-
-
-" You keep doing this again and again and again for a huge huge amount of training data"
-"Sharpening the braing"
-
-
-We Train models for billions/trillions of samples.
-slowly and steadily
-- Model recognize sequence of words that come together
-- grammer
-- sentence structure
-- relation b/w words in long text inputs
-
-After lots and lots of mathematical calculation models finally generate inputs(sometimes even better than humans)
-This whole process takes a lot of compute/power.
-
-
-# Self suppervised learning
-- Model learns by itself
-- we don't need someone to mannually label every sentence.
-- The next token becomes the 'target'
-
-Neural networks usually do not learn a concept from one magical update. 
-Useful behaviour emerges through repeated optimization.
-
-Dataset : All training examples
-
-Batch : A group of example processed together
-instead of:
-    - example ->update
-    - example ->update
-    - example ->update
-
-we often process multiple examples together:
-- batch of examples -> calculate average loss -> update parameters
-
-Training step : One optimization update.
-
-Epoch : One pass through a training dataset.
-
-
-Training vs inference
-
-Training
-Input --->  forward pass  --->  prediction  --->  calculate loss ---->  back propagations ---> update parameters
-
-Time: long
-compute: intensive
-guesses are corrected
-
-inference
-Input --->   forward pass ----> prediction  ---> output
-
-fast
-no updates
-no learning
-just using model
-
--Training changes the model
--Inference just uses the model
-
-
-# Generalisation
-That ability to perform well on examples it did not directly memorise is called Generalisation.
-
-suppose our training dataset contain:
-- The sky is blue.
-- The ocean is blue.
-- Grass is green.
-- Leaves are green.
-
-Later, the model sees:
-- The clear afternoon sky looked....
-
-Maybe this exact sentence never appeared in training.
-
-But a useful model can still produce:
-- blue
-
-Good learning means discovering patterns that remain useful beyond the exact training examples.
-
-# Overfitting
-A model is overfitting when it becomes extremely good at its training examples but performs poorly on new examples.
-
-e.g,
-"The sky is blue"
-10,000 times
-the model could simple memorise that exact sequence.
-But what happens when it sees
-- On a clear summer afternoon, the sky appeared....
-A usefule model should genralise!
-
-# Distributed training
-Training frontier-scale models is a large distributed system problems as much as a machine-learning problem.
-
-Remember token embeddings
-
-Initially, the numbers inside an embeddings table are not magically meaningful
-
-Suppose:
-- king --> [0.001,-0.04...]
-- queen --> [0.223, -0.09...]
-- apple --> [0.55, -0.11...]
-
-during training, these values are also parameters that are adjusted during training.
-
-How?
-1. Prediction produces some loss
-2. Backpropagation sneds gradient through the model
-3. Embeddings values get adjusted along with many other parameters
-4. After huge numbers of samples, useful relationship/patterns evovle.
-
-Now understand?
-Nobody mannually places king next to queen.
-
-Embedding are learned because better representations help that network make better predictions.
-
-
-
-
-
-
+AI NAMASTE AI - SEASON 1
+Episode 09
+Can AI really think?
+The season finale explores what “thinking” means, why fluent language models can fail
+simple problems, how reasoning models use reinforcement learning and inference-time
+computation, and why powerful machine reasoning still does not settle the philosophical
+question of human-like thought.
+02:46:46 WebVTT transcript only
+In this episode
+01 Thinking, reasoning, and fluent generation 02 Direct answers versus deliberate computation
+03 DeepSeek-R1, AlphaGo, and reinforcement
+learning
+04 Intermediate reasoning and chain of thought
+05 Inference-time compute and overthinking 06 Verifiable rewards and three kinds of evaluator
+07 Chain, tree, and graph-of-thought structures 08 The limits of reasoning-and the question left open
+Pause before you answer
+00:00 - 02:28
+Can AI really think?
+Before explaining models, the instructor asks a harder question:
+What do we actually mean when we say that a person is thinking?
+EPISODE 09
+Can AI really think?
+Direct generation and reasoning-oriented
+generation
+Question
+explore - evaluate - answer
+Episode 09: Can AI really think? 1
+The learner is invited to pause the video, sit with the question for a few minutes, and form an initial
+answer. That pause is part of the lesson. The episode does not begin by declaring that machine
+reasoning is human thought. It first studies the engineering, then returns to the philosophical question
+at the end.
+The previous episode showed that a base model is not the complete assistant. A base model is a
+capable form of next-token prediction. A modern assistant adds instruction following, preferences,
+guardrails, and tools. This finale adds another major capability: reasoning.
+Brilliant prose, elementary mistake
+02:28 - 08:39
+A strong language model can explain quantum physics. It can answer follow-up questions, write long
+technical prose, and produce a book-like response about DNA-related science, rocket engineering, or
+space technology.
+Then it can fail something that looks trivial.
+Demonstration 1: which decimal is bigger?
+The instructor asks GPT-4 Turbo:
+What is bigger: 9.11 or 9.9?
+The displayed response says 9.11 is bigger. The instructor states that the correct comparison is 9.9 >
+9.11.
+His interpretation is that the model may have fallen into the pattern “11 is greater than 9” instead of
+carrying out the decimal comparison.
+Demonstration 2: every third character
+The next prompt is:
+Print every third character in “Namaste Artificial Intelligence.”
+The instructor manually checks the returned characters and concludes that the model’s answer is
+wrong.
+Q: What will count as “thinking” in the technical part of this episode?
+A: The lecture uses thinking broadly, but focuses mainly on reasoning: intermediate decisions and
+computation that help the system plan, compare, check, and revise before answering.
+WHAT WENT WRONG?
+The answer was fluent and confident, but the numerical relationship was wrong. Generation
+quality did not guarantee calculation quality.
+Episode 09: Can AI really think? 2
+The exact corrected sequence is not reliable in the captions: two spoken fragments conflict with each
+other. [Transcript unclear] The supplied transcript does not preserve a trustworthy final character
+sequence.
+Why can one model do both?
+The lecture separates two abilities:
+Generation: continue learned language patterns fluently.
+Reasoning: pause, carry out intermediate work, check an answer, and make a decision.
+The model has seen a vast amount of material about scientific subjects. It can generate within those
+patterns. A character-selection algorithm or numerical comparison may require a different kind of
+deliberate operation.
+The instructor adds a practical qualification: a modern assistant may call a coding or calculator-like
+tool and solve these tasks correctly. The demonstrations isolate the limits of the language model itself,
+not every capability of a tool-equipped product.
+Thinking is larger than reasoning
+08:39 - 13:19
+The lecture treats thinking as a broad umbrella:
+remembering
+processing
+planning
+comparing
+deciding
+Reasoning is one critical part of that umbrella. It means using connected steps and intellect to decide
+what follows from the available information.
+Planning a birthday trip
+Imagine planning a birthday trip:
+1. Do you prefer mountains or beaches?
+2. Which places have you already visited?
+3. What remains on your bucket list?
+4. What is the budget?
+5. Is the season suitable?
+6. Which choice fits all of those constraints?
+Remembering past travel is a kind of thinking. Selecting the destination through those connected
+decisions is reasoning.
+Preparing a guest lecture
+When invited to speak, the instructor asks:
+Episode 09: Can AI really think? 3
+Is the audience made of first-year students?
+Are they graduates?
+Are they senior people in a company?
+Which topic fits them?
+How should the content change?
+There is no single stored sentence that answers every invitation. The speaker uses mental bandwidth
+to process context and make a plan.
+From this point onward, “Can AI think?” primarily becomes:
+Can AI reason?
+Direct generation and reasoning-oriented generation
+13:19 - 20:14
+Consider the request:
+Suggest a gift for my girlfriend.
+A direct answer may be:
+chocolate
+a rose
+a teddy bear
+a purse
+Those are common gift patterns that appear in ordinary text.
+A more thoughtful answer considers:
+interests
+profession
+favorite color
+place and age
+personal preferences
+several possible gifts
+which option feels most personal
+Episode 09: Can AI really think? 4
+The instructor focuses on the word thoughtful. A thoughtful gift carries evidence that the giver
+considered the person instead of selecting the first familiar item.
+Direct generation
+The prompt goes into the model and a likely
+answer comes out quickly.
+Reasoning-oriented generation
+The system performs intermediate work,
+explores options, validates them, and then
+selects or revises an answer.
+Reasoning is not presented as a completely separate, mystical operation. The intermediate work can
+itself be generated:
+1. identify requirements
+2. propose approaches
+3. compare them
+4. reject weak options
+5. check the remaining option
+6. answer
+Two generation styles
+The lecture distinguishes immediate continuation from deliberate intermediate computation
+Direct generation
+question arrives
+model continues directly
+answer appears quickly
+useful for simple prompts
+Reasoning-oriented
+generation
+question arrives
+intermediate computation
+steps are evaluated
+answer follows reflection
+Direct generation answers immediately; reasoning-oriented generation performs intermediate work before committing.
+When the extra steps change the answer
+20:14 - 23:49
+The 20% up, 20% down problem
+A company grows revenue by 20% and then loses 20%. Is it back to the original revenue?
+Fast intuition says that +20 and -20 cancel.
+Episode 09: Can AI really think? 5
+Step-by-step reasoning says:
+1. Begin with 100.
+2. Increase by 20% → 120.
+3. Decrease 120 by 20% → 96.
+4. The final value is not 100.
+The second percentage acts on a different base.
+But do not reason deeply about everything
+If the user asks:
+Translate “hello” into Hindi.
+the instructor wants a direct answer. The system should not spend 30 seconds comparing the word
+across Punjabi, Tamil, Malayalam, Kannada, French, and Spanish.
+The balance is:
+familiar, direct task → answer quickly
+multi-step or constrained task → calculate, reflect, validate, then answer
+simple task → do not waste compute by overthinking
+Reasoning happens during inference
+23:49 - 29:13
+A reasoning model attempts to bring deliberate computation into inference.
+Training has already happened. At inference time:
+1. the user gives a prompt
+2. the model performs a forward computation
+3. instead of immediately finalizing the answer, it can generate intermediate steps
+4. it returns a final response
+Debugging line 15
+User:
+There is an error on line 15.
+A thoughtless answer might be:
+A USEFUL RULE FROM THE LECTURE
+Reasoning is valuable when intermediate computation changes the probability of getting the
+answer right. It is overhead when the answer is already simple and known.
+Episode 09: Can AI really think? 6
+Remove line 15.
+A reasoning-oriented response breaks the problem down:
+1. Read line 15.
+2. Inspect nearby code.
+3. Check for a syntax error.
+4. Check for a logical error.
+5. Read the actual error message.
+6. Form possible causes.
+7. Test a repair.
+8. Return the corrected result.
+Debugging without reasoning is almost a contradiction. The system must inspect evidence and
+narrow down a cause.
+The DeepSeek-R1 moment
+29:13 - 35:12
+The instructor introduces DeepSeek-R1, a reasoning model released by a Chinese company. He
+presents its release as an important moment that caused major technology-market turmoil and
+intensified US-China competition.
+The research-paper title spoken in the lecture is:
+DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning
+The paper is described as showing that reasoning ability can be intensified through pure
+reinforcement learning, without requiring human-labeled reasoning trajectories in the expected way.
+Reinforcement learning recap
+The basic loop is:
+1. The model tries something.
+2. A good result receives a positive reward.
+BEHIND THE SCENES
+The lecture describes reasoning as additional generation organized into smaller, dependent
+subproblems. It is not presented as completely separate from generation.
+SOURCE BOUNDARY
+The transcript calls this a historic public breakthrough and links it to a market decline. No
+complete publication date or cited market source is supplied, so the statements remain attributed
+to the lecture.
+Episode 09: Can AI really think? 7
+3. A bad result receives a penalty or negative reward.
+4. The parameters are updated.
+5. The model tries again.
+DeepSeek-R1 did not invent reinforcement learning. The instructor immediately travels backward to
+an older and very visual example.
+AlphaGo and self-play
+35:12 - 49:40
+The lecture revisits AlphaGo, developed by Google DeepMind, and its 2016 matches against Lee
+Sedol.
+The instructor states:
+AlphaGo won the five-game match 4-1.
+Move 37 surprised Lee Sedol and the commentators.
+Lee Sedol paused for about 15 minutes.
+The move was outside the familiar patterns expected by the human champion.
+The transcript first calls Move 37 something never played in history, then softens the statement:
+somebody may have played it, but it was not a famous move.
+Two sources of learning
+The instructor reads two important ingredients from the displayed material:
+supervised learning from human expert moves
+reinforcement learning from self-play
+In self-play:
+1. AI plays against AI.
+2. The game produces a winner and a loser.
+3. A win gives a positive signal.
+4. A loss gives a negative signal.
+5. The network updates.
+6. The system plays again and again.
+One person can experience only a finite number of games. A machine can simulate far more. It can
+learn patterns from its own trials instead of waiting for a human expert to label every move.
+Beyond the human-demonstration ceiling
+The displayed graph is described conceptually:
+supervised learning improves toward the capability present in human expert demonstrations
+reinforcement learning from self-play continues beyond that level
+improvement eventually flattens into a plateau
+Episode 09: Can AI really think? 8
+The lecture does not say improvement is infinite. The plateau becomes an important limit later.
+Research should create curiosity
+49:40 - 01:03:07
+The AlphaGo and DeepSeek discussion becomes a short lesson in how to approach research:
+read the introduction
+read the conclusion
+ask for a summary if the mathematics is too difficult
+explore more deeply when curiosity and time allow
+do not assume one course can cover every paper
+The instructor’s goal is not to reproduce the entire AlphaGo or DeepSeek paper. It is to make the
+learner curious enough to investigate.
+The geopolitical tangent
+The lecture says:
+the DeepSeek release wiped more than one trillion dollars from global technology stocks
+US and Chinese companies are competing intensely
+DeepSeek-R1 is open and downloadable
+some US companies may access Chinese-origin models through a US provider such as Together.ai
+These are broad, partly speculative statements in the VTT. The instructor himself says he does not
+fully know the political or data-routing situation.
+The captions render the DeepSeek chat address as:
+The other spoken site is together.ai .
+More steps, more accuracy-and more tokens
+A displayed graph is described as relating:
+number of reasoning steps
+answer accuracy
+average response length
+INSTRUCTOR UNCERTAINTY
+The instructor says, “I think,” when discussing whether Demis is still associated with Google.
+That employment claim should not be treated as established.
+INCOMPLETE OR UNCLEAR URL
+chat.deepsea.com is what the transcript contains. It may be a speech-to-text error, and the
+exact URL remains unresolved. [Transcript unclear]
+Episode 09: Can AI really think? 9
+The instructor says accuracy rises as the model takes more reasoning steps and that the curve
+crosses a dotted human-participant line. He also says response length and token consumption rise.
+The task, axes, and exact benchmark are not fully contained in the transcript.
+A travel plan that thinks before it answers
+01:03:07 - 01:11:09
+The instructor opens DeepSeek, selects an expert model with deep thinking, and gives it a
+constrained task:
+I want to go on a vacation in Malaysia in October, with a budget of ₹2 lakh, with my wife and an
+infant. I want to explore cool things to eat. Give me an itinerary and a price breakdown.
+This prompt has no single stored answer. It contains dependencies:
+destination
+month
+budget
+two adults
+an infant
+food
+itinerary
+pricing
+What the visible reasoning considers
+The interface appears to ask itself about:
+which language to answer in
+a reasonable trip duration, because none was specified
+candidate cities such as Kuala Lumpur and Penang, plus another place whose name is unclear in
+the captions
+seasonal rain
+visa requirements
+currency conversion
+flight, hotel, food, and local-transport budgets
+multiple itinerary options
+infant-friendly details
+baby food, spice level, and bottled water
+Episode 09: Can AI really think? 10
+It reportedly thinks for 116 seconds before producing a separate, polished answer.
+The instructor compares three levels:
+no deep thinking: fast response, narrated as a 12-day/11-night plan with more assumptions
+instant thinking: about 20 seconds
+expert deep thinking: about 116 seconds
+The demonstration supports one claim:
+For a constrained research task, spending useful compute during inference can produce a more
+considered answer.
+It does not establish that the resulting travel advice is correct. The instructor himself says he has not
+verified how good the plan is.
+Research papers behind assistant behavior
+01:11:09 - 01:20:18
+Two earlier papers are named:
+1. Fine-Tuning Language Models from Human Preferences - described as a 2020 OpenAI paper.
+2. Training Language Models to Follow Instructions with Human Feedback - described as a
+2022 OpenAI paper.
+They connect this finale to the previous episode:
+supervised fine-tuning
+human preferences
+instruction following
+reinforcement learning
+the transition from base model to assistant
+The instructor then performs a live query about the authors’ current employment, including Dario and
+Anthropic. The exact table, sources, author list, and date are missing from the VTT. Some records are
+explicitly described as ambiguous.
+MISSING VISIBLE DETAILS
+The full itinerary, prices, current visa information, and tool calls are not captured in the VTT.
+[VIDEO FRAME NEEDED] Suggested timestamp: 01:05:16.
+DO NOT CONVERT THE LIVE QUERY INTO COURSE FACT
+The narration says none of the listed authors remains at OpenAI and several joined Anthropic, but
+the visible evidence is absent.
+Episode 09: Can AI really think? 11
+The durable lesson from this tangent is editorial rather than biographical: a small group of researchers
+and a few important papers can reshape the behavior of widely used assistants.
+Intermediate reasoning
+01:20:18 - 01:25:33
+The lecture returns to a clean arithmetic example:
+There are 23 students. Each needs 4 notebooks. Notebooks are sold only in packets of 10. How
+many packets should the teacher buy?
+The answer is 10 packets.
+Each step preserves information needed by the next. This is intermediate reasoning.
+The important timing distinction is that the model is already trained. These steps are generated on the
+fly while answering the user-during inference.
+Chain of thought
+01:25:33 - 01:30:07
+The paper title spoken is:
+Chain-of-Thought Prompting Elicits Reasoning in Large Language Models
+The lecture attributes it to Google research/Brain/DeepMind and describes it as a 2023 paper. Exact
+bibliographic details are not supplied.
+A chain of thought is defined as a sequence of intermediate reasoning steps before the final answer.
+The system:
+1. breaks the original problem into smaller questions
+2. solves one subproblem
+3. passes that result to the next subproblem
+4. continues the chain
+5. combines the work into an answer
+1 23 students × 4 notebooks = 92 notebooks.
+2 92 ÷ 10 = 9.2 packets.
+3 A partial packet cannot be purchased.
+4 Round up to 10 complete packets.
+Episode 09: Can AI really think? 12
+The travel-planning example forms a chain across budget, visa, locations, infant needs, transport, and
+food.
+The instructor says the discussed research shows that intermediate reasoning improves results on
+complex tasks. He later qualifies the idea: more thinking is not infinitely useful.
+A bat, a ball, and the cost of answering too quickly
+01:30:07 - 01:34:23
+A bat and a ball together cost 110. The bat costs 100 more than the ball. How much does the ball
+cost?
+The immediate answer many people give is 10.
+Let the ball cost x.
+ball = x
+bat = 100 + x
+x + (100 + x) = 110
+2x + 100 = 110
+2x = 10
+x = 5
+The ball costs 5 and the bat costs 105.
+The problem is not difficult, but the sentence invites a quick subtraction: 110 - 100. Structured
+computation prevents premature commitment.
+A second scaling dimension: inference-time compute
+01:34:23 - 01:44:42
+Earlier improvements concentrated on training:
+better pre-training data
+more model parameters
+more training compute
+supervised fine-tuning
+human feedback
+reinforcement learning
+Reasoning models open another dimension:
+WHY THIS MATTERS
+Humans and models can both be misled by the first fluent-looking answer. Sometimes a small
+amount of computation before commitment is enough to correct it.
+Episode 09: Can AI really think? 13
+Spend more useful compute solving this particular prompt during inference.
+For a difficult question, a system may:
+generate intermediate steps
+explore alternatives
+verify calculations
+call tools
+write and execute code
+evaluate candidate answers
+revise a draft
+check constraints
+compile a final response
+Training-time compute
+Builds the model and its broad capabilities
+before the user asks a question.
+Inference-time compute
+Works on the current prompt after training is
+complete.
+The instructor summarizes:
+A model’s intelligence is not determined only by how much computation was used during
+training. Useful computation performed while answering can matter too.
+Two places to spend computation
+Reasoning models open an additional capability dimension during inference
+Training time
+data shapes parameters
+loss guides updates
+capability is learned
+a model is produced
+Inference time
+a prompt is received
+reasoning steps are generated
+more compute may be spent
+a final answer is produced
+Training-time compute shapes the model; inference-time compute is spent reasoning about the current prompt.
+Episode 09: Can AI really think? 14
+More tokens are not automatically more intelligent
+01:44:42 - 01:52:13
+Ask:
+What is 5 + 5?
+The answer is 10. Spending two minutes on it does not create a better answer.
+The instructor imagines forced overthinking sending the model into an irrelevant JavaScript
+interpretation and producing “55.” No types or string-concatenation context is supplied, so this is only
+an illustration-not a complete JavaScript claim.
+The three-zone mental model
+More reasoning can increase the probability of success. It does not convert probability into certainty.
+The system must learn how much reasoning a problem deserves.
+Teaching reasoning through rewards
+01:52:13 - 01:58:49
+The reinforcement-learning loop returns:
+model behavior → evaluator → positive reward or penalty → parameter update → new behavior
+This works especially well when the task is verifiable.
+A programming task
+The instructor asks for a JavaScript program related to a palindrome number. The model can produce
+many candidates. Each candidate can be run against tests:
+correct output → reward
+incorrect output → penalty
+1 Underthinking: too little compute can produce a premature answer.
+2 Useful thinking: enough computation can improve difficult reasoning.
+Overthinking: more steps bring diminishing returns and may even abandon an initially correct
+solution.
+3
+Episode 09: Can AI really think? 15
+Over many attempts, patterns associated with passing tests become stronger.
+The idea extends to:
+heap sort
+data-structure and algorithm problems
+traveling-salesman-like problems
+mathematical questions with known answers
+any code that can be executed against tests
+A subjective task
+Now ask the model to:
+write the best poem
+produce the funniest joke
+explain something in the most helpful way
+plan the best Malaysia itinerary
+give a medical response that requires expertise
+There is no single deterministic expected string. A human or learned judge must evaluate quality.
+RLVR: verifiable rewards
+01:58:49 - 02:02:40
+The episode names RLVR:
+Reinforcement learning with verifiable rewards.
+Preference-based feedback
+Useful for subjective tasks. Humans or reward
+models compare tone, style, usefulness, or
+taste.
+Verifiable rewards
+Useful when a rule, test, calculation, or game
+outcome can determine correctness
+automatically.
+AlphaGo fits the second side:
+a completed game has a winner
+the result is automatically available
+self-play can continue without a human judging every move
+TASK DEFINITION IS UNCLEAR
+The prompt says “palindrome number,” but examples such as 123 -> 321 and 432 -> 234
+describe digit reversal. The exact programming task is internally inconsistent. [Transcript
+unclear]
+Episode 09: Can AI really think? 16
+Mathematics and programming are highlighted because answers or behavior can often be checked.
+Two reward sources in the episode
+Both use reinforcement learning, but their feedback is obtained differently
+RLHF
+humans compare responses
+preferences become feedback
+a reward model may approximate
+subjective evaluation remains
+RLVR
+the answer can be checked
+reward uses verifiable result
+math and code examples
+feedback is less subjective
+RLHF derives feedback from human preferences or their learned approximation; RLVR uses an answer that can be checked.
+Who judges the output?
+02:02:40 - 02:05:51
+An evaluator is the judge that decides whether output is good or bad.
+The lecture names three kinds.
+1. Deterministic evaluator
+Use an exact rule:
+compare 5 + 5 with 10
+run code against tests
+check who won a game
+The instructor says to prefer this whenever the task permits it.
+2. Human evaluator
+A person reads or tests the answer.
+Useful when:
+taste matters
+interpretation matters
+expertise is required
+no exact answer exists
+Examples include poetry, jokes, essays, and medical review.
+Episode 09: Can AI really think? 17
+3. Model evaluator
+Another language model judges the result.
+This is commonly described in the lecture as:
+LLM as a judge.
+It scales more easily than asking humans to review every candidate.
+LLM as a judge
+02:05:51 - 02:11:12
+The instructor says a model can judge dimensions such as:
+relevance
+clarity
+instruction following
+style
+completeness
+code explanation
+some factual qualities
+But the judge is still a model. It can have:
+social or data bias
+position bias
+style preference
+a preference for long answers
+limited ability on subjective beliefs
+The evaluator must itself be evaluated:
+model creates → model judges → who judges the judge?
+The instructor argues that improvement eventually plateaus. In his opinion, an infinite recursion of AI
+training and judging AI does not automatically create movie-like AGI or superintelligence. He also
+admits that definitions change and future developments remain uncertain.
+This is a personal position in the lecture, not a settled factual conclusion.
+VERY IMPORTANT
+Using AI to evaluate AI scales evaluation. It does not magically create objective truth.
+Episode 09: Can AI really think? 18
+Chain, tree, and graph of thoughts
+02:11:12 - 02:18:48
+Chain of thought
+One path:
+A → B → C → answer
+Each step depends on the previous step. If step B is wrong, the error can spread through the rest of
+the chain.
+The instructor jokingly compares it with a linked list.
+Tree of thought
+A tree explores alternatives:
+branch into several approaches
+continue promising branches
+backtrack when one fails
+compare successful candidates
+select the strongest answer
+This helps when one line of reasoning becomes stuck or wrong.
+Graph of thoughts
+A graph allows branches to reconnect and combine useful pieces.
+Heap-sort illustration:
+Approach A finds an efficient O(n) method.
+Approach B catches an important edge case but uses O(n²) work.
+A later step combines the efficiency from A with the edge-case handling from B.
+The complexities are illustrative; no executable heap-sort code is supplied.
+Chain
+Explore one dependent path.
+Tree
+Explore alternatives and backtrack.
+Graph
+Explore alternatives, reconnect branches, and
+combine useful ideas.
+Final response
+Select one candidate or merge the strongest
+parts into a polished answer.
+Episode 09: Can AI really think? 19
+Chain, tree, and graph of thoughts
+The episode moves from a single sequence to alternatives and connected reasoning paths
+Chain Tree Graph
+one path - branching alternatives - connected reasoning states
+A chain follows one path, a tree explores alternatives, and a graph can reconnect and combine useful reasoning states.
+Visible reasoning is not necessarily faithful
+02:18:48 - 02:26:49
+DeepSeek displays an English “thought process.” Is that prose a literal transcript of the model’s
+internal computation?
+The instructor says: not necessarily.
+Internally, the model is performing mathematical computation.
+The visible English is generated around that computation.
+The model may work on several subproblems in parallel even if the displayed trace appears
+sequential.
+The explanation may be simplified, summarized, reconstructed, or partly post hoc.
+Branches may be merged after separate work.
+The lecture refers to Anthropic research showing cases where generated chain-of-thought text did not
+fully match the information influencing the answer. No exact paper title or link is supplied.
+A human analogy
+Why did you choose one particular word while speaking?
+Sometimes you can explain. Sometimes the word appeared through a learned association and you
+cannot reconstruct the path. The instructor uses his own spontaneous “linked list of thought” joke as
+an example.
+Visible explanation and causal process are not always identical-for humans or models.
+Why some providers hide raw traces
+The instructor contrasts:
+DeepSeek’s long visible trace
+Episode 09: Can AI really think? 20
+shorter “thinking” indicators or summaries in other assistants
+He paraphrases reasons given by OpenAI:
+preserve usefulness for monitoring
+avoid exposing unaligned intermediate content
+protect user experience
+account for competitive considerations
+He then expresses skepticism and speculates about politics, competition, and distillation. Those parts
+are explicitly his opinion.
+Reasoning models are still fallible
+02:26:49 - 02:28:48
+Reasoning models can still:
+hallucinate
+make arithmetic errors
+misunderstand the question
+accept a false assumption
+misuse tools
+overthink
+fail on an unfamiliar problem
+More thinking can improve the chance of success. It cannot guarantee correctness.
+The instructor points to interface language such as “AI generated; use for reference only.” He warns
+against making medical decisions solely from an assistant answer. More context and deeper
+reasoning may change the answer, but neither provides a guarantee.
+Episode 09: Can AI really think? 21
+Match the capability to the task
+02:28:48 - 02:35:39
+The final technical recap maps tasks to capabilities.
+Task Capability emphasized in the lecture
+Explain recursion Language generation from learned knowledge
+Complex arithmetic Calculator or coding tool
+Find the current stock price Current-data or web-search tool
+Solve a mathematical proof Reasoning
+Count characters Code/tool use
+Summarize an essay Generation
+Search a private document Retrieval plus generation
+Debug a program Reasoning plus coding tools plus generation
+The lecture briefly introduces retrieval-augmented generation (RAG) as a future-season topic:
+retrieve information, then use it to augment generation.
+The modern assistant has three broad powers
+1. Knowledge from training.
+2. Reasoning from post-training, reinforcement learning, and inference-time computation.
+3. Tools for current data, calculation, code, retrieval, images, video, and other actions.
+The Malaysia task uses all three:
+knowledge suggests destinations
+reasoning adapts the plan to budget and infant needs
+tools may check current visa information, currency, or flights
+Episode 09: Can AI really think? 22
+The full product is much more than the literal phrase “Generative Pre-trained Transformer.”
+A capable system combines several ingredients
+The finale repeatedly returns to this three-part view
++
+The finale’s three-part view: learned knowledge, reasoning during inference, and external tools work together to complete a task.
+So, can AI really think?
+02:35:39 - 02:46:45
+From an engineering perspective, machine behavior has become remarkable. A reasoning-capable
+assistant can:
+decompose a problem
+compare alternatives
+plan
+validate constraints
+revise a solution
+use tools
+research
+debug
+That behavior can look like thinking.
+The instructor then changes the lens.
+Machine reasoning remains mathematical computation. Human thought is also shaped by:
+emotions
+personal upbringing
+memory
+culture
+location
+bias
+Episode 09: Can AI really think? 23
+lived experience
+changing mood
+Humans are inconsistent. What a person thinks today may change tomorrow-or five minutes later.
+Picture a pet animal
+Ask several people to imagine a pet.
+One person may picture:
+a cow
+a buffalo
+a horse
+an elephant
+a cat
+a dog
+The association depends on place and life experience. Human thinking is personal and subjective.
+The instructor refuses to force the conclusion into one word.
+Can AI really think?
+There is no final “yes” or “no” in this episode. The technical mechanisms are explained. The
+philosophical answer remains open.
+Chapter summary
+The episode began with a paradox: a model can produce beautiful scientific prose and still fail a
+decimal comparison or character-selection task. Fluent generation is not the same as deliberate
+checking.
+Thinking is broad; reasoning is the part of the lesson concerned with intermediate decisions and
+computation. Direct generation is useful for simple familiar tasks. Reasoning-oriented generation helps
+with planning, debugging, research, calculations, and other prompts whose constraints must be
+preserved.
+DeepSeek-R1 and AlphaGo illustrate reinforcement learning in two settings. AlphaGo’s self-play uses
+automatically verifiable win/loss outcomes. Modern reasoning models spend additional compute
+during inference, breaking one prompt into subproblems, exploring alternatives, checking constraints,
+and revising an answer.
+Q: Does powerful reasoning settle the meaning of thought?
+A: Not for the instructor. Humans have capabilities machines do not; machines have capabilities
+humans do not. Their strengths are different, and the lecture leaves the final answer to the learner.
+Episode 09: Can AI really think? 24
+Intermediate reasoning can take the form of a chain, tree, or graph. Yet more reasoning is not always
+better: overthinking can create diminishing returns. Verifiable tasks can use deterministic rewards;
+subjective tasks need humans or model judges. LLM-as-a-judge scales evaluation but inherits bias
+and does not create objective truth.
+Visible English reasoning may not be a faithful transcript of internal computation, and reasoning
+models still make mistakes. A modern assistant combines knowledge, reasoning, and tools-but
+whether this counts as human-like thought remains a question for the learner.
+Key takeaways
+Fluent generation does not guarantee correct calculation or deliberate checking.
+The episode uses reasoning as the technical core of the broader word “thinking.”
+Direct generation is efficient for simple tasks; deliberate reasoning helps when dependencies
+and constraints matter.
+Reasoning models spend useful compute during inference, after training is complete.
+Reinforcement learning improves behavior through attempts, rewards or penalties, and
+parameter updates.
+AlphaGo self-play demonstrates learning from a verifiable game outcome at scale.
+Intermediate reasoning breaks a problem into steps before the final answer.
+More reasoning can raise the probability of success, but it does not guarantee correctness.
+Underthinking, useful thinking, and overthinking require different compute budgets.
+RLVR uses automatically verifiable rewards for tasks such as mathematics, code, and games.
+Evaluation can be deterministic, human, or model-based.
+LLM-as-a-judge scales review but carries bias and still needs evaluation.
+Chains follow one path, trees branch and backtrack, and graphs can recombine useful ideas.
+A visible reasoning trace may be a reconstruction rather than a literal internal record.
+Modern assistants combine knowledge, reasoning, and tools.
+The lecture deliberately leaves “Can AI really think?” unanswered.
+Revision questions
+1. Why does the instructor ask the learner to define thinking before discussing AI?
+2. What happened in the 9.11-versus-9.9 demonstration?
+3. Why is the final result of the every-third-character example uncertain in the supplied transcript?
+4. How does the lecture distinguish generation from reasoning?
+5. Which activities sit under the broad term thinking?
+6. How do the birthday-trip and guest-lecture examples illustrate reasoning?
+7. What is the difference between a direct gift suggestion and a thoughtful one?
+8. Why does +20% followed by -20% produce 96 when the starting value is 100?
+9. Which kinds of prompt should receive a direct answer?
+Episode 09: Can AI really think? 25
+10. What does inference mean in this chapter?
+11. How does the line-15 debugging example decompose a problem?
+12. What role does reinforcement learning play in the DeepSeek-R1 discussion?
+13. Which two learning sources are named for AlphaGo?
+14. Why can self-play scale beyond human demonstration data?
+15. What does a win or loss provide during AlphaGo training?
+16. What constraints are present in the Malaysia travel prompt?
+17. What kinds of subproblem does the visible travel reasoning explore?
+18. What is intermediate reasoning?
+19. How does the notebook-packet problem arrive at 10 packets?
+20. What is a chain of thought?
+21. Why is 5-not 10-the answer to the bat-and-ball problem?
+22. What is the difference between training-time and inference-time compute?
+23. Why do more tokens not automatically mean more intelligence?
+24. What are underthinking, useful thinking, and overthinking?
+25. What makes a task verifiable?
+26. What does RLVR stand for?
+27. Why are mathematics, code, and games useful for verifiable rewards?
+28. What are the three evaluator types?
+29. What is LLM as a judge?
+30. Why must a model evaluator itself be evaluated?
+31. How do a chain, tree, and graph of thoughts differ?
+32. Why might a visible English thought process not be faithful to internal computation?
+33. What limitations remain in reasoning models?
+34. Which task examples in the recap use generation, tools, retrieval, reasoning, or a combination?
+35. What three capabilities make up the final modern-assistant picture?
+36. Why does the instructor leave the central question without a yes-or-no answer?
+One last thing
+This is the finale of the season. The instructor closes by inviting the learner to keep the question alive:
+after understanding the mechanics, decide for yourself whether what the machine does should be
+called thinking.
+Episode 09: Can AI really think? 26
 
 --- RAW NOTES END ---
