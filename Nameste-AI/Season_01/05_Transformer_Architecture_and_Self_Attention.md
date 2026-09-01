@@ -525,4 +525,4 @@ console.log("Transformer Output:  ", miniTransformerLayer(tokenVector).map(v => 
 
 ---
 
-Previous : [04. Vector Embeddings and Semantic Search](./04_Vector_Embeddings_and_Semantic_Search.md) | Index: [00_index.md](../00_index.md) | Next: —
+Previous : [04. Vector Embeddings and Semantic Search](./04_Vector_Embeddings_and_Semantic_Search.md) | Index: [00_index.md](../00_index.md) | Next: [06. Neural Network Training and Optimization](./06_Neural_Network_Training_and_Optimization.md)

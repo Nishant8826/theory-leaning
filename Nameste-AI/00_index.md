@@ -37,6 +37,7 @@ Class: [e.g., Class 01]
 * [03. Tokenization and Context Windows](./Season_01/03_Tokenization_and_Context_Windows.md)
 * [04. Vector Embeddings and Semantic Search](./Season_01/04_Vector_Embeddings_and_Semantic_Search.md)
 * [05. Transformer Architecture and Self-Attention](./Season_01/05_Transformer_Architecture_and_Self_Attention.md)
+* [06. Neural Network Training and Optimization](./Season_01/06_Neural_Network_Training_and_Optimization.md)
 
 ---
 
@@ -204,5 +205,38 @@ Class: [e.g., Class 01]
 
 > [!IMPORTANT]
 > Attention is the **only** layer in the Transformer block where tokens communicate across sequence positions. The Feed-Forward Network (FFN) operates on each token strictly in isolation ($1 \times D$). Always keep this separation in mind when analyzing model compute and latency.
+
+---
+
+## 06. Neural Network Training and Optimization
+
+🔗 **Full Lesson:** [06_Neural_Network_Training_and_Optimization.md](./Season_01/06_Neural_Network_Training_and_Optimization.md)
+
+* **What**: The mathematical optimization loop that transforms randomly initialized neural network parameters into intelligent models through Forward Passes, Cross-Entropy Loss computation, Backpropagation (calculating gradients), and Gradient Descent (updating weights).
+* **Why It Exists**: Explains how machine learning systems acquire knowledge without human hand-coding, why self-supervised next-token targets eliminate manual labeling, how learning rates and batch sizes control convergence, and how distributed GPU clusters scale training.
+* **Key Concepts**:
+  * **Parameters / Weights**: Floating-point numbers across Embeddings, Attention ($W_q, W_k, W_v, W_o$), LayerNorm, and FFNs. Parameters store continuous statistical patterns, not literal database text strings.
+  * **Forward Pass**: Transforming input token vectors through layers to generate next-token logits and Softmax probabilities.
+  * **Cross-Entropy Loss**: Numerical error metric: $\mathcal{L} = -\ln(P(\text{Target Token}))$. High loss = confident wrong answer; low loss = accurate prediction.
+  * **Backpropagation**: Working backward from output loss using the Calculus Chain Rule to calculate gradients ($\frac{\partial \mathcal{L}}{\partial W}$) for every parameter.
+  * **Gradients**: Vectors indicating the direction and rate of steepest ascent of the loss function.
+  * **Gradient Descent**: $W_{\text{new}} = W_{\text{old}} - \alpha \cdot \nabla \mathcal{L}$. The mountain-in-a-fog analogy (feeling the slope to take downhill steps toward minimum loss).
+  * **Learning Rate ($\alpha$)**: Step-size hyperparameter. Too small = slow/stuck; too large = overshooting/exploding loss ($NaN$).
+  * **Optimizers**: Mini-Batch Gradient Descent (standard) and **AdamW** (adaptive learning rates + momentum + weight decay).
+  * **Self-Supervised Learning**: Text itself provides the ground truth (predicting $w_{t+1}$ given $w_1 \dots w_t$), enabling massive scaling on trillions of tokens without manual human annotations.
+  * **Training vs Inference**: Training is mutable weight learning ($1M+ compute, months); Inference is frozen-weight forward pass (cents, milliseconds).
+  * **Generalization vs Overfitting**: Generalization learns broad linguistic rules; Overfitting is rote memorization of exact training samples.
+  * **How Embeddings are Learned**: Initialized randomly, embeddings receive backpropagation gradients during training, causing semantically related words (King $\leftrightarrow$ Queen) to naturally cluster.
+
+### Gradient Descent Methods Comparison Matrix
+
+| Method | Data Processed per Step | Update Speed | Stability | Memory Requirement |
+| :--- | :--- | :--- | :--- | :--- |
+| **Batch GD** | Entire Dataset ($N$) | Very Slow | 100% Deterministic & Smooth | Huge (Cannot fit in GPU VRAM) |
+| **Stochastic GD (SGD)** | 1 Sample | Extremely Fast | Highly Noisy / Fluctuates | Minimal |
+| **Mini-Batch GD** | Small Batch ($B \approx 32–4096$) | Fast | Balanced & Stable (The Industry Standard) | Fits perfectly in GPU VRAM |
+
+> [!IMPORTANT]
+> Never confuse **Backpropagation** with **Gradient Descent**. Backpropagation *calculates the gradients* (partial derivatives via the Chain Rule); Gradient Descent *applies the updates* to change the model's weights.
 
 ---

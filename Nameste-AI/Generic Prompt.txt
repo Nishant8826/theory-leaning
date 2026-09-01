@@ -1,169 +1,229 @@
 Season: 01
-Class: 05
+Class: 06
 
 Here are my raw notes from today's class:
 
 --- RAW NOTES START ---
 
-# The Computational Brain of a Machine : Neural Network
-
-The pizza is _______
-The -> 23 -> [0.1,0.6,-3.4,......]
-Pizza -> 5 -> [0.3,2.6,-1.4,......]
-is -> 2 -> [5.3,7.6,-2.4,......]
-
-all these embeddings(inputs) will sent to Neural Network
-NN will predict next token probability
-
-hot -> 3 -> [1.1,9.2,-6.6,......] ------> 0.68
-ready -> 5 -> [0.6,1.5,-4.1,......] ------> 0.82
-cheesy -> 6 -> [-2.0,4.5,-7.9,......] -----> 0.53
+# Sharpening the Brain
+Training the Neural NetworN
 
 
-So prediction becomes : "The pizza is ready ___", same predicts probability of next token, then next token, and so on........
+# What does "learning" actually mean for a Machine
+A Neural Network contains a huge collection of adjustable numbers the parameter
 
-Final sentence could be
+During training, we repeatedly modify those parameters so that the model becomes better at a particular objective.
 
-1. The pizza is ready to eat
-2. The pizza is delicious and ready to eat
-3. The pizza is hot and ready to eat
-4. The pizza is not ready to eat
-5. The pizza is not delicious and not ready to eat
-6. The pizza is not hot and not ready to eat
-,etc
+For a neural network, learning means adjusting parameters so that future prediction become better.
 
+GPT3 ----> 175 Billion parameters
+GPT4 ----> 1.8 Trillion parameters [not official]
+GPT5 ----> 100 Trillion parameters [not official]
 
-# ChatGPT
-G - Generative
-P - Pretrained
-T - Transformer
+Parameters are the learned numerical values that determine the model's behaviour.
+Patterns and knowledge learned during training are encoded across these parameters.
 
-A Transformer is a type of neural netwrok architecture designed to process sequences of information using attention.
+# Parameters/weights
+- Embedding
+- Attention [Wq, Wk, Wv, Wo]
+- Layer Norm [gama, beta]
+- FFN [W1, W2, W3, ....]
 
-It was introduced in the 2017 paper "Attention is All you need."
+# Does parameters store knowledge?
+Not exactly.
+Parameters store the **patterns** learned from data.
+When the model predicts "Paris", it's not retrieving a stored string "Paris". Instead, the parameters adjust so that the output distribution favors "Paris" given the input.
+Knowledge emerges from the **interactions** between these patterns.
 
-Before transformer, sequence models commonly used architecture such as RNNs and LSTMs, which processed text more sequentionally.
+# How is it related to training data?
 
-****Without Transformer, modern neural network is nothing!
-Without Attention, Transformer is nothing!!!****
+## Forward pass
+It's the process of taking input data and pushing it through the network to get an output.
+Think of it as the "normal" usage of the model.
 
+# Loss Function
+It is a numerical way to measure how bad the prediction is.
+A loss fn converts the quality of the prediction into a number.
+correct prediction --> small loss
+very wrong prediction --> large loss
 
-"Attention is all you Need"
-"Which piece of information should I focus on right now and how much?"
+The Sky is _______
 
-"The Cat sat on the mat becuase it was tired."
+Prediction A: blue (90%) 
+Prediction B: green (50%) 
 
-# Self Attention
-Self-attention means attention between tokens of the same sequence.
-Each token can look at other tokens in that same sentences.
+for pred A loss == low and for pred B loss == high
 
-"The Cat sat on the mat becuase **it** was tired."
+There may be thousands, millions or billions of parameters.
+Which parameters were responsible for the mistake?
+And how should each one changes?
 
+# Back Propagation
+back propagation calculates how changing each parameter would affect the loss.
 
-Why do we needt this?
-"I went to the bank to deposit money."
-"I sat on the bank of the river."
+Backpropagation starts from the error at the output and works backward.
+- How much did layer C contribute? How much did each weight contributes in layer C?
+- What about layer B? what about weights inn layer B?
+- and similarly for layer A?
 
+It calculates the sensitivity of the loss to each parameter.
 
-*** Inside heart of LLM resides Transformer and inside heart of Transformer, redise Attention****
+Mathematically, these sensitivites are called gradients.
 
+# Gradients
+A gradient tells us which direction a parameter should move to change the loss and how sensitive the loss is to that parameter.
 
-when pass a sentence to LLM
-1. 	LLM converts each word into token(Token Embedding + Positional Embedding)
-2. 	Sent to Transformer(Heart of LLMs)
-3. 	Transformer generates next token
-4. 	 LLM converts token to human language
+Suppose a particular weight is: 0.40
 
+The gradient tells us that increasing this weight would increasse the loss.
+So perhaps we should move it slightly downward.
+Another weight may need to move upward.
 
-# Layer Normalization   
-Layer normalization (layerNorm) is a techinque used to keep the numbers flowing through a neural network at a more stable scale.
+Backpropagation computes this information throughout the network.
 
-[0.2,-0.34,0.5,0.6] -> [22,36,14,56]
-As represntation repeatedly fo through attention, FNNs, residual additions, etc. their numerical  scales can become difficult to manage.
+Does Backpropagation fix the weights?
+Backpropagation does not itself necessarily update theweights.
+It calculates gradients.
+Then an optimization algorithm uses those gradients to update the parameters.
 
-[0.18,-0.26,0.46,0.92]
-Normalization helps keep the network's internal representations well behaved, which makes training deep networks more stable.
+# Gradient Descent  
+Gradient descent is an iterative optimization algorithm used to minimize a function(like error or loss) by adjusting parameters in the opposite direction of the gradient.
 
+Core Conepts:
+- Loss function
+- Gradient
+- Learning Rate
+ex. Imagine standing somewhere on a mountain in thick fog. Your goal is to reach the lowest point. The gradient tells you the slope direction. Take small steps. Repeat.
 
-# Multi-Head Casual Self Attention
+Main Types
+- Batch Gradient Descent: Uses the entire dataset to compute the gradient for each step; stable but slow on huge datasets.
+- Stochastic Gradient Descent(SGD): Uses a single data point per step; fast but noisy and fluctuates.
+- Mini-Batch Gradient Descent: Splits data into small subset; strikes the best balance between speed and staability.
 
--Self Attention
-it lets each token gather information from other tokens in the same sequence.
-
--Causal Self Attention(masked)
-A token can look at itself and tokens before it, but never future tokens.
-
-Causal is important because information is only allowed to flow in one direction. Past --> present
-
-- Multi-Head
-Run multiple self attention is parallel
-
-Multi-head causal self attention allows every token to gather information from previous tokens using multiple attention heads, while preventing it from looking into the future.
-
-
-# Residual/Skip Connection
-Instead of completely replacing the old information with the output of a layer, we add the original input back to the layer's output.
-
-Suppose a token represention entering attention is:
-- x = [1,2,3]
-Attention produces:
-- Attention(x) = [0.2,-0.5,0.7]
-Instead of only passing this forward:
-- [0.2,-0.5,0.7]
-we add the original input:
-- [1,2,3] + [0.2,-0.5,0.7] = [1.2,1.5,3.7]
-
-you can think of each layer as adding a useful update rather than rebuilding the entire represention from scratch.
-
-*A Transformer layer doesn't throw away what it already knows. It learns an update and adds that update to the existing represnetiona.*
-
-
-# Feed forward
-During self-attention: tokens interact with each other. 
-During FFN: each token is processed independently.
-
-Attention lets tokens communicate.
-FFN lets each token think/process what it learned.
-
-*Multi-layer perceptron*
-
-# Linear & Softmax
-cat -----> 2.0
-dog -----> 1.0
-car -----> 0.2
-pizza ---> -0.5
-
-These are just arbitrary scores, often called logits.
-It's difficault to interpret them directly.
-Softmax converts them into values between 0 and 1 that sum to 1.
-cat ---> 0.62
-dog ---> 0.23
-car ---> 0.11
-pizza -> 0.04
-        -----
-        1.00    
-
-These values are called probability distribution.
-Softmax outputs the probability for each token in the vocabulary.
-
-cat ---> 62%
-dog ---> 23%
-car ---> 11%
-pizza ->  4%
-
-
-URL for better understand of LLMs Visualization : https://bbycroft.net/llm
+Challenges:
+- Learning rate too small: Training takes forever.
+- Learning rate too large: The algorithm overshoots the minimum and falls to converge.
+- Local minima or saddle points: The system can get stuck where the slope is flat.
 
 
 
+Sample Data -->  Forward Pass  --->   Calculate Loss   ----->   Back Propagation   --->  Optimizer Gradient Descent   --->   Better Model --> Repeat
 
 
+" You keep doing this again and again and again for a huge huge amount of training data"
+"Sharpening the braing"
 
 
+We Train models for billions/trillions of samples.
+slowly and steadily
+- Model recognize sequence of words that come together
+- grammer
+- sentence structure
+- relation b/w words in long text inputs
+
+After lots and lots of mathematical calculation models finally generate inputs(sometimes even better than humans)
+This whole process takes a lot of compute/power.
 
 
+# Self suppervised learning
+- Model learns by itself
+- we don't need someone to mannually label every sentence.
+- The next token becomes the 'target'
+
+Neural networks usually do not learn a concept from one magical update. 
+Useful behaviour emerges through repeated optimization.
+
+Dataset : All training examples
+
+Batch : A group of example processed together
+instead of:
+    - example ->update
+    - example ->update
+    - example ->update
+
+we often process multiple examples together:
+- batch of examples -> calculate average loss -> update parameters
+
+Training step : One optimization update.
+
+Epoch : One pass through a training dataset.
 
 
+Training vs inference
+
+Training
+Input --->  forward pass  --->  prediction  --->  calculate loss ---->  back propagations ---> update parameters
+
+Time: long
+compute: intensive
+guesses are corrected
+
+inference
+Input --->   forward pass ----> prediction  ---> output
+
+fast
+no updates
+no learning
+just using model
+
+-Training changes the model
+-Inference just uses the model
+
+
+# Generalisation
+That ability to perform well on examples it did not directly memorise is called Generalisation.
+
+suppose our training dataset contain:
+- The sky is blue.
+- The ocean is blue.
+- Grass is green.
+- Leaves are green.
+
+Later, the model sees:
+- The clear afternoon sky looked....
+
+Maybe this exact sentence never appeared in training.
+
+But a useful model can still produce:
+- blue
+
+Good learning means discovering patterns that remain useful beyond the exact training examples.
+
+# Overfitting
+A model is overfitting when it becomes extremely good at its training examples but performs poorly on new examples.
+
+e.g,
+"The sky is blue"
+10,000 times
+the model could simple memorise that exact sequence.
+But what happens when it sees
+- On a clear summer afternoon, the sky appeared....
+A usefule model should genralise!
+
+# Distributed training
+Training frontier-scale models is a large distributed system problems as much as a machine-learning problem.
+
+Remember token embeddings
+
+Initially, the numbers inside an embeddings table are not magically meaningful
+
+Suppose:
+- king --> [0.001,-0.04...]
+- queen --> [0.223, -0.09...]
+- apple --> [0.55, -0.11...]
+
+during training, these values are also parameters that are adjusted during training.
+
+How?
+1. Prediction produces some loss
+2. Backpropagation sneds gradient through the model
+3. Embeddings values get adjusted along with many other parameters
+4. After huge numbers of samples, useful relationship/patterns evovle.
+
+Now understand?
+Nobody mannually places king next to queen.
+
+Embedding are learned because better representations help that network make better predictions.
 
 
 
