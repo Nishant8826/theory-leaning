@@ -19,25 +19,29 @@
 
 ---
 
-## 🍎 When the Same Word Means Different Things
+## 🍎 When the Same Word Means Completely Different Things
+
+Consider how humans use the same word in different contexts:
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
 │                        POLYSEMY (MULTIPLE MEANINGS)                    │
 ├──────────────────────────────────┬─────────────────────────────────────┤
-│ "I ate an apple for lunch."      │ 🍎 Fruit                            │
-│ "Apple launched a new device."   │ 💻 Tech Corporation                 │
+│ "I ate a sweet apple for lunch." │ 🍎 Fruit (Edible)                   │
+│ "Apple launched a new MacBook."  │ 💻 Tech Corporation (Business)      │
 ├──────────────────────────────────┼─────────────────────────────────────┤
-│ "Sitting on a river bank."       │ 🌊 Land beside water                │
-│ "Depositing money in the bank."  │ 🏦 Financial Institution            │
+│ "Sitting on a river bank."       │ 🌊 Land beside water (Geography)    │
+│ "Depositing money in the bank."  │ 🏦 Financial Institution (Finance)  │
 └──────────────────────────────────┴─────────────────────────────────────┘
 ```
 
-How can a machine that only sees numbers know which meaning is intended?
+How can a computer, which only sees numbers, distinguish between these completely different real-world meanings?
 
 ---
 
 ## 🏷️ Why Token IDs Do Not Contain Meaning
+
+In the previous episode, we learned that text is converted into token IDs:
 
 ```text
 Token       Dummy Token ID
@@ -47,31 +51,40 @@ cat     ──► 123
 grapes  ──► 8521
 ```
 
-* `8123` (dog) is numerically close to `8521` (grapes), yet conceptually unrelated.
-* `8123` (dog) and `123` (cat) have no mathematical relationship in their ID numbers.
+* Numerically, `8123` (dog) is very close to `8521` (grapes), but conceptually they have no relationship!
+* `8123` (dog) and `123` (cat) are related domestic pets, but their integer numbers share no mathematical connection.
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
 │                        TWO EVERYDAY ANALOGIES                          │
 ├──────────────────────────────────┬─────────────────────────────────────┤
-│ 1. Student Roll Numbers          │ Roll #102 and #103 are adjacent,    │
-│                                  │ but tell you nothing about grades!  │
+│ 1. Student Roll Numbers          │ Roll #102 and #103 sit near each    │
+│                                  │ other on a list, but that tells you │
+│                                  │ nothing about their personalities!  │
 ├──────────────────────────────────┼─────────────────────────────────────┤
-│ 2. Hotel Room Numbers            │ Room 401 and 402 share a wall, but  │
-│                                  │ the guests have zero connection.    │
+│ 2. Hotel Room Numbers            │ Room 401 and 402 share a hallway,   │
+│                                  │ but the guests have zero connection.│
 └──────────────────────────────────┴─────────────────────────────────────┘
 ```
 
-> **Core Truth:** Token IDs are arbitrary integer labels. **Token IDs carry ZERO meaning.**
+> **The Core Insight:**  
+> Token IDs are merely arbitrary index labels in a vocabulary table. **Token IDs carry ZERO semantic meaning.**
 
 ---
 
 ## 📐 Vectorization: Turning Information into Numbers
 
 > **Definition:**  
-> **Vectorization** is converting information (words, sentences, documents, images, video, code, JSON) into a **numerical vector** (an array of numbers).
+> **Vectorization** is the process of converting information (words, sentences, documents, images, audio, video, code, JSON) into a **numerical vector** (an array of numbers / coordinates).
 
-* **Why?** Computers cannot calculate on raw words or pixels. Numbers give machines coordinates to perform mathematical operations (adding, distance, angles).
+```mermaid
+flowchart LR
+    A["Raw Information\n(Word, Image, Document)"] --> B["Vectorization Engine\n(Neural Network)"]
+    B --> C["Numerical Vector\n[0.72, -0.45, 0.89, ... 0.12]"]
+```
+
+* **Why do computers need vectors?**  
+  Computers cannot calculate on words or pixels. Vectors give computers **spatial coordinates** to perform math (measuring distances, calculating angles, and grouping similarities).
 
 ---
 
@@ -93,33 +106,39 @@ Imagine ranking edible items along 3 human-assigned properties from $0.0$ to $1.
 * **Apple Vector:** `[0.7, 0.4, 0.8]`
 * **Banana Vector:** `[0.8, 0.6, 0.2]`
 
+In this 3D coordinate space, **Apple** and **Carrot** share high crunchiness ($0.8$ & $0.9$), while **Apple** and **Banana** share high sweetness ($0.7$ & $0.8$).
+
 > [!WARNING]
-> Real embeddings have **hundreds or thousands of dimensions** (e.g., 768, 1536, 4096). They are **not** labeled with human names like *"sweetness"*; meaning is learned and distributed across mathematical coordinates.
+> Real embeddings have **hundreds or thousands of dimensions** (e.g., 768, 1536, 4096). Real dimensions are **not** labeled with human names like *"sweetness"*; meaning is learned and distributed across high-dimensional space.
 
 ---
 
 ## 🧠 What Makes a Vector an Embedding?
 
 > **Definition:**  
-> An **Embedding** is a **learned numerical representation** of an item that captures useful semantic relationships with other items.
+> An **Embedding** is a **learned numerical vector** that captures useful semantic relationships with other items.
 
-```
-  Training Sentences:
-  "A banana is a sweet fruit."
-  "I ate a sweet banana."      ──► Neural network adjusts vector numbers gradually!
-  "Monkeys like bananas."
-```
+The word **"learned"** is what separates an embedding from an arbitrary list of random numbers.
+
+During training across millions of sentences:
+* *"A banana is a sweet fruit."*
+* *"I ate a sweet banana."*
+* *"Monkeys like to eat bananas."*
+
+Words that appear in similar linguistic contexts are repeatedly adjusted so their coordinates move close together in **vector space**:
 
 ```text
-4-Dimensional Example:
+4-Dimensional Simplified Example:
 king   = [0.81, 0.32, 0.52, 0.17]
-queen  = [0.79, 0.36, 0.48, 0.22]   <-- Coordinates are close across all dimensions!
-banana = [0.12, 0.85, 0.05, 0.91]   <-- Coordinates are far away
+queen  = [0.79, 0.36, 0.48, 0.22]   <-- Coordinates are nearly identical!
+banana = [0.12, 0.85, 0.05, 0.91]   <-- Coordinates point far away in another region
 ```
 
 ---
 
 ## 🏘️ Vector Space and Semantic Neighborhoods
+
+When thousands of embeddings are plotted in multi-dimensional space, **semantic neighborhoods (clusters)** naturally emerge:
 
 ```
                       2D PROJECTION OF VECTOR NEIGHBORHOODS
@@ -133,20 +152,25 @@ banana = [0.12, 0.85, 0.05, 0.91]   <-- Coordinates are far away
              [Mango]                                        [Earth]
 ```
 
-### Directional Relationships:
-Embeddings capture geometric analogies:
+### Vector Arithmetic (Directional Relationships):
+Embeddings capture geometric analogies through simple vector addition and subtraction:
+
 $$\vec{v}_{\text{King}} - \vec{v}_{\text{Man}} + \vec{v}_{\text{Woman}} \approx \vec{v}_{\text{Queen}}$$
+
+* The mathematical vector direction from `Man` to `Woman` matches the direction from `King` to `Queen`!
 
 ---
 
 ## 📈 How Many Dimensions Are Enough?
 
-* **Height & Weight Analogy:** Describing a person by only 2 numbers (height/weight) misses their age, skills, language, and interests. Adding dimensions captures richer nuances.
-* **Trade-off:** More dimensions capture complexity, but require more RAM, storage, and compute during search. **More dimensions $\neq$ automatically smarter.**
+* **Height & Weight Analogy:** If you describe a person using only 2 numbers (Height and Weight), you miss their age, occupation, location, skills, and hobbies. Adding more dimensions captures richer, subtle details.
+* **The Trade-Off:** More dimensions capture complexity, but require more RAM, more disk storage, and higher compute latency during search. **More dimensions do not automatically make a model smarter.**
 
 ---
 
-## 🎯 Semantic Similarity: Beyond Exact Words
+## 🎯 Semantic Similarity: Looking Beyond Exact Words
+
+**Semantic similarity** measures closeness in meaning or intent, rather than exact character matches:
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
@@ -154,28 +178,29 @@ $$\vec{v}_{\text{King}} - \vec{v}_{\text{Man}} + \vec{v}_{\text{Woman}} \approx 
 ├──────────────────────────────────┬─────────────────────────────────────┤
 │ Query A: "How do I center a div?"│ Shared words: near zero             │
 │ Query B: "How can I align an     │ Semantic Similarity: NEAR 100% MATCH│
-│ HTML element in middle of parent"│ (Both map to the exact same intent!)│
+│ HTML element in middle of parent"│ (Both point to the exact same intent)│
 └──────────────────────────────────┴─────────────────────────────────────┘
 ```
 
-* **Opposite Failure (Same words, different meaning):**
-  * *"How do I learn Java?"* (Coding) vs. *"How do I make Java coffee?"* (Drink).
-  * Naive keyword search fails; semantic vectors separate them into different neighborhoods.
+### The Opposite Failure (Same Words, Different Meaning):
+* *"How do I learn Java?"* (Programming language)
+* *"How do I make Java coffee?"* (Beverage)
+* Naive keyword search groups them together; semantic embeddings separate them into different vector neighborhoods.
 
 ---
 
 ## 📐 Cosine Similarity: Comparing Vector Angles
 
-Cosine similarity compares the **angle ($\theta$) between vector directions**, ignoring length:
+To compare two embedding vectors, we use **Cosine Similarity**, which measures the **angle ($\theta$)** between their directions rather than their lengths:
 
-$$\text{Cosine Similarity}(A, B) = \frac{A \cdot B}{\|A\| \times \|B\|}$$
+$$\text{Cosine Similarity}(A, B) = \cos(\theta) = \frac{A \cdot B}{\|A\| \times \|B\|}$$
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
 │                      THE COSINE SIMILARITY SCALE                       │
 ├──────────────────────────┬─────────────────────────────────────────────┤
-│ Angle $\theta \approx 0^\circ$   │ $\cos(\theta) \approx +1.0$ ──► Similar Direction (High Similarity) │
-│ Angle $\theta \approx 90^\circ$  │ $\cos(\theta) \approx 0.0$  ──► Orthogonal / Unrelated              │
+│ Angle $\theta \approx 0^\circ$   │ $\cos(\theta) \approx +1.0$ ──► Same Direction (High Similarity)    │
+│ Angle $\theta \approx 90^\circ$  │ $\cos(\theta) \approx 0.0$  ──► Orthogonal (Unrelated Concepts)     │
 │ Angle $\theta \approx 180^\circ$ │ $\cos(\theta) \approx -1.0$ ──► Opposite Direction                  │
 └──────────────────────────┴─────────────────────────────────────────────┘
 ```
@@ -195,49 +220,61 @@ $$\text{Cosine Similarity}(A, B) = \frac{A \cdot B}{\|A\| \times \|B\|}$$
 
 ## ⚠️ Similarity is Not Truth
 
+Embeddings measure **topical relatedness**, NOT factual truth or agreement!
+
 ```text
-Statement 1: "JavaScript is the best language."
-Statement 2: "JavaScript is the worst language."
+Statement 1: "JavaScript is the best programming language."
+Statement 2: "JavaScript is the worst programming language."
 ```
 
-* Both sentences discuss opinions on JavaScript in identical grammatical contexts.
+* Both sentences discuss opinions on JavaScript in identical grammatical structures.
 * Their embedding vectors will be **highly similar**, even though their judgments are polar opposites!
 
 > [!IMPORTANT]
-> Similarity measures **topical relatedness**, NOT factual truth, safety, or agreement.
+> Similarity measures topical closeness. Embeddings capture relationships; they do not judge truth, quality, or safety.
 
 ---
 
 ## 🔭 Seeing Embeddings in a Projector
 
-Using **TensorFlow Embedding Projector** (`projector.tensorflow.org`), high-dimensional vectors (768D) are compressed to 2D/3D (via PCA/t-SNE/UMAP) for human inspection. Searching `sun` highlights neighbors like `moon`, `solar`, `sky`, and `eclipse`.
+Using **TensorFlow Embedding Projector** (`projector.tensorflow.org`), high-dimensional vectors (e.g., 768D) can be projected into 2D or 3D using dimensionality reduction algorithms (PCA, t-SNE, UMAP).
+
+Searching for `sun` visually highlights neighbors like `moon`, `solar`, `sky`, and `eclipse`.
 
 ---
 
-## 📍 Token Identity + Position + Context
+## 📍 Token Embeddings vs. Positional Embeddings vs. Text Embeddings
 
 ```text
 Sentence 1: "dog bites man"
 Sentence 2: "man bites dog"
 ```
 
-Both sentences share identical token embeddings. To distinguish them, the model combines two vectors:
+Both sentences contain the exact same three token embeddings (`dog`, `bites`, `man`), but their real-world meaning is completely different!
 
-$$\mathbf{\text{Model Input}} = \text{Token Embedding (Identity)} + \text{Positional Embedding (Order)}$$
+Therefore, modern language models combine two vectors:
+
+$$\mathbf{\text{Transformer Input}} = \text{Token Embedding (Identity)} + \text{Positional Embedding (Order)}$$
 
 ```
 ┌──────────────────────────────────┬─────────────────────────────────────┐
 │ Token Embedding                  │ Text Embedding                      │
 ├──────────────────────────────────┼─────────────────────────────────────┤
 │ • Represents a single subword    │ • Represents an entire sentence/doc │
-│ • Used internally by Transformer │ • Used for Search, Vector DBs & RAG │
+│ • Used internally by Transformer │ • Stored in Vector DBs for search,  │
+│   attention layers               │   recommendations, and RAG systems  │
 └──────────────────────────────────┴─────────────────────────────────────┘
 ```
 
-### Context Modifies Representation (Polysemy):
-Inside a Transformer, **Self-Attention** dynamically shifts a word's vector:
-* *"I ate an **Apple** for lunch"* ──► Vector moves toward fruit coordinates.
-* *"**Apple** released a new phone"* ──► Vector moves toward tech coordinates.
+---
+
+## 🔄 Context Modifies the Representation (Polysemy Resolution)
+
+A static embedding assigns one fixed starting vector to the word `Apple`.
+
+Inside a Transformer, **Self-Attention** dynamically updates the token's vector based on its surrounding context across multiple layers:
+* In *"I ate an **Apple** for lunch"*, attention pulls `Apple` toward fruit coordinates.
+* In *"**Apple** released a new iPhone"*, attention pulls `Apple` toward technology company coordinates.
 
 $$\mathbf{\text{"Context modifies the representation."}}$$
 
@@ -245,7 +282,7 @@ $$\mathbf{\text{"Context modifies the representation."}}$$
 
 ## ⚖️ When Data Patterns Include Bias
 
-Because training data comes from human-written internet text, embeddings can inherit real-world gender and cultural stereotypes (e.g., associating certain jobs disproportionately with one gender). AI builders must apply safety and alignment filters to mitigate bias.
+Because training data is scraped from human-created internet text, embeddings can encode societal, gender, and racial biases present in historical data (e.g., associating certain professions disproportionately with one gender). AI developers must implement mitigation and safety layers to avoid amplifying stereotypes.
 
 ---
 
@@ -253,45 +290,53 @@ Because training data comes from human-written internet text, embeddings can inh
 
 ```mermaid
 flowchart LR
-    A[User Query] --> B[Generate Text Embedding]
-    B --> C[Compare with Stored Vectors in Vector DB]
+    A[User Query] --> B[Generate Query Embedding]
+    B --> C[Vector Database Cosine Search]
     C --> D[Retrieve Nearest Semantic Matches]
 ```
 
-### Hybrid Search:
-* **Semantic Vector Search:** Handles intent, synonyms, and natural language.
-* **Exact Keyword Search (BM25):** Essential for exact product codes, error strings, dates, and legal clauses.
-* **Hybrid Search** combines both for maximum retrieval precision.
+### Hybrid Search (The Best of Both Worlds):
+* **Semantic Vector Search:** Handles intent, synonyms, and natural language concepts (*"how to fix login issue"*).
+* **Exact Keyword Search (BM25):** Essential for exact part numbers, error codes (`ERR_CONNECTION_REFUSED`), dates, and legal clauses.
+* **Hybrid Search** combines keyword matching and vector similarity to ensure maximum retrieval accuracy.
 
 ---
 
-## 📚 Real-World Use Cases
+## 📚 Real-World Use Cases of Embeddings
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
 │                        APPLICATIONS OF EMBEDDINGS                      │
 ├────────────────────────┬───────────────────────────────────────────────┤
-│ Recommendation Systems │ Compare user history vector with video vector │
-│ Clustering             │ Automatically group customer support tickets  │
-│ RAG (2,000-page book)  │ Chunk book ──► Embed chunks ──► Retrieve      │
-│                        │ closest chunk to answer query                 │
-│ Duplicate Detection    │ Flag rephrased plagiarism or duplicate posts  │
-│ Multimodal Search      │ Match text "white cat" with image of white cat│
+│ Recommendation Systems │ Compare user interest vector with video vector│
+│                        │ (YouTube, Spotify, Netflix)                   │
+├────────────────────────┼───────────────────────────────────────────────┤
+│ Clustering             │ Automatically group thousands of customer     │
+│                        │ support tickets by topic                      │
+├────────────────────────┼───────────────────────────────────────────────┤
+│ RAG (2,000-Page Book)  │ 1. Split book into paragraph chunks           │
+│                        │ 2. Embed chunks into Vector Database          │
+│                        │ 3. Embed user query ("What is thermodynamics")│
+│                        │ 4. Retrieve closest chunk via Cosine Search   │
+│                        │ 5. Pass retrieved chunk to LLM to answer!     │
+├────────────────────────┼───────────────────────────────────────────────┤
+│ Multimodal Search      │ Match text query "white cat" with image       │
+│                        │ embedding of a white cat (CLIP)               │
 └────────────────────────┴───────────────────────────────────────────────┘
 ```
 
 ---
 
-## 🚫 Misconceptions to Leave Behind
+## 🚫 4 Misconceptions to Leave Behind
 
 ```
 ┌──────────────────────────────────────┬─────────────────────────────────┐
 │ Misconception                        │ Reality                         │
 ├──────────────────────────────────────┼─────────────────────────────────┤
-│ 1. Embedding is a token dictionary   │ ❌ Learned numerical vectors.   │
+│ 1. An embedding is a dictionary      │ ❌ It is a learned vector space.│
 │ 2. Each dimension has 1 fixed label  │ ❌ Meaning is distributed.      │
-│ 3. Similar vectors prove truth/facts │ ❌ Measures topical relatedness.│
-│ 4. More dimensions = smarter model   │ ❌ Storage & latency trade-offs.│
+│ 3. Similar vectors prove factual truth│ ❌ Measures topical similarity. │
+│ 4. More dimensions = smarter model   │ ❌ Storage & compute trade-offs.│
 └──────────────────────────────────────┴─────────────────────────────────┘
 ```
 
@@ -307,57 +352,12 @@ Cosine similarity compares vector directions. Positional embeddings provide word
 
 ## 🔥 Key Takeaways
 
-* **Token ID vs. Embedding:** Token ID is a label; an Embedding is a learned numerical coordinate.
-* **Vector Space:** Semantic concepts naturally cluster into neighborhoods (royalty, animals, sports).
-* **Cosine Similarity:** Measures angle $\theta$ ($+1$ = same direction, $0$ = orthogonal, $-1$ = opposite).
+* **Token ID vs. Embedding:** Token ID is an arbitrary label; an Embedding is a learned numerical coordinate.
+* **Vector Space:** Semantic concepts naturally cluster into neighborhoods (royalty, animals, coding).
+* **Cosine Similarity:** Measures vector direction angle $\theta$ ($+1$ = same direction, $0$ = orthogonal, $-1$ = opposite).
 * **Similarity $\neq$ Truth:** Opposing views on the same topic share close embedding vectors.
 * **Contextualization:** Self-attention dynamically updates static token vectors based on context.
 * **Hybrid Search:** Merges exact keyword matching with semantic vector search.
-
----
-
-## ❓ Revision Questions & Answers
-
-1. **Why can the dummy token IDs `8123` and `8521` not tell us that dog and grapes are related?**  
-   *Answer:* Because token IDs are arbitrary integer labels assigned in a vocabulary list without any geometric or mathematical relationship to each other.
-2. **How do the roll-number and hotel-room analogies explain the role of token IDs?**  
-   *Answer:* Sequential room numbers (102 and 103) or student roll numbers share numerical proximity, but that tells you nothing about who lives in them or their characteristics.
-3. **What is vectorization, and why does the lecture say computers need it?**  
-   *Answer:* Converting information into arrays of numbers so computers can perform mathematical calculations and comparisons on the data.
-4. **In the fruit exercise, what do sweetness, size, and crunchiness represent?**  
-   *Answer:* They represent three human-assigned dimensions (coordinates) used to position edible items in a 3D space.
-5. **Why does the instructor later warn that real embedding dimensions do not each have one human-readable label?**  
-   *Answer:* Real embedding models learn hundreds of mathematical dimensions from data where meaning is distributed across dimensions rather than assigned to isolated concepts.
-6. **State the lecture's definition of an embedding. Why does the word *learned* matter?**  
-   *Answer:* A learned numerical representation of an item that captures useful relationships with other items. *Learned* matters because the coordinates are shaped by patterns in training data, not hand-coded.
-7. **Why are the sample `king` and `queen` embeddings treated as closer than `king` and `banana`?**  
-   *Answer:* Because `king` and `queen` appear in similar linguistic contexts (royalty, government, history), causing their multi-dimensional coordinates to align closely.
-8. **What is a vector space, and why is a 2D or 3D projector only an approximation?**  
-   *Answer:* A vector space is a multi-dimensional geometric space where vectors live. A 2D/3D projector compresses hundreds of dimensions down for human eyes, losing geometric precision.
-9. **Why does more dimensionality not automatically mean more intelligence?**  
-   *Answer:* Higher dimensions increase memory and compute costs with diminishing returns if the underlying data patterns are already captured.
-10. **How does semantic similarity differ from exact keyword matching?**  
-    *Answer:* Semantic similarity measures conceptual closeness and intent (e.g., *"center a div"* vs *"align HTML element"*), whereas keyword matching requires identical character strings.
-11. **Why are "How do I learn Java?" and "How do I make Java coffee?" a failure case for naive keyword overlap?**  
-    *Answer:* Both share the keyword *"Java"*, but one refers to programming while the other refers to coffee beans. Naive keyword search falsely conflates them.
-12. **What does cosine similarity compare, and how does the lecture describe values near 1, 0, and -1?**  
-    *Answer:* It compares the angle between vector directions: $+1$ is same direction (similar), $0$ is orthogonal (unrelated), and $-1$ is opposite direction.
-13. **Why can "JavaScript is the best language" and "JavaScript is the worst language" still be semantically related?**  
-    *Answer:* Because both discuss programming language evaluations of JavaScript, placing them in the same topical vector neighborhood despite opposing sentiments.
-14. **What is the difference between a token embedding and a text embedding?**  
-    *Answer:* A token embedding represents a single subword piece used internally by LLMs; a text embedding represents a whole sentence or document used for search and RAG.
-15. **Why do "dog bites man" and "man bites dog" require positional information?**  
-    *Answer:* Both contain identical token embeddings; positional embeddings are required to inform the model of word order and syntactic roles.
-16. **Define context, polysemy, and contextualization using Apple or bank.**  
-    *Answer:* *Polysemy* is one word having multiple meanings; *context* is the surrounding text; *contextualization* is the process where attention adjusts the word's vector to reflect its specific meaning in that sentence.
-17. **How can patterns in human-created data become embedding bias?**  
-    *Answer:* If historical text associates certain occupations with one gender or demographic, the learned embeddings will encode and replicate those statistical biases.
-18. **When is keyword search preferable to embedding search, and what does hybrid search combine?**  
-    *Answer:* Keyword search is best for exact SKU numbers, error codes, and dates. Hybrid search combines keyword search with vector semantic search for optimal results.
-19. **Walk through the episode's 2,000-page-book RAG example in order.**  
-    *Answer:* 1) Split book into chunks, 2) Embed each chunk into a vector DB, 3) Embed user query, 4) Retrieve closest chunk vector via cosine similarity, 5) Pass chunk to LLM as context to answer.
-20. **How can a text embedding for "white cat" be related to an image embedding for a white cat?**  
-    *Answer:* In multimodal models (like CLIP), text and image embeddings are trained into a shared vector space so the text vector points in the same direction as the image vector.
 
 ---
 

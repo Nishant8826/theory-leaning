@@ -25,6 +25,9 @@ Your job is **not to simply summarize my notes** and **not to generate dense, te
    - If my raw notes contain errors or ambiguities, correct and clarify them with a clear note.
 4. **Deep Dive Without Complexity**:
    - Cover *What it is*, *Why it exists*, *How it works internally*, *Analogies*, *Limitations*, *Trade-offs*, and *Real-world systems*.
+5. **No Revision Q&A Section**:
+   - Do **NOT** generate a separate "Revision Questions & Answers" section.
+   - Focus all effort on making the core explanations, diagrams, and takeaways inside the lesson as crystal-clear and beginner-friendly as possible.
 
 ---
 
@@ -137,16 +140,6 @@ A concise, high-density 2-paragraph summary capturing the full arc of the lesson
 
 ---
 
-## ❓ Revision Questions & Answers
-
-1. **[Question from the lecture / PDF]?**  
-   *Answer:* [Complete, crystal-clear, beginner-friendly, and precise answer covering all nuances].
-2. **[Question from the lecture / PDF]?**  
-   *Answer:* [Complete answer].
-*(Include every single revision question from the lecture PDF, with full answers)*.
-
----
-
 Previous : [Previous Lesson](./01_Previous.md) | Index: [00_index.md](../00_index.md) | Next: [Next Lesson](./03_Next.md)
 ```
 
@@ -190,13 +183,13 @@ My Raw Notes / PDF Transcript
             ↓
 1. Read & Analyze All Topics from Lecture
             ↓
-2. Identify Core Terms, Analogies, Experiments & Questions
+2. Identify Core Terms, Analogies, Experiments & Mechanics
             ↓
 3. Design Visual Diagrams (Mermaid, ASCII Boxes, Tables)
             ↓
-4. Write Structured Lesson (.md) using Visual Layout
+4. Write Structured Lesson (.md) using Visual Layout & Real Analogies
             ↓
-5. Provide Complete Beginner-Friendly Answers to All Revision Questions
+5. Add Concise Chapter Summary & Key Takeaways Checklist
             ↓
 6. Add Single-Line Navigation Footer
             ↓

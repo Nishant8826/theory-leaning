@@ -20,14 +20,16 @@
 
 ## 🗣️ Which Language Does an LLM Understand?
 
-Does an LLM understand English, Hindi, French, or Spanish? **None of them.**
+Does an LLM understand English? Hindi? French, Spanish, or German?
 
-Computers only understand **numbers**. Before a neural network processes any text, words are converted into numerical pieces called **tokens and token IDs**.
+**The answer is NONE of them.**
+
+Computers do not process letters, words, or sentences. They only understand **numbers**. Before a neural network can process a single word, human text must be converted into numerical pieces called **tokens and token IDs**.
 
 ```text
-Human Text:      "How"     "are"     "you"     "?"
-                   │         │         │        │
-Token IDs:       [1548]    [389]     [527]     [30]
+Human Text:      "How"       "are"       "you"       "?"
+                   │           │           │          │
+Token IDs:       [1548]      [389]       [527]       [30]
 ```
 
 ---
@@ -36,88 +38,88 @@ Token IDs:       [1548]    [389]     [527]     [30]
 
 ```mermaid
 flowchart LR
-    A[Input Text] --> B[Tokenizer]
-    B --> C[Tokens]
-    C --> D[Token IDs]
-    D --> E[LLM Neural Network]
-    E --> F[Predicted Token IDs]
-    F --> G[Decoded Tokens]
-    G --> H[Response Text]
+    A["Human Input Text\n('Namaste AI is amazing')"] --> B["Tokenizer\n(Splits into subwords)"]
+    B --> C["Tokens\n('Namaste', 'AI', 'is', 'amazing')"]
+    C --> D["Vocabulary Lookup\n(Assigns integer IDs)"]
+    D --> E["Token IDs\n[78, 12, 37, 108]"]
+    E --> F["LLM Neural Network\n(Predicts next IDs)"]
+    F --> G["Predicted Token IDs\n[14] ('.')"]
+    G --> H["Decoder\n(Converts IDs to text)"]
+    H --> I["Human Output Text\n('Namaste AI is amazing.')"]
 ```
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
 │                        THE 4 CORE DEFINITIONS                          │
 ├─────────────────┬──────────────────────────────────────────────────────┤
-│ 1. Token        │ A piece or unit of text defined by a tokenizer.      │
-│ 2. Token ID     │ The integer number assigned to that token in a vocab.│
-│ 3. Encoding     │ Converting human text ──► Token IDs.                 │
-│ 4. Decoding     │ Converting generated Token IDs ──► Human text.       │
+│ 1. Token        │ A chunk or unit of text recognized by a tokenizer.   │
+│ 2. Token ID     │ The specific integer number assigned to that token   │
+│                 │ in the model's vocabulary table.                     │
+│ 3. Encoding     │ The process of turning human text ──► Token IDs.     │
+│ 4. Decoding     │ The process of turning generated IDs ──► Human text. │
 └─────────────────┴──────────────────────────────────────────────────────┘
-```
-
-```text
-Example Walkthrough:
-Text:      "Namaste AI is amazing."
-Tokens:    Namaste | AI | is | amazing | .
-Token IDs: 78      | 12 | 37 | 108     | 14
 ```
 
 ---
 
 ## ⚙️ What is a Tokenizer?
 
-A **tokenizer** is an algorithm (a program written in code by engineers) that takes a text string and chops/maps it into tokens and IDs.
+A **tokenizer** is a dedicated software program (written in code by engineers) that sits between the human and the LLM. It chops input strings into tokens and maps them to numbers.
 
-* **Vendor Specific:** OpenAI, Google, Meta, and Anthropic each use different tokenizers.
-* **Token IDs Are Local:** Token ID `4998` in one model's vocabulary does **not** mean the same thing in another model!
+* **Vendor Specific:** OpenAI, Google, Meta, and Anthropic each build their own custom tokenizers.
+* **Token IDs Are Local:** Token ID `4998` in OpenAI's tokenizer is completely different from ID `4998` in Google's tokenizer.
 
 ---
 
 ## 🔤 One Word Does Not Mean One Token
 
-A token is a **unit of text**, not necessarily a single whole word:
+A token is a **subword piece**, not necessarily a single dictionary word:
 
 ```text
-"playing"  ──►  "play" | "ing"  (2 tokens)
+"playing"      ──►  "play" | "ing"        (2 tokens)
+"untrustable"  ──►  "un" | "trust" | "able" (3 tokens)
 ```
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
-│                          WHAT CAN BE A TOKEN?                          │
+│                          WHAT COUNTS AS A TOKEN?                       │
 ├──────────────────────────────────┬─────────────────────────────────────┤
-│ • A whole common word            │ "apple", "cat", "the"               │
-│ • Part of a word (subword)       │ "un", "trust", "able"               │
-│ • A single character             │ "a", "b", "c", "!"                  │
-│ • Whitespace + Word              │ " Hello" (with leading space)       │
+│ • A full common word             │ "apple", "cat", "the"               │
+│ • Part of a word (subword)       │ "un", "trust", "ing"                │
+│ • A single character             │ "a", "b", "z", "!"                  │
+│ • A word with leading whitespace │ " Hello" (starts with a space)      │
 │ • All or part of an emoji        │ "❤️", "🔥", "🤯"                    │
-│ • Code syntax & indentation      │ "    ", "\n", "{}"                  │
-│ • Special control marker         │ "<|im_start|>", "<|endoftext|>"     │
+│ • Code indentation & syntax      │ "    " (4 spaces), "\n", "{}"       │
+│ • Special control markers        │ "<|im_start|>", "<|endoftext|>"     │
 └──────────────────────────────────┴─────────────────────────────────────┘
 ```
 
 ### 3 Live Tokenizer Rules:
-1. **Capitalization changes token IDs:** `amazing` $\rightarrow$ ID `4998`, while `Amazing` $\rightarrow$ ID `23181`.
-2. **Whitespace changes token boundaries:** `" Hello"` $\neq$ `"Hello"`.
-3. **Different tokenizers give different IDs** for the exact same sentence.
+1. **Capitalization changes token IDs:** `"amazing"` $\rightarrow$ ID `4998`, while `"Amazing"` $\rightarrow$ ID `23181`.
+2. **Whitespace changes token boundaries:** `" Hello"` (with space) $\neq$ `"Hello"` (no space).
+3. **Different models use different vocabularies:** The same sentence will have different token splits across GPT-4, Claude, and LLaMA.
 
 ---
 
-## ⚖️ Why Tokenizers Use Subwords
+## ⚖️ Why Tokenizers Use Subwords (The Balancing Act)
+
+Why not use full words, or just single characters?
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
 │                      THE SUBWORD BALANCING ACT                         │
 ├──────────────────────────────────┬─────────────────────────────────────┤
-│ Extreme 1: One Token Per Word    │ Extreme 2: One Token Per Character  │
+│ Extreme 1: Whole-Word Vocabulary │ Extreme 2: Character-Only Vocabulary│
 ├──────────────────────────────────┼─────────────────────────────────────┤
-│ • Pro: Short sequence length     │ • Pro: Tiny vocabulary (26 letters) │
-│ • Con: Massive vocabulary size   │ • Con: Super long token sequences   │
-│   (Millions of words needed!)    │   (Huge compute & memory costs!)    │
+│ • Pro: Short token sequences     │ • Pro: Tiny vocabulary (26 letters) │
+│ • Con: Massive vocabulary size!  │ • Con: Extremely long sequences!    │
+│   (Millions of words needed;     │   (Each word takes 8-12 tokens;     │
+│   fails on typos or new words)   │   memory & compute costs explode!)  │
 ├──────────────────────────────────┴─────────────────────────────────────┤
 │ 🎯 THE SWEET SPOT: Subword Tokenization                                │
-│ • "untrustable" ──► "un" | "trust" | "able"                            │
-│ • Reuses common pieces across words without blowing up vocabulary!     │
+│ • Common words stay whole ("apple", "code").                           │
+│ • Rare, long, or new words break into reusable subwords:               │
+│   "unconditionable" ──► "un" | "condition" | "able"                    │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -125,7 +127,7 @@ A token is a **unit of text**, not necessarily a single whole word:
 
 ## 📖 Vocabulary and Token IDs
 
-A tokenizer's **vocabulary** is its dictionary of known tokens mapped to IDs:
+A tokenizer's **vocabulary** is its dictionary of known tokens mapped to integer IDs:
 
 ```text
 ID 10    ──► "the"
@@ -135,43 +137,43 @@ ID 562   ──► "able"
 ID 90349 ──► "trust"
 ```
 
-* **Vocab Size:** Older models had $\sim 50,000$ tokens; modern frontier models have $\sim 200,000$ tokens for better multilingual coverage.
+* **Vocabulary Size:** Older models (GPT-2) used $\sim 50,000$ tokens. Modern frontier models (GPT-4o, LLaMA-3) use $\sim 128,000–200,000$ tokens to provide better coverage for multiple languages and code.
 
 ---
 
 ## 🧬 Byte-Pair Encoding (BPE)
 
 > **Definition:**  
-> **Byte-Pair Encoding (BPE)** builds a vocabulary by **repeatedly merging the most frequently occurring neighboring character pairs**.
+> **Byte-Pair Encoding (BPE)** builds a subword vocabulary by **repeatedly counting and merging the most frequent neighboring character pairs** in a dataset.
 
 ```mermaid
-flowchart LR
-    A["Start with characters:\nl, o, w, e, r, s, t"] --> B["Count frequent pairs:\n'l' + 'o' appears often"]
-    B --> C["Merge pair:\n'lo'"]
-    C --> D["Merge next frequent pair:\n'lo' + 'w' ──► 'low'"]
-    D --> E["Vocabulary adds:\n'low', 'lower', 'lowest'"]
+flowchart TD
+    A["1. Start with individual characters:\n'l', 'o', 'w', 'e', 'r', 's', 't'"] --> B["2. Count most frequent adjacent pair:\n'l' + 'o' appears most often"]
+    B --> C["3. Merge pair into new token:\n'lo'"]
+    C --> D["4. Count next most frequent pair:\n'lo' + 'w' ──► 'low'"]
+    D --> E["5. Repeat until target vocab size:\nVocabulary now has 'low', 'lower', 'lowest'"]
 ```
 
-### Other Tokenization Algorithms:
-* **WordPiece:** Selects pieces that maximize training data likelihood (longest-match first).
-* **Unigram:** Starts with a giant vocabulary and iteratively *prunes* less useful pieces top-down.
+### Other Subword Algorithms:
+* **WordPiece (BERT):** Merges pairs based on maximum statistical likelihood rather than pure frequency count.
+* **Unigram (SentencePiece):** Starts with a massive initial vocabulary and iteratively *prunes away* less useful tokens top-down.
 
 ---
 
-## 🔠 Familiar English vs. Gibberish
+## 🔠 Familiar English vs. Random Gibberish
 
 ```
-  Common English : "The quick brown fox jumps..." ──► 14 tokens (Compact!)
-  Random Gibberish: "asdkjfhweiuhrfksjdhf"         ──► 38 tokens (Fragmented into 1-char pieces!)
+  Common English : "The quick brown fox jumps over the lazy dog." ──► 10 tokens (Compact!)
+  Random Gibberish: "asdkjfhweiuhrfksjdhfgbsdm"                   ──► 24 tokens (Split into 1-letter chars!)
 ```
 
 > [!WARNING]
 > **Token Boundaries Are Not Meaning Boundaries:**  
-> Converting `"India"` into ID `4210` is just a string-to-number map. The tokenizer does **not** know what India means. Semantic meaning is learned by embeddings.
+> Turning `"India"` into ID `4210` is just a lookup map. The tokenizer has **no idea what India is**. Semantic meaning is learned later by **Vector Embeddings** inside the neural network.
 
 ---
 
-## 🇮🇳 Multilingual Text, Fertility & Hinglish
+## 🇮🇳 Multilingual Token Fertility: English vs. Hindi vs. Hinglish
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
@@ -183,49 +185,53 @@ flowchart LR
 └──────────────────────────────────┴─────────────────────────────────────┘
 ```
 
-* **Tokenization Fertility:** Measures how many tokens a language produces per word. Higher fertility = more fragmented pieces = higher API cost & latency.
-* **Hinglish Challenge:** Irregular phonetic spellings (`main`/`mai`, `samjhao`/`samjho`) produce different token splits for the exact same intended word.
+* **Tokenization Fertility:** The ratio of tokens produced per word in a language.
+  * Higher fertility = more token fragments per sentence = higher API costs, slower speed, and faster context exhaustion.
+* **The Hinglish Challenge:** Informal phonetic variations (`main`/`mai`, `samjhao`/`samjho`) break common subwords, forcing tokenizers into character-level fragments.
 
 ---
 
-## 🎨 Emojis, Whitespace & Code
+## 🎨 Emojis, Code & Whitespace
 
-* **Emojis are text:** Simple emojis take 1 token (`❤️`, `🔥`); complex composite emojis take 2+ tokens (`🤯`, `😅`).
-* **Code Formatting:** Spaces, tabs, brackets (`{}`), and newlines (`\n`) are all tokenized. That's why LLMs output beautifully formatted, indented code!
+* **Emojis:** Simple emojis take 1 token (`❤️`, `🔥`); complex composite emojis (combining base emojis, gender markers, and skin tones) take 2–4 tokens (`🤯`, `👩🏽‍💻`).
+* **Code Formatting:** Indentation spaces (`    `), newlines (`\n`), and punctuation brackets (`{}`) are individual tokens. This enables LLMs to generate clean, properly indented code!
 
 ---
 
-## 🎭 The Prompt Contains Hidden Structure
+## 🎭 Hidden Special Tokens in Prompts
 
-What you type is wrapped in hidden role tags and **special tokens**:
+What you see in a chat UI is wrapped in hidden **control and role tokens**:
 
 ```text
 <|im_start|>system
-You are a helpful assistant.<|im_end|>
+You are a helpful coding assistant.<|im_end|>
 <|im_start|>user
 How are you?<|im_end|>
 <|im_start|>assistant
 ```
+
+* **`<|im_start|>` & `<|im_end|>:`** Delimit message boundaries so the model never confuses developer rules with user input.
+* **`<|endoftext|>:`** The stop token that instructs the model to cease generating further words.
 
 ---
 
 ## 🪟 Context: Why "Here" Means Dehradun
 
 ```text
-Turn 1: User: "Hello, I am in Dehradun right now."
-        Assistant: "Hello! Welcome to Dehradun."
+Turn 1: User: "Hello, I am visiting Dehradun right now."
+        Assistant: "Welcome to Dehradun! How can I help?"
 
-Turn 2: User: "Which places can I visit here?"
+Turn 2: User: "Which tourist places should I see here?"
 ```
 
-The model understands `"here"` = **Dehradun** because the prior messages are passed into its **Context Window**.
+The model understands that `"here"` refers to **Dehradun** because the previous conversation turns are passed back into the **Context Window** on every prompt!
 
 > **Definition:**  
-> The **Context Window** is the finite amount of tokenized information a model can hold in active memory during a forward pass.
+> The **Context Window** is the maximum number of tokens a model can hold in active memory during a single forward pass.
 
 ---
 
-## 💰 Input & Output Share the Context Window
+## 💰 The Shared Context Window Budget
 
 $$\mathbf{\text{Total Context Budget}} = \text{System Prompt} + \text{Chat History} + \text{User Input} + \text{Generated Response}$$
 
@@ -233,15 +239,15 @@ $$\mathbf{\text{Total Context Budget}} = \text{System Prompt} + \text{Chat Histo
 ┌────────────────────────────────────────────────────────────────────────┐
 │                       THE SHARED CONTEXT BUDGET                        │
 ├────────────────────────────────────────┬───────────────────────────────┤
-│ [System Rules] [History] [User Prompt] │ [Generated Output Space]      │
+│ [System Rules] [History] [User Query]  │ [Generated Output Tokens]     │
 │ ◀──────────── Input Tokens ───────────►│ ◀────── Output Tokens ───────►│
 ├────────────────────────────────────────┴───────────────────────────────┤
-│ ◀──────────────────── Total Context Limit ────────────────────────────►│
+│ ◀──────────────────── Total Model Context Limit ──────────────────────►│
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
-* **When the Window Fills:** Older messages are truncated, summarized, or retrieved via RAG.
-* **Visible Chat $\neq$ Active Context:** The UI can show 100 messages from a database, while the LLM only receives the last 10 messages.
+* **When the Window Fills Up:** Older messages must be dropped (truncated), summarized, or retrieved via RAG.
+* **Visible Chat $\neq$ Active Context:** A chat app may show 100 messages on your screen from a database, but the API may only send the last 10 messages to fit the LLM's budget.
 
 ---
 
@@ -251,138 +257,67 @@ $$\mathbf{\text{Total Context Budget}} = \text{System Prompt} + \text{Chat Histo
 ┌────────────────────────────────────────────────────────────────────────┐
 │                        3 CLOSURE PROMPTS COMPARED                      │
 ├────────────────────────┬───────────────────────────────────────────────┤
-│ 1. Short & Sufficient  │ "Explain closures in JS with 1 simple example"│
-│ 2. Long & Redundant    │ "Make it super easy, basic, simple, easy..."  │
-│                        │ (Wastes tokens with useless filler!)          │
+│ 1. Short & Sufficient  │ "Explain closures in JS with 1 code example"  │
+│ 2. Long & Redundant    │ "Please explain closures very simply, easily, │
+│                        │ simply and easily without complexity..."      │
+│                        │ (Wastes budget with useless filler words!)    │
 │ 3. Long & Relevant     │ "Explain closures to a beginner who knows     │
-│                        │ functions/scope. Use a counter example <250w" │
+│                        │ functions and scope. Include a counter example│
+│                        │ in <250 words."                               │
 │                        │ (Every extra token adds a useful constraint!) │
 └────────────────────────┴───────────────────────────────────────────────┘
 ```
 
-* **API Cost:** LLMs bill per token. Removing filler words saves money and speeds up responses.
+* **API Cost:** LLM providers charge per 1M input/output tokens. Removing redundant filler words saves money and reduces latency.
 
 ---
 
-## 🚫 5 Misconceptions to Remove
+## 🚫 5 Misconceptions to Leave Behind
 
 ```
 ┌──────────────────────────────────────┬─────────────────────────────────┐
 │ Misconception                        │ Reality                         │
 ├──────────────────────────────────────┼─────────────────────────────────┤
-│ 1. One token = one word              │ ❌ Tokens are subword pieces.   │
-│ 2. One emoji = one token             │ ❌ Many emojis split into 2+.   │
-│ 3. Larger vocab is always better     │ ❌ Balances model size & speed. │
-│ 4. Larger context = perfect memory   │ ❌ Context is finite & lossy.   │
-│ 5. More tokens = better output       │ ❌ Quality constraints matter.  │
+│ 1. One token = one whole word        │ ❌ Tokens are subword pieces.   │
+│ 2. One emoji = one single token      │ ❌ Complex emojis split into 2+.│
+│ 3. A bigger vocabulary is always best │ ❌ Balances model size & speed. │
+│ 4. A larger context = perfect memory │ ❌ Information can get lost.    │
+│ 5. More words = better answer quality│ ❌ Clear constraints matter most│
 └──────────────────────────────────────┴─────────────────────────────────┘
 ```
 
 ---
 
-## 🌉 Tokens $\neq$ Meaning
+## 🌉 Tokens $\neq$ Meaning (The Setup for Embeddings)
 
-Token IDs are just arbitrary labels:
+Token IDs are just arbitrary numeric labels:
 ```text
-"dog"   ──► ID 12
-"cat"   ──► ID 32
-"grapes"──► ID 8521
+"dog"    ──► ID 12
+"cat"    ──► ID 32
+"grapes" ──► ID 8521
 ```
 
-Nothing in the number `12` tells the computer that a `dog` is an animal related to `cat`. 
+Nothing in the number `12` tells the model that a `dog` is an animal similar to a `cat`. 
 
-**Tokenization provides the alphabet; Embeddings provide the meaning** (Episode 05).
+**Tokenization provides the alphabet; Vector Embeddings provide the meaning** (Episode 05).
 
 ---
 
 ## 📝 Chapter Summary
 
-LLMs operate on token IDs rather than human words. Tokenizers break text into subword units using algorithms like BPE, balancing vocabulary size and sequence length.
+LLMs operate on numerical token IDs rather than human words. Tokenizers chop text into subword units using algorithms like BPE, striking the ideal balance between vocabulary size and sequence length.
 
-Tokenization reacts to capitalization, whitespace, code formatting, and language scripts. Prompts are wrapped in special control tokens and share a finite context window with generated output. Tokenization solves numerical representation, but vector embeddings are required to capture semantic meaning.
+Tokenization handles capitalization, whitespace, code formatting, emojis, and language scripts. Prompts are wrapped in special control tokens and share a finite context budget with the generated response. While tokenization solves numerical representation, vector embeddings are needed to give those numbers semantic meaning.
 
 ---
 
 ## 🔥 Key Takeaways
 
 * **Pipeline:** $\text{Text} \xrightarrow{\text{Encode}} \text{Token IDs} \xrightarrow{\text{LLM}} \text{Predicted IDs} \xrightarrow{\text{Decode}} \text{Text}$.
-* **Subwords:** Balance massive word vocabularies with long character sequences (`untrustable` $\rightarrow$ `un` + `trust` + `able`).
-* **BPE:** Iteratively merges frequent character pairs into reusable tokens.
-* **Shared Budget:** Input prompt and generated response share the exact same context window.
-* **Tokens $\neq$ Meaning:** Token IDs are discrete integer labels; vector embeddings are needed to capture semantic relationships.
-
----
-
-## ❓ Revision Questions & Answers
-
-1. **Why does the instructor call tokens the LLM's secret language?**  
-   *Answer:* Because LLMs cannot process human letters directly; they operate exclusively on token IDs (numerical representations).
-2. **Trace the encode-predict-decode pipeline from prompt to response.**  
-   *Answer:* User text $\rightarrow$ Tokenizer encodes text into token IDs $\rightarrow$ LLM predicts next token IDs $\rightarrow$ Tokenizer decodes IDs into human-readable response text.
-3. **Define token, token ID, tokenizer, encoding, and decoding.**  
-   *Answer:* A *token* is a piece of text; a *token ID* is its numerical vocabulary integer; a *tokenizer* is the algorithm that splits and maps text; *encoding* converts text to IDs; *decoding* converts IDs to text.
-4. **Why is `playing` $\rightarrow$ `play | ing` an important correction to the word-level explanation?**  
-   *Answer:* It shows that tokenizers break words into reusable subword stems and suffixes rather than requiring whole words.
-5. **What three changes in the live demo alter token IDs?**  
-   *Answer:* Changing capitalization (`amazing` vs `Amazing`), adding/removing whitespace, and switching to a different tokenizer.
-6. **Why can token IDs not be compared freely across tokenizers?**  
-   *Answer:* Because token IDs are local indices tied to a specific tokenizer's vocabulary table.
-7. **What is subword tokenization?**  
-   *Answer:* A method that keeps common words whole while breaking unfamiliar/rare words into reusable smaller pieces.
-8. **What disadvantage comes with a whole-word vocabulary?**  
-   *Answer:* An impossibly massive vocabulary size that cannot handle new, misspelled, or compound words.
-9. **What disadvantage comes with character-only tokenization?**  
-   *Answer:* Token sequences become extremely long, exponentially increasing computation and memory costs.
-10. **How does `untrustable` $\rightarrow$ `un | trust | able` illustrate reuse?**  
-    *Answer:* It reuses common prefixes (`un`) and suffixes (`able`) with a known root (`trust`) without needing a unique vocabulary slot.
-11. **What does a tokenizer vocabulary contain?**  
-    *Answer:* A fixed lookup table of all recognized text tokens and their assigned integer IDs.
-12. **How does the lecture explain BPE with `low`, `lower`, and `lowest`?**  
-    *Answer:* It counts frequent letter pairs (`l`+`o` $\rightarrow$ `lo`, `lo`+`w` $\rightarrow$ `low`), merging them into reusable vocabulary entries.
-13. **What limitation does the instructor attach to his WordPiece explanation?**  
-    *Answer:* He notes that it is a brief high-level sketch based on longest-match scoring, not a deep mathematical derivation.
-14. **How does the Unigram sketch differ from the BPE sketch?**  
-    *Answer:* BPE builds up from characters by merging; Unigram starts with a large candidate set and prunes less useful tokens top-down.
-15. **Why does gibberish usually consume more tokens in the demonstration?**  
-    *Answer:* Because random character strings do not match common vocabulary subwords and must be split into 1-character pieces.
-16. **Explain "token boundaries are not meaning boundaries."**  
-    *Answer:* Tokenization merely chops text into strings; it does not assign semantic definitions or conceptual meaning.
-17. **What do the English, Hindi, and mixed-script counts show?**  
-    *Answer:* Non-English scripts historically suffered from higher token fragmentation (fertility), though newer tokenizers improve balance.
-18. **Why is Hinglish difficult for a tokenizer?**  
-    *Answer:* Because phonetic romanized spellings vary widely (`main`/`mai`, `samjhao`/`samjho`), fragmenting subword matches.
-19. **What does tokenization fertility measure?**  
-    *Answer:* The average number of tokens required to represent a single word or linguistic concept in a given language.
-20. **Why can one emoji become more than one token?**  
-    *Answer:* Complex emojis are formed by combining multiple Unicode codepoints (e.g., base emoji + skin tone modifier).
-21. **How do whitespace and capitalization affect token IDs?**  
-    *Answer:* Leading spaces and capital letters are distinct characters in the vocabulary, producing entirely different token IDs.
-22. **Why does code indentation participate in tokenization?**  
-    *Answer:* Spaces, tabs, and newlines are encoded as tokens so the model can learn and generate correct syntax formatting.
-23. **Which special/control information may surround the visible prompt?**  
-    *Answer:* System prompt boundaries, start/end tokens, user/assistant role markers, and tool output tags.
-24. **Why is the `system/user/assistant` sketch not an exact provider format?**  
-    *Answer:* Because each provider uses proprietary special tokens (e.g. `<|im_start|>`) rather than plain English text.
-25. **What does the Dehradun example teach about context?**  
-    *Answer:* That the model understands pronouns and relative words (*"here"*) only because the conversation history is passed into its context.
-26. **Which items can occupy a context window?**  
-    *Answer:* System prompts, user queries, chat history, uploaded document text, retrieved RAG passages, and tool outputs.
-27. **Why do input and output share one context budget in the lecture's model?**  
-    *Answer:* Because the Transformer calculates self-attention across the combined sequence of input prompt tokens and generated output tokens.
-28. **What can happen when the context window fills?**  
-    *Answer:* Requests are rejected, older conversation turns are dropped/truncated, or summaries are generated.
-29. **Why can visible conversation history differ from active model context?**  
-    *Answer:* The UI database may show 100 messages, but the backend API only feeds the last few turns to the LLM to fit the context limit.
-30. **Compare the short, redundant, and relevant JavaScript-closure prompts.**  
-    *Answer:* Short is concise; redundant adds useless filler words that waste tokens; relevant adds clear technical constraints that improve response quality.
-31. **How does token use affect API cost?**  
-    *Answer:* LLM providers bill per 1,000 or 1,000,000 input and output tokens; fewer tokens mean lower costs.
-32. **Which five misconceptions does the episode reject?**  
-    *Answer:* 1) 1 token = 1 word, 2) 1 emoji = 1 token, 3) Bigger vocab is always better, 4) Bigger context = perfect memory, 5) More tokens = better output.
-33. **What meaning question remains unanswered after tokenization?**  
-    *Answer:* How the model knows that `dog` and `cat` are related animals, or that `bank` has multiple meanings (polysemy).
-34. **Which tokenizer experiments does the instructor ask learners to perform?**  
-    *Answer:* Test capitalization, whitespace, multilingual text, emojis, and code formatting in an interactive online tokenizer.
+* **Subwords:** Strike the balance between massive whole-word dictionaries and long character sequences (`untrustable` $\rightarrow$ `un` + `trust` + `able`).
+* **BPE Algorithm:** Repeatedly merges frequent character pairs into reusable tokens.
+* **Shared Budget:** Input prompt tokens and generated output tokens share the exact same context window.
+* **Tokens $\neq$ Meaning:** Token IDs are discrete integer labels; vector embeddings are required to capture semantic meaning.
 
 ---
 
