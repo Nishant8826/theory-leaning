@@ -19,273 +19,396 @@
 
 ---
 
-## 👶 From a Trained Model to an Untrained One
+## 👶 01. From a Trained Model to an Untrained One
 
-In previous lessons, we watched data flow through an already-trained Transformer that accurately predicted words (*"The pizza is ready to..."* $\rightarrow$ *"eat"*).
+In previous lessons, we watched data flow through an already-trained Transformer that could easily finish phrases (*"The pizza is ready to..."* $\rightarrow$ *"eat"*).
 
-Now, imagine starting with a **completely untrained neural network**:
-
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│                        PROMPT: "The sky is ..."                        │
-├──────────────────────────────────┬─────────────────────────────────────┤
-│ Trained Model (After Learning)   │ Untrained Model (Newborn State)     │
-├──────────────────────────────────┼─────────────────────────────────────┤
-│ Predicts: "blue" (85%)           │ Predicts: "potato", "banana",       │
-│                                  │ "magic", or random gibberish!       │
-└──────────────────────────────────┴─────────────────────────────────────┘
-```
-
-An untrained model is like a newborn baby seeing the world for the very first time.
-
-> **Definition of Learning:**  
-> For a neural network, **learning** means repeatedly adjusting its internal parameters so that future next-token predictions become more accurate.
-
----
-
-## 🎛️ Parameters: The Billions of Adjustable Knobs
-
-A neural network contains billions of adjustable floating-point numbers called **parameters (weights and biases)**.
+Now, let us strip away that assumption and start with a **completely untrained neural network**:
 
 ```
-┌────────────────────────────────────────────────────────────────────────┐
-│                        3 INTUITIVE ANALOGIES                           │
-├───────────────────┬───────────────────┬────────────────────────────────┤
-│ 1. DJ Controller  │ 2. Old Radio Dial │ 3. Guitar Tuning               │
-│ Billions of knobs │ Turning the dial  │ Training is TUNING the strings;│
-│ tuned to produce  │ to lock on exact  │ Inference is PLAYING the tuned │
-│ the perfect sound │ broadcast station │ guitar to make music!          │
-└───────────────────┴───────────────────┴────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│                         UNTRAINED vs. TRAINED PREDICTIONS                        │
+├──────────────────────────────┬───────────────────────────────────────────────────┤
+│ Prompt: "The sky is ..."     │ Model Output                                      │
+├──────────────────────────────┼───────────────────────────────────────────────────┤
+│ 👶 Untrained Neural Network  │ "potato", "banana", "magic", "cool", or gibberish!│
+│ 🎓 Trained Neural Network    │ "blue" (High confidence / high probability)       │
+└──────────────────────────────┴───────────────────────────────────────────────────┘
 ```
 
-* **Scale of Parameters:** GPT-3 contains **175 Billion parameters** ($17,500\text{ crore}$ numbers). Training makes tiny, coordinated updates (e.g., $2.5 \rightarrow 2.4 \rightarrow 2.2$) to reduce error.
+An untrained model is like a newborn infant experiencing the world for the first time—everything looks like random noise.
 
----
-
-## 🔍 Which Values Are Parameters?
-
-```text
-Inside the Transformer:
-- Token Embedding Table coordinates (768D to 4096D per token)
-- Query (Wq), Key (Wk), Value (Wv), and Output (Wo) Attention weights
-- Layer Normalization scale (γ) and shift (β)
-- Feed-Forward Network (FFN / MLP) projection weights and biases
+```
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│                             WHAT IS "LEARNING"?                                  │
+├──────────────────────────────────────────────────────────────────────────────────┤
+│ For a neural network, LEARNING means repeatedly adjusting its internal numerical │
+│ parameters so that its future next-token predictions become progressively better.│
+└──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 🗄️ Do Parameters Store Knowledge?
+## 🎛️ 02. Parameters: The Adjustable Knobs Inside the Network
 
-> [!NOTE]
-> **Interview Perspective:**  
-> Parameters do **not** store text files, databases, or Wikipedia articles. They are continuous mathematical weights that encode **statistical patterns and linguistic relationships**. The instructor calls parameters **"Knowledge Enablers"**.
+A neural network contains an astronomical collection of adjustable numbers called **Parameters (Weights and Biases)**. These numbers dictate every calculation: embedding lookups, Q/K/V attention dot products, feed-forward transformations, and output logit scoring.
 
-* **Training Data vs. Parameters:**
-  * **Training Data:** The external text corpus (terabytes of cleaned web text, books, code).
-  * **Parameters:** The internal mutable numbers living inside the network that change as they learn from the data.
+```
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│                              THREE EVERYDAY ANALOGIES                            │
+├─────────────────────┬─────────────────────┬──────────────────────────────────────┤
+│ 1. DJ Controller    │ 2. Old Radio Tuner  │ 3. Guitar Tuning vs. Playing         │
+├─────────────────────┼─────────────────────┼──────────────────────────────────────┤
+│ A massive board with│ Tuning a radio knob │ • Training is TUNING the guitar      │
+│ millions of dials.  │ to eliminate static │   strings until the pitch is right.  │
+│ Turning any one knob│ and lock onto a     │ • Inference is PLAYING the tuned     │
+│ slightly alters the │ clear, crisp song   │   guitar to produce beautiful music. │
+│ overall sound.      │ frequency.          │                                      │
+└─────────────────────┴─────────────────────┴──────────────────────────────────────┘
+```
+
+### The Scale of Modern Parameters:
+* **GPT-3:** Contains **175 Billion parameters** ($17,500\text{ crore}$ numbers).
+* Training makes tiny, continuous numerical micro-adjustments (e.g., $2.50 \rightarrow 2.40 \rightarrow 2.20$) across all billions of knobs simultaneously until prediction errors shrink.
 
 ---
 
-## 🚀 The Forward Pass and a Known Target
-
-A **Forward Pass** feeds an input sequence through the network to generate next-token prediction probabilities:
+## 🔍 03. Which Values Inside the Model Are Parameters?
 
 ```
-  Source Text: "The sky is blue"
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│                        THE PARAMETER FAMILIES INSIDE AN LLM                      │
+├────────────────────────────┬─────────────────────────────────────────────────────┤
+│ Component                  │ Parameter Family                                    │
+├────────────────────────────┼─────────────────────────────────────────────────────┤
+│ Token Embedding Table      │ Coordinates for every token in vocabulary           │
+│ Multi-Head Attention       │ Query ($W_q$), Key ($W_k$), Value ($W_v$), and      │
+│                            │ Output Projection ($W_o$) weight matrices           │
+│ Layer Normalization        │ Scale ($\gamma$, gamma) and Shift ($\beta$, beta)   │
+│ Feed-Forward Network (MLP) │ Input projection weights, hidden layer weights,     │
+│                            │ output weights, and additive bias vectors           │
+└────────────────────────────┴─────────────────────────────────────────────────────┘
+```
+
+In a fresh, untrained model, all these values start as **random numbers**. Training reshapes them into useful mathematical filters.
+
+---
+
+## 🗄️ 04. Do Parameters Store "Knowledge"? (Interview Perspective)
+
+> [!IMPORTANT]
+> **Key Distinction:**  
+> Parameters do **not** contain a database of text files, memorized paragraphs, or Wikipedia articles. They are continuous floating-point weights that encode **distributed statistical patterns and relationships**. The instructor calls parameters **"Knowledge Enablers."**
+
+```
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│                        TRAINING DATA vs. PARAMETERS                              │
+├──────────────────────────────────┬───────────────────────────────────────────────┤
+│ Training Data (External)         │ Parameters (Internal)                         │
+├──────────────────────────────────┼───────────────────────────────────────────────┤
+│ • Terabytes / Petabytes of text, │ • Billions of floating-point numbers living   │
+│   code, articles, and books      │   inside the model's layers                   │
+│ • Supplies the examples & targets│ • Updated continuously by the optimizer       │
+│ • Discarded after training runs  │ • Saved to disk as the final model weights    │
+└──────────────────────────────────┴───────────────────────────────────────────────┘
+```
+
+---
+
+## 🚀 05. The Forward Pass and the Self-Supervised Target
+
+A **Forward Pass** is the prediction computation from input to output:
+1. Ingest an input text sequence.
+2. Convert tokens to vectors and add positional encoding.
+3. Process through stacked Transformer layers.
+4. Output probability scores across the entire vocabulary.
+
+### The Self-Supervised Target:
+In next-token prediction, **no human annotator needs to manually label the text**. The raw source text provides its own target:
+
+```
+  Source Sentence: "The sky is blue"
   
   Input Sample : "The sky is"
-  Known Target : "blue"  (Self-supervised target from the text itself!)
-  Untrained Pass: Predicts "banana" (80%) vs "blue" (2%)  <-- High Error!
+  Target Token : "blue"  (Hidden from model during forward pass)
+```
+
+```
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│                          UNTRAINED FORWARD PASS SCORING                          │
+├──────────────────────────┬──────────────────┬────────────────────────────────────┤
+│ Candidate Token          │ Untrained Score  │ Desired Trained Behavior           │
+├──────────────────────────┼──────────────────┼────────────────────────────────────┤
+│ "banana" (Wrong token)   │ 80% (or 85 score)│ Must DECREASE toward 0%            │
+│ "blue"   (Target token)  │ 2%  (or 20 score)│ Must INCREASE toward 90%+          │
+└──────────────────────────┴──────────────────┴────────────────────────────────────┘
 ```
 
 ---
 
-## 📉 Loss: Measuring the Mistake
+## 📉 06. Loss: Measuring Prediction Error
 
-> **Definition:**  
-> A **Loss Function** converts prediction quality into a single numerical error score:
-> * **Small Loss:** The correct target (`blue`) received a high probability ($90\%$).
-> * **High Loss:** The wrong token (`banana`) received $80\%$, while target (`blue`) got only $2\%$.
+```
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│                              WHAT IS A LOSS FUNCTION?                            │
+├──────────────────────────────────────────────────────────────────────────────────┤
+│ A LOSS FUNCTION converts prediction quality into a single numerical error score. │
+│ • High Loss: Model assigned high probability to "banana" (80%) and low to "blue" │
+│ • Low Loss: Model assigned high probability to "blue" (92%) and low to "banana"  │
+└──────────────────────────────────────────────────────────────────────────────────┘
+```
 
-$$\text{Predict} \longrightarrow \text{Compare with Target} \longrightarrow \text{Calculate Loss} \longrightarrow \text{Update Parameters}$$
+$$\text{Forward Predict} \longrightarrow \text{Compare with Target} \longrightarrow \text{Calculate Loss} \longrightarrow \text{Update Parameters}$$
 
 ---
 
-## 🕵️ Backpropagation: Detective Tracing Error Backward
+## 🕵️ 07. Backpropagation: Detective Tracing Error Backward
 
-With 175 billion parameters, a single loss number is not enough. Which specific weights made the error?
-
-```mermaid
-flowchart LR
-    subgraph FORWARD ["Forward Pass (Prediction)"]
-    A[Input Tokens] --> B[Layer 1] --> C[Layer 2] --> D[Prediction ──► Loss]
-    end
-    
-    subgraph BACKWARD ["Backpropagation (Detective Tracing Error)"]
-    D --> E[Compute Gradients Layer 2] --> F[Compute Gradients Layer 1]
-    end
-```
-
-**Backpropagation** acts as a detective. Using calculus (the **Chain Rule**), it works backward from the output error through all layers, computing the **gradient** for every single parameter.
-
-### Gradients Are Sensitivities:
-A **gradient** tells us:
-1. **Direction:** Whether to increase or decrease the parameter to reduce loss.
-2. **Sensitivity:** How strongly that specific parameter affects the total error.
-
-> **Backpropagation vs. The Optimizer:**  
-> $$\mathbf{\text{Backpropagation DIAGNOSES gradients; the Optimizer ADJUSTS the weights.}}$$
-
----
-
-## ⛰️ Gradient Descent: The Foggy-Mountain Analogy
-
-> **Definition:**  
-> **Gradient Descent** is an optimization algorithm that minimizes the loss function by taking small steps in the direction opposite to the gradient.
-
-```
-┌──────────────────────────────┬──────────────────────────────┐
-│ Foggy Mountain Analogy       │ Deep Learning Concept        │
-├──────────────────────────────┼──────────────────────────────┤
-│ Current Altitude / Height    │ Loss Value (Error)           │
-│ Local Ground Slope           │ Gradient Direction           │
-│ Step Size                    │ Learning Rate ($\alpha$)     │
-│ Repeated Steps Downhill      │ Iterative Parameter Updates  │
-│ Valley Bottom                │ Minimized Loss (Trained)     │
-└──────────────────────────────┴──────────────────────────────┘
-```
-
-```
-  Loss ▲
-       │    Current State (High Loss)
-       │       ●
-       │        \   Step-by-step downhill descent (Learning Rate = Step Size)
-       │         \
-       │          \____● (Valley Bottom = Minimized Error!)
-       └────────────────────────────────────────► Parameter Values
-```
-
-### Learning Rate ($\alpha$) Challenges:
-* **Too Small:** Step size is tiny; training takes months and gets stuck on flat plateaus.
-* **Too Large:** Overshoots the valley bottom, causing loss to explode into infinity ($NaN$).
-
----
-
-## ⚖️ Batch vs. Stochastic vs. Mini-Batch Gradient Descent
-
-```
-┌───────────────────┬───────────────────┬────────────────────────────────┐
-│ Batch GD          │ Stochastic (SGD)  │ Mini-Batch GD (Standard)       │
-├───────────────────┼───────────────────┼────────────────────────────────┤
-│ • Uses full data  │ • Uses 1 sample   │ • Uses small batch (32-4096)   │
-│ • Stable but SLOW │ • Fast but NOISY  │ • 🎯 BALANCED, FAST & STABLE!  │
-│ • Too big for GPU │ • Fluctuates wildly│ • Fits GPU VRAM perfectly     │
-└───────────────────┴───────────────────┴────────────────────────────────┘
-```
-
----
-
-## 🔄 The Complete 8-Step Training Loop
+With 175 billion parameters, knowing the total loss is not enough. Which specific layer, matrix, and knob was responsible for the error?
 
 ```mermaid
 flowchart TD
-    A["1. Sample Batch of Text from Dataset"] --> B["2. Forward Pass through Transformer"]
-    B --> C["3. Generate Next-Token Logits"]
-    C --> D["4. Compare Prediction with Known Next Tokens"]
-    D --> E["5. Calculate Numerical Loss (Cross-Entropy)"]
-    E --> F["6. Backpropagation: Compute Parameter Gradients"]
-    F --> G["7. Optimizer: Update Parameter Weights (Gradient Descent)"]
-    G --> H["8. Repeat across Millions of Batches & Epochs!"]
-    H --> A
+    subgraph FORWARD ["1. Forward Pass (Prediction Phase)"]
+    A["<b>Input Tokens</b><br/><i>'The sky is'</i>"] --> B["<b>Layer 1</b><br/>Attention + FFN"]
+    B --> C["<b>Layer 2</b><br/>Attention + FFN"]
+    C --> D["<b>Output Prediction</b><br/>Compute Loss vs Target <i>'blue'</i>"]
+    end
+    
+    subgraph BACKWARD ["2. Backpropagation (Detective Tracing Error)"]
+    D ==>|"Loss Error Signal"| E["<b>Compute Gradients Layer 2</b><br/>Sensitivity of weights"]
+    E ==> F["<b>Compute Gradients Layer 1</b><br/>Chain Rule backward flow"]
+    F ==> G["<b>Compute Gradients Embeddings</b><br/>Adjust token coordinates"]
+    end
+```
+
+**Backpropagation** works backward from the output loss through every layer using calculus (**The Chain Rule**).
+
+### Gradients are Sensitivities:
+A **gradient** calculated during backpropagation provides two critical pieces of information for every parameter:
+1. **Direction:** Should this parameter be increased or decreased to lower the loss?
+2. **Magnitude (Sensitivity):** How strongly does a tiny change in this parameter affect the total loss?
+
+```
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│                       BACKPROPAGATION vs. THE OPTIMIZER                          │
+├──────────────────────────────────┬───────────────────────────────────────────────┤
+│ Backpropagation                  │ The Optimizer                                 │
+├──────────────────────────────────┼───────────────────────────────────────────────┤
+│ • The DIAGNOSTICIAN              │ • The SURGEON / MECHANIC                      │
+│ • Computes gradients & errors    │ • Uses gradients and learning rate to         │
+│   for all parameters             │   actually change the parameter values        │
+└──────────────────────────────────┴───────────────────────────────────────────────┘
+```
+
+$$\mathbf{\text{"Backpropagation diagnoses; the Optimizer updates."}}$$
+
+---
+
+## ⛰️ 08. Gradient Descent: The Foggy-Mountain Analogy
+
+> **Definition:**  
+> **Gradient Descent** is an iterative optimization algorithm that minimizes the loss function by taking repeated steps in the direction opposite to the gradient.
+
+```
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│                         THE FOGGY MOUNTAIN ANALOGY                               │
+├──────────────────────────────┬───────────────────────────────────────────────────┤
+│ Mountain Analogy             │ Deep Learning Optimization Concept                │
+├──────────────────────────────┼───────────────────────────────────────────────────┤
+│ Mountain Altitude / Height   │ Loss Value (Total Error)                          │
+│ Ground Slope under your feet │ Gradient (Direction of steepest increase)         │
+│ Downhill Direction           │ Negative Gradient (Opposite to slope)             │
+│ Size of Each Footstep        │ Learning Rate ($\alpha$)                          │
+│ Repeated Steps Downhill      │ Iterative Parameter Updates                       │
+│ Valley Bottom                │ Minimized Loss (Optimal Trained Parameters)       │
+└──────────────────────────────┴───────────────────────────────────────────────────┘
+```
+
+```
+  Loss (Altitude) ▲
+                  │     Current State (High Loss)
+                  │        ●
+                  │         \   Step-by-step downhill descent
+                  │          \  (Learning Rate = Step Size)
+                  │           \____● (Valley Bottom = Minimized Loss!)
+                  └────────────────────────────────────────► Parameter Values
+```
+
+### The Learning Rate ($\alpha$) Traps:
+* **Learning Rate Too Small:** Footsteps are microscopic. Training takes months, wastes millions of dollars in compute, and gets stuck on flat plateaus or saddle points.
+* **Learning Rate Too Large:** Steps are massive leaps. The optimizer overshoots the valley bottom and flies up the opposite cliff, causing loss to explode into `NaN` (infinity).
+
+---
+
+## ⚖️ 09. Batch, Stochastic, and Mini-Batch Gradient Descent
+
+```
+┌─────────────────────┬─────────────────────┬──────────────────────────────────────┐
+│ Batch GD            │ Stochastic GD (SGD) │ Mini-Batch GD (Universal Standard)   │
+├─────────────────────┼─────────────────────┼──────────────────────────────────────┤
+│ • Uses ENTIRE       │ • Uses ONE single   │ • Uses a SMALL BATCH (e.g., 32 to    │
+│   dataset per update│   sample per update │   4,096 tokens/sequences)            │
+│ • Very stable path  │ • Super fast steps  │ • 🎯 Best of both worlds!            │
+│ • Computationally   │ • Wildly noisy &    │ • Smooth, fast, and fits perfectly   │
+│   impossible on     │   fluctuates        │   into GPU VRAM memory!              │
+│   terabytes of web  │                     │                                      │
+└─────────────────────┴─────────────────────┴──────────────────────────────────────┘
 ```
 
 ---
 
-## 🧠 Why is Next-Token Pre-Training "Self-Supervised"?
+## 🔄 10. The Complete 8-Step Training Loop
 
-* In classical supervised learning (like cat vs dog classification), humans must manually tag thousands of images.
-* In next-token prediction, **the text itself provides the ground-truth target**:
-  * In *"The sky is blue"*, we hide *"blue"* and make it the target.
-  * No human annotators needed $\implies$ Enables training on **trillions of internet tokens**!
-
----
-
-## 📖 Key Training Terminology: Sample to Epoch
-
-```
-┌──────────────────┬─────────────────────────────────────────────────────┐
-│ Term             │ Meaning & Definition                                │
-├──────────────────┼─────────────────────────────────────────────────────┤
-│ Sample           │ A single text example/sequence.                     │
-│ Dataset          │ The complete collection of all training samples.    │
-│ Batch            │ A group of samples processed simultaneously on GPUs.│
-│ Training Step    │ One forward pass + loss + backprop + weight update. │
-│ Epoch            │ One complete pass through the entire dataset.       │
-│ Context Window   │ The maximum token length processed at once.         │
-└──────────────────┴─────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    S1["<b>1. Sample Mini-Batch</b><br/>Pulls batch of text sequences from dataset"] --> S2["<b>2. Forward Pass</b><br/>Processes batch through Transformer layers"]
+    S2 --> S3["<b>3. Prediction</b><br/>Generates next-token logits across vocabulary"]
+    S3 --> S4["<b>4. Target Comparison</b><br/>Compares predictions with actual text targets"]
+    S4 --> S5["<b>5. Loss Calculation</b><br/>Computes cross-entropy error numerically"]
+    S5 --> S6["<b>6. Backpropagation</b><br/>Calculates gradients backward through all layers"]
+    S6 --> S7["<b>7. Optimizer Step</b><br/>Updates parameter weights using learning rate"]
+    S7 --> S8["<b>8. Repeat & Learn</b><br/>Iterates across millions of batches and epochs!"]
+    S8 --> S1
 ```
 
 ---
 
-## ⚙️ Training vs. Inference Compared
+## 🧠 11. Human Progression vs. Model Learning Stages
 
-| Feature | Training Phase | Inference Phase |
-| :--- | :--- | :--- |
-| **Core Action** | Forward pass $\rightarrow$ Loss $\rightarrow$ Backprop $\rightarrow$ Update weights | Forward pass $\rightarrow$ Generate output tokens |
-| **Parameters** | **Mutable (Updating constantly)** | **Frozen (Fixed weights)** |
-| **Compute Scale** | Massive ($10M+, GPU clusters, months) | Lightweight (Milliseconds per token) |
-| **Analogy** | **Tuning the guitar strings** | **Playing the tuned guitar** |
-
----
-
-## 🎯 Generalization vs. Overfitting
+How does a model evolve as it trains across billions of tokens?
 
 ```
-┌────────────────────────────────────────────────────────────────────────┐
-│                    GENERALIZATION vs. OVERFITTING                      │
-├──────────────────────────────────┬─────────────────────────────────────┤
-│ Generalization (The Goal)        │ Overfitting (The Failure)           │
-├──────────────────────────────────┼─────────────────────────────────────┤
-│ • Training: "The sky is blue"    │ • Dataset repeats "The sky is blue" │
-│ • Unseen Test: "On a sunny day,  │   10,000 times                      │
-│   the sky looked..."             │ • Fails on slight wording changes   │
-│ • ✅ Outputs: "blue"             │ • ❌ Memorizes text like a parrot   │
-│ • Learns underlying rules!       │   without understanding patterns!   │
-└──────────────────────────────────┴─────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│                        HUMAN PHRASE COMPLETION ANALOGY                           │
+├──────────────────────────────────────────────────┬───────────────────────────────┤
+│ Phrase Prompt                                    │ Natural Completion            │
+├──────────────────────────────────────────────────┼───────────────────────────────┤
+│ "Honesty is the best ..."                        │ ──► "policy"                  │
+│ "The sun rises in the ..."                       │ ──► "east"                    │
+│ "Roses are ..."                                  │ ──► "red"                     │
+│ "Namaste AI is ..."                              │ ──► "beautiful"               │
+│ Code syntax: `if (condition) { ...`              │ ──► Expects closing `}`       │
+└──────────────────────────────────────────────────┴───────────────────────────────┘
+```
+
+### The 6 Stages of Model Learning:
+1. **Stage 1: Pure Gibberish:** Random character and word combinations.
+2. **Stage 2: Common Collocations:** Memorizing high-frequency pairs (*"New York"*, *"ice cream"*).
+3. **Stage 3: Basic Grammar & Syntax:** Singular/plural agreement, verb tenses, punctuation.
+4. **Stage 4: Contextual Attention:** Pronoun resolution (*"it"* refers to *"cat"*).
+5. **Stage 5: Long-Range Dependencies:** Tracking topics across multiple paragraphs.
+6. **Stage 6: Reasoning & Domain Mastery:** Code generation, math problem solving, technical translation.
+
+---
+
+## 🖥️ 12. GPU Clusters and Distributed Infrastructure
+
+Training frontier models cannot happen on a single laptop:
+* Requires clusters of thousands of **NVIDIA H100 GPUs** interconnected with ultra-fast networking (NVLink, InfiniBand).
+* It is simultaneously a **Machine Learning problem** and a massive **Distributed Systems Engineering problem** involving power grids, cooling water, storage pipelines, and memory optimization.
+
+---
+
+## 📖 13. Training Vocabulary: Sample to Epoch
+
+```
+┌──────────────────┬───────────────────────────────────────────────────────────────┐
+│ Term             │ Precise Lecture Definition                                    │
+├──────────────────┼───────────────────────────────────────────────────────────────┤
+│ Sample / Example │ A single text sequence (sentence, paragraph, or document).    │
+│ Dataset          │ The entire curated corpus of training examples.               │
+│ Batch            │ A subset of samples processed simultaneously in parallel.     │
+│ Training Step    │ One forward pass + loss calculation + backprop + weight update│
+│ Epoch            │ One complete traversal through the entire training dataset.   │
+│ Context Window   │ The maximum sequence length the model processes at once.      │
+└──────────────────┴───────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 🖥️ Distributed GPU Clusters & Learned Embeddings
+## ⚙️ 14. Training vs. Inference Compared
 
-* **GPU Clusters:** Training frontier LLMs requires orchestrating thousands of **NVIDIA H100 GPUs** using data and tensor parallelism.
-* **Embeddings Learn from Scratch:** Embeddings for `king` and `queen` begin as random numbers. Backpropagation passes gradients to embedding vectors along with all other layers, causing the optimizer to move their coordinates together naturally!
+```
+┌─────────────────────────┬─────────────────────────────┬──────────────────────────┐
+│ Dimension               │ Training Phase              │ Inference Phase          │
+├─────────────────────────┼─────────────────────────────┼──────────────────────────┤
+│ Primary Goal            │ Tune model parameters       │ Generate output text     │
+│ Target Data Needed?     │ Yes (known next tokens)     │ No (pure prompt input)   │
+│ Forward Pass?           │ Yes                         │ Yes                      │
+│ Loss & Backpropagation? │ Yes (calculates gradients)  │ No                       │
+│ Parameter State         │ 🔄 MUTABLE (changing)       │ 🔒 FROZEN (static)       │
+│ Compute & Energy        │ Colossal ($10M+, months)    │ Milliseconds per token   │
+│ Instrument Analogy      │ 🎸 TUNING guitar strings    │ 🎸 PLAYING the guitar    │
+└─────────────────────────┴─────────────────────────────┴──────────────────────────┘
+```
 
 ---
 
-## ❓ Does Prediction Count as Understanding?
+## 🎯 15. Generalization vs. Overfitting
 
-* **Engineering View:** If a model writes working code, passes medical exams, and diagnoses bugs, its functional output behaves as understanding.
-* **Philosophical View:** The model is a high-dimensional mathematical optimization engine. When it says *"I am sad"*, it experiences no biological feelings or conscious awareness.
+```
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│                         GENERALIZATION vs. OVERFITTING                           │
+├──────────────────────────────────┬───────────────────────────────────────────────┤
+│ Generalization (The True Goal)   │ Overfitting (The Memorization Trap)           │
+├──────────────────────────────────┼───────────────────────────────────────────────┤
+│ • Training: "The sky is blue",   │ • Training repeats "The sky is blue"          │
+│   "The ocean is blue",           │   10,000 times.                               │
+│   "Grass is green"               │ • Model excels on exact training text, but    │
+│ • Unseen Prompt: "The clear      │   fails completely on:                        │
+│   afternoon sky looked ..."      │   "On a clear summer afternoon, the sky       │
+│ • ✅ Correct Output: "blue"      │   appeared ..."                               │
+│ • Discovers underlying patterns! │ • ❌ Parrots training data without learning!  │
+└──────────────────────────────────┴───────────────────────────────────────────────┘
+```
+
+---
+
+## 💎 16. Embeddings Learn from Scratch via Backpropagation
+
+Connecting back to Episode 05:
+* Vectors for `king` and `queen` begin as completely random numbers.
+* As sentences containing `king` and `queen` are processed, prediction errors flow backward through all layers right into the **Token Embedding Table**.
+* The optimizer updates embedding coordinates so that `king` and `queen` naturally drift close together in vector space!
+* **No human hand-drags coordinates together—learning emerges mathematically from the training loop.**
+
+---
+
+## ❓ 17. Does Prediction Count as "Understanding"?
+
+```
+┌──────────────────────────────────┬───────────────────────────────────────────────┐
+│ The Engineering View             │ The Philosophical View                        │
+├──────────────────────────────────┼───────────────────────────────────────────────┤
+│ If a model writes flawless code, │ The model is a next-token statistical         │
+│ diagnoses medical scans, and     │ probability engine. When it outputs "I feel   │
+│ translates nuances, its practical│ sad", it experiences zero biological emotion, │
+│ behavior functions as            │ sentience, or subjective consciousness.       │
+│ understanding.                   │                                               │
+└──────────────────────────────────┴───────────────────────────────────────────────┘
+```
+
+The course leaves this profound question open for philosophical reflection.
 
 ---
 
 ## 📝 Chapter Summary
 
-For a neural network, learning means adjusting parameters to minimize next-token prediction error. The model runs a forward pass, compares its output against the self-supervised target from the text, and calculates loss.
+For a neural network, learning means modifying parameters so that next-token predictions become progressively better. Training data provides inputs and known self-supervised targets. Parameters are the internal floating-point numbers distributed across embeddings, attention heads, layer norms, and feed-forward layers.
 
-Backpropagation traces backward through the layers using calculus to compute gradients, and the optimizer (using gradient descent and a learning rate) updates the parameters. Training tunes the model across distributed GPU clusters, building generalizable representations that apply to unseen prompts.
+A forward pass computes logits and cross-entropy loss against the target. Backpropagation traces responsibility backward across the network using calculus to compute parameter gradients. The optimizer (via gradient descent and a learning rate) adjusts the weights. Repeating this loop across mini-batches and epochs allows models to generalize patterns to novel prompts.
 
 ---
 
 ## 🔥 Key Takeaways
 
-* **Learning Definition:** Iteratively adjusting weights to reduce prediction loss.
-* **Self-Supervised Target:** The source text supplies its own ground-truth target.
-* **Backprop vs. Optimizer:** Backprop *diagnoses* gradients; Optimizer *adjusts* parameters.
-* **Gradient Descent:** Moves parameters downhill toward minimized loss.
-* **Mini-Batch GD:** The universal industry standard balancing speed and stability.
-* **Generalization:** Model applies learned patterns to novel, unseen prompts.
+* **Definition of Learning:** Iteratively tuning internal parameters to reduce prediction loss.
+* **Knowledge Enablers:** Parameters do not store database rows; they encode distributed patterns.
+* **Self-Supervised Targets:** Source text provides its own next-token labels automatically.
+* **Backpropagation vs. Optimizer:** Backpropagation *diagnoses* gradients; the Optimizer *updates* weights.
+* **Gradient Descent:** Takes steps downhill on the error surface (Step size = Learning rate).
+* **Mini-Batch GD:** The standard algorithm balancing computational stability and training speed.
+* **Generalization:** The ability of a model to apply learned linguistic rules to novel, unseen sentences.
 
 ---
 
