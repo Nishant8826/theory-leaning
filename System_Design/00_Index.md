@@ -76,6 +76,34 @@ Full end-to-end design for 11 real-world systems. Each includes requirements, ca
 
 ---
 
+## 📱 Social Integration & Universal Lead Attribution System Design
+
+Comprehensive 19-part master architecture guide for Lead Management Systems (LMS) with multi-channel attribution (Instagram, Facebook, LinkedIn, X, YouTube, Google Ads, Offline QR, Sales Team).
+
+| # | Topic | Key Concepts Covered |
+|---|-------|----------------------|
+| [01](social_integration/01_Lead_Attribution_Fundamentals.md) | Lead Attribution Fundamentals | Lead definitions, Source/Medium/Campaign taxonomy, Multi-touch journeys |
+| [02](social_integration/02_Source_Medium_Campaign_Model.md) | Source, Medium & Campaign Data Model | Governed taxonomy, enums vs DB dictionary, click IDs, normalization |
+| [03](social_integration/03_Social_Media_Lead_Architecture.md) | Social Media Lead Architecture | Adapter/Strategy/Factory patterns, ingestion gateway, modular monolith |
+| [04](social_integration/04_Instagram_Lead_Integration.md) | Instagram Lead Integration | Meta Graph API, instant forms, DM automation, webhook subscriptions |
+| [05](social_integration/05_Facebook_Lead_Integration.md) | Facebook Lead Integration | Page access tokens, long-lived token exchange, multi-tenant mapping |
+| [06](social_integration/06_LinkedIn_Lead_Integration.md) | LinkedIn Lead Integration | Lead Gen Forms, URN data mapping, OAuth refresh rotation, rate limiting |
+| [07](social_integration/07_X_Twitter_Lead_Integration.md) | X / Twitter Lead Integration | Tracking links, twclid capture, landing page attribution, CAPI sync |
+| [08](social_integration/08_YouTube_Lead_Integration.md) | YouTube Lead Integration | Video descriptions, timestamps, pinned comments, TV-to-web cross-device |
+| [09](social_integration/09_Website_UTM_Tracking.md) | Website & UTM Tracking | Client SDK, 1st-party cookie persistence, dual-slot first/last touch, SPAs |
+| [10](social_integration/10_Offline_Lead_Attribution.md) | Offline Lead Attribution | Dynamic QR codes, Dynamic Number Insertion (DNI), telephony webhooks |
+| [11](social_integration/11_Lead_Normalization_and_Deduplication.md) | Normalization & Deduplication | E.164 phone parsing, RFC 5322 email, deterministic identity matching |
+| [12](social_integration/12_Attribution_Data_Model.md) | Attribution Data Model (MongoDB) | `leads`, `leadTouchpoints`, `externalLeadMappings`, compound indexes |
+| [13](social_integration/13_Lead_Ingestion_Architecture.md) | Lead Ingestion Architecture | BullMQ queue buffer, async worker pipelines, distributed idempotency |
+| [14](social_integration/14_Campaign_Attribution.md) | Campaign Attribution | Multi-tier campaign hierarchy, CAC/ROAS queries, attribution windows |
+| [15](social_integration/15_Analytics_and_Reporting.md) | Analytics & Reporting | First-touch, Last-touch, U-Shaped, Time-Decay models, OLTP vs OLAP |
+| [16](social_integration/16_Security_and_OAuth.md) | Security & OAuth | AES-256-GCM envelope encryption (KMS), HMAC verification, RBAC |
+| [17](social_integration/17_Webhooks_and_Event_Processing.md) | Webhooks & Event Processing | Idempotency locks (`SETNX`), DLQ state machines, out-of-order sequencing |
+| [18](social_integration/18_Scaling_and_Reliability.md) | Scaling & Reliability | 10K to 100M+ scale tiers, circuit breakers, KEDA queue autoscaling |
+| [19](social_integration/19_Implementation_Guide.md) | Complete Implementation Guide | MERN architecture, REST APIs, 6 data flows, 18 pitfalls, reference diagram |
+
+---
+
 ## 🛠️ Tech Stack Reference
 
 All examples in this course use:
