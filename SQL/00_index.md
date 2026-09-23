@@ -12,31 +12,31 @@ Use this directory to jump directly to any topic or tutorial file.
 
 | File / Link | Level | Key Topics Covered |
 | :--- | :--- | :--- |
-| 🚀 **[01. Introduction & Setup](./01_Introduction_And_Setup.md)** | Beginner | Installing MySQL & Workbench, setting up Express connection pools with `mysql2`. |
-| 🗣️ **[02. What Is SQL?](./02_What_Is_SQL.md)** | Beginner | DDL, DML, DQL sublanguages; SQL syntax vs MQL (MongoDB Query Language). |
-| 🏗️ **[03. Databases & Tables](./03_Databases_And_Tables.md)** | Beginner | `CREATE TABLE` syntax, Constraints (Primary Keys, Foreign Keys, Unique, Default). |
-| 🗃️ **[04. Data Types](./04_Data_Types.md)** | Beginner | Integer/string sizes, exact `DECIMAL` vs floating `FLOAT`, `DATETIME` vs `TIMESTAMP`. |
-| 🔨 **[05. Create, Drop & Alter](./05_Create_Drop_Alter.md)** | Intermediate | Modifying table structures on disk, `ALTER TABLE`, `TRUNCATE` vs `DROP`. |
-| 📝 **[06. Insert, Update & Delete](./06_Insert_Update_Delete.md)** | Intermediate | Mutating table rows, `affectedRows` vs `changedRows`, soft deletes, safety precautions. |
-| 🔍 **[07. SELECT Basics](./07_Select_Basics.md)** | Intermediate | Column projection, aliases (`AS`), calculated values, inline `CASE WHEN` logic. |
-| 🎯 **[08. WHERE Clause & Filters](./08_Where_Clause_And_Filters.md)** | Intermediate | Row filtering, logical operators, `IN`, `BETWEEN`, `LIKE` wildcards, handling `NULL`s. |
-| 🔢 **[09. Sorting & Limiting](./09_Sorting_And_Limiting.md)** | Intermediate | Ordering query rows (`ORDER BY`), Offset-based vs Cursor-based Pagination logic. |
-| 📊 **[10. Aggregate Functions](./10_Aggregate_Functions.md)** | Intermediate | Data math: `COUNT`, `SUM`, `AVG`, `MIN`, `MAX`, dealing with `NULL` aggregates. |
-| 📂 **[11. GROUP BY & HAVING](./11_Group_By_And_Having.md)** | Intermediate | Collapsing rows into category summaries, filtering aggregate results via `HAVING`. |
-| 🤝 **[12. Joins](./12_Joins.md)** | Advanced | Combining tables: `INNER`, `LEFT` (preserves unmatched), `RIGHT`, `CROSS` Joins. |
-| 🪆 **[13. Subqueries](./13_Subqueries.md)** | Advanced | Nesting queries inside SELECT/WHERE/FROM, `EXISTS` vs `IN`, Correlated queries. |
-| 🖼️ **[14. Views](./14_Views.md)** | Advanced | Virtual database tables (`CREATE VIEW`), security abstraction, materialized views. |
-| ⚡ **[15. Indexes](./15_Indexes.md)** | Advanced | B-Tree indexing, index types, `EXPLAIN` query analyzer, Leftmost Prefix rule. |
-| 🔐 **[16. Transactions](./16_Transactions.md)** | Advanced | ACID compliance, concurrency safety, row locking (`FOR UPDATE`), rollbacks. |
-| 📦 **[17. Stored Procedures](./17_Stored_Procedures.md)** | Advanced | Storing and executing compiled SQL blocks on the server (`CREATE PROCEDURE`). |
-| ⚡ **[18. Triggers](./18_Triggers.md)** | Advanced | Automating data changes via event hooks (`BEFORE/AFTER INSERT/UPDATE/DELETE`). |
-| 📐 **[19. Normalization](./19_Normalization.md)** | Expert | Relational layout standards: 1NF, 2NF, 3NF, BCNF, avoiding database anomalies. |
-| ⚖️ **[20. SQL vs. NoSQL](./20_SQL_Vs_NoSQL.md)** | Expert | CAP Theorem, vertical vs horizontal scaling, Polyglot Persistence implementation. |
-| 🛒 **[21. Final Project](./21_Final_Project.md)** | Expert | Structuring a complete normalized production database for an e-commerce API. |
-| 🌐 **[22. Deployment On EC2](./22_Deployment_On_EC2.md)** | Expert | Setting up PM2, Nginx reverse proxies, SSL/Certbot, AWS RDS, and daily backups. |
-| 🔀 **[23. Database Sharding & Partitioning](./23_Sharding_And_Partitioning.md)** | Expert | Single-server horizontal & vertical partitioning, partition pruning, multi-server database sharding. |
-| 🪵 **[24. CTEs & Recursive Queries](./24_CTEs_And_Recursive_Queries.md)** | Advanced | Common Table Expressions (CTEs) to flatten subqueries, recursive queries for hierarchy trees. |
-| 🪟 **[25. Window Functions](./25_Window_Functions.md)** | Advanced | Performing analytic calculations across rows (rank, lag, lead, running totals) using `OVER`. |
+| 🚀 **[01. Introduction & Setup](./01_Introduction_And_Setup.md)** | Beginner | MySQL architecture, InnoDB Buffer Pool, Express connection pools with `mysql2`. |
+| 🗣️ **[02. What Is SQL?](./02_What_Is_SQL.md)** | Beginner | 6-stage query execution pipeline, DDL/DML/DQL/DCL/TCL sublanguages, MQL vs SQL. |
+| 🏗️ **[03. Databases & Tables](./03_Databases_And_Tables.md)** | Beginner | Primary Key strategies (Auto-Increment vs UUIDv7 B+Tree clustering), Foreign Keys & Cascades. |
+| 🗃️ **[04. Data Types](./04_Data_Types.md)** | Beginner | Exact `DECIMAL` vs IEEE 754 `FLOAT`, `VARCHAR` vs off-page `TEXT`, `JSON` virtual columns, Collations. |
+| 🔨 **[05. Create, Drop & Alter](./05_Create_Drop_Alter.md)** | Intermediate | Online DDL algorithms (`INSTANT`, `INPLACE`, `COPY`), Metadata Locks (MDL), `gh-ost` migrations. |
+| 📝 **[06. Insert, Update & Delete](./06_Insert_Update_Delete.md)** | Intermediate | Bulk insert tuning, `ON DUPLICATE KEY UPDATE` vs `REPLACE INTO`, soft deletes & unique indexes. |
+| 🔍 **[07. SELECT Basics](./07_Select_Basics.md)** | Intermediate | 8-step SQL logical query processing order, alias scope, `DISTINCT` memory overhead, `CASE WHEN`. |
+| 🎯 **[08. WHERE Clause & Filters](./08_Where_Clause_And_Filters.md)** | Intermediate | Three-Valued Logic (3VL), SARGability rules (preventing index-killing queries), pattern matching. |
+| 🔢 **[09. Sorting & Limiting](./09_Sorting_And_Limiting.md)** | Intermediate | Filesort mechanics vs Index sorting, multi-column Keyset (Cursor) pagination with tuples. |
+| 📊 **[10. Aggregate Functions](./10_Aggregate_Functions.md)** | Intermediate | InnoDB `COUNT(*)` MVCC mechanics, `GROUP_CONCAT` buffer sizing, empty-set aggregation rules. |
+| 📂 **[11. GROUP BY & HAVING](./11_Group_By_And_Having.md)** | Intermediate | `ONLY_FULL_GROUP_BY` SQL mode, `WITH ROLLUP` multidimensional subtotals, Hash vs Streaming grouping. |
+| 🤝 **[12. Joins](./12_Joins.md)** | Advanced | Physical join algorithms (Index Nested Loop, Hash Join in MySQL 8), driving table optimization, `ON` vs `WHERE`. |
+| 🪆 **[13. Subqueries](./13_Subqueries.md)** | Advanced | Semi-join transformations (Materialization, FirstMatch), the dangerous `NOT IN` with `NULL`s trap, `EXISTS`. |
+| 🖼️ **[14. Views](./14_Views.md)** | Advanced | View algorithms (`MERGE` vs `TEMPTABLE`), `WITH CHECK OPTION`, security definers, materialized views. |
+| ⚡ **[15. Indexes](./15_Indexes.md)** | Advanced | B+Tree 16KB page fan-out math, Covering Indexes, Index Condition Pushdown (ICP), `EXPLAIN` hierarchy. |
+| 🔐 **[16. Transactions](./16_Transactions.md)** | Advanced | Deep ACID mechanics (Undo/Redo/WAL), concurrency anomalies, InnoDB locks (Record/Gap/Next-Key), deadlocks. |
+| 📦 **[17. Stored Procedures](./17_Stored_Procedures.md)** | Advanced | Procedures vs UDFs, `SQLEXCEPTION` handlers, cursors, dynamic SQL (`PREPARE`/`EXECUTE`). |
+| ⚡ **[18. Triggers](./18_Triggers.md)** | Advanced | Execution order (`PRECEDES`/`FOLLOWS`), mutating table limits, Triggers vs Transactional Outbox / CDC. |
+| 📐 **[19. Normalization](./19_Normalization.md)** | Expert | Functional dependencies ($X \rightarrow Y$), 1NF to 3NF, Boyce-Codd (BCNF), strategic denormalization. |
+| ⚖️ **[20. SQL vs. NoSQL](./20_SQL_Vs_NoSQL.md)** | Expert | CAP Theorem vs PACELC Theorem, ACID vs BASE models, enterprise Polyglot Persistence design. |
+| 🛒 **[21. Final Project](./21_Final_Project.md)** | Expert | Complete normalized production database schema and Express API for an e-commerce platform. |
+| 🌐 **[22. Deployment On EC2](./22_Deployment_On_EC2.md)** | Expert | Production PM2, Nginx reverse proxy, SSL/Certbot, AWS RDS Multi-AZ, Read Replicas, PITR backups. |
+| 🔀 **[23. Database Sharding & Partitioning](./23_Sharding_And_Partitioning.md)** | Expert | Range/List/Hash/Subpartitioning, partition pruning in `EXPLAIN`, consistent hashing, 2PC vs Saga pattern. |
+| 🪵 **[24. CTEs & Recursive Queries](./24_CTEs_And_Recursive_Queries.md)** | Advanced | Multi-CTE chaining, recursive CTE tree traversal (org charts, breadcrumbs, BOM), cycle detection. |
+| 🪟 **[25. Window Functions](./25_Window_Functions.md)** | Advanced | `OVER()` anatomy, ranking (`ROW_NUMBER`, `RANK`, `DENSE_RANK`), `LAG`/`LEAD`, sliding window frames, Top-N. |
 
 ---
 
@@ -47,356 +47,237 @@ This revision guide is designed for high-density, fast review, focusing on exact
 ---
 
 ### 🚀 [01. Introduction & Setup](./01_Introduction_And_Setup.md)
-* **Core Paradigm Shift:** Relational databases require you to plan and declare your tables and columns (strict schema) *before* writing any data. In NoSQL (MongoDB), you write first and let schemas evolve dynamically.
-* **Connection Pooling:** In Express/Node.js, never create a single client connection per request (this causes crash bottlenecks). Always create a connection pool, which manages a queue of reusable database connections.
-* **Node.js (mysql2/promise) Cheatsheet:**
-  ```js
-  const mysql = require('mysql2/promise');
-  const db = mysql.createPool({
-    host: 'localhost',
-    user: 'root',
-    password: 'password',
-    database: 'ecommerce',
-    connectionLimit: 10,
-    waitForConnections: true,
-    queueLimit: 0
-  });
-  ```
-* **Gotcha:** Always release connections back to the pool when using raw transactions, otherwise you cause connection leaks that freeze the application.
+* **Core Paradigm Shift:** Relational databases require strict schema planning before insertion. MongoDB allows schema-less dynamic JSON.
+* **Server Architecture:** 3 Layers: (1) Connection/Thread Manager, (2) SQL Core (Parser $\rightarrow$ Preprocessor $\rightarrow$ Cost-Based Optimizer $\rightarrow$ Executor), (3) Pluggable Storage Engine (InnoDB).
+* **InnoDB Buffer Pool:** Dedicated RAM cache (`innodb_buffer_pool_size`) holding table data & index pages. Sized to $70\%-80\%$ of total server memory in production.
+* **Connection Pooling:** In Express, use `mysql2.createPool()`. Optimal pool size: $(\text{CPU Cores} \times 2) + \text{Disk Spindles}$.
 
 ---
 
 ### 🗣️ [02. What Is SQL?](./02_What_Is_SQL.md)
-* **Core Idea:** SQL is an English-sentence-like language used to communicate with relational engines, divided into operational subcategories.
 * **Sublanguages:**
-  * **DDL (Data Definition):** Controls schemas (`CREATE`, `ALTER`, `DROP`, `TRUNCATE`).
-  * **DML (Data Manipulation):** Controls records (`INSERT`, `UPDATE`, `DELETE`).
-  * **DQL (Data Query):** Retrieves records (`SELECT`).
-  * **TCL (Transaction Control):** Controls transactions (`COMMIT`, `ROLLBACK`, `SAVEPOINT`).
-  * **DCL (Data Control):** Controls security (`GRANT`, `REVOKE`).
-* **Declarative vs Imperative:** SQL is declarative (you state *what* you want: `SELECT * FROM users WHERE age > 18`). MongoDB Query Language (MQL) is imperative/object-based (you write JSON queries describing *how* to find matching documents: `db.users.find({ age: { $gt: 18 } })`).
+  * **DDL:** `CREATE`, `ALTER`, `DROP`, `TRUNCATE`.
+  * **DML:** `INSERT`, `UPDATE`, `DELETE`.
+  * **DQL:** `SELECT`.
+  * **DCL:** `GRANT`, `REVOKE` (User security & permissions).
+  * **TCL:** `COMMIT`, `ROLLBACK`, `SAVEPOINT`.
+* **6-Stage Execution Pipeline:** Query $\rightarrow$ Parser (AST) $\rightarrow$ Preprocessor (Catalog/Perms) $\rightarrow$ Rewriter $\rightarrow$ Cost-Based Optimizer (CBO evaluates I/O + CPU cost) $\rightarrow$ Executor $\rightarrow$ InnoDB Storage Engine.
 
 ---
 
 ### 🏗️ [03. Databases & Tables](./03_Databases_And_Tables.md)
-* **Key Constraints:**
-  * `PRIMARY KEY`: Unique, non-null, and physically orders the table data (only 1 per table).
-  * `FOREIGN KEY`: Points to a primary key in another table to guarantee referential integrity.
-  * `NOT NULL`, `UNIQUE`, `DEFAULT`, `CHECK` (e.g., `CHECK (price >= 0)`).
-* **Referential Integrity Actions (ON DELETE/UPDATE):**
-  * `CASCADE`: If parent is deleted/updated, automatically delete/update child rows.
-  * `SET NULL`: If parent is deleted, set the child's foreign key column to `NULL`.
-  * `RESTRICT` / `NO ACTION`: Blocks you from deleting or updating a parent row (e.g., Category) if it is still being used by any child rows (e.g., Products). (Default behavior).
-* **SQL Example:**
-  ```sql
-  CREATE TABLE products (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    category_id INT,
-    price DECIMAL(10,2) NOT NULL CHECK (price >= 0),
-    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
-  );
-  ```
+* **Primary Key Strategies:**
+  * `BIGINT AUTO_INCREMENT`: Sequential, compact (8 bytes), prevents B+Tree page splits, but reveals business volume.
+  * `UUIDv4` (Random): Causes massive B+Tree page splits and cache thrashing due to random disk writes.
+  * `UUIDv7` (Ordered): 128-bit timestamp-prefixed UUID. Ideal for globally unique, distributed, sequential clustering.
+* **Referential Integrity Actions (`ON DELETE / ON UPDATE`):**
+  * `RESTRICT` / `NO ACTION`: Blocks parent modification if child rows exist (Default).
+  * `CASCADE`: Deletes/updates child rows automatically.
+  * `SET NULL`: Sets child foreign key to `NULL`.
 
 ---
 
 ### 🗃️ [04. Data Types](./04_Data_Types.md)
-* **Key Data Types:**
-
-| Category | SQL Type | Storage Size | Best For | Tips & Examples |
-| :--- | :--- | :--- | :--- | :--- |
-| **Strings** | `CHAR(N)` | Fixed $N$ characters | Fixed-size text | ISO codes (e.g. `'IN'`, `'US'`), statuses. (Faster) |
-| | `VARCHAR(N)` | Variable length | Dynamic-size text | Names, emails, passwords. (Saves space) |
-| **Integers** | `TINYINT` | 1 byte | Tiny numbers | Age, status flags, boolean `0/1` values. |
-| | `INT` | 4 bytes | Standard IDs | General ID columns, counts (-2.14 Billion to 2.14 Billion range). |
-| | `BIGINT` | 8 bytes | Large IDs | Transctions, logs, high-scale tables. |
-| | `UNSIGNED` | *Modifier* | Positive numbers | Append to double positive range (e.g. `INT UNSIGNED`). |
-| **Decimals** | `DECIMAL(P,S)`| Exact numeric | Money & Currency | **Always use for money** (e.g., `DECIMAL(10,2)`). |
-| | `FLOAT / DOUBLE`| Approximate numeric| Science & Math | **Never use for money!** (Approximations cause rounding bugs). |
-| **Time** | `DATETIME` | 8 bytes | Fixed timestamps | Historical dates, booking dates (1000–9999). Timezone-static. |
-| | `TIMESTAMP` | 4 bytes | System times | `created_at`, `updated_at` (1970–2038). Converts automatically to user timezone. |
+* **Money & Math:** Always use `DECIMAL(P, S)`. Never use `FLOAT`/`DOUBLE` for currency because binary floating-point (IEEE 754) introduces rounding bugs (`0.1 + 0.2 = 0.30000000000000004`).
+* **Strings & Off-Page Storage:** `CHAR` is fixed-size; `VARCHAR` uses 1-2 length bytes. Large `TEXT`/`BLOB` columns are pushed to **Overflow Pages**, causing extra disk seeks.
+* **JSON & Virtual Columns:** Index JSON fields using Generated Virtual Columns (`attributes->>'$.brand'`).
+* **Charsets & Collations:** Always use `utf8mb4` with `utf8mb4_0900_ai_ci` (case/accent insensitive) or `utf8mb4_bin` (exact binary match).
 
 ---
 
 ### 🔨 [05. Create, Drop & Alter](./05_Create_Drop_Alter.md)
-* **Alter Syntax:**
-  ```sql
-  ALTER TABLE users ADD COLUMN age INT NOT NULL DEFAULT 18;
-  ALTER TABLE users DROP COLUMN phone;
-  ALTER TABLE users MODIFY COLUMN name VARCHAR(200) NOT NULL;
-  ```
-* **DDL Production Alert:** Modifying columns on large tables (using `ALTER TABLE`) locks the table, blocking incoming database updates and freezing your application.
-* **DELETE vs. TRUNCATE vs. DROP:**
-
-| Feature | `DELETE` | `TRUNCATE` | `DROP` |
-| :--- | :--- | :--- | :--- |
-| **What it does** | Deletes specific rows (using `WHERE`). | Deletes all rows (empties the table). | Deletes the **entire table** (data & structure). |
-| **Table Structure** | Kept intact. | Kept intact. | **Destroyed** (gone from database). |
-| **Reset Auto-Increment?**| ❌ No. | ✅ Yes (resets back to 1). | N/A (table is deleted). |
-| **Speed** | 🐢 Slow (deletes row-by-row). | ⚡ Blazing Fast (wipes storage directly). | ⚡ Fast (wipes table files from disk). |
-| **Can Undo (Rollback)?** | ✅ Yes (can be rolled back). | ❌ No (cannot be undone). | ❌ No (cannot be undone). |
-| **Sublanguage Type** | **DML** (Data Manipulation). | **DDL** (Data Definition). | **DDL** (Data Definition). |
+* **Online DDL (MySQL 8.0):**
+  * `ALGORITHM = INSTANT`: Metadata-only modification in 0ms (no table rebuild).
+  * `ALGORITHM = INPLACE`: Rebuilds storage file while allowing concurrent reads/writes.
+  * `ALGORITHM = COPY`: Legacy; locks table and copies all rows to temp table.
+* **Metadata Lock (MDL) Trap:** A long-running `SELECT` blocks an `ALTER TABLE`, which queues and blocks all subsequent incoming API queries, crashing the server. Use `gh-ost` or `pt-online-schema-change` for zero-downtime migrations.
+* **DELETE vs TRUNCATE vs DROP:** `DELETE` is DML (row-by-row, rollbackable); `TRUNCATE` is DDL (resets auto-increment, wipes data pages instantly, non-rollbackable); `DROP` deletes structure + data permanently.
 
 ---
 
 ### 📝 [06. Insert, Update & Delete](./06_Insert_Update_Delete.md)
-* **Parameterized Inputs:** Never concatenate input variables directly into queries (e.g., `'WHERE id = ' + req.body.id`). Always use `?` syntax. This separates code execution from parameter data, neutralizing **SQL Injection** attacks.
-* **Safety Rules:** Running an `UPDATE` or `DELETE` query without a `WHERE` clause modifies **every single row** in the table.
-* **Advanced Commands:**
-  * `INSERT IGNORE`: Inserts row, but silently drops it without throwing an error if a duplicate key constraint is triggered.
-  * `INSERT INTO ... ON DUPLICATE KEY UPDATE`: If record exists, updates defined columns; otherwise, inserts new record (equivalent to MongoDB upsert).
-* **Affected vs Changed:**
-  * `affectedRows` counts matched query rows.
-  * `changedRows` counts rows where values were actually altered (e.g. updating stock to the same value results in `changedRows: 0`).
+* **Bulk Inserts:** Batch multi-row inserts (`INSERT INTO ... VALUES (), (), ()`) in chunks of $500-1000$ to avoid round-trip latency and Redo log flushing overhead.
+* **Multi-Table DML:** Perform correlated `UPDATE t1 JOIN t2 ON ... SET ...` and `DELETE t1 FROM t1 JOIN t2 ON ...` in a single atomic SQL statement.
+* **Production Batch Deletions:** Never execute unbounded `DELETE FROM logs WHERE created_at < NOW()`; run chunked loops (`DELETE ... LIMIT 5000; SELECT SLEEP(0.05);`) to prevent long transaction lock escalation and replication lag.
+* **UPSERT:** Use `INSERT ... ON DUPLICATE KEY UPDATE` (in-place modification). Avoid `REPLACE INTO` (executes `DELETE` + `INSERT`, which breaks auto-increment IDs, triggers, and foreign keys).
+* **Soft Deletes:** Add `deleted_at TIMESTAMP NULL`. Fix duplicate key bugs on deleted accounts using a virtual generated column: `active_email = IF(deleted_at IS NULL, email, NULL)`.
+* **Optimistic Concurrency:** Use a `version` integer column (`WHERE id = ? AND version = ?`) to prevent lost updates without locking rows.
 
 ---
 
 ### 🔍 [07. SELECT Basics](./07_Select_Basics.md)
-* **Projection Efficiency:** Avoid `SELECT *`. Select only required fields (`SELECT name, price`) to minimize RAM consumption, index usage, and network transmission sizes.
-* **Inline Conditionals (CASE WHEN):**
-  ```sql
-  SELECT name, price,
-    CASE 
-      WHEN price > 50000 THEN 'Premium'
-      WHEN price > 10000 THEN 'Standard'
-      ELSE 'Budget'
-    END AS tier
-  FROM products;
-  ```
-* **Unique Rows:** `SELECT DISTINCT city FROM customers;` retrieves only non-duplicate list items.
+* **8-Step Logical Execution Order:**
+  `FROM & JOIN` (1) $\rightarrow$ `WHERE` (2) $\rightarrow$ `GROUP BY` (3) $\rightarrow$ `HAVING` (4) $\rightarrow$ `SELECT` (5) $\rightarrow$ `DISTINCT` (6) $\rightarrow$ `ORDER BY` (7) $\rightarrow$ `LIMIT/OFFSET` (8).
+* **Alias Scope:** Aliases created in `SELECT` cannot be evaluated in `WHERE` because `WHERE` runs first.
+* **DISTINCT Overhead:** Generates temporary sorting tables in memory/disk (`Using temporary; Using filesort`).
 
 ---
 
-### 🎯 [08. WHERE Clause & Filters](./08_Where_Clause_And_Filters.md)
-* **Three-Valued Logic:** SQL evaluations result in `TRUE`, `FALSE`, or `NULL` (unknown).
-* **NULL Comparisons:** Since `NULL` represents missing data, any comparison like `WHERE phone = NULL` evaluates to `NULL` (unknown) and returns 0 results. You **must** use `IS NULL` or `IS NOT NULL`.
-* **Pattern Matching:**
-  * `LIKE 'a%'`: Matches strings starting with 'a' (can use regular B-Tree indexes).
-  * `LIKE '%a%'`: Matches strings containing 'a' (violates index prefixing, forcing slow table scans).
-  * `_` matches exactly one character; `%` matches zero or more characters.
-* **Operators:** `IN ('Delhi', 'Mumbai')` (list matching) and `BETWEEN 10 AND 50` (inclusive range).
+### 🎯 [08. Where Clause & Filters](./08_Where_Clause_And_Filters.md)
+* **Three-Valued Logic (3VL):** Boolean outcomes evaluate to `TRUE`, `FALSE`, or `UNKNOWN` (represented by `NULL`). Comparisons like `WHERE col = NULL` evaluate to `UNKNOWN` and return 0 rows. Use `IS NULL`.
+* **SARGability (Search Argument Able):**
+  * ❌ *Non-SARGable:* `WHERE YEAR(created_at) = 2024` or `WHERE string_col = 123` (forces full table scan).
+  * ✔️ *SARGable:* `WHERE created_at >= '2024-01-01' AND created_at < '2025-01-01'`.
+* **Collation Mismatch Index-Killers:** Comparing columns or literals across differing collations (`utf8mb4_general_ci` vs `utf8mb4_unicode_ci`) causes hidden coercion functions that completely disable B+Tree index lookups.
+* **Non-Deterministic Short-Circuiting:** SQL optimizer does not guarantee left-to-right evaluation order; use `NULLIF()` or `CASE WHEN` to safely prevent division-by-zero errors.
+* **Boolean Full-Text Search:** Inverted index querying with operators (`+`, `-`, `*`, `""`, `~`, `><`).
 
 ---
 
 ### 🔢 [09. Sorting & Limiting](./09_Sorting_And_Limiting.md)
-* **Multiple Sorting:** `ORDER BY category_id ASC, price DESC`.
-* **Offset-Based Pagination:**
-  ```sql
-  SELECT * FROM products ORDER BY id LIMIT 10 OFFSET 50000;
-  ```
-  * **Critical Performance Issue:** MySQL must read through and discard the first 50,000 rows before returning 10. Large offset pagination causes massive disk-read delays.
-* **Cursor-Based Pagination (Keyset):**
-  ```sql
-  SELECT * FROM products WHERE id > last_seen_id ORDER BY id LIMIT 10;
-  ```
-  * **Why it's faster:** Uses the index on `id` to jump directly to the target block in $O(\log N)$ time, skipping previous records entirely.
+* **Filesort Mechanics:** If no matching index exists, MySQL allocates `sort_buffer_size` in RAM and runs QuickSort/MergeSort. If buffer overflows, it spills temporary files to disk.
+* **The `ORDER BY RAND() LIMIT 1` Trap:** Full table scan + generating random floats for every row + full filesort ($O(N \log N)$). Replace with $O(1)$ indexed mathematical random primary key seek (`WHERE id >= FLOOR(RAND() * @max_id)`).
+* **Offset vs Keyset (Cursor) Pagination:**
+  * `LIMIT 10 OFFSET 50000`: Scans and discards 50,000 rows (slow $O(N)$).
+  * `WHERE (created_at, id) < (?, ?) ORDER BY created_at DESC, id DESC LIMIT 10`: Jumps directly to B+Tree leaf page in $O(\log N)$ with zero drift.
 
 ---
 
 ### 📊 [10. Aggregate Functions](./10_Aggregate_Functions.md)
-* **Core Aggregates:** `COUNT()`, `SUM()`, `AVG()`, `MIN()`, `MAX()`.
-* **Aggregate NULL Handling:** All aggregate functions (except `COUNT(*)`) ignore `NULL` values. For example, `AVG(bonus)` is calculated as `SUM(bonus) / COUNT(rows_with_non_null_bonus)`.
-* **COUNT(*) vs COUNT(column):**
-  * `COUNT(*)` counts total rows in the result set (including rows with `NULL`s).
-  * `COUNT(phone)` counts only rows where the `phone` value is not `NULL`.
-* **MERN Parallel:** Equivalent to MongoDB `$group` operators (`$sum`, `$avg`, etc.).
+* **InnoDB `COUNT(*)`:** Cannot use static metadata row counts due to MVCC (every transaction sees a different snapshot of visible rows). It must scan the smallest secondary index tree.
+* **`GROUP_CONCAT`:** Concatenates values into strings. Increase `group_concat_max_len` to avoid default 1024-byte truncation.
+* **Empty Set Handling:** `COUNT` on empty set returns `0`; `SUM`, `AVG`, `MIN`, `MAX` return `NULL` (defend with `COALESCE(SUM(...), 0)`).
 
 ---
 
 ### 📂 [11. GROUP BY & HAVING](./11_Group_By_And_Having.md)
-* **WHERE vs HAVING:**
-  * `WHERE` filters rows **before** aggregation and grouping occur. It cannot evaluate aggregate functions.
-  * `HAVING` filters the computed groups **after** aggregation has occurred.
-* **Rule of Thumb:** Use `WHERE` to filter raw data; use `HAVING` to filter aggregated totals.
-* **Written Syntax Order (How you type it):**
-  `SELECT` → `FROM` → `JOIN` → `WHERE` → `GROUP BY` → `HAVING` → `ORDER BY` → `LIMIT`
-* **Logical Execution Order (How MySQL runs it under the hood):**
-  1. `FROM` & `JOIN` (Loads the table data)
-  2. `WHERE` (Filters raw rows before grouping; cannot use aggregate functions or SELECT aliases)
-  3. `GROUP BY` (Groups matching rows together)
-  4. `HAVING` (Filters aggregated groups; can use aggregate functions)
-  5. `SELECT` (Selects columns and calculates aliases like `AS total`)
-  6. `DISTINCT` (Filters duplicate rows)
-  7. `ORDER BY` (Sorts final result rows)
-  8. `LIMIT` & `OFFSET` (Limits output rows)
-* **Example:**
-  ```sql
-  SELECT category_id, COUNT(*) AS prod_count
-  FROM products
-  WHERE status = 'published'
-  GROUP BY category_id
-  HAVING prod_count > 5;
-  ```
+* **`ONLY_FULL_GROUP_BY`:** Every non-aggregated column in `SELECT` must be declared in `GROUP BY` to guarantee deterministic output. Use `ANY_VALUE()` if an arbitrary value is acceptable.
+* **`WITH ROLLUP`:** Computes multi-level subtotals and grand totals in a single database pass. Use `GROUPING()` to identify summary rows.
+* **Grouping Engines:** Index Streaming Aggregation (fast index traversal) vs Hash Aggregation (in-memory temp table).
 
 ---
 
 ### 🤝 [12. Joins](./12_Joins.md)
-* **Core Joins:**
-  * **INNER JOIN:** Returns records with matching keys in both tables.
-  * **LEFT JOIN:** Returns all records from the left table, and matching records from the right table. If no match, right columns return `NULL`.
-  * **RIGHT JOIN:** Returns all records from the right table, and matching records from the left table.
-  * **CROSS JOIN:** Returns the Cartesian product (combines every left row with every right row).
-* **N+1 Query Problem:** Occurs when an application retrieves a list of parent rows (1 query), then loops through each row to query its child records (N queries). Solved by executing a single `JOIN` query:
-  ```sql
-  SELECT o.id, o.total, c.name 
-  FROM orders o 
-  INNER JOIN customers c ON o.customer_id = c.id;
-  ```
+* **Physical Join Algorithms:**
+  * **Index Nested Loop (INLJ):** Loops outer rows against inner B+Tree index ($O(M \log N)$).
+  * **Batched Key Access (BKA) + MRR:** Buffers outer keys and sorts by clustered disk address for 10x faster sequential page reads.
+  * **Hash Join (MySQL 8.0.18+):** In-memory hash table on smaller table probed by larger table ($O(M + N)$); gracefully spills hash partitions to disk chunks when exceeding `join_buffer_size`.
+* **Join Elimination:** Optimizer automatically drops unused `LEFT JOIN`s on unique key tables from the execution plan.
+* **Dimensional Modeling:** Star Schema (flat de-normalized dimensions for fast OLAP) vs Snowflake Schema (normalized sub-dimensions).
+* **`ON` vs `WHERE` in `LEFT JOIN`:** Placing right-table filter conditions in `WHERE` silently converts `LEFT JOIN` into an `INNER JOIN`. Keep right-table filters in the `ON` clause.
 
 ---
 
 ### 🪆 [13. Subqueries](./13_Subqueries.md)
-* **Derived Tables Requirement:** Any subquery placed in the `FROM` clause must be given an alias, or SQL throws a syntax error:
-  ```sql
-  SELECT * FROM (SELECT id, price FROM products) AS sub_table;
-  ```
-* **Correlated vs Non-Correlated:**
-  * **Non-Correlated:** Independent subquery that runs once.
-  * **Correlated:** Subquery references the outer query's fields, forcing it to run once for every single row evaluated by the outer query (slow!).
-* **EXISTS vs IN:**
-  * `IN` evaluates the entire subquery result list first.
-  * `EXISTS` is a boolean indicator. It stops searching disk sectors as soon as it finds the first matching record, making it highly efficient.
+* **Modern `LATERAL` Derived Tables (MySQL 8.0.14+):** Enables correlated subqueries in the `FROM` clause for high-performance Top-N per user/category calculations.
+* **Semi-Join Transformations:** MySQL un-nests `WHERE id IN (SELECT ...)` into FirstMatch, Materialization, or LooseScan.
+* **The `NOT IN` with `NULL` Trap:** If the subquery contains a single `NULL`, `NOT IN` evaluates to `UNKNOWN` for all rows and returns an empty set. Always use **`NOT EXISTS`** instead.
 
 ---
 
 ### 🖼️ [14. Views](./14_Views.md)
-* **Core Concept:** A View is a **saved SELECT query query blueprint** that you can treat like a normal table. It takes up zero disk space (it stores only the query text, not the actual table rows). When you query a view, MySQL runs the saved query live under the hood to get the freshest data.
-* **Benefits:**
-  * **Security:** Allows you to hide sensitive columns (e.g. expose a `public_users` view that excludes the `password_hash` column).
-  * **Simplicity:** Saves you from writing long, painful multi-table `JOIN` queries repeatedly. You save the query once in a view, then simply call `SELECT * FROM my_view;`.
-* **Updatable Views:** A view can only handle updates/inserts if it references a single table, contains no grouping (`GROUP BY`), distinct markers (`DISTINCT`), or aggregate functions.
-* **Materialized Views:** Unlike other RDBMS engines, MySQL does not support Materialized Views (physically cached results) natively. They must be simulated via trigger updates or scheduled insert scripts.
+* **View Algorithms:**
+  * `ALGORITHM = MERGE`: Inlines view SQL into outer query, pushing filters down to base table indexes.
+  * `ALGORITHM = TEMPTABLE`: Materializes view into a temporary table (used for `GROUP BY`, `DISTINCT`, `UNION`).
+* **`WITH CHECK OPTION`:** Rejects updates/inserts that would cause a row to disappear from the view.
+* **Security:** `SQL SECURITY DEFINER` (creator permissions) vs `INVOKER` (caller permissions).
 
 ---
 
 ### ⚡ [15. Indexes](./15_Indexes.md)
-* **B-Tree Structure:** Sorts keys in a tree pattern, enabling lookup times of $O(\log N)$ instead of $O(N)$ full table scans.
-* **Key Index Types:**
-  * **Clustered:** Physically sorts data rows on disk. Only one per table (automatically created on the `PRIMARY KEY`).
-  * **Unique:** Enforces that all values in the column are distinct while indexing them (e.g. unique email checks).
-  * **Single-Column:** Standard index created on a single field to speed up filters.
-  * **Composite (Compound):** Built on multiple columns. Subject to the **Leftmost Prefix Rule** (an index on `(A, B)` only works if your query filters by column `A` or `A AND B`; it does not work for column `B` alone).
-  * **Full-Text (`FULLTEXT`):** Designed for fast keyword matching in large text blocks using `MATCH() ... AGAINST()`.
-  * **Prefix (Partial):** Indexes only the first $N$ characters of a long string/text column to save memory space.
-  * **Spatial:** Indexes geographic coordinate fields (`POINT`, `POLYGON`) using geometry-optimized R-Trees.
-* **Verification:** Prefix queries with `EXPLAIN` (e.g. `EXPLAIN SELECT * ...`).
-  * Avoid `type = ALL` (full scan) and `key = NULL`.
-  * Look for `type = const/eq_ref/ref` indicating index usage.
+* **B+Tree Fan-Out Math:** A 16KB page with 14-byte pointers has a fan-out of $\approx 1,170$. A 3-level tree indexes over **136 million rows** in just **3 page reads**.
+* **Index Selectivity Math ($S = \text{Cardinality} / N$):** If an index matches $>20-30\%$ of table rows, the CBO intentionally skips the index and chooses a fast sequential table scan.
+* **Composite Index Range Termination Rule:** Multi-column index `(A, B, C)` cannot use column `C` for index filtering if column `B` uses a range operator (`>`, `<`, `BETWEEN`, `LIKE 'x%'`).
+* **Covering Index (`Using index`):** Secondary index containing all requested columns, eliminating the slow secondary Clustered Index bookmark lookup.
+* **Loose Index Scan (`Using index for group-by`):** Jumps directly across B+Tree sub-branches to evaluate `DISTINCT` / `GROUP BY` without scanning matching rows.
+* **Index Condition Pushdown (ICP):** Evaluates `WHERE` predicates at the storage engine index layer before reading table rows.
+* **`EXPLAIN ANALYZE`:** Shows real execution runtime, row counts, iteration loops, and Volcano iterator steps.
 
 ---
 
 ### 🔐 [16. Transactions](./16_Transactions.md)
-* **ACID Properties Under-The-Hood:**
-  * **Atomicity ("All-or-Nothing"):** A transaction executes as one indivisible unit.
-    * *How it works:* Uses the **Undo Log**. Before modifying any row, MySQL logs the reverse action (e.g. logging a `DELETE` for an `INSERT`, or the old value for an `UPDATE`). On rollback, MySQL executes the Undo Log backwards to revert all changes.
-  * **Consistency ("Constraint Enforcement"):** The database must move from one valid state to another, strictly enforcing all constraints.
-    * *How it works:* Enforced by database engine validation rules (like `NOT NULL`, `UNIQUE`, `FOREIGN KEY`, and check constraints like `CHECK (wallet_balance >= 0)`). If any rule is violated during execution, MySQL instantly aborts the query and rolls back the transaction.
-  * **Isolation ("Concurrency Control"):** Concurrent transactions must not interfere with each other's execution.
-    * *How it works:* Uses **MVCC (Multi-Version Concurrency Control)** and **Locks**. With MVCC, when Transaction A updates a row, Transaction B can read the original version of that row from the **Undo Log** without waiting (non-blocking reads). Row locks (`FOR UPDATE`) serialize access when transactions explicitly try to edit the same record at the same time.
-  * **Durability ("Crash Survival"):** Committed data is guaranteed to survive power outages or server crashes.
-    * *How it works:* Uses the **Redo Log** (Write-Ahead Logging). Writing updates directly to random sectors on disk is slow. On `COMMIT`, MySQL writes sequentially to the **Redo Log** on disk (which is fast). If the server crashes, on reboot MySQL replays the Redo Log to apply any committed changes that hadn't yet been flushed to main data tables.
-* **Locks:** `SELECT ... FOR UPDATE` locks selected rows, preventing concurrent transactions from editing/reading them until commit.
-* **Isolation Levels:** `READ UNCOMMITTED` (allows dirty reads), `READ COMMITTED` (prevents dirty reads, allows non-repeatable reads), `REPEATABLE READ` (default; prevents non-repeatable reads), `SERIALIZABLE` (slowest; full locking).
+* **Transaction Types & Architectures:**
+  * **Explicit vs Implicit:** `START TRANSACTION` / `COMMIT` vs `@@autocommit = 1`.
+  * **Read-Only Optimization (`START TRANSACTION READ ONLY`):** Skips allocating `DB_TRX_ID` and Undo Log memory to drastically reduce CPU contention on read replicas.
+  * **Chained Transactions (`COMMIT AND CHAIN`):** Commits and immediately starts a new transaction with 0ms roundtrip.
+  * **Savepoints:** Partial rollback to checkpoints (`SAVEPOINT`, `ROLLBACK TO SAVEPOINT`).
+  * **Distributed / XA Transactions:** Two-Phase Commit (2PC) coordinated via `XA START`, `XA PREPARE`, `XA COMMIT`.
+  * **Compensating Transactions (Sagas):** Forward/compensating APIs in distributed microservices.
+* **The Silent Implicit Commit Trap:** DDL (`ALTER TABLE`, `CREATE TABLE`, `TRUNCATE`) and security statements auto-commit active transactions, permanently preventing `ROLLBACK`.
+* **InnoDB Lock Hierarchy:** Shared (`S`), Exclusive (`X`), Intention Locks (`IS`/`IX` for $O(1)$ table conflict checks), Record Locks, Gap Locks, Next-Key Locks, and AUTO-INC locks.
+* **InnoDB MVCC Hidden Columns:** Every clustered record contains `DB_TRX_ID` (last modifying transaction ID), `DB_ROLL_PTR` (7-byte pointer to Undo Log historical versions), and `DB_ROW_ID`.
+* **Read View Structure:** `[trx_ids: min_trx_id, max_trx_id]` snapshot visibility rules.
+* **Snapshot Read vs Current Locking Read:** Plain `SELECT` reads historical undo views; `SELECT ... FOR UPDATE`, `UPDATE`, and `DELETE` perform locking reads on the newest physical data.
+* **ACID Mechanics:** Undo Log (Atomicity + MVCC snapshots), Redo Log + WAL (Durability & fast sequential crash recovery), Lock Manager (Isolation).
+* **Isolation Levels & Anomalies:** `READ UNCOMMITTED` (Dirty Reads), `READ COMMITTED` (Non-Repeatable Reads), `REPEATABLE READ` (Next-Key Locking prevents Phantoms), `SERIALIZABLE`.
+* **Write Skew Anomaly:** Two concurrent transactions read overlapping state and perform non-overlapping writes (prevented by `SELECT ... FOR UPDATE` or Serializable).
+* **Two-Phase Locking (2PL):** Growing phase (acquire locks) $\rightarrow$ Shrinking phase (release locks at `COMMIT`/`ROLLBACK`).
 
 ---
 
 ### 📦 [17. Stored Procedures](./17_Stored_Procedures.md)
-* **Core Concept:** Code blocks stored on the database server. Helps reduce network latency by running multi-step code on the database itself rather than over the network.
-* **Parameter Modes:**
-  * `IN`: Input arguments (read-only).
-  * `OUT`: Output arguments (return parameters).
-  * `INOUT`: Read-write arguments.
-* **Stored Procedure vs. View:**
-  * **View:** Virtual table, read-only selection, no parameters, can be used in JOIN queries.
-  * **Stored Procedure:** Compiled logic block, runs DML modifications, takes parameters, handles loops/variables/transactions, called via `CALL`.
+* **Procedures vs UDFs:** Functions return a single scalar and run inside `SELECT`. Procedures are called via `CALL`, manage transactions, and accept `IN`/`OUT`/`INOUT` parameters.
+* **Error Handling:** `DECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN ROLLBACK; RESIGNAL; END;`.
+* **Dynamic SQL:** `PREPARE stmt FROM @sql; EXECUTE stmt USING @param; DEALLOCATE PREPARE stmt;`.
 
 ---
 
 ### ⚡ [18. Triggers](./18_Triggers.md)
-* **Event Listeners:** SQL blocks triggered automatically on `BEFORE` or `AFTER` execution of an `INSERT`, `UPDATE`, or `DELETE` statement.
-* **Row Modifiers:** Use `NEW` (inspect/modify values about to be inserted) and `OLD` (retrieve values being updated or deleted).
-* **Example:**
-  ```sql
-  CREATE TRIGGER check_discount BEFORE INSERT ON products
-  FOR EACH ROW
-  BEGIN
-    IF NEW.price > 100000 THEN
-      SET NEW.price = NEW.price * 0.90; -- Auto 10% discount
-    END IF;
-  END;
-  ```
-* **Gotchas:** Triggers cannot execute transactions (`COMMIT` or `ROLLBACK`) internally, and cannot read/write to the table that triggered them (causes mutating table errors).
+* **Execution Ordering:** Control order of multiple triggers using `PRECEDES` or `FOLLOWS`.
+* **Limitations:** Triggers cannot start/commit transactions or mutate the invoking table.
+* **Microservices Architecture:** Prefer the **Transactional Outbox Pattern** and **Change Data Capture (CDC / Debezium)** over heavy database triggers.
 
 ---
 
 ### 📐 [19. Normalization](./19_Normalization.md)
-* **Normal Forms Guide:**
-  * **1NF (Atomic):** Cell values must contain only single, scalar values (no arrays, lists, or JSON).
-  * **2NF (No Partial Key Dependency):** Must be in 1NF, and all non-key columns must depend on the *entire* primary key (only applies if primary key is composite/multi-column).
-  * **3NF (No Transitive Dependency):** Must be in 2NF, and all non-key columns must depend *only* on the primary key, not on other non-key columns. ("No column depends on a column that is not the key").
-* **Anomalies:** Redundant databases suffer from **Insert** anomalies (cannot add data), **Update** anomalies (inconsistent edits), and **Delete** anomalies (accidental loss of secondary data).
+* **Functional Dependencies & Armstrong's Axioms:** Reflexivity, Augmentation, Transitivity, Union, Decomposition, Pseudotransitivity.
+* **Normal Forms:**
+  * **1NF:** Atomic scalar values (no arrays/JSON in cells).
+  * **2NF:** 1NF + no partial functional dependencies on composite keys.
+  * **3NF:** 2NF + no transitive dependencies ($A \rightarrow B \rightarrow C$).
+  * **BCNF:** Stricter 3NF where every determinant $X$ in $X \rightarrow Y$ must be a Super Key.
+* **Lossless Join vs Dependency Preservation:** 3NF always preserves dependencies; BCNF guarantees zero redundancy and lossless join but may split functional dependencies across tables.
+* **Strategic Denormalization:** Used on read-heavy reporting columns (e.g. `order_total`), guarded by Redis caching or atomic triggers.
 
 ---
 
 ### ⚖️ [20. SQL vs. NoSQL](./20_SQL_Vs_NoSQL.md)
-* **Comparison Matrix:**
-  * **SQL (MySQL):** Relational tables, strict schemas, supports joins, vertically scalable, guaranteed ACID safety. Best for financial ledgers, transactional ordering, and structured logic.
-  * **NoSQL (MongoDB):** Flexible JSON documents, dynamic schemas, horizontal scaling (sharding), fast read access (embedded documents). Best for analytics logs, real-time chats, and catalogs.
-* **CAP Theorem:** Any distributed system can guarantee at most two of: **C**onsistency, **A**vailability, and **P**artition Tolerance.
-  * MySQL prioritizes **Consistency** (CP).
-  * MongoDB prioritizes **Consistency** but shifts depending on write/read concerns.
+* **CAP vs PACELC Theorem:** If Partition ($P$), choose Availability ($A$) vs Consistency ($C$); Else ($E$), choose Latency ($L$) vs Consistency ($C$).
+* **ACID vs BASE:** SQL enforces ACID; NoSQL uses BASE (Basically Available, Soft State, Eventual Consistency).
+* **Polyglot Persistence:** MySQL (Financial ledger/Orders) + MongoDB (Dynamic Catalogs) + Redis (Sessions/Cache) + Elasticsearch (Search).
 
 ---
 
 ### 🛒 [21. Final Project](./21_Final_Project.md)
-* **Relational Schema Design:** Building a normalized e-commerce database structure.
-* **Implementation checklist:**
-  * Define tables with primary and foreign key constraints.
-  * Implement indexing on search columns and foreign keys.
-  * Construct views for order search summaries.
-  * Build stored procedures wrapping transactions to deduct stock and place orders securely.
-  * Enforce audit logging via triggers.
+* **Production E-Commerce Schema:** Normalized schema covering Users, Roles, Categories, Products, Inventory, Orders, Order_Items, Payments, and Audit Logs.
+* **Full-Stack Implementation:** Express API with `mysql2/promise`, row-level locking (`FOR UPDATE`), transactions, views, and error handling.
 
 ---
 
 ### 🌐 [22. Deployment On EC2](./22_Deployment_On_EC2.md)
-* **Production Stack Setup:**
-  * **Nginx:** Reverse proxy server directing external client requests to internal APIs and enforcing SSL (Certbot).
-  * **PM2:** Keeps the Express.js API running in the background and handles crash restarts.
-  * **AWS RDS:** Managed relational database hosting that takes care of replica scaling, automatic security patches, and daily backups.
-* **Database Backup Script:**
-  ```bash
-  mysqldump -u root -p ecommerce_db > /backups/backup_$(date +%F).sql
-  ```
-  * Scheduled to run automatically using system `cron` utility jobs.
+* **Production Stack:** Ubuntu 22.04 LTS, Nginx reverse proxy, SSL/Certbot, PM2 process management cluster mode.
+* **AWS RDS Database Architecture:** Multi-AZ high availability failover, Read Replicas for read scaling, VPC Security Groups, Parameter Groups, and automated Point-In-Time Recovery (PITR).
 
 ---
 
 ### 🔀 [23. Database Sharding & Partitioning](./23_Sharding_And_Partitioning.md)
-* **Partitioning (Local Scaling):**
-  * Splitting a table horizontally (by rows using Range, List, or Hash) or vertically (by columns) while keeping it on the same database server.
-  * **Partition Pruning:** The database engine scans only the matching partition and ignores all others, yielding dramatic speedups.
-* **Sharding (Distributed Scaling):**
-  * Splitting a table horizontally across multiple separate physical databases (shards).
-  * Requires a **Shard Key** (like `user_id` or `tenant_id`) to route queries.
-  * **Trade-offs:** Breaks native relationships (no cross-shard joins) and ACID properties (requires two-phase commit distributed transactions).
+* **Partitioning (Local Scaling):** Range, List, Hash, and Composite subpartitioning inside one server.
+* **Partition Pruning:** The optimizer reads only the target partition file and skips all others (`EXPLAIN PARTITIONS`).
+* **Sharding (Distributed Scaling):** Horizontal splitting across independent database servers.
+* **Routing & Hashing:** Consistent Hashing Ring, Application-level routers, or Middleware proxies (Vitess / Citus).
+* **Distributed IDs & Transactions:** UUIDv7, Twitter Snowflake IDs, Two-Phase Commit (2PC), and Saga Pattern.
 
 ---
 
 ### 🪵 [24. CTEs & Recursive Queries](./24_CTEs_And_Recursive_Queries.md)
-* **Common Table Expressions (CTEs):**
-  * Temporary named result sets declared at the top of a query via `WITH cte_name AS (...)`. Excellent for flattening nested subqueries.
-* **Recursive CTEs:**
-  * Self-referential queries that join back to themselves. Perfect for querying hierarchical tree structures like org charts or categories.
-  * Uses an **Anchor Member** (base case) and a **Recursive Member** (joins recursive logic until empty set returned).
+* **Non-Recursive CTEs:** Modular top-down query chaining using `WITH cte1 AS (...), cte2 AS (...)` (optimizer inlines AST by default).
+* **Recursive CTEs:** Traverses hierarchical trees and graphs in a single query:
+  * **Anchor Member:** Base case query (e.g. Root categories `parent_id IS NULL`).
+  * `UNION ALL`
+  * **Recursive Member:** Joins the CTE back to the base table to fetch next depth level.
+* **Hierarchical Modeling Tradeoffs:** Adjacency List (CTEs) vs Materialized Path vs Closure Table vs Nested Sets.
+* **Graph Routing & Cycle Detection:** Shortest path traversal with path tracking strings and `cte_max_recursion_depth`.
 
 ---
 
 ### 🪟 [25. Window Functions](./25_Window_Functions.md)
-* **Window Functions (`OVER`):**
-  * Perform analytic calculations across rows related to the current row, **without collapsing them** (unlike `GROUP BY`).
-* **Ranking Functions:**
-  * `ROW_NUMBER()` (sequential, no duplicates), `RANK()` (duplicates allowed, skips next rank index), and `DENSE_RANK()` (duplicates allowed, does not skip ranks).
-* **LAG & LEAD:**
-  * Access preceding (`LAG`) or succeeding (`LEAD`) row values. Perfect for trend analytics (e.g., month-over-month growth).
-* **Filtering constraint:**
-  * Cannot use window functions directly inside a `WHERE` clause because `WHERE` runs before window projections. Must wrap in a CTE to filter.
+* **Core Concept:** Computes aggregations across a partition of rows **without collapsing rows** (unlike `GROUP BY`).
+* **Ranking:** `ROW_NUMBER()` (unique sequential), `RANK()` (ties with skips: 1, 2, 2, 4), `DENSE_RANK()` (ties without skips: 1, 2, 2, 3), `NTILE(n)`.
+* **Navigation:** `LAG(col, 1)` (previous row) and `LEAD(col, 1)` (next row) for Month-over-Month (MoM) growth analytics.
+* **Sliding Window Frames:** `ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING` (Moving averages), `RANGE` vs `ROWS` duplicate evaluation, and the `LAST_VALUE()` default frame trap.
+* **Advanced Patterns:**
+  * **Top-N per Group:** Using `DENSE_RANK()` in a CTE with `WHERE rank <= N`.
+  * **Gaps & Islands Analysis:** Grouping consecutive login streaks using `(event_date - ROW_NUMBER() DAYS)` difference groupings.
+
+---
+

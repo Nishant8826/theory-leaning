@@ -599,12 +599,12 @@ Horizontal Scaling (Scale Out):
 EC2 Instances  └──────────┘
 
 For serious scaling:
-1. Use AWS RDS for managed MySQL
-2. Use ElastiCache (Redis) for caching
-3. Use S3 + CloudFront for static files
-4. Use Application Load Balancer
-5. Auto Scaling Group for EC2 instances
-```
+1. Use **AWS RDS MySQL** with Multi-AZ (Automatic failover to standby replica in another availability zone)
+2. Use **Read Replicas** for scaling read-heavy queries (`SELECT *`) while directing writes (`INSERT/UPDATE`) to Primary
+3. Use **Point-In-Time Recovery (PITR)**: Restores the database to any specific second in the past 35 days using automated snapshots + Binary Log (binlog) replay
+4. Use **ElastiCache (Redis)** for query caching & session stores
+5. Use **S3 + CloudFront** for media / images
+6. Use **Application Load Balancer (ALB)** with Auto Scaling Groups
 
 ---
 
@@ -721,20 +721,5 @@ Backup & Monitoring:
 
 ---
 
-| [← Previous: Final Project](./21_Final_Project.md) | [Index](./00_index.md) | **🎉 Congratulations! Tutorial Complete!** |
-|---|---|---|
+| [← Previous: Final Project](./21_Final_Project.md) | [Index](./00_index.md) | [Next: Database Sharding & Partitioning →](./23_Sharding_And_Partitioning.md) |
 
----
-
-## 🎉 What's Next?
-
-You've completed the entire SQL tutorial! Here's what to do next:
-
-1. **Build the Final Project** — Don't just read it, code it!
-2. **Practice SQL daily** — Use LeetCode SQL, HackerRank SQL, or SQLZoo
-3. **Learn PostgreSQL** — Very similar to MySQL but more features
-4. **Explore Prisma** — Modern ORM that's gaining popularity
-5. **Study database design patterns** — Partitioning, replication, sharding
-6. **Contribute** — Build real applications with MySQL and add to your portfolio
-
-**You are now a MERN + SQL Full Stack Developer. 🚀**

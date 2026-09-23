@@ -39,22 +39,57 @@ SELECT is part of DQL (Data Query Language) — the only command that reads data
 
 ## How does it work?
 
-### SELECT Execution Order
+### 1. The 8-Step Logical Query Processing Order
+
+To master SQL, you must understand that **the order you write SQL is NOT the order the database engine executes it**:
 
 ```
-What you WRITE:                What MySQL EXECUTES:
-──────────────                 ────────────────────
-SELECT columns         5th     FROM table              1st
-FROM table             1st     WHERE condition          2nd
-WHERE condition        2nd     GROUP BY columns         3rd
-GROUP BY columns       3rd     HAVING condition         4th
-HAVING condition       4th     SELECT columns           5th
-ORDER BY columns       6th     ORDER BY columns         6th
-LIMIT count            7th     LIMIT count              7th
-
-The order you write SQL ≠ the order MySQL runs it!
-This matters when understanding aliases and column availability.
+What you WRITE (Syntax Order):         What MySQL EXECUTES (Logical Order):
+──────────────────────────────         ───────────────────────────────────
+1. SELECT column_list                  1. FROM & JOIN (Loads & combines tables)
+2. FROM table_name                     2. WHERE (Filters raw rows before grouping)
+3. JOIN other_table ON condition       3. GROUP BY (Collapses rows into aggregate buckets)
+4. WHERE filter_conditions             4. HAVING (Filters aggregated group summaries)
+5. GROUP BY group_columns              5. SELECT (Evaluates column expressions & aliases)
+6. HAVING aggregate_filters            6. DISTINCT (Deduplicates result set)
+7. ORDER BY sort_columns               7. ORDER BY (Sorts final result rows)
+8. LIMIT count OFFSET start            8. LIMIT & OFFSET (Slices final output rows)
 ```
+
+#### Why Alias Scope Matters:
+* ❌ **Why this fails:** `SELECT price * 0.9 AS discounted_price FROM products WHERE discounted_price < 500;`
+  * *Reason:* `WHERE` (Step 2) executes **before** `SELECT` (Step 5). At Step 2, the alias `discounted_price` does not exist yet!
+* ✔️ **Why this works:** `SELECT price * 0.9 AS discounted_price FROM products ORDER BY discounted_price ASC;`
+  * *Reason:* `ORDER BY` (Step 7) executes **after** `SELECT` (Step 5), so it can freely use the alias.
+
+---
+
+### 2. Under-the-Hood: `DISTINCT` Memory & Sorting Overhead
+When you run `SELECT DISTINCT city FROM customers;`:
+* The database engine must ensure zero duplicates. It creates an internal temporary table in RAM, hashes or sorts the values, and removes duplicates (`Using temporary; Using filesort` in `EXPLAIN`).
+* 💡 **Rule of thumb:** Do not slap `DISTINCT` on queries as a lazy fix for bad join duplicates — fix the join condition instead to avoid heavy sorting overhead!
+
+---
+
+### 3. Conditional Logic: Searched vs Simple `CASE WHEN`
+* **Searched CASE (Most versatile, handles ranges & complex conditions):**
+  ```sql
+  SELECT name, price,
+    CASE 
+      WHEN price >= 50000 THEN 'Premium'
+      WHEN price >= 10000 THEN 'Mid-Range'
+      ELSE 'Budget'
+    END AS price_tier
+  FROM products;
+  ```
+* **Conditional Aggregation (Pivot Tables in SQL):**
+  ```sql
+  -- Count active vs inactive users in a single query!
+  SELECT 
+    COUNT(CASE WHEN status = 'active' THEN 1 END) AS active_count,
+    COUNT(CASE WHEN status = 'inactive' THEN 1 END) AS inactive_count
+  FROM users;
+  ```
 
 ---
 

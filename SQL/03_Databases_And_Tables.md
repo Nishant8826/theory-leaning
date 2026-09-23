@@ -66,23 +66,74 @@ INSERT INTO users (id, name, hobbies) VALUES (2, 'Priya', 'reading');  -- ❌ ER
 
 ## How does it work?
 
-### Step-by-Step: Creating Our E-Commerce Database
+### 1. Step-by-Step Table Creation Workflow
 
 ```
-Step 1: Create Database
+Step 1: Create Database with UTF-8 Collation
        │
        ▼
-Step 2: Switch to Database (USE)
+Step 2: Switch to Database (USE ecommerce)
        │
        ▼
-Step 3: Create Tables (with columns & types)
+Step 3: Define Parent Tables (e.g. categories, users)
        │
        ▼
-Step 4: Verify Structure (DESCRIBE)
+Step 4: Define Child Tables with Foreign Keys (e.g. products, orders)
        │
        ▼
-Step 5: Start inserting data
+Step 5: Verify Table Storage Engine & Metadata (DESCRIBE / SHOW TABLE STATUS)
 ```
+
+---
+
+### 2. Primary Key Architectural Strategies: Auto-Increment vs UUIDv4 vs UUIDv7
+
+Choosing your Primary Key strategy is a foundational architectural decision that impacts database performance and clustering on disk:
+
+```
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                              PRIMARY KEY STRATEGY COMPARISON                            │
+├────────────────────┬───────────┬──────────────┬────────────────────────────────────────┤
+│ Strategy           │ Storage   │ B+Tree Speed │ Production Trade-Offs                  │
+├────────────────────┼───────────┼──────────────┼────────────────────────────────────────┤
+│ `INT AUTO_INCREMENT`│ 4 Bytes   │ ⚡ Ultra Fast│ Max 2.14B rows. Predictable IDs expose │
+│                    │           │ (Sequential) │ business volume (`api/orders/1024`).   │
+├────────────────────┼───────────┼──────────────┼────────────────────────────────────────┤
+│ `BIGINT AUTO_INC`  │ 8 Bytes   │ ⚡ Ultra Fast│ Up to 9 Quintillion rows. Perfect for  │
+│                    │           │ (Sequential) │ internal IDs and enterprise ledgers.   │
+├────────────────────┼───────────┼──────────────┼────────────────────────────────────────┤
+│ `UUIDv4` (Random)  │ 16/36 Byte│ 🐢 Slow      │ Globally unique across microservices,  │
+│                    │           │ (Fragmented) │ but random inserts cause heavy B+Tree  │
+│                    │           │              │ page splits and RAM cache thrashing.   │
+├────────────────────┼───────────┼──────────────┼────────────────────────────────────────┤
+│ `UUIDv7` (Ordered) │ 16 Bytes  │ ⚡ Fast      │ **Modern Standard:** Timestamp prefix  │
+│                    │ (Binary)  │ (Monotonic)  │ + Randomness. Combines global unique-  │
+│                    │           │              │ ness with sequential B+Tree clustering!│
+└────────────────────┴───────────┴──────────────┴────────────────────────────────────────┘
+```
+
+#### Under-The-Hood: Why Random UUIDv4 Degrades InnoDB Performance
+InnoDB stores table rows physically ordered by the Primary Key (Clustered Index). When using random `UUIDv4`, every new insert lands in a random 16KB disk page. When pages fill up, InnoDB must split pages in half (**Page Splits**), causing high disk I/O, fragmented tables, and poor buffer pool cache utilization. `UUIDv7` solves this by placing the current Unix timestamp at the front of the UUID.
+
+---
+
+### 3. Foreign Key Constraints & Referential Integrity
+
+Foreign keys enforce that a child row cannot point to a non-existent parent row.
+
+```
+Parent Table: categories [id: 1, name: 'Electronics']
+     ▲
+     │  FOREIGN KEY (category_id) REFERENCES categories(id)
+     │
+Child Table: products   [id: 101, name: 'Laptop', category_id: 1]
+```
+
+#### Cascading Delete/Update Actions (`ON DELETE / ON UPDATE`):
+* `RESTRICT` / `NO ACTION` (Default): Prevents deleting or updating the parent row if any child record references it. Throws error: `Cannot delete or update a parent row: a foreign key constraint fails`.
+* `CASCADE`: Deleting/updating the parent automatically deletes or updates all associated child rows.
+* `SET NULL`: Deleting the parent sets the child table's foreign key column to `NULL` (column must allow `NULL`).
+* `SET DEFAULT`: Sets the child column to its defined default value (rarely used in MySQL).
 
 ---
 

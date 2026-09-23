@@ -43,21 +43,124 @@ WHERE is used with SELECT, UPDATE, and DELETE to specify which rows to affect.
 
 ## How does it work?
 
-### WHERE Evaluation
+### 1. WHERE Evaluation & Short-Circuiting
 
 ```
 SELECT * FROM products WHERE price > 1000 AND category_id = 1;
 
-Step 1: MySQL scans the products table
-Step 2: For EACH row, evaluates: is price > 1000?
-Step 3: For matching rows, evaluates: is category_id = 1?
-Step 4: Only rows where BOTH conditions are TRUE are returned
-
-Row 1: price=79999, cat=1 → TRUE AND TRUE → ✅ Returned
-Row 2: price=299, cat=3   → FALSE AND TRUE → ❌ Skipped
-Row 3: price=24900, cat=1 → TRUE AND TRUE → ✅ Returned
-Row 4: price=12999, cat=2 → TRUE AND FALSE → ❌ Skipped
+Step 1: MySQL checks for available indexes on price and category_id.
+Step 2: Evaluates the most selective filter condition first.
+Step 3: Only rows where the combined logical expression evaluates to TRUE are returned.
 ```
+
+---
+
+### 2. Under-the-Hood: SQL Three-Valued Logic (3VL)
+
+Unlike JavaScript booleans (which are strictly `true` or `false`), SQL operates on **Three-Valued Logic**: `TRUE`, `FALSE`, and `UNKNOWN` (represented by `NULL`).
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        SQL 3VL TRUTH TABLES                            │
+├───────────────┬───────────────┬────────────────┬───────────────────────┤
+│ Condition A   │ Condition B   │ A AND B        │ A OR B                │
+├───────────────┼───────────────┼────────────────┼───────────────────────┤
+│ TRUE          │ TRUE          │ TRUE           │ TRUE                  │
+│ TRUE          │ FALSE         │ FALSE          │ TRUE                  │
+│ TRUE          │ UNKNOWN (NULL)│ UNKNOWN        │ TRUE                  │
+│ FALSE         │ UNKNOWN (NULL)│ FALSE          │ UNKNOWN               │
+│ UNKNOWN (NULL)│ UNKNOWN (NULL)│ UNKNOWN        │ UNKNOWN               │
+└───────────────┴───────────────┴────────────────┴───────────────────────┘
+```
+
+#### Why `WHERE phone = NULL` ALWAYS Returns 0 Rows:
+* In SQL, `NULL` means "unknown value". Asking `Is unknown equal to unknown?` produces `UNKNOWN`.
+* The `WHERE` clause **only passes rows where the condition evaluates to `TRUE`**. It discards both `FALSE` and `UNKNOWN`.
+* Therefore, you **must** use `IS NULL` or `IS NOT NULL`.
+
+---
+
+### 3. SARGability: Writing Index-Friendly Queries
+
+A query is **SARGable** (Search Argument Able) if the database optimizer can use an index to jump directly to rows instead of scanning the full table.
+
+```
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                                SARGABILITY CHEAT SHEET                                 │
+├────────────────────────────────────────┬───────────────────────────────────────────────┤
+│ ❌ NON-SARGABLE (Destroys Index)       │ ✔️ SARGABLE (Uses Index Range Scan)           │
+├────────────────────────────────────────┼───────────────────────────────────────────────┤
+│ `WHERE YEAR(created_at) = 2024`        │ `WHERE created_at >= '2024-01-01'`            │
+│ (Function runs on every single row)    │ `  AND created_at <  '2025-01-01'`            │
+├────────────────────────────────────────┼───────────────────────────────────────────────┤
+│ `WHERE string_phone = 9876543210`      │ `WHERE string_phone = '9876543210'`           │
+│ (Implicit type conversion forces scan) │ (Matches exact string data type)              │
+├────────────────────────────────────────┼───────────────────────────────────────────────┤
+│ `WHERE name LIKE '%tech'`              │ `WHERE name LIKE 'tech%'` (Prefix scan)       │
+│ (Leading wildcard disables B+Tree)     │ (Or use `FULLTEXT` index for substring search)│
+├────────────────────────────────────────┼───────────────────────────────────────────────┤
+│ `WHERE price + 100 > 500`              │ `WHERE price > 400`                           │
+│ (Math on column disables index)        │ (Math isolated to the constant literal)       │
+├────────────────────────────────────────┼───────────────────────────────────────────────┤
+│ `WHERE colA = colB COLLATE utf8_bin`   │ `WHERE colA = colB` (Matching collations)     │
+│ (Collation conversion destroys index)  │ (Align character set & collation at DDL level)│
+└────────────────────────────────────────┴───────────────────────────────────────────────┘
+```
+
+---
+
+### 4. The Silent Production Killer: Collation Mismatches
+
+If two tables or a query session use different character sets or collations (e.g., table A uses `utf8mb4_general_ci` and table B / application session uses `utf8mb4_unicode_ci` or `utf8mb4_0900_ai_ci`):
+- MySQL **implicitly casts** the column with the lower-coercibility collation to match the other using a hidden collation function.
+- **Consequence**: The index on the column is completely disabled! `EXPLAIN` will show `type: ALL` (Full Table Scan) even though a B+Tree index exists.
+- **Fix**: Ensure standard uniform collations across all tables (`utf8mb4_0900_ai_ci` in MySQL 8.0) or explicitly cast the comparison literal, NOT the indexed column.
+
+---
+
+### 5. Non-Deterministic `WHERE` Evaluation & Short-Circuiting Trap
+
+In programming languages like JavaScript or Python:
+```javascript
+if (user !== null && user.age > 18) // Guaranteed left-to-right short-circuiting
+```
+**In SQL, the Cost-Based Optimizer (CBO) decides the evaluation order, NOT the order you wrote in the query!**
+
+```sql
+-- ⚠️ DANGER: You cannot rely on short-circuiting to prevent division by zero or cast errors:
+SELECT * FROM metrics 
+WHERE divisor != 0 AND (total / divisor) > 5;
+-- The SQL engine might evaluate (total / divisor) > 5 BEFORE divisor != 0, throwing a runtime error!
+
+-- ✅ SAFE SOLUTION: Use NULLIF or CASE WHEN to guarantee execution safety:
+SELECT * FROM metrics 
+WHERE (total / NULLIF(divisor, 0)) > 5;
+```
+
+---
+
+### 6. Production Full-Text Search in Boolean Mode
+
+When standard `LIKE '%query%'` is too slow for text search across millions of articles/products, use **Full-Text Inverted Indexes** with Boolean Mode operators:
+
+```sql
+-- Create FULLTEXT index
+ALTER TABLE articles ADD FULLTEXT INDEX idx_ft_title_body (title, body);
+
+-- Query with Boolean Operators:
+SELECT id, title, MATCH(title, body) AGAINST('+database -nosql "distributed system"*' IN BOOLEAN MODE) AS score
+FROM articles
+WHERE MATCH(title, body) AGAINST('+database -nosql "distributed system"*' IN BOOLEAN MODE);
+```
+
+| Boolean Operator | Meaning | Example |
+|---|---|---|
+| `+` | Word **MUST** be present | `+mysql` |
+| `-` | Word **MUST NOT** be present | `-mongodb` |
+| `*` | Wildcard at the end of word (prefix match) | `transact*` (matches transaction, transactional) |
+| `""` | Exact phrase match | `"high availability"` |
+| `>` / `<` | Increase / decrease word relevance ranking | `+mysql +(>innodb <myisam)` |
+| `~` | Negation operator (lowers ranking without excluding) | `+cloud ~expensive` |
 
 ---
 
@@ -564,9 +667,16 @@ WHERE (category_id = 1 OR category_id = 2) AND price > 10000;
 > **💡 Answer:** LIKE uses simple patterns: `%` (any characters) and `_` (one character). For complex patterns, use `REGEXP`: `WHERE name REGEXP '^[A-Z]'`. LIKE is faster and sufficient for most cases. REGEXP is more powerful but slower. In MongoDB terms, LIKE is a simplified regex.
 
 ### ❓ Q5: You have a products table with 10 million rows. A query using `WHERE name LIKE '%phone%'` is slow. How would you fix it?
-> **💡 Answer:** Leading wildcard `%phone%` prevents index usage, causing a full table scan. Solutions: (1) Add a FULLTEXT index and use `MATCH...AGAINST`. (2) Use an external search engine like Elasticsearch. (3) If prefix search is sufficient, use `LIKE 'phone%'` which can use a regular index. (4) Create a generated column with a reversed name for suffix searches a. (5) Implement application-level caching for common searches.
+> **💡 Answer:** Leading wildcard `%phone%` prevents index usage, causing a full table scan. Solutions: (1) Add a FULLTEXT index and use `MATCH...AGAINST`. (2) Use an external search engine like Elasticsearch. (3) If prefix search is sufficient, use `LIKE 'phone%'` which can use a regular index. (4) Create a generated column with a reversed name for suffix searches. (5) Implement application-level caching for common searches.
+
+### ❓ Q6: Why did adding an index on a VARCHAR column not speed up my `WHERE column = 'value'` query?
+> **💡 Answer:** The most common silent root causes are: (1) **Collation / Character Set Mismatch**: If the table collation differs from the connection collation (e.g. `utf8mb4_general_ci` vs `utf8mb4_unicode_ci`), MySQL implicitly converts each row using a collation coercion function, killing the index. (2) **Implicit Type Casting**: Querying a VARCHAR column with an integer literal (`WHERE varchar_code = 12345`) forces MySQL to convert every string to a number. (3) **Low Index Selectivity**: If the value matches >20–30% of the table, the Cost-Based Optimizer (CBO) intentionally opts for a fast sequential table scan over expensive random B+Tree lookups.
+
+### ❓ Q7: Does SQL guarantee left-to-right short-circuit evaluation in WHERE clauses like JavaScript or Java?
+> **💡 Answer:** No! SQL is a declarative language. The SQL standard does not enforce short-circuiting order. The Cost-Based Optimizer (CBO) reorders WHERE predicates based on index availability and selectivity to filter out rows as early and cheaply as possible. Never rely on the first condition preventing a runtime error in the second condition (e.g. `WHERE x != 0 AND y/x > 1`); use `CASE WHEN` or `NULLIF()` for deterministic safety.
 
 ---
 
 | [← Previous: SELECT Basics](./07_Select_Basics.md) | [Index](./00_index.md) | [Next: Sorting & Limiting →](./09_Sorting_And_Limiting.md) |
 |---|---|---|
+

@@ -41,7 +41,7 @@ You've lived in the MongoDB world. Now you can see both sides:
 
 ## How does it work?
 
-### Decision Framework
+### 1. Decision Framework
 
 ```
                         START HERE
@@ -63,6 +63,63 @@ You've lived in the MongoDB world. Now you can see both sides:
                     │ (MongoDB)      │           │ Go with team's │
                     └────────────────┘           │ familiarity    │
                                                 └────────────────┘
+```
+
+---
+
+### 2. Distributed Systems: CAP Theorem vs. PACELC Theorem
+
+In distributed database architecture, trade-offs are governed by theoretical models:
+
+#### A. CAP Theorem (During Network Partitions)
+In any distributed network partition ($P$), a database can guarantee at most two of the following:
+* **Consistency ($C$):** Every read receives the most recent write or an error.
+* **Availability ($A$):** Every request receives a non-error response, without guarantee that it contains the most recent write.
+* **Partition Tolerance ($P$):** The system continues to operate despite arbitrary network drops.
+  * **MySQL (CP / CA):** Prioritizes strict consistency and serializability.
+  * **MongoDB (CP / AP):** Default is CP (primary node), configurable to AP with read preferences.
+
+#### B. PACELC Theorem (Normal State vs Partition State)
+CAP only explains behavior when the network is broken. **PACELC** extends CAP to explain the trade-off during normal operations:
+* **If Partition ($P$):** Choose between **Availability ($A$)** and **Consistency ($C$)**.
+* **Else ($E$):** Choose between **Latency ($L$)** and **Consistency ($C$)**.
+  * *Example:* To guarantee immediate consistency in MongoDB/PostgreSQL, the engine waits for replica acknowledgments, increasing **Latency ($L$)**. To achieve lower latency, it acknowledges immediately, accepting **Eventual Consistency**.
+
+---
+
+### 3. ACID vs. BASE Models
+
+```
+┌──────────────────────────────────────┬──────────────────────────────────────┐
+│           SQL: ACID MODEL            │          NoSQL: BASE MODEL           │
+├──────────────────────────────────────┼──────────────────────────────────────┤
+│ • Atomicity (All or nothing)         │ • Basically Available (System stays  │
+│ • Consistency (Strict constraints)   │   up, but may return stale data)     │
+│ • Isolation (No concurrent races)    │ • Soft State (State changes over     │
+│ • Durability (Permanent on disk)     │   time without new input)            │
+│                                      │ • Eventual Consistency (All nodes    │
+│                                      │   converge given enough time)        │
+└──────────────────────────────────────┴──────────────────────────────────────┘
+```
+
+---
+
+### 4. Polyglot Persistence Architecture
+
+Modern production engineering does not pick one database; it uses **Polyglot Persistence** (the right tool for each job):
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                   ENTERPRISE POLYGLOT ARCHITECTURE                     │
+├───────────────────────┬───────────────────────┬────────────────────────┤
+│ Service / Feature     │ Database Engine       │ Why?                   │
+├───────────────────────┼───────────────────────┼────────────────────────┤
+│ Orders & Payments     │ MySQL / PostgreSQL    │ ACID, strict ledger    │
+│ Product Catalog       │ MongoDB / DynamoDB    │ Polymorphic JSON specs │
+│ Session / Cache       │ Redis                 │ Sub-millisecond in-RAM │
+│ Search & Filters      │ Elasticsearch         │ Full-text BM25 ranking │
+│ Social / Followers    │ Neo4j / GraphDB       │ Fast graph traversals  │
+└───────────────────────┴───────────────────────┴────────────────────────┘
 ```
 
 ---

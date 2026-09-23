@@ -54,14 +54,14 @@ Data is EMBEDDED together           SELECT * FROM orders
 
 ## How does it work?
 
-### The 4 Types of JOINs
+### 1. Logical Join Classifications
 
 ```
-Given two tables: A and B
+Given two tables: Table A (Left) and Table B (Right)
 
 INNER JOIN:          LEFT JOIN:           RIGHT JOIN:         FULL OUTER JOIN:
 Only matching        All from A +         All from B +        All from both
-rows from both       matching from B      matching from A
+rows from both       matching from B      matching from A     (Simulated via UNION)
 
   ┌───┬───┐           ┌───┬───┐           ┌───┬───┐          ┌───┬───┐
   │ A │ B │           │ A │ B │           │ A │ B │          │ A │ B │
@@ -72,6 +72,92 @@ rows from both       matching from B      matching from A
   └───┴───┘           └───┴───┘           └───┴───┘          └───┴───┘
   
 █ = Included in result
+```
+
+---
+
+### 2. Under-the-Hood: Physical Join Execution Algorithms
+
+When MySQL executes a `JOIN`, it chooses one of several physical algorithms:
+
+```
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                              PHYSICAL JOIN ALGORITHMS                                  │
+├─────────────────────────┬──────────────┬───────────────────────────────────────────────┤
+│ Algorithm               │ Time Cost    │ How it works                                  │
+├─────────────────────────┼──────────────┼───────────────────────────────────────────────┤
+│ **Index Nested Loop**   │ $O(M \log N)$│ Reads outer table row $\rightarrow$ does B+Tree│
+│ **(INLJ - Most Common)**│              │ index lookup on inner table. Very fast!       │
+├─────────────────────────┼──────────────┼───────────────────────────────────────────────┤
+│ **Batched Key Access**  │ $O(M \log N)$│ Collects batch of outer keys $\rightarrow$ MRR│
+│ **(BKA + MRR)**         │ (Sequential) │ sorts by disk address $\rightarrow$ reads disk│
+│                         │              │ in sequential order (10x faster than random). │
+├─────────────────────────┼──────────────┼───────────────────────────────────────────────┤
+│ **Hash Join**           │ $O(M + N)$   │ Builds in-memory Hash Table on smaller table, │
+│ **(MySQL 8.0.18+)**     │              │ then streams larger table to probe matches.   │
+├─────────────────────────┼──────────────┼───────────────────────────────────────────────┤
+│ **Block Nested Loop**   │ $O(M \times N)$🐢 Loads chunks of outer table into RAM       │
+│ **(Legacy / No Index)** │              │ `join_buffer_size` and scans inner table.     │
+└─────────────────────────┴──────────────┴───────────────────────────────────────────────┘
+```
+
+#### 🔬 Hash Join Deep-Dive: In-Memory vs On-Disk Spill (Grace Hash Join)
+1. **Phase 1: Build Phase**
+   - The optimizer designates the smaller dataset as the *Build Input*.
+   - Rows are read into an in-memory Hash Table inside RAM allocated by `join_buffer_size`.
+2. **Phase 2: Probe Phase**
+   - The optimizer streams rows from the larger dataset (*Probe Input*).
+   - For each row, the join key is hashed to find matching rows in the in-memory hash table in $O(1)$ time.
+3. **What happens if the Build Table exceeds `join_buffer_size`? (Grace Hash Join / Disk Spill)**
+   - When memory is exhausted, the engine spills excess partitions into temporary files on disk using the same hash function on both tables.
+   - The engine then loads and joins matching disk partitions one-by-one, guaranteeing $O(M+N)$ execution without running out of server RAM!
+
+#### 🏎️ Batched Key Access (BKA) & Multi-Range Read (MRR)
+- **The Problem:** In standard Index Nested Loop Join, reading matching secondary index keys causes random page seeks on disk when looking up the clustered index (table data).
+- **The Optimization:** Multi-Range Read (MRR) buffers a batch of secondary index keys, sorts them by their primary key (physical disk address), and retrieves the clustered table pages in sequential I/O order.
+
+#### 🧠 Join Elimination Optimization
+If a query performs a `LEFT JOIN` on a table with a unique/primary key, but the outer `SELECT`, `WHERE`, and `HAVING` clauses do NOT reference any columns from that joined table, the MySQL Cost-Based Optimizer **completely eliminates the JOIN from the execution plan**, executing the query against the main table only!
+
+---
+
+### 3. ⚠️ Critical Gotcha: `ON` vs `WHERE` in `LEFT JOIN`
+
+Where you place a filter condition on the right table completely changes the query behavior:
+
+```sql
+-- ✔️ Correct: Preserves ALL customers, only matches orders with status 'shipped'
+SELECT c.name, o.total 
+FROM customers c 
+LEFT JOIN orders o ON c.id = o.customer_id AND o.status = 'shipped';
+
+-- ❌ Bug: Silently converts LEFT JOIN into an INNER JOIN!
+SELECT c.name, o.total 
+FROM customers c 
+LEFT JOIN orders o ON c.id = o.customer_id
+WHERE o.status = 'shipped';
+```
+* **Why the bug happens:** For customers with no orders, `o.status` evaluates to `NULL`. The `WHERE o.status = 'shipped'` condition evaluates `NULL = 'shipped'` to `UNKNOWN`, which discards those customers entirely!
+
+---
+
+### 4. 🏛️ Schema Architecture: Star Schema vs Snowflake Schema
+
+In analytics and enterprise data warehousing (OLAP), dimensional modeling organizes joins around central business metrics:
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────────────┐
+│                           STAR SCHEMA vs SNOWFLAKE SCHEMA                               │
+├───────────────────────────────┬─────────────────────────────────────────────────────────┤
+│ ⭐ STAR SCHEMA (De-normalized)│ ❄️ SNOWFLAKE SCHEMA (Normalized)                        │
+├───────────────────────────────┼─────────────────────────────────────────────────────────┤
+│ • Central Fact Table surrounded│ • Central Fact Table surrounded by dimension tables,   │
+│   by 1-level flat Dimensions. │   which are further normalized into sub-tables.         │
+│ • Example:                    │ • Example:                                              │
+│   `fact_sales` ──▶ `dim_product`│   `fact_sales` ──▶ `dim_product` ──▶ `dim_category`     │
+│ • Pros: Fewer JOINs, faster   │ • Pros: Zero data redundancy, minimal storage footprint.│
+│   analytical read queries.    │ • Cons: Many complex JOINs required for analytics.      │
+└───────────────────────────────┴─────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -586,7 +672,16 @@ By writing `JOIN` statements, the database engine executes the correlation inter
 ### ❓ Q5: How would you optimize a slow JOIN query?
 > **💡 Answer:** (1) Add indexes on all columns used in ON conditions (foreign keys). (2) Select only needed columns instead of SELECT *. (3) Add WHERE conditions to filter early. (4) Use EXPLAIN to see the query plan. (5) For very large tables, consider denormalization or materialized views. (6) Ensure the join order is optimal (MySQL usually optimizes this automatically).
 
+### ❓ Q6: When does MySQL choose a Hash Join over an Index Nested Loop Join? What happens when data exceeds RAM?
+> **💡 Answer:** MySQL selects an **Index Nested Loop Join** when the joined column has a selective B+Tree index. If there is **no index available** on the join column (or an equijoin on unindexed columns), modern MySQL (8.0.18+) chooses a **Hash Join** ($O(M+N)$) instead of the legacy slow Block Nested Loop ($O(M \times N)$). If the smaller table exceeds `join_buffer_size`, the engine uses a **Grace Hash Join** to spill matching hash partitions to temporary disk files, processing partition-by-partition without running out of memory.
+
+### ❓ Q7: What is the crucial difference between putting a filter condition in the `ON` clause versus the `WHERE` clause during a `LEFT JOIN`?
+> **💡 Answer:** 
+> - **In the `ON` clause:** The condition filters rows *during* the join matching phase. If the right table row does not match, the left table row is **still preserved** with `NULL` columns.
+> - **In the `WHERE` clause:** The condition filters rows *after* the join has completed. Any `NULL` columns resulting from unmatched rows will fail equality/inequality checks (due to 3-valued logic), silently converting your `LEFT JOIN` into an `INNER JOIN`.
+
 ---
 
 | [← Previous: Group By & Having](./11_Group_By_And_Having.md) | [Index](./00_index.md) | [Next: Subqueries →](./13_Subqueries.md) |
 |---|---|---|
+

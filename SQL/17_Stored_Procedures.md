@@ -72,6 +72,52 @@ Since both are saved database structures, developers often confuse their purpose
 
 ---
 
+### Under-the-Hood Technical Deep Dive
+
+#### 1. Stored Procedure vs. User-Defined Function (UDF)
+* **User-Defined Function (UDF):**
+  * MUST return a single scalar value.
+  * Can be called directly inside a `SELECT` statement: `SELECT name, calculate_tax(price) FROM products;`.
+  * Cannot execute DML modifications or manage transactions (`COMMIT`/`ROLLBACK`).
+* **Stored Procedure:**
+  * Called using `CALL proc_name(args)`.
+  * Can return 0, 1, or multiple result sets.
+  * Can execute `START TRANSACTION`, `COMMIT`, and `ROLLBACK`.
+
+#### 2. Robust Error Handling (`SQLEXCEPTION` Handlers)
+```sql
+CREATE PROCEDURE TransferFunds(
+  IN sender_id INT,
+  IN receiver_id INT,
+  IN amount DECIMAL(10,2)
+)
+BEGIN
+  -- Exit handler: If ANY SQL error occurs, rollback and exit cleanly!
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION
+  BEGIN
+    ROLLBACK;
+    RESIGNAL; -- Propagates error message to Node.js caller
+  END;
+
+  START TRANSACTION;
+    UPDATE accounts SET balance = balance - amount WHERE id = sender_id;
+    UPDATE accounts SET balance = balance + amount WHERE id = receiver_id;
+  COMMIT;
+END;
+```
+
+#### 3. Dynamic SQL (`PREPARE` / `EXECUTE`)
+Allows building and executing dynamic query strings inside a procedure:
+```sql
+SET @query = CONCAT('SELECT * FROM ', table_name, ' WHERE id = ?');
+PREPARE stmt FROM @query;
+SET @id = target_id;
+EXECUTE stmt USING @id;
+DEALLOCATE PREPARE stmt;
+```
+
+---
+
 ## Visual Diagram
 
 ```

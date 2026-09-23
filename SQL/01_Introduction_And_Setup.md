@@ -42,21 +42,67 @@ By the end of this file, you'll have a working MySQL environment and a running E
 
 ## How does it work?
 
-### Architecture Comparison
+### 1. Architecture Comparison (MERN vs SQL)
 
 ```
 MERN Stack (Current):
-Browser → React → Express API → Mongoose → MongoDB
+Browser → React → Express API → Mongoose → MongoDB (WiredTiger Engine)
                                     ↓
                               mongodb://localhost:27017
 
 SQL Stack (New):
-Browser → React → Express API → mysql2 → MySQL
+Browser → React → Express API → mysql2 → MySQL (InnoDB Engine)
                                     ↓
                               localhost:3306
 ```
 
-The flow is identical! Only the database layer changes.
+The application layer flow is identical! Only the database storage and query layer changes.
+
+---
+
+### 2. Under-The-Hood: MySQL Server Internal Architecture
+
+When your Node.js application sends a query to MySQL, it passes through three distinct internal architectural layers:
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        MYSQL SERVER ARCHITECTURE                       │
+├────────────────────────────────────────────────────────────────────────┤
+│ 1. CONNECTION / CLIENT LAYER                                           │
+│    • Handles client authentication, SSL, thread management, & pooling   │
+│    • Manages active connections from Express APIs                      │
+├────────────────────────────────────────────────────────────────────────┤
+│ 2. SQL SERVER CORE LAYER                                               │
+│    • SQL Interface: Receives DDL/DML/DQL commands                      │
+│    • Parser & Preprocessor: Builds Abstract Syntax Tree (AST), checks  │
+│      syntax and table/column existence permissions                     │
+│    • Cost-Based Optimizer (CBO): Chooses the fastest execution path    │
+│      (index lookups vs table scans, join order)                        │
+│    • Query Execution Engine: Executes the optimized plan step-by-step  │
+├────────────────────────────────────────────────────────────────────────┤
+│ 3. PLUGGABLE STORAGE ENGINE LAYER                                      │
+│    • InnoDB (Default, ACID, Row-level locking, MVCC, Foreign Keys)     │
+│    • MyISAM (Legacy, No transactions, Table-level locks)               │
+│    • Memory (In-RAM temporary tables)                                  │
+│                                                                        │
+│    ⚡ Core Memory Structure: InnoDB Buffer Pool (RAM)                   │
+│       • Caches table data pages & index pages in memory                │
+│       • Changes written to Buffer Pool & Redo Log before flushing disk │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+#### Why the InnoDB Buffer Pool is Critical
+In production, database performance is primarily governed by the **InnoDB Buffer Pool** (`innodb_buffer_pool_size`). 
+* If your active dataset fits in the Buffer Pool RAM (typically sized to $70\%-80\%$ of total server RAM on dedicated database instances), queries execute in sub-milliseconds without touching physical disk platters/SSDs.
+
+---
+
+### 3. Production Connection Pool Sizing & Lifecycle
+
+In Node.js with `mysql2/promise`:
+* **Never** set `connectionLimit: 1000`. More connections do not equal more speed — they cause CPU context switching bottlenecks and lock contention on MySQL.
+* **Optimal Pool Formula:** $\text{Pool Size} = (\text{CPU Cores} \times 2) + \text{Disk Spindles}$. For most 4-8 core servers, a pool size of `10` to `20` handles thousands of requests per second.
+* **Pool Events:** Always listen for connection errors and handle pool drainage gracefully during application shutdown (`process.on('SIGINT', async () => await pool.end())`).
 
 ---
 

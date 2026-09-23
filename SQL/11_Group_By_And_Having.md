@@ -46,16 +46,48 @@ $limit                   → LIMIT
 
 ## How does it work?
 
+### 1. Step-by-Step Processing Flow
+
 ```
-Step 1: FROM — Get all rows
-Step 2: WHERE — Filter individual rows
-Step 3: GROUP BY — Group rows by column(s)
-Step 4: Aggregate functions run on each group
-Step 5: HAVING — Filter groups based on aggregate results
-Step 6: SELECT — Choose columns to display
-Step 7: ORDER BY — Sort results
-Step 8: LIMIT — Restrict output
+Step 1: FROM — Load & join table data
+Step 2: WHERE — Filter raw individual rows BEFORE grouping
+Step 3: GROUP BY — Hash or sort matching rows into group buckets
+Step 4: Compute Aggregates — Runs COUNT, SUM, AVG on each bucket
+Step 5: HAVING — Filter aggregated groups based on computed math
+Step 6: SELECT — Project columns and aliases
+Step 7: ORDER BY — Sort grouped results
+Step 8: LIMIT — Slices output
 ```
+
+---
+
+### 2. Under-the-Hood Technical Deep Dive
+
+#### A. The `ONLY_FULL_GROUP_BY` Standard Rule
+In MySQL 8.0 (enabled by default), every column in your `SELECT` list must either be:
+1. Included in the `GROUP BY` clause, OR
+2. Wrapped inside an aggregate function (`SUM`, `AVG`, `MAX`, etc.).
+
+* ❌ **Why this errors:** `SELECT category_id, name, AVG(price) FROM products GROUP BY category_id;`
+  * *Reason:* If category 1 has 10 different product names, which `name` should the database pick? It's non-deterministic!
+* ✔️ **The Fix:** Either group by both `GROUP BY category_id, name`, use `GROUP_CONCAT(name)`, or use `ANY_VALUE(name)` to explicitly tell MySQL to pick any arbitrary row.
+
+#### B. Hierarchical Subtotals with `WITH ROLLUP`
+`WITH ROLLUP` automatically computes super-aggregate subtotals and grand totals in a single database pass:
+```sql
+SELECT 
+    category_id, 
+    status, 
+    SUM(price * stock) AS total_inventory_value,
+    GROUPING(category_id) AS is_grand_total
+FROM products
+GROUP BY category_id, status WITH ROLLUP;
+```
+* Generates: (1) Category+Status subtotal, (2) Category subtotal, and (3) Full Grand Total row (`NULL, NULL`).
+
+#### C. Hash Aggregation vs Streaming/Index Aggregation
+* **Index Streaming Aggregation (⚡ Fast):** If an index exists on the grouped column (`INDEX(category_id)`), MySQL reads data already sorted, streaming groups immediately without temporary memory buffers.
+* **Hash / Temp Table Aggregation (🐢 Slower):** Without an index, MySQL builds an in-memory hash table (`Using temporary; Using filesort`) to collect groups, which spills to disk if data exceeds `tmp_table_size`.
 
 ---
 

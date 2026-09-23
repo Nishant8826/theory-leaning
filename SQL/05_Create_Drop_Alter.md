@@ -45,6 +45,8 @@ In MongoDB, changing a schema means editing a file and redeploying your Node.js 
 
 ## How does it work?
 
+### 1. DDL Lifecycle Overview
+
 ```
 CREATE → Build the structure
            │
@@ -65,6 +67,59 @@ ALTER → Modify the structure
 DROP → Destroy the structure
      (permanent, no recovery)
 ```
+
+---
+
+### 2. Under-the-Hood: Online DDL & Algorithms in MySQL 8.0
+
+When running `ALTER TABLE` in production, you must understand how MySQL executes changes without taking the database offline:
+
+```sql
+ALTER TABLE users 
+ADD COLUMN loyalty_points INT DEFAULT 0,
+ALGORITHM = INSTANT, -- Or INPLACE / COPY
+LOCK = NONE;         -- Or SHARED / EXCLUSIVE
+```
+
+```
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                              ONLINE DDL ALGORITHM MATRIX                               │
+├──────────────┬──────────────┬──────────────┬───────────────────────────────────────────┤
+│ Algorithm    │ Locks Table? │ Rebuilds?    │ Production Behavior & Speed               │
+├──────────────┼──────────────┼──────────────┼───────────────────────────────────────────┤
+│ `INSTANT`    │ ❌ None      │ ❌ No        │ ⚡ **Sub-second (0ms):** Modifies table   │
+│ (MySQL 8.0+) │              │              │ metadata only. Zero downtime for adds!    │
+├──────────────┼──────────────┼──────────────┼───────────────────────────────────────────┤
+│ `INPLACE`    │ ❌ None      │ ✅ Yes       │ ⏱️ **Fast:** Rebuilds storage file while │
+│              │              │              │ allowing concurrent `INSERT`/`UPDATE`s.   │
+├──────────────┼──────────────┼──────────────┼───────────────────────────────────────────┤
+│ `COPY`       │ ⚠️ Full Lock │ ✅ Yes       │ 🐢 **Dangerous:** Copies all rows to temp │
+│ (Legacy)     │ (Read-Only)  │              │ table. Blocks all writes. Freezes app!    │
+└──────────────┴──────────────┴──────────────┴───────────────────────────────────────────┘
+```
+
+---
+
+### 3. The Metadata Lock (MDL) Production Trap
+
+Even with `ALGORITHM=INPLACE`, an `ALTER TABLE` statement must acquire a brief **Exclusive Metadata Lock (MDL)**:
+
+```
+Step 1: Long-running SELECT query starts on 'orders' table (takes 30 seconds).
+               │
+Step 2: Migration runs: ALTER TABLE orders ADD COLUMN status_code INT;
+        (Waits in queue for the long SELECT to release its Shared MDL).
+               │
+Step 3: New incoming fast API queries arrive: SELECT * FROM orders WHERE id = 10;
+        ⚠️ CRITICAL BUG: Because ALTER is waiting with high priority, ALL new 
+        incoming SELECT/INSERT queries are queued behind it!
+               │
+Step 4: Connection Pool fills to 100% capacity in 5 seconds ──▶ ENTIRE API CRASHES!
+```
+
+#### Production Safeguards:
+1. **Set lock wait timeout:** `SET lock_wait_timeout = 5;` (Fails the migration rather than queueing and taking down the API).
+2. **Zero-Downtime Tools:** For tables larger than 10 million rows, use **`gh-ost`** (GitHub's triggerless online schema changer) or **`pt-online-schema-change`** (Percona Toolkit) to stream changes via the binary log (binlog) with zero locks.
 
 ---
 

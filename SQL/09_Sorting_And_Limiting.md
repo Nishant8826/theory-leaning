@@ -84,6 +84,54 @@ Instead of skipping a specific number of rows, cursor-based pagination uses a un
 
 ---
 
+### 3. Under-the-Hood: Filesort Engine Mechanics & RAM Spills
+
+When you execute an `ORDER BY` query without a matching index:
+1. **Sort Buffer Allocation:** MySQL allocates an in-memory `sort_buffer_size` for the connection.
+2. **Single-Pass Sort:** If rows fit in memory, MySQL loads the sort keys along with the selected columns, runs QuickSort in RAM, and streams results directly.
+3. **Two-Pass (RowID) Sort & Disk Spills:** If selected columns are too wide or the result set exceeds `sort_buffer_size`, MySQL sorts only `(SortKey, RowID)` pairs in RAM and creates **temporary sort files on disk (merge sort)**, followed by a second pass reading table rows by RowID. This causes massive disk I/O thrashing!
+
+---
+
+### 4. Advanced Production Pattern: Multi-Column Tuple Keyset Pagination
+
+When sorting by a non-unique column (like `created_at` or `price`), simple `WHERE created_at < ?` fails because multiple rows share the same timestamp. You must use a deterministic tie-breaker with **Tuple Comparison**:
+
+```sql
+-- Composite index required on: (created_at, id)
+SELECT id, name, price, created_at
+FROM products
+WHERE (created_at, id) < ('2024-06-15 10:00:00', 450)
+ORDER BY created_at DESC, id DESC
+LIMIT 10;
+```
+* **Why it works:** The B+Tree index on `(created_at, id)` evaluates both columns in a single range lookup in $O(\log N)$ time, guaranteeing zero missed or duplicate rows across infinite scroll feeds!
+
+---
+
+### 5. The Dangerous `ORDER BY RAND()` Production Trap & $O(1)$ Optimization
+
+A common junior developer mistake is fetching a random record using:
+```sql
+-- ❌ DANGEROUS: Kills production databases!
+SELECT * FROM products ORDER BY RAND() LIMIT 1;
+```
+* **Why it destroys performance:** MySQL assigns a `RAND()` float to **every single row** in the table, copies all rows into a temporary table, executes a full table `filesort` across millions of rows, and discards all but 1!
+* **✔️ The $O(1)$ Production Solution (Index Seek):**
+  ```sql
+  SELECT p.* 
+  FROM products p
+  JOIN (
+    SELECT FLOOR(RAND() * (SELECT MAX(id) FROM products)) AS target_id
+  ) r
+  WHERE p.id >= r.target_id
+  ORDER BY p.id ASC
+  LIMIT 1;
+  ```
+  * **How it works:** It generates a random target ID in memory and uses the Primary Key B+Tree index to seek the next available row in $O(1)$ time with zero filesort overhead!
+
+---
+
 ## Visual Diagram
 
 ### ORDER BY Visualization

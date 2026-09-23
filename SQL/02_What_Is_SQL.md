@@ -55,57 +55,78 @@ SELECT * FROM users WHERE age >= 18 AND city = 'Delhi';
 
 ## How does it work?
 
-### SQL Statement Categories
+### 1. SQL Statement Sublanguages (The 5 Pillars)
 
-SQL statements are grouped into sublanguages based on what they do:
-
-```
-┌──────────────────────────────────────────────────────────────┐
-│                     SQL SUBLANGUAGES                         │
-├──────────────┬──────────────┬──────────────┬────────────────┤
-│     DDL      │     DML      │     DQL      │     DCL        │
-│ Data Defn.   │ Data Manip.  │ Data Query   │ Data Control   │
-├──────────────┼──────────────┼──────────────┼────────────────┤
-│ CREATE       │ INSERT       │ SELECT       │ GRANT          │
-│ ALTER        │ UPDATE       │              │ REVOKE         │
-│ DROP         │ DELETE       │              │                │
-│ TRUNCATE     │              │              │                │
-├──────────────┼──────────────┼──────────────┼────────────────┤
-│ Mongoose:    │ Mongoose:    │ Mongoose:    │ MongoDB:       │
-│ new Schema() │ .save()      │ .find()      │ db.createUser()│
-│              │ .updateOne() │ .findOne()   │                │
-│              │ .deleteOne() │ .aggregate() │                │
-└──────────────┴──────────────┴──────────────┴────────────────┘
-
-TCL (Transaction Control): COMMIT, ROLLBACK, SAVEPOINT
-→ MongoDB equivalent: session.startTransaction()
-```
-
-### How a SQL Query Executes
+SQL statements are grouped into sublanguages based on their operational scope:
 
 ```
-                     Your SQL Query
-                          │
-                          ▼
-                   ┌──────────────┐
-                   │    Parser    │  ← Checks syntax (like JS linter)
-                   └──────┬───────┘
-                          │
-                          ▼
-                   ┌──────────────┐
-                   │  Optimizer   │  ← Finds the fastest way to get data
-                   └──────┬───────┘
-                          │
-                          ▼
-                   ┌──────────────┐
-                   │  Executor    │  ← Actually runs the query
-                   └──────┬───────┘
-                          │
-                          ▼
-                   ┌──────────────┐
-                   │   Result     │  ← Returns rows (like JSON array)
-                   └──────────────┘
+┌───────────────────────────────────────────────────────────────────────────────────────────┐
+│                                     SQL SUBLANGUAGES                                      │
+├─────────────────┬─────────────────┬─────────────────┬──────────────────┬──────────────────┤
+│       DDL       │       DML       │       DQL       │       DCL        │       TCL        │
+│ Data Definition │Data Manipulation│   Data Query    │   Data Control   │Transaction Control
+├─────────────────┼─────────────────┼─────────────────┼──────────────────┼──────────────────┤
+│ `CREATE`        │ `INSERT`        │ `SELECT`        │ `GRANT`          │ `COMMIT`         │
+│ `ALTER`         │ `UPDATE`        │                 │ `REVOKE`         │ `ROLLBACK`       │
+│ `DROP`          │ `DELETE`        │                 │                  │ `SAVEPOINT`      │
+│ `TRUNCATE`      │                 │                 │                  │ `SET TRANSACTION`│
+├─────────────────┼─────────────────┼─────────────────┼──────────────────┼──────────────────┤
+│ Mongoose:       │ Mongoose:       │ Mongoose:       │ MongoDB:         │ MongoDB:         │
+│ `new Schema()`  │ `.save()`,      │ `.find()`,      │ `db.createUser()`│ `session.start-  │
+│                 │ `.updateOne()`  │ `.aggregate()`  │                  │  Transaction()`  │
+└─────────────────┴─────────────────┴─────────────────┴──────────────────┴──────────────────┘
 ```
+
+* **DCL in Production:** Never let your Node.js app connect as `root`. You use DCL to create a restricted user:
+  ```sql
+  -- Grant only needed permissions to API user
+  CREATE USER 'api_user'@'%' IDENTIFIED BY 'StrongPassword123!';
+  GRANT SELECT, INSERT, UPDATE, DELETE ON ecommerce.* TO 'api_user'@'%';
+  FLUSH PRIVILEGES;
+  ```
+* **TCL in Production:** Guarantees that multi-step money transfers succeed or fail as a single unit:
+  ```sql
+  START TRANSACTION;
+  UPDATE accounts SET balance = balance - 500 WHERE id = 1;
+  SAVEPOINT deducted_sender;
+  UPDATE accounts SET balance = balance + 500 WHERE id = 2;
+  COMMIT; -- Or ROLLBACK TO deducted_sender;
+  ```
+
+---
+
+### 2. Under-The-Hood: The 6-Stage SQL Execution Pipeline
+
+When you write `SELECT name FROM users WHERE id = 42;`, the relational engine does not just fetch the row. It executes a 6-stage pipeline:
+
+```
+[SQL Query String]
+       │
+       ▼
+1. LEXICAL & SYNTACTIC PARSER ──▶ Converts query to Abstract Syntax Tree (AST); validates syntax.
+       │
+       ▼
+2. PREPROCESSOR & SEMANTIC CHECK ──▶ Validates tables/columns exist; checks user access permissions.
+       │
+       ▼
+3. QUERY REWRITER ──▶ Simplifies expressions (e.g. 1=1), un-nests subqueries, expands views.
+       │
+       ▼
+4. COST-BASED OPTIMIZER (CBO) ──▶ Computes cost (Disk I/O + CPU); selects best index and join order.
+       │
+       ▼
+5. QUERY EXECUTION ENGINE ──▶ Converts execution plan into step-by-step low-level bytecode.
+       │
+       ▼
+6. STORAGE ENGINE (InnoDB) ──▶ Retrieves 16KB data pages from Buffer Pool RAM or Disk Tablespace.
+```
+
+1. **Parser:** Checks spelling and grammar. Throws `Syntax Error` if you miss a comma or keyword.
+2. **Preprocessor:** Verifies that table `users` and column `id` actually exist in the database dictionary.
+3. **Query Rewriter:** Evaluates static calculations (like `2 + 2` $\rightarrow$ `4`) and expands Views into base table references.
+4. **Cost-Based Optimizer (CBO):** The "brain" of SQL. It examines data statistics (cardinality, index histograms) and chooses between a B+Tree index lookup vs a full table scan based on estimated CPU and I/O cost.
+5. **Executor:** Coordinates the iteration over rows based on the optimizer's execution plan.
+6. **Storage Engine (InnoDB):** Performs row-level locks and fetches raw binary pages into memory.
 
 ---
 

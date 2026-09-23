@@ -62,6 +62,31 @@ DELETE: OLD only (no NEW — row is being removed)
 
 ---
 
+### Under-the-Hood Technical Deep Dive
+
+#### 1. Multiple Triggers & Execution Order (MySQL 8.0)
+You can define multiple triggers for the exact same event on the same table, controlling their exact execution order using `PRECEDES` or `FOLLOWS`:
+```sql
+CREATE TRIGGER log_price_update 
+AFTER UPDATE ON products
+FOR EACH ROW
+FOLLOWS audit_user_changes -- Runs immediately after the audit trigger!
+BEGIN
+  -- Trigger body
+END;
+```
+
+#### 2. Critical Trigger Limitations
+* ⚠️ **No Nested Transactions:** Triggers cannot execute `START TRANSACTION`, `COMMIT`, or `ROLLBACK`. They execute inside the transaction context of the invoking DML query.
+* ⚠️ **Mutating Table Error:** A trigger on table `orders` cannot execute an `UPDATE` or `DELETE` on the `orders` table itself (prevents infinite recursive trigger loops).
+
+#### 3. Architecture: Database Triggers vs. Transactional Outbox Pattern
+* **When Triggers Are Great:** Simple audit logs, tracking `updated_at`, updating aggregate summary tables inside the same database.
+* **When Triggers Fail at Scale:** If your trigger needs to notify external systems (e.g. send an email or push an event to RabbitMQ/Kafka). Database triggers cannot make HTTP/network calls.
+* **Modern Solution (Outbox Pattern & CDC):** The application saves an event record into an `outbox` table in the same SQL transaction. A Change Data Capture tool (**Debezium / Kafka Connect**) streams changes directly from the MySQL Binary Log (`binlog`) to external message brokers with zero database trigger overhead!
+
+---
+
 ## Visual Diagram
 
 ```

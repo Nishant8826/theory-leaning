@@ -50,6 +50,29 @@ Repeat in 10 different routes  →     Use in all routes like a regular table
 
 ---
 
+### Under-the-Hood Technical Deep Dive
+
+#### 1. View Processing Algorithms: `MERGE` vs `TEMPTABLE`
+When creating a view: `CREATE ALGORITHM = MERGE VIEW my_view AS ...`
+* **`MERGE` (⚡ Ultra Fast & Index-Aware):** MySQL combines the View's SQL text directly with your outer query.
+  * *Example:* If the view selects all products, and you query `SELECT * FROM my_view WHERE id = 10`, MySQL merges this into `SELECT * FROM products WHERE id = 10`, utilizing the Primary Key index on the underlying table!
+* **`TEMPTABLE` (🐢 Slower, Materialized):** MySQL executes the view query first, saves all rows into a temporary in-memory table, and then runs your query against that temp table. This happens automatically if the view contains `GROUP BY`, `DISTINCT`, `LIMIT`, `UNION`, or aggregate functions.
+
+#### 2. `WITH CHECK OPTION` (Preventing Invalid Writes on Updatable Views)
+When updating/inserting rows through a view:
+```sql
+CREATE VIEW active_users_view AS 
+SELECT id, name, status FROM users WHERE status = 'active'
+WITH CHECK OPTION;
+```
+* **Why it matters:** If someone tries `UPDATE active_users_view SET status = 'banned' WHERE id = 1`, MySQL rejects the update with error `CHECK OPTION failed` because the resulting row would no longer satisfy the view's `WHERE` clause!
+
+#### 3. Security Model: `SQL SECURITY DEFINER` vs `INVOKER`
+* **`DEFINER` (Default):** The view executes with the database privileges of the user who **created** the view. (Useful for exposing specific restricted columns to low-privilege API users without granting table access).
+* **`INVOKER`:** The view executes with the database privileges of the user who **runs** the query.
+
+---
+
 ## Visual Diagram
 
 ```

@@ -42,85 +42,97 @@ In Mongoose, `Number` covers everything. In MySQL, you choose between `TINYINT`,
 
 ## How does it work?
 
-MySQL data types are grouped into 4 categories:
+MySQL data types are grouped into 4 core categories:
 
 ```
-┌──────────────────────────────────────────────────────────────┐
-│                    MySQL Data Types                          │
-├──────────────┬──────────────┬──────────────┬────────────────┤
-│   Numeric    │    String    │  Date/Time   │    Other       │
-├──────────────┼──────────────┼──────────────┼────────────────┤
-│ TINYINT      │ CHAR(n)      │ DATE         │ JSON           │
-│ SMALLINT     │ VARCHAR(n)   │ TIME         │ BLOB           │
-│ MEDIUMINT    │ TEXT         │ DATETIME     │ ENUM           │
-│ INT          │ MEDIUMTEXT   │ TIMESTAMP    │ SET            │
-│ BIGINT       │ LONGTEXT     │ YEAR         │ BINARY         │
-│ FLOAT        │              │              │ VARBINARY      │
-│ DOUBLE       │              │              │ BOOLEAN        │
-│ DECIMAL(p,s) │              │              │                │
-└──────────────┴──────────────┴──────────────┴────────────────┘
+┌───────────────────────────────────────────────────────────────────────────────────────────┐
+│                                     MYSQL DATA TYPES                                      │
+├─────────────────┬─────────────────┬─────────────────┬─────────────────────────────────────┤
+│     Numeric     │     String      │    Date/Time    │         Special / Modern            │
+├─────────────────┼─────────────────┼─────────────────┼─────────────────────────────────────┤
+│ `TINYINT` (1B)  │ `CHAR(N)`       │ `DATE` (3B)     │ `JSON` (Binary JSON format)         │
+│ `SMALLINT` (2B) │ `VARCHAR(N)`    │ `TIME` (3B)     │ `ENUM` (Internal 1-2 byte integers) │
+│ `INT` (4B)      │ `TEXT` (64KB)   │ `DATETIME` (8B) │ `BLOB` (Binary Large Objects)       │
+│ `BIGINT` (8B)   │ `MEDIUMTEXT`    │ `TIMESTAMP` (4B)│ `BOOLEAN` (Alias for `TINYINT(1)`)  │
+│ `DECIMAL(P,S)`  │ `LONGTEXT` (4GB)│ `YEAR` (1B)     │ `GEOMETRY` (Spatial GIS / Points)   │
+│ `FLOAT/DOUBLE`  │                 │                 │                                     │
+└─────────────────┴─────────────────┴─────────────────┴─────────────────────────────────────┘
 ```
+
+---
+
+## Under-the-Hood Technical Deep Dive
+
+### 1. Money & Math: `DECIMAL` vs `FLOAT`/`DOUBLE` (IEEE 754 Trap)
+* **The Problem with `FLOAT` and `DOUBLE`:** Computers represent numbers in binary (base-2). Just as $1/3$ cannot be represented cleanly in base-10 ($0.3333\dots$), numbers like $0.1$ or $0.2$ cannot be represented precisely in base-2 binary.
+  * In JavaScript & MySQL: `0.1 + 0.2 = 0.30000000000000004`.
+  * If used in banking, rounding errors accumulate into massive financial discrepancies.
+* **The Solution: `DECIMAL(Precision, Scale)`:**
+  * `DECIMAL(10, 2)`: Stores up to $10$ total digits, with exactly $2$ digits after the decimal point (e.g. `99999999.99`).
+  * MySQL packs digits in chunks of 9 digits into 4-byte integers, executing exact base-10 math without any binary floating-point approximation.
+
+---
+
+### 2. Strings: `CHAR` vs `VARCHAR` vs `TEXT` (Off-Page Storage)
+* **`CHAR(N)`:** Fixed length. Always consumes $N \times \text{bytes per character}$. Fast access because every row in a page has a fixed offset.
+* **`VARCHAR(N)`:** Variable length. Stores only actual characters $+ 1$ byte prefix length ($N \le 255$) or $+ 2$ bytes prefix length ($N > 255$).
+* **`TEXT` / `BLOB` Off-Page Storage:**
+  * Standard table columns are stored together inside the 16KB InnoDB page.
+  * If you store large `TEXT` or `LONGTEXT`, InnoDB cannot fit multiple rows on one page. It stores a 20-byte pointer on the page and pushes the rest into **Overflow Pages** (Off-page storage), which requires extra disk seeks.
+
+---
+
+### 3. The `JSON` Data Type & Virtual Generated Columns
+MySQL 5.7+ and 8.0+ store `JSON` documents in an optimized binary format that allows key lookups without parsing the entire string.
+* **Indexing JSON Fields:** You cannot index a raw JSON column directly. Instead, you create a **Generated Virtual Column** and add an index to it:
+  ```sql
+  ALTER TABLE products 
+  ADD COLUMN brand VARCHAR(50) 
+  GENERATED ALWAYS AS (attributes->>'$.brand') VIRTUAL;
+
+  CREATE INDEX idx_product_brand ON products(brand);
+  ```
+
+---
+
+### 4. Character Sets & Collations (`utf8mb4` vs `utf8`)
+* ⚠️ **Never use `utf8` in MySQL:** Historical MySQL `utf8` only supported up to 3 bytes per character, breaking Emojis (🔥, 🚀) and certain international characters.
+* **Always use `utf8mb4`:** Full 4-byte UTF-8 standard.
+* **Collation Nuances:**
+  * `utf8mb4_0900_ai_ci`: Default in MySQL 8.0. Unicode 9.0 sort order, Accent-Insensitive (`e = é`), Case-Insensitive (`A = a`).
+  * `utf8mb4_bin`: Binary collation. Case-sensitive and accent-sensitive (`'Admin' != 'admin'`). Perfect for API keys and tokens.
 
 ---
 
 ## Visual Diagram
 
-### Numeric Types — Size Comparison
+### Numeric Types — Exact Size & Range Reference
 
 ```
-Type        Bytes   Min Value              Max Value
-─────────── ─────── ────────────────────── ──────────────────────
-TINYINT     1       -128                   127
-SMALLINT    2       -32,768                32,767
-MEDIUMINT   3       -8,388,608             8,388,607
-INT         4       -2,147,483,648         2,147,483,647
-BIGINT      8       -9.2 quintillion       9.2 quintillion
+Type             Bytes   Min Value              Max Value
+───────────────  ─────── ────────────────────── ──────────────────────
+TINYINT          1       -128                   127
+TINYINT UNSIGNED 1       0                      255 (e.g. age, booleans)
+SMALLINT         2       -32,768                32,767
+INT              4       -2,147,483,648         2,147,483,647 (~2.14 Billion)
+INT UNSIGNED     4       0                      4,294,967,295 (~4.29 Billion)
+BIGINT           8       -9.22 Quintillion      9.22 Quintillion
+BIGINT UNSIGNED  8       0                      18.44 Quintillion (Enterprise IDs)
 
-UNSIGNED versions double the positive range (no negatives):
-TINYINT UNSIGNED    0 → 255
-INT UNSIGNED        0 → 4,294,967,295
-
-FLOAT       4       ~7 decimal digits precision
-DOUBLE      8       ~15 decimal digits precision
-DECIMAL(10,2) varies Exact precision! (use for money)
-```
-
-### String Types — When to Use What
-
-```
-┌──────────────────────────────────────────────────────────────┐
-│                     STRING TYPES                             │
-├──────────────┬─────────────┬─────────────────────────────────┤
-│    Type      │  Max Length  │  Use Case                      │
-├──────────────┼─────────────┼─────────────────────────────────┤
-│ CHAR(10)     │ 10 chars    │ Fixed-length: country code, PIN │
-│ VARCHAR(255) │ 255 chars   │ Variable: name, email, title   │
-│ TEXT         │ 65,535 chars│ Descriptions, comments         │
-│ MEDIUMTEXT   │ 16 MB       │ Blog posts, articles           │
-│ LONGTEXT     │ 4 GB        │ Books, large HTML content      │
-├──────────────┼─────────────┼─────────────────────────────────┤
-│ CHAR vs VARCHAR:                                              │
-│ CHAR(10) 'hi' → 'hi        ' (padded to 10 chars — wastes) │
-│ VARCHAR(10) 'hi' → 'hi' (stores only 2 chars — efficient)  │
-└──────────────────────────────────────────────────────────────┘
+FLOAT            4       ~7 decimal digits precision (Approximate - DO NOT USE FOR MONEY)
+DOUBLE           8       ~15 decimal digits precision (Approximate)
+DECIMAL(10,2)    5 bytes Exact base-10 calculation! (ALWAYS USE FOR CURRENCY)
 ```
 
 ### Date/Time Types
 
 ```
-Type        Format               Example                Storage
-─────────── ──────────────────── ────────────────────── ───────
-DATE        YYYY-MM-DD           2024-01-15             3 bytes
-TIME        HH:MM:SS             14:30:00               3 bytes
-DATETIME    YYYY-MM-DD HH:MM:SS 2024-01-15 14:30:00    8 bytes
-TIMESTAMP   YYYY-MM-DD HH:MM:SS 2024-01-15 14:30:00    4 bytes
-YEAR        YYYY                 2024                   1 byte
-
-TIMESTAMP vs DATETIME:
-- TIMESTAMP: Stores as UTC, converts to local time → good for global apps
-- DATETIME: Stores as-is, no timezone conversion → good for fixed dates
-- TIMESTAMP range: 1970-2038 (Y2K38 problem!)
-- DATETIME range: 1000-9999
+Type        Format               Example                Range                Storage
+─────────── ──────────────────── ────────────────────── ──────────────────── ───────
+DATE        YYYY-MM-DD           2024-01-15             1000-01-01 to 9999   3 bytes
+TIME        HH:MM:SS             14:30:00               -838:59:59 to 838    3 bytes
+DATETIME    YYYY-MM-DD HH:MM:SS 2024-01-15 14:30:00    1000 to 9999         8 bytes (Fixed, timezone-static)
+TIMESTAMP   YYYY-MM-DD HH:MM:SS 2024-01-15 14:30:00    1970 to 2038         4 bytes (UTC auto-converted)
 ```
 
 ---

@@ -60,6 +60,31 @@ SUM(price * stock) = 16,144,800 (total inventory value)
 
 ---
 
+### Under-the-Hood Technical Deep Dive
+
+#### 1. Why `COUNT(*)` in InnoDB is Slower than MyISAM (The MVCC Effect)
+* **MyISAM (Legacy):** Stored an exact row count integer in table metadata. `SELECT COUNT(*)` took $0.00\text{ms}$.
+* **InnoDB (Modern):** Supports **Multi-Version Concurrency Control (MVCC)**. At any given millisecond, Transaction A might have inserted 5 uncommitted rows, while Transaction B deleted 2 rows. Because every transaction sees a different snapshot of visible rows, InnoDB **cannot** maintain a single static row count. It must scan the smallest secondary index tree to count active visible rows.
+* 💡 **COUNT(*) vs COUNT(1):** In modern MySQL 8.0, the optimizer treats `COUNT(*)` and `COUNT(1)` identically. There is zero speed difference.
+
+#### 2. Advanced Aggregation: `GROUP_CONCAT`
+Concatenates strings from multiple rows into a single delimited string:
+```sql
+SELECT 
+    category_id, 
+    GROUP_CONCAT(name ORDER BY price DESC SEPARATOR ', ') AS top_products
+FROM products
+GROUP BY category_id;
+```
+* ⚠️ **Buffer Trap:** `GROUP_CONCAT` truncates results at $1024$ bytes by default. In production, increase buffer size: `SET SESSION group_concat_max_len = 1048576;` (1 MB).
+
+#### 3. Empty Set Behavior: `COUNT` vs `SUM/AVG/MIN/MAX`
+* `SELECT COUNT(*) FROM products WHERE id = -999;` $\rightarrow$ Returns **`0`**.
+* `SELECT SUM(price) FROM products WHERE id = -999;` $\rightarrow$ Returns **`NULL`**.
+* 💡 **Defensive Pattern:** Always wrap with `COALESCE` to prevent `null` in Node.js arithmetic: `SELECT COALESCE(SUM(price), 0) AS total_revenue ...`
+
+---
+
 ## Visual Diagram
 
 ### How Aggregates Process Data

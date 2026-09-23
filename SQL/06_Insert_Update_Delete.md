@@ -43,7 +43,7 @@ INSERT, UPDATE, and DELETE are DML (Data Manipulation Language) commands — the
 
 ## How does it work?
 
-### CRUD Mapping: REST → SQL
+### 1. CRUD Mapping: REST → SQL
 
 ```
 HTTP Method    REST Route              Mongoose              SQL
@@ -53,6 +53,94 @@ GET          /api/users           User.find()          SELECT * FROM users
 GET          /api/users/:id       User.findById()      SELECT * WHERE id = ?
 PUT/PATCH    /api/users/:id       User.updateOne()     UPDATE users SET ... WHERE id = ?
 DELETE       /api/users/:id       User.deleteOne()     DELETE FROM users WHERE id = ?
+```
+
+---
+
+### 2. Under-the-Hood Technical Deep Dive
+
+#### A. Bulk Inserts: Batching vs Individual Inserts
+* ❌ **Slow Pattern:** Executing 1,000 separate `INSERT INTO products VALUES (...)` statements creates 1,000 network round trips, 1,000 separate transaction commits, and 1,000 Redo Log disk flushes.
+* ✔️ **Fast Pattern:** Multi-row bulk insert:
+  ```sql
+  INSERT INTO products (name, price, stock) VALUES
+    ('Keyboard', 1500.00, 20),
+    ('Mouse', 800.00, 50),
+    ('Monitor', 12000.00, 10);
+  ```
+* **Production Sizing:** Batch queries in chunks of $500$ to $1000$ rows to avoid exceeding MySQL's `max_allowed_packet` network buffer size.
+
+#### B. UPSERT: `ON DUPLICATE KEY UPDATE` vs `REPLACE INTO` (The Danger)
+* **`INSERT ... ON DUPLICATE KEY UPDATE` (Recommended):** If a row violates a Primary Key or `UNIQUE` constraint, MySQL performs an in-place `UPDATE` on the existing row, keeping the original ID intact and preserving foreign key references.
+* ⚠️ **`REPLACE INTO` (Dangerous):** MySQL physically executes a `DELETE` followed by an `INSERT`. This causes:
+  1. Auto-increment ID changes to a new number.
+  2. Foreign keys referencing the original row fail or get deleted via `CASCADE`.
+  3. `AFTER DELETE` triggers fire unexpectedly.
+
+#### C. Soft Delete Architecture & The UNIQUE Constraint Gotcha
+In production, instead of deleting records permanently (`DELETE`), you mark them as deleted:
+```sql
+ALTER TABLE users ADD COLUMN deleted_at TIMESTAMP NULL DEFAULT NULL;
+```
+* **The Unique Constraint Problem:** If `email` is `UNIQUE`, and a user deletes their account (`deleted_at = NOW()`), they cannot sign up again with that same email because the unique index blocks it!
+* **The Solution:** In MySQL 8.0+, use a Generated Virtual Column for the unique index:
+  ```sql
+  -- If deleted_at is set, active_email is NULL (MySQL unique indexes allow multiple NULLs!)
+  ALTER TABLE users 
+  ADD COLUMN active_email VARCHAR(255) 
+  GENERATED ALWAYS AS (IF(deleted_at IS NULL, email, NULL)) VIRTUAL;
+
+  CREATE UNIQUE INDEX uq_active_user_email ON users(active_email);
+  ```
+
+#### D. Optimistic Locking (Preventing Lost Updates)
+When two users edit the same product at the same time:
+```sql
+-- Include a version integer column
+UPDATE products 
+SET stock = stock - 1, version = version + 1 
+WHERE id = 42 AND version = 3;
+
+-- In Node.js: Check result.affectedRows
+-- If affectedRows === 0, someone else updated it first! Throw concurrency error and retry.
+```
+
+#### E. Multi-Table UPDATE & DELETE with JOINs
+You can join tables directly inside `UPDATE` and `DELETE` queries:
+```sql
+-- Multi-Table UPDATE: Update customer loyalty tier based on total spent
+UPDATE customers c
+JOIN (
+  SELECT customer_id, SUM(total_amount) AS total_spent 
+  FROM orders 
+  GROUP BY customer_id
+) o ON c.id = o.customer_id
+SET c.tier = 'VIP', c.discount_percent = 15.0
+WHERE o.total_spent > 50000;
+
+-- Multi-Table DELETE: Delete expired carts and their cart items simultaneously
+DELETE c, ci 
+FROM carts c
+JOIN cart_items ci ON c.id = ci.cart_id
+WHERE c.updated_at < DATE_SUB(NOW(), INTERVAL 30 DAY);
+```
+
+#### F. Production Batch Deletion Loop (Preventing Table Locks & Replication Lag)
+❌ **The Danger:** Running `DELETE FROM logs WHERE created_at < '2023-01-01';` on 10 million rows acquires millions of row locks, freezes the buffer pool, creates gigabytes of Undo Logs, and halts read/write traffic across the entire cluster.
+✔️ **The Production Solution (Chunked Loop in Node.js):**
+```javascript
+async function purgeOldLogs() {
+  let deletedCount = 0;
+  do {
+    const [result] = await db.query(
+      'DELETE FROM logs WHERE created_at < "2023-01-01" LIMIT 5000'
+    );
+    deletedCount = result.affectedRows;
+    // Sleep 100ms between batches to let other transactions breathe and replicate
+    await new Promise(resolve => setTimeout(resolve, 100));
+  } while (deletedCount > 0);
+  console.log('Log purge complete without downtime!');
+}
 ```
 
 ---
