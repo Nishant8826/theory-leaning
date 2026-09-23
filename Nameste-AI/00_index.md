@@ -41,6 +41,15 @@ Class: [e.g., Class 01]
 * [07. From a Base Model to an AI Assistant](./Season_01/07_From_a_Base_Model_to_an_AI_Assistant.md)
 * [08. Can AI Really Think?](./Season_01/08_Can_AI_Really_Think.md)
 
+### Season 02
+
+* [01. Fundamentals of Building with AI](./Season_02/01_Fundamentals_of_Building_with_AI.md)
+* [02. Ideation & Brainstorming Features](./Season_02/02_Ideation_&_Brainstorming_Features.md)
+* [04. System Design Architecture](./Season_02/04_System_Design_Architecture.md)
+* [05. Database and API Design](./Season_02/05_Database_and_API_Design.md)
+* [06. UI & UX Design using AI](./Season_02/06_UI_&_UX_Design_using_AI.md)
+* [07. Building the Scaffold using AI](./Season_02/07_Building_the_Scaffold_using_AI.md)
+
 ---
 
 # Season 01
@@ -304,6 +313,107 @@ Class: [e.g., Class 01]
 
 > [!IMPORTANT]
 > Reasoning models do not replace external tools—they orchestrate them. For deterministic calculation and live facts, combine reasoning with calculator and search APIs to ensure absolute grounding.
+
+---
+
+# Season 02
+
+## 01. Fundamentals of Building with AI
+
+🔗 **Full Lesson:** [01_Fundamentals_of_Building_with_AI.md](./Season_02/01_Fundamentals_of_Building_with_AI.md)
+
+* **What**: The foundational transition from writing code line-by-line to supervising, commanding, and architecting software using AI models.
+* **Why It Exists**: Teaches how to harness AI as an active engineering accelerator across the complete Software Development Life Cycle (SDLC) without falling into the trap of accepting hallucinated code blindly.
+* **Key Concepts**:
+  * **The Supervisor Mindset**: Shifting from manual typing to orchestrating AI ("Namaste AI developers don't write code, they give orders to get it written").
+  * **The 11-Step AI SDLC**: Ideation $\rightarrow$ Features $\rightarrow$ PRD $\rightarrow$ Architecture $\rightarrow$ DB (ERD) $\rightarrow$ APIs $\rightarrow$ UI Design $\rightarrow$ Development $\rightarrow$ Debugging $\rightarrow$ Code Review $\rightarrow$ Testing $\rightarrow$ Deployment.
+  * **Feasibility & MVP**: Scoping core boundaries before prompting AI to prevent scope bloat and context degradation.
+  * **Core Engineering Artifacts**: PRD, System Architecture, ERD, API Specifications, and `DESIGN.md`.
+  * **Tool Landscape**: Cursor, OpenAI Codex, Google Antigravity IDE, Claude Code, and Lovable.
+  * **Investing in Productivity**: Treating frontier AI subscriptions as essential developer equipment over passive entertainment.
+  * **Enduring Fundamentals**: AI tools, models, and IDEs evolve constantly; fundamental computer science concepts and architectural discipline remain immutable.
+
+---
+
+## 02. Ideation & Brainstorming Features using AI
+
+🔗 **Full Lesson:** [02_Ideation_&_Brainstorming_Features.md](./Season_02/02_Ideation_&_Brainstorming_Features.md)
+
+* **What**: Techniques for translating raw, conversational product ideas into structured feature inventories and formal Product Requirements Documents (PRDs).
+* **Why It Exists**: Eliminates the friction of typing long prompts by leveraging speech-to-text and multi-turn LLM brainstorming to capture domain-specific edge cases before architecture and coding begin.
+* **Key Concepts**:
+  * **The Problem Space**: Indian wedding planning is chaotic, multi-event, multi-organizer, and budget-heavy.
+  * **The Project ("Make My Marriage")**: An all-in-one Wedding Operating System rather than a basic invitation website.
+  * **Speech-to-Text Ideation**: Using `Ctrl + H` (Windows) to brainstorm complex requirements naturally.
+  * **The 6-Stage Wedding Lifecycle**: Engagement $\rightarrow$ Planning $\rightarrow$ Invitations $\rightarrow$ Events $\rightarrow$ Wedding Day $\rightarrow$ Post-Wedding Archive.
+  * **Core Modules**: Auth/Roles, Dashboard, Multi-Events (Haldi, Sangeet, Reception), Central Guests & Event-level RSVPs, Tasks, Expenses, Vendor Discovery (Google Places), and Media Storage.
+  * **Anatomy of a PRD**: Objectives, User Personas, Feature Specifications, UX Flow, Technical Constraints, and Assumptions.
+  * **Interactive Showcase**: Pre-populated "Ashu & Priya's Marriage" demo wedding for frictionless exploration.
+  * **Preventing Token Waste**: Locking the PRD upfront prevents repeated context churn and code rewrites.
+
+---
+
+## 04. System Design Architecture Documentation using AI
+
+🔗 **Full Lesson:** [04_System_Design_Architecture.md](./Season_02/04_System_Design_Architecture.md)
+
+* **What**: Engineering lead architectural planning—defining modular monolith boundaries, data persistence tiers, cloud object storage, and secure client-side media uploads.
+* **Why It Exists**: Bridges the gap between product requirements and technical reality, preventing critical anti-patterns (such as storing raw binary images in document databases).
+* **Key Concepts**:
+  * **Modular Monolith Strategy**: High developer velocity and simple deployment without the networking complexity of microservices.
+  * **Tech Stack Baseline**: Next.js (Frontend SSR/SPA) + FastAPI / Node.js (REST Backend) + MongoDB Atlas + Google Cloud Storage (GCS).
+  * **Document DB vs. Object Storage**: MongoDB stores lightweight JSON metadata and file paths; GCS/S3 stores heavy raw binary photos, videos, and PDFs.
+  * **Presigned / Signed Expiring URLs**: Secure, short-lived tokenized URLs allowing guests to upload photos directly to GCS, bypassing backend server bandwidth.
+  * **Transactional & Mass Email**: Resend API for transactional alerts; asynchronous job queues (Redis/Celery) for bulk digital invitations.
+  * **Third-Party Integrations**: Google OAuth 2.0 (Auth), Google Places API (Vendor Discovery), YouTube Live (Streaming).
+  * **Deployment Roadmap**: Fast serverless launch on Vercel $\rightarrow$ containerized migration to AWS EC2 as load scales.
+
+---
+
+## 05. Database and API Design Documentation using AI
+
+🔗 **Full Lesson:** [05_Database_and_API_Design.md](./Season_02/05_Database_and_API_Design.md)
+
+* **What**: Formalizing database schemas, Entity Relationship Diagrams (ERDs), soft vs. hard delete strategies, and REST API contracts using Specification-Driven Development (SDD).
+* **Why It Exists**: Provides rigid, unambiguous structural constraints to AI coding assistants, ensuring clean multi-tenant isolation and referential integrity.
+* **Key Concepts**:
+  * **Database Design Document (DDD)**: Blueprint translating functional requirements into collections, fields, relationships, and indexes.
+  * **Central Entity Pattern**: All sub-resources (events, tasks, expenses, guests, photos) link back to master `wedding_id`.
+  * **Normalized Multi-Event Mapping**: Central `guests` collection paired with junction `event_attendance` records for event-specific RSVPs.
+  * **Soft Delete (`is_deleted: true`)**: Mandatory production pattern preserving historical audit trails and preventing cascade breaks on related records.
+  * **Specification-Driven Development (SDD)**: Defining database schemas and REST contracts upfront before writing implementation code.
+  * **REST API Standards**: Structured routes for `/auth`, `/weddings`, `/members`, `/events`, `/guests`, `/rsvp`, and `/photos`.
+
+---
+
+## 06. UI & UX Design using AI
+
+🔗 **Full Lesson:** [06_UI_&_UX_Design_using_AI.md](./Season_02/06_UI_&_UX_Design_using_AI.md)
+
+* **What**: Creating cohesive design systems, utilizing Google Stitch for prompt-to-UI prototyping, and standardizing styling rules in `DESIGN.md`.
+* **Why It Exists**: Eliminates visual inconsistency and frontend rework by establishing design tokens, themes, and wireframes prior to React component implementation.
+* **Key Concepts**:
+  * **Design Systems Before Code**: Establishing typography, color palettes, spacing tokens, and border radii to ensure visual harmony.
+  * **Google Stitch**: Google Labs tool converting prompts, sketches, and screenshots into responsive UI mockups and frontend code.
+  * **What is `DESIGN.md`**: A one-page markdown rulebook guiding AI coding agents on exact colors, fonts, and component conventions.
+  * **Dual-Surface Architecture**: Distinct designs for the Public SaaS Marketing Page (pricing, feature grid) and the Dedicated Couple Wedding Portal (countdown, multi-event schedule, RSVP, gallery).
+  * **Royal Heritage Editorial Palette**: Saffron Gold (`#D97706`), Warm Champagne (`#FDFBF7`), Forest Emerald (`#047857`), and Slate Charcoal (`#1E293B`).
+  * **Visual Iteration Speed**: Modifying UI mockups in minutes saves hours of compiled code refactoring.
+
+---
+
+## 07. Building the Scaffold using AI
+
+🔗 **Full Lesson:** [07_Building_the_Scaffold_using_AI.md](./Season_02/07_Building_the_Scaffold_using_AI.md)
+
+* **What**: Scaffolding full-stack application boilerplates by grounding AI IDE context with specification documents in the repository.
+* **Why It Exists**: Automates repetitive environment and folder hierarchy setup while enforcing strict quality and security controls through the Maker-Checker pattern.
+* **Key Concepts**:
+  * **Specification-Grounded Context**: Placing PRD, System Design, Database Design, and API Design in `docs/` before initiating code generation.
+  * **Software Scaffolding**: Automated creation of directory trees, linters, configuration files, and baseline routing.
+  * **Monorepo Folder Layout**: Clean separation across `frontend/` (Next.js), `backend/` (FastAPI/Node), `docs/`, and container orchestration (`docker-compose.yml`).
+  * **The Maker-Checker Pattern**: The AI acts as the code generator ("Maker"), while the human engineer reviews, audits, and approves ("Checker").
+  * **Localhost Verification & Git**: Booting the skeleton on `localhost:3000`, validating initial routes, and establishing version-controlled repository baselines.
 
 ---
 
