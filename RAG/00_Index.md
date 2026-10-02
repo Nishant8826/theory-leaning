@@ -1,141 +1,134 @@
-# ⚡ RAG (Retrieval-Augmented Generation) – Quick Revision Cheat Sheet
-
-> **A 5–10 Minute Master Revision Guide for RAG Architecture, Retrieval Techniques, and Interview Preparation.**
-> 🔗 **Detailed 30-Question Notes:** [01_RAG_30_Questions.md](./01_RAG_30_Questions.md)
+# ⚡ RAG (Retrieval-Augmented Generation) – Master Revision Guide
+### 30 RAG Interview Questions Quick Revision Cheat Sheet
+*Based on AmanAI Lab Curriculum (`30_RAG_Interview_Questions_AmanAI_Lab.pdf`)*
+🔗 **Complete In-Depth Notes:** [`01_RAG_30_Questions.md`](./01_RAG_30_Questions.md)
 
 ---
 
-## 🧭 End-to-End RAG Workflow
+## 🧭 End-to-End RAG Architecture Workflow
 
 ```mermaid
 flowchart LR
-    subgraph INGEST["1. Ingest & Index"]
-        D[Docs] --> S[Chunk 512t] --> E[Embed BGE/OpenAI] --> VDB[(Vector DB HNSW)]
+    subgraph INGEST["1. Offline Indexing Phase"]
+        D[Source Docs] --> C[Chunk 512t + 10-20% Overlap] --> E[Embedding Model] --> VDB[(Vector Database)]
     end
-    subgraph RETRIEVE["2. Hybrid Retrieve & Rank"]
-        Q[Query] --> TR[HyDE / Rewrite] --> HYB[Dense + BM25]
+    subgraph RETRIEVE["2. Online Retrieval Phase"]
+        Q[User Query] --> TR[Query Rewrite / HyDE] --> HYB[Dense + BM25 Search]
         VDB -.-> HYB --> RRF[RRF Fusion] --> CE[Cross-Encoder Rerank]
     end
-    subgraph GENERATE["3. Ground & Generate"]
-        CE --> PR[Prompt + Citations] --> LLM[LLM Temp=0.0] --> OUT[Verified Answer]
+    subgraph GENERATE["3. Grounded Generation"]
+        CE --> COMP[Context Compression] --> PR[Grounded Prompt + Citations] --> LLM[LLM Temp=0.0] --> OUT[Verified Answer]
     end
 ```
 
 ---
 
-## 📌 Topic-by-Topic Revision Summary
+## 📌 10-Module Fast Revision Summary
 
-### 1. RAG Fundamentals & Architecture
-- **What is RAG:** Decouples reasoning (LLM) from memory (Vector DB). Retrieves authoritative facts from external private stores before prompt generation.
-- **Why RAG Exists:** Solves LLM **knowledge cutoff**, eliminates **hallucinations**, keeps **enterprise data private**, and avoids **expensive model retraining**.
-- **The 2 Pipelines:**
-  - *Offline Ingestion:* Extract $\rightarrow$ Clean $\rightarrow$ Chunk $\rightarrow$ Embed $\rightarrow$ Store in Vector DB + Metadata.
-  - *Online Retrieval:* User Query $\rightarrow$ Embed $\rightarrow$ Hybrid Search $\rightarrow$ Rerank $\rightarrow$ Inject Context $\rightarrow$ LLM Synthesis.
-- 🔗 *Deep Dive:* [Q1: What is RAG?](./01_RAG_30_Questions.md#q1-what-is-rag-retrieval-augmented-generation-and-why-was-it-introduced) | [Q3: Complete Pipeline](./01_RAG_30_Questions.md#q3-what-is-the-complete-end-to-end-rag-pipeline-ingestion-to-generation) | [Q4: Core Components](./01_RAG_30_Questions.md#q4-what-are-the-core-architectural-components-of-a-rag-system)
-
----
-
-### 2. Chunking & Overlap
-- **Chunking Goal:** Converts documents into coherent semantic units. Prevents vector dilution (if too large) and context loss (if too small).
-- **Sweet Spot:** **256 – 1024 tokens** (industry standard: **512 tokens** with **10–20% overlap**).
-- **Strategies:**
-  - *Recursive Character:* Splits on `\n\n` $\rightarrow$ `\n` $\rightarrow$ space. **Default choice.**
-  - *Structure-Aware:* Preserves Markdown `#`, HTML sections, table rows. Best for legal/technical docs.
-  - *Semantic Chunking:* Splits where cosine similarity between adjacent sentences drops below a threshold.
-- **Chunk Overlap:** 10–20% repeated text across chunk boundaries to prevent qualifying clauses (*"However..."*) and entity links from breaking.
-- 🔗 *Deep Dive:* [Q5: Chunking & Size Trade-offs](./01_RAG_30_Questions.md#q5-what-is-chunking-in-rag-why-is-it-critical-and-how-does-chunk-size-affect-retrieval-quality) | [Q6: Chunking Strategies](./01_RAG_30_Questions.md#q6-what-are-the-different-chunking-strategies-fixed-size-recursive-sentence-level-semantic-structure-aware-and-their-trade-offs) | [Q7: Chunk Overlap](./01_RAG_30_Questions.md#q7-what-is-chunk-overlap-and-why-is-it-necessary-to-prevent-boundary-context-loss)
+### 1. ■ RAG Fundamentals (Q1 – Q3)
+- **What is RAG:** Retrieves external knowledge at query time to augment LLM prompts. Decouples **reasoning** (LLM) from **memory** (Vector DB).
+- **Why RAG is Needed:** Solves 4 core problems: (1) Knowledge cutoff, (2) Hallucinations, (3) Private domain data, (4) High fine-tuning costs.
+- **Two Phases:** Indexing (offline: load $\rightarrow$ chunk $\rightarrow$ embed $\rightarrow$ store) and Query (online: embed query $\rightarrow$ search top-$k$ $\rightarrow$ prompt context $\rightarrow$ LLM generation $\rightarrow$ cite).
+- **6 Key Components:** Document Loader, Chunker, Embedding Model, Vector DB, Retriever/Reranker, LLM Generator.
+- 🔗 *Full Notes:* [Q1: What & Why](./01_RAG_30_Questions.md#q1-what-is-rag-retrieval-augmented-generation-and-why-do-we-need-it) | [Q2: Complete Pipeline](./01_RAG_30_Questions.md#q2-explain-the-complete-rag-pipeline-step-by-step) | [Q3: 6 Key Components](./01_RAG_30_Questions.md#q3-what-are-the-key-components-of-a-rag-system-and-what-choices-do-you-make-for-each)
 
 ---
 
-### 3. Embeddings & Dimensions
-- **How Embeddings Work:** Neural models map tokens into continuous vector space ($\mathbb{R}^d$) where semantically similar concepts cluster together.
-- **Top Models:** `text-embedding-3-small` (OpenAI), `bge-m3` (Open-Source Multilingual), `cohere-embed-v3`.
-- **Matryoshka Representation Learning (MRL):** Allows truncating 1536-dim vectors to 512-dim vectors with $<2\%$ accuracy loss, cutting storage and search latency by 60%.
-- 🔗 *Deep Dive:* [Q8: Embedding Selection & Dimensions](./01_RAG_30_Questions.md#q8-how-do-you-choose-the-right-embedding-model-and-evaluate-vector-dimensions-cost-and-domain-suitability)
+### 2. ■ Chunking Strategies (Q4 – Q6)
+- **Why Chunking Matters:** Chunks too large $\rightarrow$ diluted vector embeddings & wasted tokens; chunks too small $\rightarrow$ fragmented context & lost meaning.
+- **Sweet Spot:** **256–1024 tokens** with **10–20% overlap**.
+- **5 Chunking Methods:**
+  1. *Fixed-size:* Split every $N$ tokens (for logs/uniform text).
+  2. *Recursive Character:* Split by `\n\n` $\rightarrow$ `\n` $\rightarrow$ space. **(Default Choice)**.
+  3. *Sentence-level:* Preserves full sentences (for FAQs).
+  4. *Semantic Chunking:* Uses embedding similarity distance between sentences.
+  5. *Structure-aware:* Respects Markdown headers, tables, HTML sections.
+- **Chunk Overlap:** Repeats 10–20% of boundary tokens to ensure multi-clause sentences (*"However..."*) remain intact across chunks.
+- 🔗 *Full Notes:* [Q4: Chunking Importance](./01_RAG_30_Questions.md#q4-why-is-chunking-important-and-what-happens-if-you-get-it-wrong) | [Q5: 5 Chunking Methods](./01_RAG_30_Questions.md#q5-what-are-the-different-chunking-methods-and-when-do-you-use-each) | [Q6: Chunk Overlap](./01_RAG_30_Questions.md#q6-what-is-chunk-overlap-and-why-is-it-critical)
 
 ---
 
-### 4. Vector Databases & Indexing (HNSW / IVF)
-- **Database Selection:**
-  - *Managed / Zero-Ops:* **Pinecone**
-  - *High-Performance / Self-Hosted:* **Qdrant** (Rust, best pre-filtering), **Weaviate**
-  - *Massive Scale (1B+ vectors):* **Milvus**
-  - *Existing Postgres Stack:* **PGVector**
-  - *Prototyping / Local Dev:* **ChromaDB**
+### 3. ■ Embeddings & Vector Databases (Q7 – Q9)
+- **Choosing Embeddings:** Evaluate Quality vs Cost, Dimensions (384 vs 1536/3072 + Matryoshka MRL truncation), Multilingual support (`BGE-M3`), Domain vocabulary (`PubMedBERT`), and **MTEB Benchmark scores**.
+- **Vector DB Comparison:**
+  - *Managed Zero-Ops:* **Pinecone** (serverless).
+  - *Production Self-Hosted:* **Qdrant** (Rust, fast filtering), **Weaviate** (built-in ML).
+  - *PostgreSQL Native:* **PGVector** (unified relational SQL).
+  - *Prototyping / Local:* **ChromaDB** (embedded Python).
+  - *Billion-Scale:* **Milvus** (distributed K8s).
 - **Indexing Algorithms:**
-  - *Flat:* $O(N)$ exhaustive brute-force. 100% recall, but too slow for production ($>5\text{s}$).
-  - *IVF (Inverted File):* $k$-means clustering into Voronoi buckets. Fast, moderate memory.
-  - *HNSW (Hierarchical Navigable Small World):* Multi-layer geometric graph skip-list. $O(\log N)$ search, $\sim 5\text{ms}$ latency, $>98\%$ recall. **Production standard.**
-- 🔗 *Deep Dive:* [Q9: Vector DB Comparison](./01_RAG_30_Questions.md#q9-how-do-major-vector-databases-pinecone-weaviate-qdrant-chromadb-pgvector-milvus-compare) | [Q10: Flat vs IVF vs HNSW](./01_RAG_30_Questions.md#q10-what-is-the-difference-between-flat-brute-force-ivf-and-hnsw-vector-indexing-algorithms)
+  - *Flat:* $O(N)$ brute force (100% recall, too slow at scale).
+  - *IVF:* $k$-means Voronoi clustering (fast, medium memory).
+  - *HNSW:* Multi-layer geometric graph skip-list ($O(\log N)$, sub-10ms, $>98\%$ recall). **(Production standard)**.
+- 🔗 *Full Notes:* [Q7: Choosing Embeddings](./01_RAG_30_Questions.md#q7-how-do-you-choose-the-right-embedding-model-for-your-rag-system) | [Q8: Vector DB Comparison](./01_RAG_30_Questions.md#q8-compare-the-major-vector-databases--when-would-you-use-each) | [Q9: HNSW vs IVF vs Flat](./01_RAG_30_Questions.md#q9-what-is-the-difference-between-hnsw-ivf-and-flat-search-in-vector-databases)
 
 ---
 
-### 5. Retrieval, Hybrid Search & Reranking
-- **Dense vs Sparse Search:**
-  - *Dense (Vectors):* Semantic intent & conceptual synonyms (*"automobile"* $\approx$ *"car"*).
-  - *Sparse (BM25):* Exact keywords, error codes, SKUs, and acronyms (`ERR_0x402`).
-- **Hybrid Search + RRF:** Runs Dense + BM25 concurrently and merges rankings via **Reciprocal Rank Fusion (RRF)**:
+### 4. ■ Retrieval Strategies (Q10 – Q12)
+- **Hybrid Search (Dense + Sparse BM25):** Dense captures semantic synonyms (*"car"* $\approx$ *"automobile"*); Sparse BM25 captures exact error codes (`ERR_0x4012`) and SKUs. Merged via **Reciprocal Rank Fusion (RRF)**:
   $$\text{RRF\_Score}(d) = \sum \frac{1}{60 + \text{rank}(d)}$$
-- **Cross-Encoder Reranking:** Bi-encoders (vector search) retrieve candidate top-20; Cross-Encoders (Cohere / BGE-Reranker) compute full query-chunk cross-attention to score and select the top 3–5 highest-fidelity chunks.
-- **Lost-in-the-Middle Fix:** Rerank best chunk to Index 0, reduce top-$k$ noise, and apply contextual compression.
-- 🔗 *Deep Dive:* [Q11: Hybrid Search & BM25](./01_RAG_30_Questions.md#q11-what-is-the-difference-between-dense-search-and-sparse-search-and-how-does-hybrid-search-bm25--dense--rrf-work) | [Q12: Lost-in-the-Middle](./01_RAG_30_Questions.md#q12-what-is-the-lost-in-the-middle-problem-in-llm-context-windows-and-how-do-you-resolve-it) | [Q17: Reranking & Cross-Encoders](./01_RAG_30_Questions.md#q17-what-is-reranking-cross-encoders-and-why-is-it-a-game-changer-for-retrieval-accuracy)
+- **Lost in the Middle:** Attention drops in the middle of long prompts. Fix by **reranking top chunks to Index 0**, reducing $k$ to 3–5, and compressing context.
+- **Query Transformation:** Rewriting conversational ambiguity, **HyDE** (embedding hypothetical answers to match doc space), and **Sub-query decomposition** (splitting multi-part comparisons).
+- 🔗 *Full Notes:* [Q10: Hybrid Search & BM25](./01_RAG_30_Questions.md#q10-what-is-hybrid-search-and-why-is-it-better-than-pure-vector-search) | [Q11: Lost in the Middle](./01_RAG_30_Questions.md#q11-what-is-the-lost-in-the-middle-problem-and-how-do-you-solve-it) | [Q12: Query Transformation & HyDE](./01_RAG_30_Questions.md#q12-what-is-query-transformation-and-why-does-it-improve-rag)
 
 ---
 
-### 6. Advanced Patterns & Context Optimization
-- **Query Transformation:**
-  - *Query Rewriting:* Resolves pronouns using chat history.
-  - *HyDE (Hypothetical Document Embeddings):* Generates a hypothetical answer, then embeds that answer to search Vector DB.
-  - *Sub-Query Decomposition:* Splits complex comparisons into parallel atomic sub-queries.
-- **Parent-Child Retrieval:** Small child chunks (128t) for vector search; full parent chunk (1024t) fed into LLM for context completeness.
-- **Multi-Index RAG:** Semantic router sends queries to specialized indices (Summary Index, SQL Relational DB, Granular Chunks, Knowledge Graph).
-- **Metadata Pre-Filtering:** Filters documents by payload attributes (`department`, `country`, `user_role` for RBAC) *before* index traversal.
-- 🔗 *Deep Dive:* [Q13: Query Transformation](./01_RAG_30_Questions.md#q13-what-is-query-transformation-query-rewriting-hyde-sub-query-decomposition-step-back-prompting) | [Q15: Parent-Child Chunking](./01_RAG_30_Questions.md#q15-what-is-parent-child-hierarchical-chunking-and-retrieval-and-how-does-it-balance-specificity-with-context) | [Q16: Multi-Index RAG](./01_RAG_30_Questions.md#q16-what-is-multi-index-rag-and-how-does-query-routing-handle-diverse-data-sources) | [Q18: Contextual Compression](./01_RAG_30_Questions.md#q18-what-is-contextual-compression-and-how-does-it-optimize-llm-token-usage-and-reduce-noise) | [Q19: Metadata Pre-Filtering](./01_RAG_30_Questions.md#q19-what-is-metadata-filtering-pre-filtering-vs-post-filtering-and-how-does-it-enhance-precision-and-security)
+### 5. ■ Advanced RAG Patterns (Q13 – Q15)
+- **Naive vs Advanced vs Modular:**
+  - *Naive:* Basic single-pass pipe (`Chunk -> Search -> Generate`).
+  - *Advanced:* Adds pre-retrieval (HyDE, Rewriter) and post-retrieval (Rerank, Compression).
+  - *Modular:* Decoupled micro-services, dynamic routing, feedback loops, Agentic RAG.
+- **Parent-Child Chunking:** Embed small child chunks (100–200t) for vector precision; return large parent section (1000–2000t) to LLM for full narrative context.
+- **Multi-Index RAG:** Routes queries to specialized indices (Summary Index for broad queries, Chunk Index for details, SQL Index for tabular metrics, KG for relationships).
+- 🔗 *Full Notes:* [Q13: Naive vs Advanced vs Modular](./01_RAG_30_Questions.md#q13-what-is-the-difference-between-naive-rag-advanced-rag-and-modular-rag) | [Q14: Parent-Child Chunking](./01_RAG_30_Questions.md#q14-what-is-parent-child-chunking-also-called-hierarchical-chunking) | [Q15: Multi-Index RAG](./01_RAG_30_Questions.md#q15-what-is-multi-index-rag-and-when-do-you-use-it)
 
 ---
 
-### 7. Evaluation & The RAGAS Framework
-- **3-Layer Evaluation:** Retrieval (Hit Rate, MRR), Generation (Faithfulness, Relevance), System (Latency, Thumbs up/down).
-- **RAGAS (LLM-as-a-Judge):**
-  - **Faithfulness:** Are all generated claims supported by retrieved context? *(Detects Hallucinations)*
-  - **Answer Relevance:** Did the LLM directly answer the user query? *(Detects Evasion/Drift)*
-  - **Context Precision:** Are signal chunks ranked higher than noise chunks? *(Evaluates Reranker)*
-  - **Context Recall:** Did retriever fetch all ground-truth facts? *(Evaluates Retriever Coverage)*
-- 🔗 *Deep Dive:* [Q20: 3-Tier Evaluation](./01_RAG_30_Questions.md#q20-how-do-you-evaluate-a-rag-system-across-retrieval-generation-and-end-to-end-levels) | [Q21: RAGAS Framework](./01_RAG_30_Questions.md#q21-what-is-the-ragas-framework-and-how-do-its-core-metrics-faithfulness-answer-relevance-context-precision-context-recall-work) | [Q22: Golden Datasets](./01_RAG_30_Questions.md#q22-how-do-you-generate-golden-test-datasets-for-rag-manual-vs-synthetic-vs-production-logs)
+### 6. ■ Reranking & Post-Retrieval (Q16 – Q18)
+- **Cross-Encoder Reranking:** Computes full token-level bidirectional attention across `(Query, Chunk)`. Reorders candidate top-20 to surface the true answer at Rank #1. (Cohere Rerank v3, BGE-Reranker-Large, Jina-v2).
+- **Contextual Compression:** Strips out 50–80% irrelevant text from retrieved chunks, reducing prompt token costs and eliminating distractor noise.
+- **Metadata Pre-Filtering:** Filters structured attributes (`version='2026'`, `department='HR'`, `user_role` for RBAC) *before* vector index traversal for 10x precision.
+- 🔗 *Full Notes:* [Q16: Reranking](./01_RAG_30_Questions.md#q16-what-is-reranking-and-why-is-it-a-game-changer-for-rag-quality) | [Q17: Contextual Compression](./01_RAG_30_Questions.md#q17-what-is-contextual-compression-and-how-does-it-help-rag) | [Q18: Metadata Filtering](./01_RAG_30_Questions.md#q18-how-do-you-handle-metadata-filtering-in-rag-retrieval)
 
 ---
 
-### 8. Advanced Paradigms: Agentic, Multimodal & Graph RAG
-- **Agentic RAG:** Autonomous agent with dynamic tool use (Vector DB, SQL, Web, Python interpreter), multi-step planning, and self-correction evaluation loops.
-- **Multimodal RAG:** Parses tables into Markdown/HTML and uses Vision-Language Models (GPT-4o / ColPali) to generate searchable text summaries of charts and scanned diagrams.
-- **Graph RAG:** Combines vector search with Knowledge Graphs (Nodes, Edges, Triples). Performs multi-hop reasoning and community-level global summarization.
-- 🔗 *Deep Dive:* [Q26: Agentic RAG](./01_RAG_30_Questions.md#q26-what-is-agentic-rag-and-how-does-an-autonomous-agent-improve-multi-step-retrieval-and-planning) | [Q27: Multimodal RAG](./01_RAG_30_Questions.md#q27-how-do-you-build-multimodal-rag-for-documents-with-tables-charts-and-images-ocr-vlms-table-parsers) | [Q28: Graph RAG](./01_RAG_30_Questions.md#q28-what-is-graph-rag-and-how-does-knowledge-graph-traversal-solve-multi-hop-reasoning-queries)
+### 7. ■ RAG Evaluation (Q19 – Q21)
+- **2-Tier Evaluation:**
+  - *Retrieval Quality:* Hit Rate@K, MRR (Mean Reciprocal Rank), Context Relevancy.
+  - *Generation Quality:* Faithfulness (groundedness), Answer Relevancy, Context Utilization.
+- **RAGAS Framework (LLM-as-a-Judge):** Automated scoring across Faithfulness, Answer Relevancy, Context Precision, and Context Recall.
+- **Test Set Creation:** 100+ Synthetic QA pairs + 50 SME manual pairs + 20 Unanswerable edge cases + Production query logs.
+- 🔗 *Full Notes:* [Q19: RAG Evaluation Metrics](./01_RAG_30_Questions.md#q19-how-do-you-evaluate-a-rag-system-what-metrics-do-you-use) | [Q20: RAGAS Framework](./01_RAG_30_Questions.md#q20-what-is-ragas-and-how-does-it-work) | [Q21: Test Set Creation](./01_RAG_30_Questions.md#q21-how-do-you-create-a-test-set-for-rag-evaluation)
 
 ---
 
-### 9. Production Maintenance, Latency & Conversational Memory
-- **Knowledge Freshness:** Use **MD5/SHA-256 content hashing** for change detection, atomic document ID deletions/upserts, and metadata TTL tags.
-- **Source Attribution:** Inject numbered context identifiers (`[1]`, `[2]`) into prompts for sentence-level inline citations.
-- **Latency Optimization:** Redis semantic cache ($<10\text{ms}$), HNSW index, parallel async retrieval, and token streaming (SSE).
-- **Conversational Memory:** Condense chat history + follow-up question into a standalone rewritten search query before vector lookup.
-- 🔗 *Deep Dive:* [Q23: Failure Modes](./01_RAG_30_Questions.md#q23-what-are-the-common-failure-modes-of-production-rag-systems-and-how-do-you-debug-them) | [Q24: Incremental Updates](./01_RAG_30_Questions.md#q24-how-do-you-handle-knowledge-base-updates-freshness-and-incremental-document-synchronization) | [Q25: Citations](./01_RAG_30_Questions.md#q25-how-do-you-implement-reliable-source-attribution-and-citations-chunk-level-vs-inline) | [Q29: Hallucination Fixes](./01_RAG_30_Questions.md#q29-how-do-you-diagnose-and-eliminate-hallucinations-when-the-correct-context-document-is-already-retrieved) | [Q30: Latency & Multi-Turn](./01_RAG_30_Questions.md#q30-how-do-you-optimize-latency-and-manage-multi-turn-conversational-memory-in-production-rag-systems)
+### 8. ■ Production RAG (Q22 – Q24)
+- **7 Failure Modes:** (1) Ingestion fail, (2) Missed top-$k$, (3) Lost in middle, (4) Hallucination, (5) Schema format fail, (6) Granularity mismatch, (7) Stale knowledge base.
+- **Document Freshness:** Incremental ingestion with **SHA-256 change detection**, atomic document replacement (`delete old -> insert new`), version tags, and TTL.
+- **Citations & Attribution:** Chunk-level metadata tags + sentence-level inline citation brackets (`[1]`, `[Source N]`) + post-generation verification.
+- 🔗 *Full Notes:* [Q22: 7 Failure Modes](./01_RAG_30_Questions.md#q22-what-are-the-common-failure-modes-of-rag-systems-in-production) | [Q23: Knowledge Freshness](./01_RAG_30_Questions.md#q23-how-do-you-handle-document-updates-and-keep-the-rag-knowledge-base-fresh) | [Q24: Citations & Attribution](./01_RAG_30_Questions.md#q24-how-do-you-add-citations-and-source-attribution-to-rag-answers)
+
+---
+
+### 9. ■ Multimodal & Agentic RAG (Q25 – Q27)
+- **Agentic RAG:** An AI agent autonomously controls retrieval: decides *when* to retrieve, *what* to search, *evaluates* intermediate evidence, and *self-corrects* across multiple tools (Vector DB + SQL + Web).
+- **Multimodal RAG:** Serializes tables to Markdown, uses Vision Models (GPT-4o Vision / ColPali) to generate searchable descriptions of charts, diagrams, and scanned pages.
+- **Graph RAG:** Combines vector search with Knowledge Graphs (Nodes, Edges, Triples) for multi-hop reasoning, relationship queries, and global corpus summarization.
+- 🔗 *Full Notes:* [Q25: Agentic RAG](./01_RAG_30_Questions.md#q25-what-is-agentic-rag-and-how-is-it-different-from-standard-rag) | [Q26: Multimodal RAG](./01_RAG_30_Questions.md#q26-how-do-you-build-rag-over-tables-charts-and-images-multimodal-rag) | [Q27: Graph RAG](./01_RAG_30_Questions.md#q27-what-is-graph-rag-and-when-would-you-use-it-over-standard-rag)
+
+---
+
+### 10. ■ RAG Troubleshooting & Optimization (Q28 – Q30)
+- **Fixing Hallucinations:** Check retrieval $\rightarrow$ verify chunk text $\rightarrow$ prompt negative constraints (*"Answer ONLY from context"*) $\rightarrow$ enforce structured quotes $\rightarrow$ set `temperature=0.0`.
+- **Latency Optimization:** Redis semantic cache ($<10\text{ms}$), HNSW index, parallel async retrieval, and token streaming (SSE) to achieve $<300\text{ms}$ Time-to-First-Token.
+- **Multi-Turn Conversations:** Condense conversational history into a standalone rewritten search query before retrieval.
+- 🔗 *Full Notes:* [Q28: Fixing Hallucinations](./01_RAG_30_Questions.md#q28-your-rag-system-is-hallucinating-despite-having-the-right-documents-how-do-you-fix-it) | [Q29: Latency Optimization](./01_RAG_30_Questions.md#q29-how-do-you-optimize-rag-latency-for-real-time-applications) | [Q30: Multi-Turn Conversations](./01_RAG_30_Questions.md#q30-how-do-you-handle-multi-turn-conversations-in-rag)
 
 ---
 
 ## 📊 Core Architectural Comparison Tables
 
-### Table 1: RAG vs Fine-Tuning vs Prompt Engineering
-| Dimension | Prompt Engineering | Fine-Tuning | RAG |
-| :--- | :--- | :--- | :--- |
-| **Primary Purpose** | Format & instruction guidance | Style, syntax & task adaptation | **Factual grounding & private data retrieval** |
-| **Updates Knowledge?** | No (bounded by prompt) | Yes (static until next training) | **Yes (instant update in Vector DB)** |
-| **Model Weight Changes** | None ($\Delta W = 0$) | Modifies weights ($\Delta W \neq 0$) | None ($\Delta W = 0$) |
-| **Hallucination Risk** | High | Moderate | **Lowest (strictly grounded in context)** |
-| **Auditability / Citations** | None | Impossible (black-box) | **Native (exact page/paragraph links)** |
-
----
-
-### Table 2: Dense vs Sparse vs Hybrid Search
+### Table 1: Dense vs Sparse vs Hybrid Search
 | Feature | Dense Search (Embeddings) | Sparse Search (BM25) | Hybrid Search (Dense + BM25 + RRF) |
 | :--- | :--- | :--- | :--- |
 | **Mechanism** | Neural vector cosine similarity | Lexical TF-IDF term matching | **Fused ranking via Reciprocal Rank Fusion** |
@@ -144,16 +137,16 @@ flowchart LR
 
 ---
 
-### Table 3: Vector Indexing: Flat vs IVF vs HNSW
+### Table 2: Vector Indexing: Flat vs IVF vs HNSW
 | Index Algorithm | Search Complexity | 10M Vector Latency | Recall @ 10 | RAM / Memory Overhead |
 | :--- | :--- | :--- | :--- | :--- |
 | **Flat (Brute Force)** | $O(N)$ | ~5,000 ms | **100%** | Low (Raw vectors only) |
 | **IVF (Inverted File)** | $O(\frac{N}{k} \cdot \text{nprobe})$ | ~50 ms | ~92–95% | Low–Medium |
-| **HNSW (Graph Skip-List)** | $O(\log N)$ | **~5–10 ms** | **~98–99.5%** | High (Stores graph edges + vectors) |
+| **HNSW (Graph Skip-List)** | $O(\log N)$ | **~10 ms** | **~98–99%** | High (Stores graph edges + vectors) |
 
 ---
 
-### Table 4: Naive RAG vs Advanced RAG vs Modular / Agentic RAG
+### Table 3: Naive RAG vs Advanced RAG vs Modular / Agentic RAG
 | Paradigm | Architecture Shape | Key Modules Included | Production Fit |
 | :--- | :--- | :--- | :--- |
 | **Naive RAG** | Linear single-pass | Embed $\rightarrow$ Top-$k$ Vector Search $\rightarrow$ LLM | ❌ Prototypes only |
@@ -162,27 +155,13 @@ flowchart LR
 
 ---
 
-## 🛠️ Common Production Failure Points & Instant Solutions
-
-| # | Failure Symptom | Root Cause | Engineering Solution |
-| :--- | :--- | :--- | :--- |
-| **1** | **Retriever Miss (Low Recall)** | Query uses different vocabulary than chunks; exact SKU missing. | Add **BM25 Hybrid Search** and implement **HyDE / Query Rewriting**. |
-| **2** | **Lost in the Middle** | Best chunk is buried at Index 7 of 15 candidate chunks. | Add a **Cross-Encoder Reranker (Cohere/BGE)** and reduce $k$ to top 3. |
-| **3** | **Hallucination (Context Present)** | LLM temperature $> 0.0$; prompt allows external reasoning. | Set `temperature=0.0`, enforce strict system prompt refusal rules. |
-| **4** | **Stale Data Returned** | Vector DB has outdated versions alongside new document chunks. | Implement **SHA-256 change detection and atomic document replacement**. |
-| **5** | **Multi-Hop Reasoning Fails** | Facts spread across 3 separate documents without direct vector link. | Implement **Agentic Sub-Query Decomposition** or **Graph RAG**. |
-| **6** | **Table Data Garbled** | Text splitter severed table rows into disconnected fragments. | Use **Structure-Aware Table Parsers** to serialize tables as Markdown. |
-| **7** | **High Latency ($>3\text{s}$)** | Uncached repetitive queries; slow sequential API calls. | Add **Redis Semantic Caching**, async parallel search, and token streaming. |
-
----
-
 ## 🎤 Top 5 Interview Takeaways (Quick Recall)
 
-1. **The Core RAG Value:** *"RAG decouples **knowledge** from **reasoning**. We treat the LLM as a stateless compute engine while keeping enterprise facts dynamic, private, auditable, and cost-effective in an external index."*
-2. **Hybrid Search is Mandatory:** *"Vector search alone fails on exact product codes, acronyms, and unique identifiers. Production systems must combine **Dense vector search (semantic meaning) with Sparse BM25 (exact keywords)** via Reciprocal Rank Fusion."*
-3. **The Power of Reranking:** *"Bi-encoders (vector search) are fast but lose word-to-word interaction. **Cross-Encoder rerankers compute full bidirectional attention between query and chunk**, improving top-3 precision by up to 40%."*
+1. **The Core RAG Value Proposition:** *"RAG decouples **knowledge** from **reasoning**. We treat the LLM as a stateless compute engine while keeping enterprise facts dynamic, private, auditable, and cost-effective in an external index."*
+2. **Hybrid Search is Mandatory in Production:** *"Pure vector search fails on exact product codes, acronyms, and unique IDs. Production systems must combine **Dense vector search (semantic meaning) with Sparse BM25 (exact keywords)** via Reciprocal Rank Fusion."*
+3. **The Power of Cross-Encoder Reranking:** *"Bi-encoders are fast but encode query and chunk separately. **Cross-Encoder rerankers compute full bidirectional attention between query and chunk**, improving top-3 precision by 20–40%."*
 4. **The RAGAS Evaluation Formula:** *"RAGAS uses LLM-as-a-Judge to evaluate pipelines across 4 core metrics: **Faithfulness** (anti-hallucination), **Answer Relevance** (query fit), **Context Precision** (ranking quality), and **Context Recall** (coverage)."*
-5. **Conversational RAG Memory:** *"Never search raw follow-up queries (`'What about paternity?'`). **Use a fast LLM to condense chat history into a standalone query** before executing vector search."*
+5. **Conversational RAG Memory:** *"Never search raw follow-up queries (`'What about the middle one?'`). **Use a fast LLM to condense chat history into a standalone query** before executing vector search."*
 
 ---
-*For the complete deep-dive with code examples and detailed architectural explanations, refer to [01_RAG_30_Questions.md](./01_RAG_30_Questions.md).*
+*For the complete detailed masterclass with code examples and deep explanations, refer to [`01_RAG_30_Questions.md`](./01_RAG_30_Questions.md).*
